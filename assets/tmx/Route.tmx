@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="200" height="200" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="Index" value="1"/>
+ </properties>
+ <tileset firstgid="1" name="images" tilewidth="32" tileheight="32">
+  <image source="images.png" width="512" height="384"/>
+ </tileset>
+ <layer name="Route 1 L1" width="200" height="200">
+  <properties>
+   <property name="L1" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3ZMQqAMAwF0J7BS3kevYGeXJcuhQ4RbMS+4ZGpEAKfP3QppSwAAAAAwFBrI3sfeMN22wOzzYV88GfH7QzMXj5khD+qvRB5Ix/MovZC9h7wRU/6A2ahP6BPf0Cf/iBT9H8ha2bfiTlF/xeyZvadAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABjjAvOmmB8AcQIA
+  </data>
+ </layer>
+ <layer name="Route 1 L2" width="200" height="200">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3XwQnAIBBFQS92mqbSQqoMgpccFoQo6DIDHyzAB1oKAAAAcILaB3zV4Az860NPEPMuI4t7wRp9kEG7z8/E6YNM9AExfUBMHxDzPwcA2M81YbCbOrAR+iAjfUBMHxDTB6ynDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOMMLdz1+fgBxAgA=
+  </data>
+ </layer>
+ <layer name="Animation Layer" width="200" height="200">
+  <properties>
+   <property name="Animation" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3BgQAAAADDoPlTX+EAVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfAYtCPEnAHECAA==
+  </data>
+ </layer>
+ <layer name="Top Layer" width="200" height="200">
+  <properties>
+   <property name="Top" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3BgQAAAADDoPlTX+EAVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfAYtCPEnAHECAA==
+  </data>
+ </layer>
+ <objectgroup name="Route 1 Collide" width="200" height="200">
+  <properties>
+   <property name="Collide" value="true"/>
+  </properties>
+  <object x="32" y="576" width="288" height="128"/>
+  <object x="736" y="224" width="32" height="64"/>
+  <object x="768" y="256" width="32" height="224"/>
+  <object x="256" y="192" width="32" height="64"/>
+  <object x="288" y="160" width="64" height="32"/>
+  <object x="352" y="192" width="32" height="64"/>
+ </objectgroup>
+ <objectgroup name="Exit 0a" width="200" height="200">
+  <properties>
+   <property name="Exit" value="0"/>
+   <property name="Link" value="0"/>
+   <property name="Player" value="6"/>
+  </properties>
+  <object x="0" y="480" width="32" height="64"/>
+ </objectgroup>
+ <objectgroup name="Exit 0b" width="200" height="200">
+  <properties>
+   <property name="Exit" value="0"/>
+   <property name="Link" value="1"/>
+   <property name="Player" value="2"/>
+  </properties>
+  <object x="288" y="224" width="64" height="32"/>
+ </objectgroup>
+</map>

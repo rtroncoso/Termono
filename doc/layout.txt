@@ -1,0 +1,4 @@
+com.superproyecto.application - Formularios de la aplicación, métodos para settings
+com.superproyecto.game - Entidades, mapas, IA
+com.superproyecto.game.engine - Clases relacionadas con el Engine del juego (SONIDO Y GRAFICO)
+com.superproyecto.network - Namespace para el protocolo
