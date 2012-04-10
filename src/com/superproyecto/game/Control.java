@@ -29,7 +29,7 @@ public class Control {
 		// Set internal Fields
 		this.mGame = pGame;
 		this.mPlayer = pPlayer;
-
+		//GAY GAY GAY GAY GAY GAY GAY GAY BANANA BANANA BANANA BANANA BANANA!!!
 		// Load controls texture into memory
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.mGame.getTextureManager(), 512, 128);
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.mGame.getApplicationContext(), "onscreen_control_base.png", 0, 0);
