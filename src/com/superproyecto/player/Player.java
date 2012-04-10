@@ -5,16 +5,12 @@ import org.anddev.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnSc
 import org.anddev.andengine.entity.IEntity;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXLayer;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXTile;
-import org.anddev.andengine.entity.modifier.LoopEntityModifier;
 import org.anddev.andengine.entity.modifier.PathModifier;
-import org.anddev.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
 import org.anddev.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.anddev.andengine.entity.modifier.PathModifier.Path;
+import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.constants.Constants;
-import org.anddev.andengine.util.modifier.IModifier;
 import org.anddev.andengine.util.modifier.ease.EaseLinear;
-
-import android.content.Context;
 
 import com.superproyecto.game.Control;
 import com.superproyecto.game.Game;
@@ -30,8 +26,8 @@ public class Player extends Entity implements IOnScreenControlListener {
 	private Control mControl;
 	private TMXLayer mTMXLayer;
 	private Path mPath;
-	private PathModifier mPathModifier;
 	private int mWaypointIndex;
+	private PathModifier mPathModifier;
 	
 	/*
 	 * CONSTRUCTORS
@@ -47,6 +43,8 @@ public class Player extends Entity implements IOnScreenControlListener {
 			float pValueX, float pValueY) {
 		// TODO Auto-generated method stub
 
+		this.mAnimatedSprite.unregisterEntityModifier(this.mPathModifier);
+		
 		float moveToXTile = this.mPosition.getX() * 32 * pValueX;
 		float moveToYTile = this.mPosition.getY() * 32 * pValueY;
 
@@ -59,46 +57,59 @@ public class Player extends Entity implements IOnScreenControlListener {
 		
 		// Creates a path to that tile
 		this.mPath = new Path(2).to(this.mPosition.getX(), this.mPosition.getY())
-								.to(225, 144);
+								.to(230, 150);
 		//.to(tmxTilePlayerTo.getTileX(), tmxTilePlayerTo.getTileY());
-
-		this.mPathModifier = new PathModifier(100, this.mPath, new IEntityModifierListener() {
-
-			public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
-
-			}
-
-			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
-
-			}
-		}, new PathModifier.IPathModifierListener() {
-
-			public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity,
-					int pWaypointIndex) {
-				
-				// Keep the waypointIndex in a Global Var
-				Player.this.mWaypointIndex = pWaypointIndex;
-
-			}
-
-			public void onPathWaypointFinished(PathModifier pPathModifier, IEntity pEntity, int pWaypointIndex) {
-			}
-
-			public void onPathStarted(PathModifier pPathModifier, IEntity pEntity) {
-				// Set a global var
+		
+		this.mPathModifier = new PathModifier(30, this.mPath, null, new IPathModifierListener() {
+			@Override
+			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
 				Player.this.isWalking = true;
+				Debug.d("onPathStarted");
 			}
 
-			public void onPathFinished(PathModifier pPathModifier, IEntity pEntity) {
-				// Stop walking and set A_path to null
+			@Override
+			public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
+				Debug.d("onPathWaypointStarted:  " + pWaypointIndex);
+				if(Player.this.isWalking) return;
+				switch(pWaypointIndex) {
+					case 0:
+						Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 6, 8, true);
+						break;
+					case 1:
+						Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 3, 5, true);
+						break;
+					case 2:
+						Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 0, 2, true);
+						break;
+					case 3:
+						Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 9, 11, true);
+						break;
+				}
+			}
+
+			@Override
+			public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
+				Debug.d("onPathWaypointFinished: " + pWaypointIndex);
 				Player.this.isWalking = false;
-				Player.this.mPath = null;
-				Player.this.mAnimatedSprite.stopAnimation();
 			}
 
+			@Override
+			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
+				Player.this.isWalking = false;
+				Debug.d("onPathFinished");
+			}
 		}, EaseLinear.getInstance());
 
 		this.mAnimatedSprite.registerEntityModifier(this.mPathModifier);
+		
+	}
+
+	public PathModifier getPathModifier() {
+		return mPathModifier;
+	}
+
+	public void setPathModifier(PathModifier pPathModifier) {
+		this.mPathModifier = pPathModifier;
 	}
 	
 }

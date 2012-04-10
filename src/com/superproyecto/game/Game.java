@@ -1,27 +1,31 @@
 package com.superproyecto.game;
 
-import org.anddev.andengine.engine.Engine;
-import org.anddev.andengine.engine.FixedStepEngine;
-import org.anddev.andengine.engine.camera.hud.HUD;
-import org.anddev.andengine.engine.options.EngineOptions;
-import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
-import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXLayer;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXLoader;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
-import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
-import org.anddev.andengine.entity.scene.Scene;
-import org.anddev.andengine.entity.util.FPSLogger;
-import org.anddev.andengine.opengl.texture.TextureOptions;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.anddev.andengine.ui.activity.BaseGameActivity;
-import org.anddev.andengine.util.Debug;
+import org.andengine.engine.Engine;
+import org.andengine.engine.FixedStepEngine;
+import org.andengine.engine.options.EngineOptions;
+import org.andengine.engine.options.ScreenOrientation;
+import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.scene.Scene;
+import org.andengine.entity.util.FPSLogger;
+import org.andengine.extension.tmx.TMXLayer;
+import org.andengine.extension.tmx.TMXLoader;
+import org.andengine.extension.tmx.TMXTiledMap;
+import org.andengine.extension.tmx.util.exception.TMXLoadException;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.debug.Debug;
+
+import android.graphics.Color;
+import android.graphics.Typeface;
 
 import com.superproyecto.display.Display;
 import com.superproyecto.methods.Point;
 import com.superproyecto.player.Player;
 
-public class Game extends BaseGameActivity {
+public class Game extends SimpleBaseGameActivity {
 
 	/*
 	 * PRIVATE FIELDS
@@ -32,7 +36,14 @@ public class Game extends BaseGameActivity {
 	private TMXTiledMap mTMXTiledMap;
 	private static int CAMERA_WIDTH = 480;
 	private static int CAMERA_HEIGHT = 320;
-
+	
+	
+	////////
+	private BitmapTextureAtlas mFontTexture;
+	private Font mFont;
+	
+	///////
+	
 	/*
 	 * CONSTRUCTORS
 	 */
@@ -59,11 +70,16 @@ public class Game extends BaseGameActivity {
 	public void onLoadResources() {
 		// TODO Auto-generated method stub
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
+		///////
+		this.mFontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		this.mFont = new Font(this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48, true, Color.BLACK);
+		
+		this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
+		this.mEngine.getFontManager().loadFont(this.mFont);
+		//////
 	}
 
 	public Scene onLoadScene() {
-		// TODO Auto-generated method stub
 
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 		this.mScene = new Scene();
@@ -97,7 +113,12 @@ public class Game extends BaseGameActivity {
 		this.getDisplay().doFocusCamera(this.mHero, tmxLayer);
 
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
+		///////////
+		final ChangeableText elapsedText = new ChangeableText(100, 160, this.mFont, "Termono", "Tuvieja".length());
+		this.mScene.attachChild(elapsedText);
+ 		///////////
 
+		
 		/*
 		 * LAYER 3 - CONTROLS
 		 */
@@ -105,8 +126,6 @@ public class Game extends BaseGameActivity {
 		this.mScene.setChildScene(digitalControl.getDigitalOnScreenControl());
 		this.mScene.attachChild(digitalControl.getDigitalOnScreenControl());
 		
-		
-
 		return this.mScene;
 	}
 
@@ -132,5 +151,23 @@ public class Game extends BaseGameActivity {
 	
 	public TMXTiledMap getTMXTiledMap() {
 		return this.mTMXTiledMap;
+	}
+
+	@Override
+	public EngineOptions onCreateEngineOptions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void onCreateResources() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected Scene onCreateScene() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
