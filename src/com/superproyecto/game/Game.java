@@ -92,8 +92,9 @@ public class Game extends SimpleBaseGameActivity {
 
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		///////
-		this.mFontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		this.mFont = new Font(this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48, true, Color.BLACK);
+		this.mFontTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 256);
+		// TODO MATCHEAR BIEN LOS ARGUMENTOS!!!!
+		this.mFont = new Font(null, this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48, true, Color.BLACK);
 		
 		this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
 		this.mEngine.getFontManager().loadFont(this.mFont);
@@ -113,7 +114,7 @@ public class Game extends SimpleBaseGameActivity {
 			final TMXLoader tmxLoader = new TMXLoader(this,
 					this.mEngine.getTextureManager(),
 					TextureOptions.BILINEAR_PREMULTIPLYALPHA, null);
-			this.mTMXTiledMap = tmxLoader.loadFromAsset(this, "tmx/desert.tmx");
+			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/desert.tmx");
 		} catch (final TMXLoadException tmxle) {
 			Debug.e(tmxle);
 		}
@@ -129,14 +130,15 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHero.loadTexture("1.png", 128, 128, 0, 0, 3, 4);
 
 		// Center the Player in the Screen
-		final int centerX = (this.mDisplay.getCameraWidth() - this.mHero.getTiledTextureRegion().getTileWidth()) / 2;
-		final int centerY = (this.mDisplay.getCameraHeight() - this.mHero.getTiledTextureRegion().getTileHeight()) / 2;
+		final float centerX = (this.mDisplay.getCameraWidth() - this.mHero.getTiledTextureRegion().getWidth()) / 2;
+		final float centerY = (this.mDisplay.getCameraHeight() - this.mHero.getTiledTextureRegion().getHeight()) / 2;
 		this.mHero.setPosition(new Point(centerX, centerY));
 		this.getDisplay().doFocusCamera(this.mHero, tmxLayer);
 
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
 		///////////
-		final Text elapsedText = new Text(100, 160, this.mFont, "Termono", "Tuvieja".length());
+		// TODO MATCHEAR BIEN LOS ARGUMENTOS!!!!
+		final Text elapsedText = new Text(100, 160, this.mFont, "Termono", "Tuvieja".length(), null);
 		this.mScene.attachChild(elapsedText);
  		///////////
 

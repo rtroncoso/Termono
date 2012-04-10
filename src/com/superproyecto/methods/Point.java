@@ -2,27 +2,27 @@ package com.superproyecto.methods;
 
 public class Point {
 
-	private int mX;
-	private int mY;
+	private float mX;
+	private float mY;
 
-	public Point(int X, int Y) {
+	public Point(float X, float Y) {
 		this.mX = X;
 		this.mY = Y;
 	}
 
-	public int getX() {
+	public float getX() {
 		return this.mX;
 	}
 
-	public int getY() {
+	public float getY() {
 		return this.mY;
 	}
 
-	public void setX(int X) {
+	public void setX(float X) {
 		this.mX = X;
 	}
 
-	public void setY(int Y) {
+	public void setY(float Y) {
 		this.mY = Y;
 	}
 }
