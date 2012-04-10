@@ -1,12 +1,12 @@
 package com.superproyecto.objects;
 
-import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
-import org.anddev.andengine.entity.modifier.PathModifier.Path;
-import org.anddev.andengine.entity.sprite.AnimatedSprite;
-import org.anddev.andengine.opengl.texture.TextureOptions;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
+import org.andengine.engine.handler.physics.PhysicsHandler;
+import org.andengine.entity.modifier.PathModifier.Path;
+import org.andengine.entity.sprite.AnimatedSprite;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import com.superproyecto.game.Game;
 import com.superproyecto.methods.Point;

@@ -1,16 +1,16 @@
 package com.superproyecto.player;
 
-import org.anddev.andengine.engine.camera.hud.controls.BaseOnScreenControl;
-import org.anddev.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
-import org.anddev.andengine.entity.IEntity;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXLayer;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXTile;
-import org.anddev.andengine.entity.modifier.PathModifier;
-import org.anddev.andengine.entity.modifier.PathModifier.IPathModifierListener;
-import org.anddev.andengine.entity.modifier.PathModifier.Path;
-import org.anddev.andengine.util.Debug;
-import org.anddev.andengine.util.constants.Constants;
-import org.anddev.andengine.util.modifier.ease.EaseLinear;
+import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
+import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.PathModifier;
+import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
+import org.andengine.entity.modifier.PathModifier.Path;
+import org.andengine.extension.tmx.TMXLayer;
+import org.andengine.extension.tmx.TMXTile;
+import org.andengine.util.Constants;
+import org.andengine.util.debug.Debug;
+import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.superproyecto.game.Control;
 import com.superproyecto.game.Game;

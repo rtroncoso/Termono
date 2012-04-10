@@ -1,8 +1,8 @@
 package com.superproyecto.display;
 
-import org.anddev.andengine.engine.camera.BoundCamera;
-import org.anddev.andengine.engine.camera.Camera;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXLayer;
+import org.andengine.engine.camera.BoundCamera;
+import org.andengine.engine.camera.Camera;
+import org.andengine.extension.tmx.TMXLayer;
 
 import com.superproyecto.objects.Entity;
 

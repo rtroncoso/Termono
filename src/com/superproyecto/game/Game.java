@@ -1,11 +1,10 @@
 package com.superproyecto.game;
 
-import org.andengine.engine.Engine;
-import org.andengine.engine.FixedStepEngine;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.text.Text;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
@@ -52,23 +51,45 @@ public class Game extends SimpleBaseGameActivity {
 	/*
 	 * METHODS
 	 */
-	public Engine onLoadEngine() {
-		// TODO Auto-generated method stub
 
+	/*
+	 * GETTERS/SETTERS
+	 */
+	public void setDisplay(Display pDisplay) {
+		this.mDisplay = pDisplay;
+	}
+
+	public Display getDisplay() {
+		return this.mDisplay;
+	}
+	
+	public Scene getScene() {
+		return this.mScene;
+	}
+	
+	public TMXTiledMap getTMXTiledMap() {
+		return this.mTMXTiledMap;
+	}
+
+	@Override
+	public EngineOptions onCreateEngineOptions() {
+		// TODO Auto-generated method stub
 		// Init Objects
 		this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
 				getWindowManager().getDefaultDisplay().getHeight());
 
 		// Return the Engine
-		return new FixedStepEngine(new EngineOptions(true,
-				ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(
+		return new EngineOptions(true,
+				ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(
 						this.mDisplay.getDisplayWidth(),
 						this.mDisplay.getDisplayHeight()),
-				this.mDisplay.getCamera()), 60);
+				this.mDisplay.getCamera());
 	}
 
-	public void onLoadResources() {
+	@Override
+	protected void onCreateResources() {
 		// TODO Auto-generated method stub
+
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		///////
 		this.mFontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
@@ -79,8 +100,9 @@ public class Game extends SimpleBaseGameActivity {
 		//////
 	}
 
-	public Scene onLoadScene() {
-
+	@Override
+	protected Scene onCreateScene() {
+		// TODO Auto-generated method stub
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 		this.mScene = new Scene();
 
@@ -114,7 +136,7 @@ public class Game extends SimpleBaseGameActivity {
 
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
 		///////////
-		final ChangeableText elapsedText = new ChangeableText(100, 160, this.mFont, "Termono", "Tuvieja".length());
+		final Text elapsedText = new Text(100, 160, this.mFont, "Termono", "Tuvieja".length());
 		this.mScene.attachChild(elapsedText);
  		///////////
 
@@ -129,45 +151,4 @@ public class Game extends SimpleBaseGameActivity {
 		return this.mScene;
 	}
 
-	public void onLoadComplete() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * GETTERS/SETTERS
-	 */
-	public void setDisplay(Display pDisplay) {
-		this.mDisplay = pDisplay;
-	}
-
-	public Display getDisplay() {
-		return this.mDisplay;
-	}
-	
-	public Scene getScene() {
-		return this.mScene;
-	}
-	
-	public TMXTiledMap getTMXTiledMap() {
-		return this.mTMXTiledMap;
-	}
-
-	@Override
-	public EngineOptions onCreateEngineOptions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void onCreateResources() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected Scene onCreateScene() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

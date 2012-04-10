@@ -1,6 +1,6 @@
 package com.superproyecto.game.engine;
 
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
+import org.andengine.extension.tmx.TMXTiledMap;
 
 import android.content.Context;
 
