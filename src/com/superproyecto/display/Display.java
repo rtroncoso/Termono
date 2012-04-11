@@ -29,6 +29,8 @@ public class Display {
 
 		this.mBoundChaseCamera = new BoundCamera(0, 0, this.mCameraWidth,
 				this.mCameraHeight);
+
+		
 		this.mCamera = new Camera(0, 0, this.mCameraWidth, this.mCameraHeight);
 	}
 	

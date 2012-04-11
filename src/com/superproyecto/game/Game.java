@@ -93,8 +93,8 @@ public class Game extends SimpleBaseGameActivity {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		///////
 		this.mFontTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 256);
-		// TODO MATCHEAR BIEN LOS ARGUMENTOS!!!!
-		this.mFont = new Font(null, this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48, true, Color.BLACK);
+		
+		this.mFont = new Font(this.getFontManager(), this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48, true, Color.BLACK);
 		
 		this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
 		this.mEngine.getFontManager().loadFont(this.mFont);
@@ -111,9 +111,9 @@ public class Game extends SimpleBaseGameActivity {
 		 * LAYER 0 - FLOORS
 		 */
 		try {
-			final TMXLoader tmxLoader = new TMXLoader(this,
+			final TMXLoader tmxLoader = new TMXLoader(this.getAssets(),
 					this.mEngine.getTextureManager(),
-					TextureOptions.BILINEAR_PREMULTIPLYALPHA, null);
+					TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.getVertexBufferObjectManager());
 			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/desert.tmx");
 		} catch (final TMXLoadException tmxle) {
 			Debug.e(tmxle);
@@ -137,8 +137,7 @@ public class Game extends SimpleBaseGameActivity {
 
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
 		///////////
-		// TODO MATCHEAR BIEN LOS ARGUMENTOS!!!!
-		final Text elapsedText = new Text(100, 160, this.mFont, "Termono", "Tuvieja".length(), null);
+		final Text elapsedText = new Text(100, 160, this.mFont, "Termono", "Tuvieja".length(), this.getVertexBufferObjectManager());
 		this.mScene.attachChild(elapsedText);
  		///////////
 
