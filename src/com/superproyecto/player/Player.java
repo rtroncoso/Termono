@@ -24,7 +24,6 @@ public class Player extends Entity implements IOnScreenControlListener {
 	 */
 	private final float mSpeedModifier = 300.0f;
 	private Control mControl;
-	private TMXLayer mTMXLayer;
 	private Path mPath;
 	private int mWaypointIndex;
 	private PathModifier mPathModifier;
@@ -32,35 +31,23 @@ public class Player extends Entity implements IOnScreenControlListener {
 	/*
 	 * CONSTRUCTORS
 	 */
-	public Player(Game pEngine, TMXLayer pTMXLayer) {
+	public Player(Game pEngine) {
 		super(pEngine);
-		this.mTMXLayer = pTMXLayer;
 		// TODO Auto-generated constructor stub
 	}
-	
-	@Override
-	public void onControlChange(BaseOnScreenControl pBaseOnScreenControl,
-			float pValueX, float pValueY) {
-		// TODO Auto-generated method stub
+
+	public void moveToTile(float pTileX, float pTileY) {
 
 		this.mAnimatedSprite.unregisterEntityModifier(this.mPathModifier);
-		
-		float moveToXTile = this.mPosition.getX() * 32 * pValueX;
-		float moveToYTile = this.mPosition.getY() * 32 * pValueY;
-
-		// If the user is touching the screen Puts the touch events into an array
-		final float[] pToTiles = this.mGame.getScene().convertLocalToSceneCoordinates(moveToXTile, moveToYTile);
 
 		// Gets where to go
-		TMXTile tmxTilePlayerTo = this.mTMXLayer.getTMXTileAt(pToTiles[Constants.VERTEX_INDEX_X],
-				pToTiles[Constants.VERTEX_INDEX_Y]);
+		TMXTile tmxTilePlayerTo = this.mGame.getTMXTiledMap().getTMXLayers().get(0).getTMXTileAt(pTileX, pTileY);
 		
 		// Creates a path to that tile
 		this.mPath = new Path(2).to(this.mPosition.getX(), this.mPosition.getY())
-								.to(230, 150);
-		//.to(tmxTilePlayerTo.getTileX(), tmxTilePlayerTo.getTileY());
+								.to(pTileX, pTileY);
 		
-		this.mPathModifier = new PathModifier(30, this.mPath, null, new IPathModifierListener() {
+		this.mPathModifier = new PathModifier(this.mPath.getLength() * 10000, this.mPath, null, new IPathModifierListener() {
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
 				Player.this.isWalking = true;
@@ -70,7 +57,7 @@ public class Player extends Entity implements IOnScreenControlListener {
 			@Override
 			public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
 				Debug.d("onPathWaypointStarted:  " + pWaypointIndex);
-				if(Player.this.isWalking) return;
+				Player.this.mWaypointIndex = pWaypointIndex;
 				switch(pWaypointIndex) {
 					case 0:
 						Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 6, 8, true);
@@ -96,11 +83,19 @@ public class Player extends Entity implements IOnScreenControlListener {
 			@Override
 			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
 				Player.this.isWalking = false;
+				Player.this.mAnimatedSprite.stopAnimation();
 				Debug.d("onPathFinished");
 			}
 		}, EaseLinear.getInstance());
 
 		this.mAnimatedSprite.registerEntityModifier(this.mPathModifier);
+		
+	}
+	
+	@Override
+	public void onControlChange(BaseOnScreenControl pBaseOnScreenControl,
+			float pValueX, float pValueY) {
+
 		
 	}
 

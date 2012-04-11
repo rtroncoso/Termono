@@ -47,7 +47,7 @@ public class Control {
 					public void onControlChange(BaseOnScreenControl pBaseOnScreenControl, float pValueX, float pValueY) {
 						
 						// Controls it's attached Entity
-						Control.this.mPlayer.onControlChange(pBaseOnScreenControl, pValueX, pValueY);
+						//Control.this.mPlayer.onControlChange(pBaseOnScreenControl, pValueX, pValueY);
 					}
 				});
 

@@ -15,6 +15,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.Constants;
 import org.andengine.util.debug.Debug;
 
 import android.graphics.Color;
@@ -25,57 +26,38 @@ import com.superproyecto.methods.Point;
 import com.superproyecto.player.Player;
 
 public class Game extends SimpleBaseGameActivity {
+	// ===========================================================
+	// Constants
+	// ===========================================================
+	private static int CAMERA_WIDTH = 480;
+	private static int CAMERA_HEIGHT = 320;
 
-	/*
-	 * PRIVATE FIELDS
-	 */
+	// ===========================================================
+	// Fields
+	// ===========================================================
 	private Display mDisplay;
 	private Scene mScene;
 	private Player mHero;
 	private TMXTiledMap mTMXTiledMap;
-	private static int CAMERA_WIDTH = 480;
-	private static int CAMERA_HEIGHT = 320;
 	
 	
 	////////
 	private BitmapTextureAtlas mFontTexture;
 	private Font mFont;
-	
 	///////
-	
-	/*
-	 * CONSTRUCTORS
-	 */
-	
 
-	/*
-	 * METHODS
-	 */
+	// ===========================================================
+	// Constructors
+	// ===========================================================
 
-	/*
-	 * GETTERS/SETTERS
-	 */
-	public void setDisplay(Display pDisplay) {
-		this.mDisplay = pDisplay;
-	}
-
-	public Display getDisplay() {
-		return this.mDisplay;
-	}
-	
-	public Scene getScene() {
-		return this.mScene;
-	}
-	
-	public TMXTiledMap getTMXTiledMap() {
-		return this.mTMXTiledMap;
-	}
-
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
 		// Init Objects
-		this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
+		this.mDisplay = new Display(getWindowManager().getDefaultDisplay().getWidth(),
 				getWindowManager().getDefaultDisplay().getHeight());
 
 		// Return the Engine
@@ -126,7 +108,7 @@ public class Game extends SimpleBaseGameActivity {
 		 * LAYER 1 - ENTITIES
 		 */
 		// Create the Player
-		this.mHero = new Player(this, tmxLayer);
+		this.mHero = new Player(this);
 		this.mHero.loadTexture("1.png", 128, 128, 0, 0, 3, 4);
 
 		// Center the Player in the Screen
@@ -134,8 +116,16 @@ public class Game extends SimpleBaseGameActivity {
 		final float centerY = (this.mDisplay.getCameraHeight() - this.mHero.getTiledTextureRegion().getHeight()) / 2;
 		this.mHero.setPosition(new Point(centerX, centerY));
 		this.getDisplay().doFocusCamera(this.mHero, tmxLayer);
+		
+		float moveToXTile = this.mHero.getPosition().getX() + 32;
+		float moveToYTile = this.mHero.getPosition().getY() + 32;
 
+		final float[] pToTiles = this.mScene.convertLocalToSceneCoordinates(moveToXTile, moveToYTile);
+		//this.mHero.moveToTile(pToTiles[Constants.VERTEX_INDEX_X], pToTiles[Constants.VERTEX_INDEX_Y]);
+		this.mHero.moveToTile(383, 224);
+		
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
+		
 		///////////
 		final Text elapsedText = new Text(100, 160, this.mFont, "Termono", "Tuvieja".length(), this.getVertexBufferObjectManager());
 		this.mScene.attachChild(elapsedText);
@@ -151,5 +141,41 @@ public class Game extends SimpleBaseGameActivity {
 		
 		return this.mScene;
 	}
+
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
+	public void setDisplay(Display pDisplay) {
+		this.mDisplay = pDisplay;
+	}
+
+	public Display getDisplay() {
+		return mDisplay;
+	}
+
+	public Scene getScene() {
+		return mScene;
+	}
+
+	public void setScene(Scene pScene) {
+		this.mScene = pScene;
+	}
+
+	public TMXTiledMap getTMXTiledMap() {
+		return mTMXTiledMap;
+	}
+
+	public void setTMXTiledMap(TMXTiledMap pTMXTiledMap) {
+		this.mTMXTiledMap = pTMXTiledMap;
+	}
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
+
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
+
 
 }
