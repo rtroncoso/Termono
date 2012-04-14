@@ -3,11 +3,17 @@ package com.superproyecto.game;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.PathModifier;
+import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
+import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
+import org.andengine.extension.tmx.TMXTile;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.font.Font;
@@ -15,8 +21,8 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
-import org.andengine.util.Constants;
 import org.andengine.util.debug.Debug;
+import org.andengine.util.modifier.ease.EaseLinear;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -117,12 +123,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHero.setPosition(new Point(centerX, centerY));
 		this.getDisplay().doFocusCamera(this.mHero, tmxLayer);
 		
-		float moveToXTile = this.mHero.getPosition().getX() + 32;
-		float moveToYTile = this.mHero.getPosition().getY() + 32;
-
-		final float[] pToTiles = this.mScene.convertLocalToSceneCoordinates(moveToXTile, moveToYTile);
-		//this.mHero.moveToTile(pToTiles[Constants.VERTEX_INDEX_X], pToTiles[Constants.VERTEX_INDEX_Y]);
-		this.mHero.moveToTile(383, 224);
+		//this.mHero.moveToTile(800, 243);
 		
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
 		

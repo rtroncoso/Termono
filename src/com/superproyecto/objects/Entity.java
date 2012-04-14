@@ -95,8 +95,7 @@ public class Entity {
 	}
 	
 	public Entity setPosition(Point pNewPos) {
-		this.mPosition = pNewPos;
-		this.mAnimatedSprite.setPosition(this.mPosition.getX(), this.mPosition.getY());
+		this.mAnimatedSprite.setPosition(pNewPos.getX(), pNewPos.getY());
 		return this;
 	}
 

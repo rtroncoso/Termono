@@ -1,8 +1,14 @@
 package com.superproyecto.display;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.extension.tmx.TMXLayer;
+import org.andengine.opengl.util.GLHelper;
+import org.andengine.opengl.util.GLState;
+
+import android.opengl.GLU;
 
 import com.superproyecto.objects.Entity;
 
@@ -27,9 +33,7 @@ public class Display {
 		this.mDisplayWidth = pDisplayWidth;
 		this.mDisplayHeight = pDisplayHeight;
 
-		this.mBoundChaseCamera = new BoundCamera(0, 0, this.mCameraWidth,
-				this.mCameraHeight);
-
+		this.mBoundChaseCamera = new BoundCamera(0, 0, this.mCameraWidth, this.mCameraHeight);
 		
 		this.mCamera = new Camera(0, 0, this.mCameraWidth, this.mCameraHeight);
 	}
