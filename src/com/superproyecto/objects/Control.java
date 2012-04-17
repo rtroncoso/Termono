@@ -1,4 +1,4 @@
-package com.superproyecto.display;
+package com.superproyecto.objects;
 
 import javax.microedition.khronos.opengles.GL10;
 

@@ -1,4 +1,4 @@
-package com.superproyecto.display;
+package com.superproyecto.display.hud;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.primitive.Rectangle;

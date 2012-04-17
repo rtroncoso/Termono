@@ -11,8 +11,8 @@ import org.andengine.util.Constants;
 import org.andengine.util.debug.Debug;
 import org.andengine.util.modifier.ease.EaseLinear;
 
-import com.superproyecto.display.Control;
 import com.superproyecto.game.Game;
+import com.superproyecto.objects.Control;
 import com.superproyecto.objects.Entity;
 
 

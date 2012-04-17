@@ -27,9 +27,9 @@ import org.andengine.util.modifier.ease.EaseLinear;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-import com.superproyecto.display.Control;
 import com.superproyecto.display.Display;
 import com.superproyecto.methods.Point;
+import com.superproyecto.objects.Control;
 import com.superproyecto.player.Player;
 
 public class Game extends SimpleBaseGameActivity {
