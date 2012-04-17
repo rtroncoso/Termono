@@ -27,6 +27,7 @@ import org.andengine.util.modifier.ease.EaseLinear;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
+import com.superproyecto.display.Control;
 import com.superproyecto.display.Display;
 import com.superproyecto.methods.Point;
 import com.superproyecto.player.Player;

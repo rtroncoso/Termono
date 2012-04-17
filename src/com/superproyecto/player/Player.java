@@ -6,36 +6,44 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
-import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.util.Constants;
 import org.andengine.util.debug.Debug;
 import org.andengine.util.modifier.ease.EaseLinear;
 
-import com.superproyecto.game.Control;
+import com.superproyecto.display.Control;
 import com.superproyecto.game.Game;
 import com.superproyecto.objects.Entity;
 
 
 public class Player extends Entity implements IOnScreenControlListener {
 
-	/*
-	 * PRIVATE FIELDS
-	 */
+
+	// ===========================================================
+	// Constants
+	// ===========================================================
+	
+	
+	// ===========================================================
+	// Fields
+	// ===========================================================
 	private final float mSpeedModifier = 300.0f;
 	private Control mControl;
 	private int mWaypointIndex;
 	private PathModifier mPathModifier;
 	private Path mPath;
 	
-	/*
-	 * CONSTRUCTORS
-	 */
+	// ===========================================================
+	// Constructors
+	// ===========================================================
 	public Player(Game pEngine) {
 		super(pEngine);
 		// TODO Auto-generated constructor stub
 	}
 
+	// ===========================================================
+	// Methods
+	// ===========================================================
 	public void moveToTile(float pToTileX, float pToTileY) {
 
 
@@ -43,7 +51,6 @@ public class Player extends Entity implements IOnScreenControlListener {
 		
 		// Creates a path to that tile
 		this.mPath = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX,pToTileY);
-								//.to(tmxTilePlayerTo.getTileColumn(), tmxTilePlayerTo.getTileRow());
 
 		this.mPathModifier = new PathModifier(0.25f, this.mPath, null, new IPathModifierListener() {
 			@Override
@@ -90,7 +97,9 @@ public class Player extends Entity implements IOnScreenControlListener {
 		this.mAnimatedSprite.registerEntityModifier(this.mPathModifier);
 	}
 
-	
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
 	@Override
 	public void onControlChange(BaseOnScreenControl pBaseOnScreenControl,
 			float pValueX, float pValueY) {
@@ -108,7 +117,11 @@ public class Player extends Entity implements IOnScreenControlListener {
 		this.moveToTile(pToTiles[Constants.VERTEX_INDEX_X], pToTiles[Constants.VERTEX_INDEX_Y]);
 
 	}
+
 	
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
 	public PathModifier getPathModifier() {
 		return mPathModifier;
 	}
@@ -116,5 +129,11 @@ public class Player extends Entity implements IOnScreenControlListener {
 	public void setPathModifier(PathModifier pPathModifier) {
 		this.mPathModifier = pPathModifier;
 	}
+
+
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
 	
+
 }
