@@ -3,7 +3,6 @@ package com.superproyecto.objects;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.entity.sprite.AnimatedSprite;
-import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
@@ -12,17 +11,19 @@ import com.superproyecto.game.Game;
 import com.superproyecto.methods.Point;
 
 public class Entity {
-
-	/*
-	 * PRIVATE FIELDS
-	 */
+	// ===========================================================
+	// Constants
+	// ===========================================================
+	
+	// ===========================================================
+	// Fields
+	// ===========================================================
 	private BitmapTextureAtlas mBitmapTextureAtlas;
 	private TiledTextureRegion mTiledTextureRegion;
 	private String mName;
 	
 	protected boolean isWalking;
 	protected Game mGame;
-	protected Point mPosition;
 	protected AnimatedSprite mAnimatedSprite;
 	protected static Path mPath;
 	protected PhysicsHandler mPhysicsHandler;
@@ -36,25 +37,17 @@ public class Entity {
 	}
 	private Direction mDirection = Direction.NONE;
 
-
-	/*
-	 * CONSTRUCTORS
-	 */
+	// ===========================================================
+	// Constructors
+	// ===========================================================
 	public Entity(Game pGame) {
 
 		this.mGame = pGame;
-		this.mAnimatedSprite = null;
-		this.mBitmapTextureAtlas = null;
-		this.mTiledTextureRegion = null;
-		this.mPosition = null;
 	}
-	public Entity(Game pEngine, String pName) {
-		this.mName = pName;
-	}
-	
-	/*
-	 * METHODS
-	 */
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
 	public Entity loadTexture(String pPath, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 
 		// Set base path for Textures
@@ -79,9 +72,9 @@ public class Entity {
 				pFramePosY, 1, 1);
 	}
 
-	/*
-	 * GETTERS/SETTERS
-	 */
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
 	public BitmapTextureAtlas getBitmapTextureAtlas() {
 		return this.mBitmapTextureAtlas;
 	}
@@ -125,4 +118,11 @@ public class Entity {
 		return this;
 	}
 
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
 }

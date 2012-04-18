@@ -3,17 +3,11 @@ package com.superproyecto.game;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.PathModifier;
-import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
-import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
-import org.andengine.extension.tmx.TMXTile;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.font.Font;
@@ -22,14 +16,13 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.debug.Debug;
-import org.andengine.util.modifier.ease.EaseLinear;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.superproyecto.display.Display;
+import com.superproyecto.display.hud.ControlsHud;
 import com.superproyecto.methods.Point;
-import com.superproyecto.objects.Control;
 import com.superproyecto.player.Player;
 
 public class Game extends SimpleBaseGameActivity {
@@ -46,6 +39,7 @@ public class Game extends SimpleBaseGameActivity {
 	private Scene mScene;
 	private Player mHero;
 	private TMXTiledMap mTMXTiledMap;
+	private ControlsHud mControlsHud;
 	
 	
 	////////
@@ -137,9 +131,9 @@ public class Game extends SimpleBaseGameActivity {
 		/*
 		 * LAYER 3 - CONTROLS
 		 */
-		Control digitalControl = new Control(this, this.mHero);
-		this.mScene.setChildScene(digitalControl.getDigitalOnScreenControl());
-		this.mScene.attachChild(digitalControl.getDigitalOnScreenControl());
+		this.mControlsHud = new ControlsHud(this, this.mHero);
+		//this.mScene.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
+		this.mScene.attachChild(this.mControlsHud.getDigitalOnScreenControl());
 		
 		return this.mScene;
 	}

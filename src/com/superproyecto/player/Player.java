@@ -12,7 +12,6 @@ import org.andengine.util.debug.Debug;
 import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.superproyecto.game.Game;
-import com.superproyecto.objects.Control;
 import com.superproyecto.objects.Entity;
 
 
@@ -22,13 +21,11 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	
+	private final float mSpeedModifier = 30.0f;
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private final float mSpeedModifier = 300.0f;
-	private Control mControl;
 	private int mWaypointIndex;
 	private PathModifier mPathModifier;
 	private Path mPath;
@@ -46,13 +43,12 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	public void moveToTile(float pToTileX, float pToTileY) {
 
-
 		this.mAnimatedSprite.unregisterEntityModifier(this.mPathModifier);
 		
 		// Creates a path to that tile
 		this.mPath = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX,pToTileY);
 
-		this.mPathModifier = new PathModifier(0.25f, this.mPath, null, new IPathModifierListener() {
+		this.mPathModifier = new PathModifier((1.0f / mSpeedModifier), this.mPath, null, new IPathModifierListener() {
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
 				Player.this.isWalking = true;

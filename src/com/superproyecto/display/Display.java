@@ -1,32 +1,27 @@
 package com.superproyecto.display;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.scene.Scene;
 import org.andengine.extension.tmx.TMXLayer;
-import org.andengine.opengl.util.GLHelper;
-import org.andengine.opengl.util.GLState;
-
-import android.opengl.GLU;
 
 import com.superproyecto.objects.Entity;
 
 public class Display {
-
-	/*
-	 * PRIVATE FIELDS
-	 */
+	
+	// ===========================================================
+	// Fields
+	// ===========================================================
 	private Camera mCamera;
 	private BoundCamera mBoundChaseCamera;
 	private int mCameraWidth;
 	private int mCameraHeight;
 	private int mDisplayWidth;
 	private int mDisplayHeight;
-
-	/*
-	 * CONSTRUCTORS
-	 */
+	
+	// ===========================================================
+	// Constructors
+	// ===========================================================
 	public Display(int pCameraWidth, int pCameraHeight, int pDisplayWidth, int pDisplayHeight) {
 		this.mCameraWidth = pCameraWidth;
 		this.mCameraHeight = pCameraHeight;
@@ -42,19 +37,19 @@ public class Display {
 		this(pDisplayWidth, pDisplayHeight, pDisplayWidth, pDisplayHeight);
 	}
 	
-	/*
-	 * METHODS
-	 */
+	// ===========================================================
+	// Methods
+	// ===========================================================
 	public void doFocusCamera(Entity pEntity, TMXLayer pTMXLayer) {
 
 		this.mBoundChaseCamera.setBounds(0, pTMXLayer.getWidth(), 0, pTMXLayer.getHeight());
 		this.mBoundChaseCamera.setBoundsEnabled(true);
 		this.mCamera.setChaseEntity(pEntity.getAnimatedSprite());
 	}
-	
-	/*
-	 * GETTERS/SETTERS
-	 */
+
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
 	public Camera getCamera() {
 		return this.mCamera;
 	}
@@ -98,4 +93,19 @@ public class Display {
 		// TODO Auto-generated method stub
 		this.mDisplayHeight = pDisplayHeight;
 	}
+	
+	// ===========================================================
+	// Constants
+	// ===========================================================
+	
+	
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
+
+
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+	
 }
