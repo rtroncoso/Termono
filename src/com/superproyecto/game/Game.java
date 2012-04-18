@@ -1,27 +1,23 @@
 package com.superproyecto.game;
 
+import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.text.Text;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
-import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.debug.Debug;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
-
 import com.superproyecto.display.Display;
 import com.superproyecto.display.hud.ControlsHud;
+import com.superproyecto.display.hud.SpellbarHud;
+import com.superproyecto.display.hud.StatsHud;
 import com.superproyecto.methods.Point;
 import com.superproyecto.player.Player;
 
@@ -29,8 +25,8 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static int CAMERA_WIDTH = 480;
-	private static int CAMERA_HEIGHT = 320;
+	private static int CAMERA_WIDTH = 720;
+	private static int CAMERA_HEIGHT = 480;
 
 	// ===========================================================
 	// Fields
@@ -40,11 +36,12 @@ public class Game extends SimpleBaseGameActivity {
 	private Player mHero;
 	private TMXTiledMap mTMXTiledMap;
 	private ControlsHud mControlsHud;
+	private SpellbarHud mSpellbarHud;
+	private StatsHud mStatsHud;
+	private HUD mHud;
 	
 	
 	////////
-	private BitmapTextureAtlas mFontTexture;
-	private Font mFont;
 	///////
 
 	// ===========================================================
@@ -58,7 +55,7 @@ public class Game extends SimpleBaseGameActivity {
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
 		// Init Objects
-		this.mDisplay = new Display(getWindowManager().getDefaultDisplay().getWidth(),
+		this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
 				getWindowManager().getDefaultDisplay().getHeight());
 
 		// Return the Engine
@@ -73,15 +70,6 @@ public class Game extends SimpleBaseGameActivity {
 	protected void onCreateResources() {
 		// TODO Auto-generated method stub
 
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		///////
-		this.mFontTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 256);
-		
-		this.mFont = new Font(this.getFontManager(), this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48, true, Color.BLACK);
-		
-		this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
-		this.mEngine.getFontManager().loadFont(this.mFont);
-		//////
 	}
 
 	@Override
@@ -91,7 +79,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mScene = new Scene();
 
 		/*
-		 * LAYER 0 - FLOORS
+		 * LAYER - MAP
 		 */
 		try {
 			final TMXLoader tmxLoader = new TMXLoader(this.getAssets(),
@@ -106,7 +94,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mScene.attachChild(tmxLayer);
 
 		/*
-		 * LAYER 1 - ENTITIES
+		 * LAYER - ENTITIES
 		 */
 		// Create the Player
 		this.mHero = new Player(this);
@@ -118,22 +106,24 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHero.setPosition(new Point(centerX, centerY));
 		this.getDisplay().doFocusCamera(this.mHero, tmxLayer);
 		
-		//this.mHero.moveToTile(800, 243);
-		
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
 		
-		///////////
-		final Text elapsedText = new Text(100, 160, this.mFont, "Termono", "Tuvieja".length(), this.getVertexBufferObjectManager());
-		this.mScene.attachChild(elapsedText);
- 		///////////
-
-		
 		/*
-		 * LAYER 3 - CONTROLS
+		 * LAYER - HUDs
 		 */
+		
+		this.mHud = new HUD();
+		
+		this.mStatsHud = new StatsHud(this);
+		this.mSpellbarHud = new SpellbarHud(this);
 		this.mControlsHud = new ControlsHud(this, this.mHero);
-		//this.mScene.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
-		this.mScene.attachChild(this.mControlsHud.getDigitalOnScreenControl());
+		
+		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
+		this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
+		this.mHud.attachChild(this.mStatsHud.getTermono());
+		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
+		
+		this.mDisplay.getCamera().setHUD(this.mHud);
 		
 		return this.mScene;
 	}
@@ -163,6 +153,14 @@ public class Game extends SimpleBaseGameActivity {
 
 	public void setTMXTiledMap(TMXTiledMap pTMXTiledMap) {
 		this.mTMXTiledMap = pTMXTiledMap;
+	}
+
+	public ControlsHud getControlsHud() {
+		return mControlsHud;
+	}
+
+	public void setControlsHud(ControlsHud pControlsHud) {
+		this.mControlsHud = pControlsHud;
 	}
 
 	// ===========================================================

@@ -21,7 +21,7 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private final float mSpeedModifier = 30.0f;
+	private final float mSpeedModifier = 7.0f;
 	
 	// ===========================================================
 	// Fields

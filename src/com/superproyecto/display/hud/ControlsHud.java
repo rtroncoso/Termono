@@ -64,8 +64,8 @@ public class ControlsHud extends HUD {
 		this.mDigitalOnScreenControl.getControlBase().setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		this.mDigitalOnScreenControl.getControlBase().setAlpha(0.3f);
 		this.mDigitalOnScreenControl.getControlBase().setScaleCenter(0, 128);
-		this.mDigitalOnScreenControl.getControlBase().setScale(1.0f);
-		this.mDigitalOnScreenControl.getControlKnob().setScale(1.0f);
+		this.mDigitalOnScreenControl.getControlBase().setScale(0.8f);
+		this.mDigitalOnScreenControl.getControlKnob().setScale(0.8f);
 		this.mDigitalOnScreenControl.refreshControlKnobPosition();
 	}
 
