@@ -12,9 +12,12 @@ import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
+import org.andengine.input.touch.controller.MultiTouch;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.debug.Debug;
+
+import android.widget.Toast;
 
 import com.superproyecto.display.Display;
 import com.superproyecto.display.hud.ControlsHud;
@@ -26,8 +29,8 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static int CAMERA_WIDTH = 800;
-	private static int CAMERA_HEIGHT = 480;
+	private static int CAMERA_WIDTH = 600;
+	private static int CAMERA_HEIGHT = 360;
 
 	// ===========================================================
 	// Fields
@@ -51,12 +54,26 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
+		
 		// Init Objects
 		this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
 				getWindowManager().getDefaultDisplay().getHeight());
+		
+		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mDisplay.getCamera());;
+		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
 
-		// Return the Engine
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mDisplay.getCamera());
+		if(MultiTouch.isSupported(this)) {
+			if(MultiTouch.isSupportedDistinct(this)) {
+				Toast.makeText(this, "MultiTouch detected --> Both controls will work properly!", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(this, "MultiTouch detected, but your device has problems distinguishing between fingers.\n\nControls are placed at different vertical locations.", Toast.LENGTH_LONG).show();
+			}
+		} else {
+			Toast.makeText(this, "Sorry your device does NOT support MultiTouch!\n\n(Falling back to SingleTouch.)\n\nControls are placed at different vertical locations.", Toast.LENGTH_LONG).show();
+		}
+		
+		// Return the Engine Options
+		return engineOptions;
 	}
 	
 	@Override
@@ -103,19 +120,20 @@ public class Game extends SimpleBaseGameActivity {
 		this.getDisplay().getCamera().setCenter(centerX, centerY);
 		this.getDisplay().doFocusCamera(this.mHero, tmxLayer);
 		
+		// Attach it
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
 		
 		/*
 		 * LAYER - HUDs
 		 */
-		
 		this.mHud = new HUD();
 		
 		this.mStatsHud = new StatsHud(this);
-		this.mSpellbarHud = new SpellbarHud(this);
+		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
 		this.mControlsHud = new ControlsHud(this, this.mHero);
 		
 		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
+		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
 		this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
 		this.mHud.attachChild(this.mStatsHud.getTermono());
 		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());

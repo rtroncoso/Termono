@@ -3,7 +3,6 @@ package com.superproyecto.player;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
@@ -19,14 +18,15 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private final float SPEED_MODIFIER = 3.0f;
+	private final float SPEED_MODIFIER = 6.6f;
 	private final float TILE_WIDTH = 32;
 	private final float TILE_HEIGHT = 32;
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private MoveModifier mMoveModifier;
+	private PathModifier mPathModifier;
+	private Path mPath;
 	
 	// ===========================================================
 	// Constructors
@@ -41,9 +41,9 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	public void moveToTile(final float pToTileX, final float pToTileY, float pSpeed) {
 		
-		final Path pathToNextTile = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX, pToTileY);
+		this.mPath = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX, pToTileY);
 		
-		final PathModifier pm = new PathModifier(0.15f, pathToNextTile, new IPathModifierListener() {
+		this.mPathModifier = new PathModifier(pSpeed / SPEED_MODIFIER, this.mPath, new IPathModifierListener() {
 
 			@Override
 			public void onPathStarted(PathModifier pPathModifier,
@@ -91,7 +91,7 @@ public class Player extends Entity implements IOnScreenControlListener {
 			}	
 		}, EaseLinear.getInstance());
 		
-		this.mAnimatedSprite.registerEntityModifier(pm);
+		this.mAnimatedSprite.registerEntityModifier(this.mPathModifier);
 	}
 
 	// ===========================================================
