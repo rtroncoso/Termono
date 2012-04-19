@@ -17,7 +17,7 @@ public class SpellbarHud extends HUD{
 		// ===========================================================
 		// Constants
 		// ===========================================================
-		private final int CANT_SPELLS = 5;
+		private final int CANT_SPELLS = 8;
 		private final Sprite[] mSpells = new Sprite[CANT_SPELLS];
 		
 		// ===========================================================
@@ -48,8 +48,9 @@ public class SpellbarHud extends HUD{
 			
 			for(int i = 0; i < this.mSpells.length; i++) {
 				float posX = 150.0f;//;this.mGame.getControlsHud().getDigitalOnScreenControl().getControlBase().getWidth();
-				this.mSpells[i] = new Sprite(posX + (45.0f * i), this.mGame.getDisplay().getCameraHeight() - 50, this.mSpellTextureRegion, this.mGame.getVertexBufferObjectManager());
+				this.mSpells[i] = new Sprite(posX + (60 * i), this.mGame.getDisplay().getCameraHeight() - 50, this.mSpellTextureRegion, this.mGame.getVertexBufferObjectManager());
 				this.mSpells[i].setAlpha(0.6f);
+				this.mSpells[i].setScale(2.0f);
 			}
 			
 			this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, this.mGame.getVertexBufferObjectManager()) {

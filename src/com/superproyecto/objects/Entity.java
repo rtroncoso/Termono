@@ -1,7 +1,5 @@
 package com.superproyecto.objects;
 
-import org.andengine.engine.handler.physics.PhysicsHandler;
-import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -20,23 +18,10 @@ public class Entity {
 	// ===========================================================
 	private BitmapTextureAtlas mBitmapTextureAtlas;
 	private TiledTextureRegion mTiledTextureRegion;
-	private String mName;
 	
 	protected boolean isWalking;
-	protected boolean isAnimating;
 	protected Game mGame;
 	protected AnimatedSprite mAnimatedSprite;
-	protected static Path mPath;
-	protected PhysicsHandler mPhysicsHandler;
-	
-	private enum Direction{
-        NONE,
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
-	}
-	private Direction mDirection = Direction.NONE;
 
 	// ===========================================================
 	// Constructors
@@ -99,24 +84,6 @@ public class Entity {
 
 	public void setAnimatedSprite(AnimatedSprite pAnimatedSprite) {
 		this.mAnimatedSprite = pAnimatedSprite;
-	}
-	
-	public Direction getDirection() {
-		return this.mDirection;
-	}
-	
-	public Entity setDirection(Direction pDirection) {
-		this.mDirection = pDirection;
-		return this;
-	}
-	
-	public String getName() {
-		return this.mName;
-	}
-	
-	public Entity setName(String pName) {
-		this.mName = pName;
-		return this;
 	}
 
 	// ===========================================================

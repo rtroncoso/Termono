@@ -1,7 +1,6 @@
 package com.superproyecto.display.hud;
 
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -22,7 +21,6 @@ public class StatsHud extends HUD {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Rectangle mHPBar;
 	private Game mGame;
 	private BitmapTextureAtlas mFontTexture;
 	private Font mFont;

@@ -49,7 +49,7 @@ public class ControlsHud extends HUD {
 		this.mDigitalOnScreenControl = new DigitalOnScreenControl(0, this.mGame.getDisplay().getCameraHeight() - this.mOnScreenControlBaseTextureRegion.getHeight(),
 				this.mGame.getDisplay().getCamera(),
 				this.mOnScreenControlBaseTextureRegion,
-				this.mOnScreenControlKnobTextureRegion, 0.1f,
+				this.mOnScreenControlKnobTextureRegion, 0.01f,
 				this.mGame.getVertexBufferObjectManager(),
 				new IOnScreenControlListener() {
 			

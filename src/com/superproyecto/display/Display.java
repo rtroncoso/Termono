@@ -2,7 +2,6 @@ package com.superproyecto.display;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.scene.Scene;
 import org.andengine.extension.tmx.TMXLayer;
 
 import com.superproyecto.objects.Entity;
@@ -31,8 +30,9 @@ public class Display {
 		this.mBoundChaseCamera = new BoundCamera(0, 0, this.mCameraWidth, this.mCameraHeight) { 
 			@Override
 			public void setCenter(float pCenterX, float pCenterY) {
-			        super.setCenter((int)pCenterX, (int)pCenterY);
+				super.setCenter((int)pCenterX, (int)pCenterY);
 			}
+			
 		};
 		
 		this.mCamera = new Camera(0, 0, this.mCameraWidth, this.mCameraHeight);
@@ -47,9 +47,9 @@ public class Display {
 	// ===========================================================
 	public void doFocusCamera(Entity pEntity, TMXLayer pTMXLayer) {
 
+		this.mCamera.setChaseEntity(pEntity.getAnimatedSprite());
 		this.mBoundChaseCamera.setBounds(0, pTMXLayer.getWidth(), 0, pTMXLayer.getHeight());
 		this.mBoundChaseCamera.setBoundsEnabled(true);
-		this.mCamera.setChaseEntity(pEntity.getAnimatedSprite());
 	}
 
 	// ===========================================================

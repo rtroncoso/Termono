@@ -3,14 +3,11 @@ package com.superproyecto.player;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.PathModifier;
+import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
-import org.andengine.extension.tmx.TMXTile;
-import org.andengine.util.Constants;
-import org.andengine.util.debug.Debug;
-import org.andengine.util.modifier.IModifier;
+import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.superproyecto.game.Game;
 import com.superproyecto.objects.Entity;
@@ -22,17 +19,14 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private final float SPEED_MODIFIER = 6.0f;
-	private final float TILE_WIDTH = 32.0f;
-	private final float TILE_HEIGHT = 32.0f;
+	private final float SPEED_MODIFIER = 3.0f;
+	private final float TILE_WIDTH = 32;
+	private final float TILE_HEIGHT = 32;
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private int mWaypointIndex;
-	private PathModifier mPathModifier;
 	private MoveModifier mMoveModifier;
-	private Path mPath;
 	
 	// ===========================================================
 	// Constructors
@@ -46,42 +40,58 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// Methods
 	// ===========================================================
 	public void moveToTile(final float pToTileX, final float pToTileY, float pSpeed) {
+		
+		final Path pathToNextTile = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX, pToTileY);
+		
+		final PathModifier pm = new PathModifier(0.15f, pathToNextTile, new IPathModifierListener() {
 
-		this.mAnimatedSprite.unregisterEntityModifier(this.mMoveModifier);
-		
-		
-		this.mMoveModifier = new MoveModifier((pSpeed / SPEED_MODIFIER), this.mAnimatedSprite.getX(), pToTileX, this.mAnimatedSprite.getY(), pToTileY, new IEntityModifierListener() {
-			
 			@Override
-			public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
+			public void onPathStarted(PathModifier pPathModifier,
+					IEntity pEntity) {
 				// TODO Auto-generated method stub
 				Player.this.isWalking = true;
 
-				// DERECHA
+				// RIGHT
 				if(Player.this.mAnimatedSprite.getX() - pToTileX < 0) 
 					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 6, 8, false);
-				// IZQUIERDA
+				// LEFT
 				if(Player.this.mAnimatedSprite.getX() - pToTileX > 0) 
 					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 3, 5, false);
-				// ABAJO
+				// DOWN
 				if(Player.this.mAnimatedSprite.getY() - pToTileY < 0) 
 					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 0, 2, false);
-				// ARRIBA
+				// UP
 				if(Player.this.mAnimatedSprite.getY() - pToTileY > 0) 
 					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 9, 11, false);
 				
 			}
-			
+
 			@Override
-			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+			public void onPathWaypointStarted(PathModifier pPathModifier,
+					IEntity pEntity, int pWaypointIndex) {
 				// TODO Auto-generated method stub
-				Player.this.isWalking = false;
-				Player.this.mAnimatedSprite.stopAnimation();
 				
 			}
-		});
+
+			@Override
+			public void onPathWaypointFinished(PathModifier pPathModifier,
+					IEntity pEntity, int pWaypointIndex) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPathFinished(PathModifier pPathModifier,
+					IEntity pEntity) {
+				// TODO Auto-generated method stub
+				
+				Player.this.isWalking = false;
+				//Player.this.mAnimatedSprite.stopAnimation();
+				
+			}	
+		}, EaseLinear.getInstance());
 		
-		this.mAnimatedSprite.registerEntityModifier(this.mMoveModifier);
+		this.mAnimatedSprite.registerEntityModifier(pm);
 	}
 
 	// ===========================================================
@@ -90,18 +100,16 @@ public class Player extends Entity implements IOnScreenControlListener {
 	@Override
 	public void onControlChange(BaseOnScreenControl pBaseOnScreenControl,
 			float pValueX, float pValueY) {
+
 		if(pValueX != 0.0f || pValueY != 0.0f) {
 			if(!this.isWalking) {
 				// Gets the new Tile
 				float moveToXTile = this.mAnimatedSprite.getX() + (TILE_WIDTH * pValueX);
 				float moveToYTile = this.mAnimatedSprite.getY() + (TILE_HEIGHT * pValueY);
 				
-				final float[] pToTiles = this.mGame.getScene().convertLocalToSceneCoordinates(moveToXTile, moveToYTile);
-				
 				// Moves to it
-				this.moveToTile(pToTiles[Constants.VERTEX_INDEX_X], pToTiles[Constants.VERTEX_INDEX_Y], 1.0f);
+				this.moveToTile(moveToXTile, moveToYTile, 1.0f);
 			}
-
 		}
 	}
 
@@ -109,14 +117,6 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public PathModifier getPathModifier() {
-		return mPathModifier;
-	}
-
-	public void setPathModifier(PathModifier pPathModifier) {
-		this.mPathModifier = pPathModifier;
-	}
-
 
 	// ===========================================================
 	// Inner and Anonymous Classes
