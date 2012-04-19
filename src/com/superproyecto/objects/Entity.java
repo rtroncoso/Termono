@@ -23,6 +23,7 @@ public class Entity {
 	private String mName;
 	
 	protected boolean isWalking;
+	protected boolean isAnimating;
 	protected Game mGame;
 	protected AnimatedSprite mAnimatedSprite;
 	protected static Path mPath;

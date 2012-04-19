@@ -28,7 +28,12 @@ public class Display {
 		this.mDisplayWidth = pDisplayWidth;
 		this.mDisplayHeight = pDisplayHeight;
 
-		this.mBoundChaseCamera = new BoundCamera(0, 0, this.mCameraWidth, this.mCameraHeight);
+		this.mBoundChaseCamera = new BoundCamera(0, 0, this.mCameraWidth, this.mCameraHeight) { 
+			@Override
+			public void setCenter(float pCenterX, float pCenterY) {
+			        super.setCenter((int)pCenterX, (int)pCenterY);
+			}
+		};
 		
 		this.mCamera = new Camera(0, 0, this.mCameraWidth, this.mCameraHeight);
 	}

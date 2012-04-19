@@ -3,13 +3,14 @@ package com.superproyecto.player;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.PathModifier;
-import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.util.Constants;
 import org.andengine.util.debug.Debug;
-import org.andengine.util.modifier.ease.EaseLinear;
+import org.andengine.util.modifier.IModifier;
 
 import com.superproyecto.game.Game;
 import com.superproyecto.objects.Entity;
@@ -21,13 +22,16 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private final float mSpeedModifier = 7.0f;
+	private final float SPEED_MODIFIER = 6.0f;
+	private final float TILE_WIDTH = 32.0f;
+	private final float TILE_HEIGHT = 32.0f;
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
 	private int mWaypointIndex;
 	private PathModifier mPathModifier;
+	private MoveModifier mMoveModifier;
 	private Path mPath;
 	
 	// ===========================================================
@@ -41,56 +45,43 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void moveToTile(float pToTileX, float pToTileY) {
+	public void moveToTile(final float pToTileX, final float pToTileY, float pSpeed) {
 
-		this.mAnimatedSprite.unregisterEntityModifier(this.mPathModifier);
+		this.mAnimatedSprite.unregisterEntityModifier(this.mMoveModifier);
 		
-		// Creates a path to that tile
-		this.mPath = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX,pToTileY);
-
-		this.mPathModifier = new PathModifier((1.0f / mSpeedModifier), this.mPath, null, new IPathModifierListener() {
+		
+		this.mMoveModifier = new MoveModifier((pSpeed / SPEED_MODIFIER), this.mAnimatedSprite.getX(), pToTileX, this.mAnimatedSprite.getY(), pToTileY, new IEntityModifierListener() {
+			
 			@Override
-			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
+			public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
+				// TODO Auto-generated method stub
 				Player.this.isWalking = true;
-				Debug.d("onPathStarted");
-			}
-	
-			@Override
-			public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
-				Debug.d("onPathWaypointStarted: " + pWaypointIndex);
-				Player.this.mWaypointIndex = pWaypointIndex;
-				switch(pWaypointIndex) {
-				case 0:
-					Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 6, 8, true);
-					break;
-				case 1:
-					Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 3, 5, true);
-					break;
-				case 2:
-					Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 0, 2, true);
-					break;
-				case 3:
-					Player.this.mAnimatedSprite.animate(new long[]{200, 200, 200}, 9, 11, true);
-					break;
-				}
-			}
-	
-			@Override
-			public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
-				Debug.d("onPathWaypointFinished: " + pWaypointIndex);
-				Player.this.isWalking = false;
-			}
-	
-			@Override
-			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
-				Player.this.isWalking = false;
-				//Player.this.mAnimatedSprite.stopAnimation();
-				Player.this.mPath = null;
-				Debug.d("onPathFinished");
-			}
-		}, EaseLinear.getInstance());
 
-		this.mAnimatedSprite.registerEntityModifier(this.mPathModifier);
+				// DERECHA
+				if(Player.this.mAnimatedSprite.getX() - pToTileX < 0) 
+					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 6, 8, false);
+				// IZQUIERDA
+				if(Player.this.mAnimatedSprite.getX() - pToTileX > 0) 
+					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 3, 5, false);
+				// ABAJO
+				if(Player.this.mAnimatedSprite.getY() - pToTileY < 0) 
+					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 0, 2, false);
+				// ARRIBA
+				if(Player.this.mAnimatedSprite.getY() - pToTileY > 0) 
+					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 9, 11, false);
+				
+			}
+			
+			@Override
+			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+				// TODO Auto-generated method stub
+				Player.this.isWalking = false;
+				Player.this.mAnimatedSprite.stopAnimation();
+				
+			}
+		});
+		
+		this.mAnimatedSprite.registerEntityModifier(this.mMoveModifier);
 	}
 
 	// ===========================================================
@@ -99,19 +90,19 @@ public class Player extends Entity implements IOnScreenControlListener {
 	@Override
 	public void onControlChange(BaseOnScreenControl pBaseOnScreenControl,
 			float pValueX, float pValueY) {
-		if(pValueX == 0.0f && pValueY == 0.0f) return;
-		if(this.mPath != null);
-		
-		float moveToXTile = this.mAnimatedSprite.getX() + (32 * pValueX);
-		float moveToYTile = this.mAnimatedSprite.getY() + (32 * pValueY);
-		
-		final float[] pToTiles = this.mGame.getScene().convertLocalToSceneCoordinates(moveToXTile, moveToYTile);
+		if(pValueX != 0.0f || pValueY != 0.0f) {
+			if(!this.isWalking) {
+				// Gets the new Tile
+				float moveToXTile = this.mAnimatedSprite.getX() + (TILE_WIDTH * pValueX);
+				float moveToYTile = this.mAnimatedSprite.getY() + (TILE_HEIGHT * pValueY);
+				
+				final float[] pToTiles = this.mGame.getScene().convertLocalToSceneCoordinates(moveToXTile, moveToYTile);
+				
+				// Moves to it
+				this.moveToTile(pToTiles[Constants.VERTEX_INDEX_X], pToTiles[Constants.VERTEX_INDEX_Y], 1.0f);
+			}
 
-		// Gets where to go
-		TMXTile tmxTilePlayerTo = this.mGame.getTMXTiledMap().getTMXLayers().get(0).getTMXTileAt(pToTiles[Constants.VERTEX_INDEX_X], pToTiles[Constants.VERTEX_INDEX_Y]);
-		
-		this.moveToTile(pToTiles[Constants.VERTEX_INDEX_X], pToTiles[Constants.VERTEX_INDEX_Y]);
-
+		}
 	}
 
 	
