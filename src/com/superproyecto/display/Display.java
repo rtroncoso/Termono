@@ -2,7 +2,7 @@ package com.superproyecto.display;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
-import org.andengine.extension.tmx.TMXLayer;
+import org.andengine.engine.camera.SmoothCamera;
 
 import com.superproyecto.objects.Entity;
 
@@ -11,7 +11,7 @@ public class Display {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Camera mCamera;
+	private SmoothCamera mCamera;
 	private BoundCamera mBoundChaseCamera;
 	private int mCameraWidth;
 	private int mCameraHeight;
@@ -35,7 +35,8 @@ public class Display {
 			
 		};
 		
-		this.mCamera = new Camera(0, 0, this.mCameraWidth, this.mCameraHeight);
+		this.mCamera = new SmoothCamera(0, 0, this.mCameraWidth, this.mCameraHeight, 170, 170, 1.7f);
+		this.mCamera.setZoomFactor(1.7f);
 	}
 	
 	public Display(int pDisplayWidth, int pDisplayHeight) {
@@ -45,19 +46,19 @@ public class Display {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void doFocusCamera(Entity pEntity, TMXLayer pTMXLayer) {
+	public void doFocusCamera(Entity pEntity) {
 
 		this.mCamera.setChaseEntity(pEntity.getAnimatedSprite());
-		this.mBoundChaseCamera.setBounds(0, pTMXLayer.getWidth(), 0, pTMXLayer.getHeight());
+	}
+	
+	public void setMapBounds(int pWidth, int pHeight) {
+		this.mBoundChaseCamera.setBounds(0, pWidth, 0, pHeight);
 		this.mBoundChaseCamera.setBoundsEnabled(true);
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public Camera getCamera() {
-		return this.mCamera;
-	}
 
 	public int getCameraWidth() {
 		return this.mCameraWidth;
@@ -74,8 +75,12 @@ public class Display {
 	public int getDisplayHeight() {
 		return this.mDisplayHeight;
 	}
+	
+	public SmoothCamera getCamera() {
+		return this.mCamera;
+	}
 
-	public void setCamera(Camera pCamera) {
+	public void setCamera(SmoothCamera pCamera) {
 		this.mCamera = pCamera;
 	}
 

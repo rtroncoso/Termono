@@ -6,12 +6,14 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.controller.MultiTouch;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
@@ -29,8 +31,8 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static int CAMERA_WIDTH = 600;
-	private static int CAMERA_HEIGHT = 360;
+	private static int CAMERA_WIDTH = 800;
+	private static int CAMERA_HEIGHT = 480;
 
 	// ===========================================================
 	// Fields
@@ -43,6 +45,7 @@ public class Game extends SimpleBaseGameActivity {
 	private SpellbarHud mSpellbarHud;
 	private StatsHud mStatsHud;
 	private HUD mHud;
+	private boolean pZoomedIn;
 
 	// ===========================================================
 	// Constructors
@@ -61,16 +64,6 @@ public class Game extends SimpleBaseGameActivity {
 		
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mDisplay.getCamera());;
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
-
-		if(MultiTouch.isSupported(this)) {
-			if(MultiTouch.isSupportedDistinct(this)) {
-				Toast.makeText(this, "MultiTouch detected --> Both controls will work properly!", Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(this, "MultiTouch detected, but your device has problems distinguishing between fingers.\n\nControls are placed at different vertical locations.", Toast.LENGTH_LONG).show();
-			}
-		} else {
-			Toast.makeText(this, "Sorry your device does NOT support MultiTouch!\n\n(Falling back to SingleTouch.)\n\nControls are placed at different vertical locations.", Toast.LENGTH_LONG).show();
-		}
 		
 		// Return the Engine Options
 		return engineOptions;
@@ -112,13 +105,11 @@ public class Game extends SimpleBaseGameActivity {
 		 */
 		// Create the Player
 		this.mHero = new Player(this);
-		this.mHero.loadTexture("1.png", 128, 128, 0, 0, 3, 4);
+		this.mHero.loadTexture("Mage.png", 128, 256, 0, 0, 4, 4);
 
 		// Center the Player in the Screen
-		final float centerX = (this.mDisplay.getCameraWidth() - this.mHero.getTiledTextureRegion().getWidth()) / 2;
-		final float centerY = (this.mDisplay.getCameraHeight() - this.mHero.getTiledTextureRegion().getHeight()) / 2;
-		this.getDisplay().getCamera().setCenter(centerX, centerY);
-		this.getDisplay().doFocusCamera(this.mHero, tmxLayer);
+		this.mHero.getAnimatedSprite().setPosition(0, 0 - (this.mHero.getTiledTextureRegion().getHeight() - 32));
+		this.getDisplay().doFocusCamera(this.mHero);
 		
 		// Attach it
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
@@ -139,6 +130,16 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
 		
 		this.mDisplay.getCamera().setHUD(this.mHud);
+		
+		this.mScene.setOnSceneTouchListener(new IOnSceneTouchListener() {
+			@Override
+			public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+				if(Game.this.mDisplay.getCamera().getZoomFactor() == 1.7f) { pZoomedIn = true; } 
+				else if(Game.this.mDisplay.getCamera().getZoomFactor() == 1.0f) { pZoomedIn = false; }
+				Game.this.mDisplay.getCamera().setZoomFactor((pZoomedIn) ? 1.0f : 1.7f);
+				return true;
+			}
+		});
 		
 		return this.mScene;
 	}

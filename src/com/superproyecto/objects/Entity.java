@@ -1,6 +1,7 @@
 package com.superproyecto.objects;
 
 import org.andengine.entity.sprite.AnimatedSprite;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
@@ -44,10 +45,17 @@ public class Entity {
 		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBitmapTextureAtlas, this.mGame.getApplicationContext(), pPath, pFramePosX, pFramePosY, pCols, pRows);
 
 		// Load Texture into memory and on the screen
-		this.mGame.getTextureManager().loadTexture(this.mBitmapTextureAtlas);
+		this.mBitmapTextureAtlas.load();
 
 		// Create the sprite and add it to the scene.
-		this.mAnimatedSprite = new AnimatedSprite(0, 0, this.mTiledTextureRegion, this.mGame.getVertexBufferObjectManager());
+		this.mAnimatedSprite = new AnimatedSprite(0, 0, this.mTiledTextureRegion, this.mGame.getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				// TODO Auto-generated method stub
+				return Entity.this.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+			}
+		};
 
 		return this;
 	}
@@ -56,6 +64,12 @@ public class Entity {
 
 		return this.loadTexture(pPath, pFrameWidth, pFrameHeight, pFramePosX,
 				pFramePosY, 1, 1);
+	}
+	
+	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+			float pTouchAreaLocalX, float pTouchAreaLocalY) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 	// ===========================================================

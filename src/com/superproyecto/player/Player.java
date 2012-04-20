@@ -18,7 +18,7 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private final float SPEED_MODIFIER = 6.6f;
+	private final float SPEED_MODIFIER = 5.0f;
 	private final float TILE_WIDTH = 32;
 	private final float TILE_HEIGHT = 32;
 	
@@ -33,13 +33,14 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	public Player(Game pEngine) {
 		super(pEngine);
+		
 		// TODO Auto-generated constructor stub
 	}
 
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void moveToTile(final float pToTileX, final float pToTileY, float pSpeed) {
+	public void moveToTile(final float pToTileX, final float pToTileY, final float pSpeed) {
 		
 		this.mPath = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX, pToTileY);
 		
@@ -50,19 +51,22 @@ public class Player extends Entity implements IOnScreenControlListener {
 					IEntity pEntity) {
 				// TODO Auto-generated method stub
 				Player.this.isWalking = true;
-
+				
+				long frameDuration = (long) ((pSpeed / SPEED_MODIFIER) * 1000) / 4;
+				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
+				
 				// RIGHT
-				if(Player.this.mAnimatedSprite.getX() - pToTileX < 0) 
-					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 6, 8, false);
+				if(Player.this.mAnimatedSprite.getX() - pToTileX < 0)
+					Player.this.mAnimatedSprite.animate(frameDurations, 8, 11, false);
 				// LEFT
-				if(Player.this.mAnimatedSprite.getX() - pToTileX > 0) 
-					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 3, 5, false);
+				if(Player.this.mAnimatedSprite.getX() - pToTileX > 0)
+					Player.this.mAnimatedSprite.animate(frameDurations, 4, 7, false);
 				// DOWN
-				if(Player.this.mAnimatedSprite.getY() - pToTileY < 0) 
-					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 0, 2, false);
+				if(Player.this.mAnimatedSprite.getY() - pToTileY < 0)
+					Player.this.mAnimatedSprite.animate(frameDurations, 0, 3, false);
 				// UP
-				if(Player.this.mAnimatedSprite.getY() - pToTileY > 0) 
-					Player.this.mAnimatedSprite.animate(new long[]{100, 100, 100}, 9, 11, false);
+				if(Player.this.mAnimatedSprite.getY() - pToTileY > 0)
+					Player.this.mAnimatedSprite.animate(frameDurations, 12, 15, false);
 				
 			}
 
@@ -93,6 +97,7 @@ public class Player extends Entity implements IOnScreenControlListener {
 		
 		this.mAnimatedSprite.registerEntityModifier(this.mPathModifier);
 	}
+	
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -112,7 +117,7 @@ public class Player extends Entity implements IOnScreenControlListener {
 			}
 		}
 	}
-
+	
 	
 	// ===========================================================
 	// Getter & Setter

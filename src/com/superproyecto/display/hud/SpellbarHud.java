@@ -51,19 +51,19 @@ public class SpellbarHud extends HUD{
 		
 		for(int i = 0; i < this.mSpells.length; i++) {
 			float posX = 190.0f;
-			this.mSpells[i] = new Sprite(posX + (70 * i), this.mGame.getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, this.mGame.getVertexBufferObjectManager()) {
+			this.mSpells[i] = new Sprite(posX + (90 * i), this.mGame.getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, this.mGame.getVertexBufferObjectManager()) {
 
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-							this.setScale(2.0f);
+							this.setScale(2.5f);
 							break;
 						case TouchEvent.ACTION_MOVE:
 						case TouchEvent.ACTION_CANCEL:
 						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
-							this.setScale(1.5f);
+							this.setScale(2.0f);
 							break;
 					}
 					return true;
@@ -72,7 +72,7 @@ public class SpellbarHud extends HUD{
 			
 			this.mHud.registerTouchArea(this.mSpells[i]);
 			this.mSpells[i].setAlpha(0.6f);
-			this.mSpells[i].setScale(1.5f); // geeksters
+			this.mSpells[i].setScale(2.0f); // geeksters
 		}
 		
 		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, this.mGame.getVertexBufferObjectManager()) {
