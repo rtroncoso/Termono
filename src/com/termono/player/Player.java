@@ -1,4 +1,4 @@
-package com.superproyecto.player;
+package com.termono.player;
 
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
@@ -8,8 +8,8 @@ import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.util.modifier.ease.EaseLinear;
 
-import com.superproyecto.game.Game;
-import com.superproyecto.objects.Entity;
+import com.termono.game.Game;
+import com.termono.objects.Entity;
 
 
 public class Player extends Entity implements IOnScreenControlListener {

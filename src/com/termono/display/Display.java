@@ -1,10 +1,9 @@
-package com.superproyecto.display;
+package com.termono.display;
 
 import org.andengine.engine.camera.BoundCamera;
-import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 
-import com.superproyecto.objects.Entity;
+import com.termono.objects.Entity;
 
 public class Display {
 	

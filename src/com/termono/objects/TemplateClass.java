@@ -1,4 +1,4 @@
-package com.superproyecto.objects;
+package com.termono.objects;
 
 public class TemplateClass {
 

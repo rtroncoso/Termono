@@ -1,4 +1,4 @@
-package com.superproyecto.objects;
+package com.termono.objects;
 
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.input.touch.TouchEvent;
@@ -6,8 +6,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
-import com.superproyecto.game.Game;
-import com.superproyecto.methods.Point;
+import com.termono.game.Game;
+import com.termono.methods.Point;
 
 public class Entity {
 	// ===========================================================

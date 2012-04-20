@@ -1,4 +1,4 @@
-package com.superproyecto.game;
+package com.termono.game;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
@@ -14,18 +14,15 @@ import org.andengine.extension.tmx.TMXLoader;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.input.touch.controller.MultiTouch;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.debug.Debug;
 
-import android.widget.Toast;
-
-import com.superproyecto.display.Display;
-import com.superproyecto.display.hud.ControlsHud;
-import com.superproyecto.display.hud.SpellbarHud;
-import com.superproyecto.display.hud.StatsHud;
-import com.superproyecto.player.Player;
+import com.termono.display.Display;
+import com.termono.display.hud.ControlsHud;
+import com.termono.display.hud.SpellbarHud;
+import com.termono.display.hud.StatsHud;
+import com.termono.player.Player;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================

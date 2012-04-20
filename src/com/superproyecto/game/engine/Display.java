@@ -4,7 +4,7 @@ import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.extension.tmx.TMXLayer;
 
-import com.superproyecto.objects.Entity;
+import com.termono.objects.Entity;
 
 public class Display {
 

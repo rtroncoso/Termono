@@ -1,4 +1,4 @@
-package com.superproyecto.methods;
+package com.termono.methods;
 
 public class Point {
 

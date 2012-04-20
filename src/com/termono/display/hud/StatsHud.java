@@ -1,4 +1,4 @@
-package com.superproyecto.display.hud;
+package com.termono.display.hud;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.text.Text;
@@ -9,7 +9,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-import com.superproyecto.game.Game;
+import com.termono.game.Game;
 
 public class StatsHud extends HUD {
 
