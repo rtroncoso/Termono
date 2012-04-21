@@ -113,21 +113,53 @@ public void moveToTile(final float pToTileX, final float pToTileY, final float p
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
-/*	
-	public void RandomPath(int pValue) {
-		if(pValue != 0.0f) {
-			if(!this.isWalking) {
-				// Gets the new Tile
-				float moveToXTile = this.mAnimatedSprite.getX() + (TILE_WIDTH * pValueX);
-				float moveToYTile = this.mAnimatedSprite.getY() + (TILE_HEIGHT * pValueY);
-				
-				// Moves to it
+	
+	public void RandomPath() 
+	{		
+			if(!this.isWalking) 
+			{	
+				float moveToXTile = this.mAnimatedSprite.getX();
+				float moveToYTile = this.mAnimatedSprite.getY();
+				switch(this.GetRandom(1, 4))
+				{
+				case 1://Arriba
+					 moveToXTile = this.mAnimatedSprite.getX();
+					 moveToYTile = this.mAnimatedSprite.getY() - 32;
+					break;
+				case 2://Abajo
+					 moveToXTile = this.mAnimatedSprite.getX();
+					 moveToYTile = this.mAnimatedSprite.getY() + 32;
+					break;
+				case 3://Derecha
+					 moveToXTile = this.mAnimatedSprite.getX() + 32;
+					 moveToYTile = this.mAnimatedSprite.getY();
+					break;
+				case 4://Izquierda
+					 moveToXTile = this.mAnimatedSprite.getX() - 32;
+					 moveToYTile = this.mAnimatedSprite.getY();
+					break;			
+				case 5://Arriba 2
+					 moveToXTile = this.mAnimatedSprite.getX();
+					 moveToYTile = this.mAnimatedSprite.getY() - 64;
+					break;
+				case 6://Abajo 2
+					 moveToXTile = this.mAnimatedSprite.getX();
+					 moveToYTile = this.mAnimatedSprite.getY() + 64;
+					 break;
+				case 7://Derecha 2
+					 moveToXTile = this.mAnimatedSprite.getX() + 64;
+					 moveToYTile = this.mAnimatedSprite.getY();
+					 break;
+				case 8://Izquierda 2
+					 moveToXTile = this.mAnimatedSprite.getX() - 32;
+					 moveToYTile = this.mAnimatedSprite.getY();
+					 break;
+				}		
 				this.moveToTile(moveToXTile, moveToYTile, 1.0f);
-			}
-		}
+			}		
 	}
 	
-	*/	
+		
 		
 		public int GetRandom(int min, int max)
 		{

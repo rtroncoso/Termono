@@ -112,13 +112,21 @@ public class Game extends SimpleBaseGameActivity {
 		// Attach it
 		this.mScene.attachChild(this.mHero.getAnimatedSprite());
 		
+		
+		
+		//Enemyyyy
+		this.mEnemy = new Enemy(this);
+		this.mEnemy.loadTexture("Mob.png", 128, 256, 0, 0, 4, 4);
+		this.mEnemy.getAnimatedSprite().setPosition(64, 64);
+		this.mScene.attachChild(this.mEnemy.getAnimatedSprite());
+		
 		/*
 		 * LAYER - HUDs
 		 */
 		this.mHud = new HUD();
 		this.mStatsHud = new StatsHud(this, mEnemy);
 		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
-		this.mControlsHud = new ControlsHud(this, this.mHero);
+		this.mControlsHud = new ControlsHud(this, this.mHero, this.mEnemy);
 		
 		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());

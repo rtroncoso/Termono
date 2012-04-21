@@ -4,13 +4,14 @@ import javax.microedition.khronos.opengles.GL10;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
-import org.andengine.engine.camera.hud.controls.DigitalOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
+import org.andengine.engine.camera.hud.controls.DigitalOnScreenControl;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.termono.game.Game;
+import com.termono.player.Enemy;
 import com.termono.player.Player;
 
 public class ControlsHud extends HUD {
@@ -29,15 +30,18 @@ public class ControlsHud extends HUD {
 	private DigitalOnScreenControl mDigitalOnScreenControl;
 	private Game mGame;
 	private Player mPlayer;
+	private Enemy mEnemy;
+	
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public ControlsHud(Game pGame, Player pPlayer)
+	public ControlsHud(Game pGame, Player pPlayer ,Enemy pEnemy)
 	{
 		// Set internal Fields
 		this.mGame = pGame;
 		this.mPlayer = pPlayer;
+		this.mEnemy = pEnemy;
 
 		// Load controls texture into memory
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.mGame.getTextureManager(), 512, 128);
@@ -58,6 +62,7 @@ public class ControlsHud extends HUD {
 						
 						// Controls it's attached Entity
 						ControlsHud.this.mPlayer.onControlChange(pBaseOnScreenControl, pValueX, pValueY);
+						ControlsHud.this.mEnemy.RandomPath();
 					}
 				});
 
