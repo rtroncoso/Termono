@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.termono.game.Game;
+import com.termono.player.Enemy;
 
 public class StatsHud extends HUD {
 
@@ -22,6 +23,7 @@ public class StatsHud extends HUD {
 	// Fields
 	// ===========================================================
 	private Game mGame;
+	private Enemy mEnemy;
 	private BitmapTextureAtlas mFontTexture;
 	private StrokeFont mFont;
 	private Text mTermono;
@@ -29,9 +31,10 @@ public class StatsHud extends HUD {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public StatsHud(Game pGame) {
+	public StatsHud(Game pGame, Enemy pEnemy) {
 		
 		this.mGame = pGame;
+		this.mEnemy = pEnemy;
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
@@ -42,8 +45,8 @@ public class StatsHud extends HUD {
 		this.mGame.getEngine().getTextureManager().loadTexture(this.mFontTexture);
 		this.mGame.getEngine().getFontManager().loadFont(this.mFont);
 		
-		this.mTermono = new Text(20, 20, this.mFont, "Termono", "Tuvieja".length(), this.mGame.getVertexBufferObjectManager());
-		
+	//	this.mTermono = new Text(20, 20, this.mFont, "Termono", "Tuvieja".length(), this.mGame.getVertexBufferObjectManager());
+		this.mTermono = new Text(20, 20, this.mFont, String.valueOf(this.mEnemy.GetRandom(1, 4)), "T".length(), this.mGame.getVertexBufferObjectManager());
 	}
 	
 	// ===========================================================

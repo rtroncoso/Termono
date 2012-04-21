@@ -22,6 +22,7 @@ import com.termono.display.Display;
 import com.termono.display.hud.ControlsHud;
 import com.termono.display.hud.SpellbarHud;
 import com.termono.display.hud.StatsHud;
+import com.termono.player.Enemy;
 import com.termono.player.Player;
 
 public class Game extends SimpleBaseGameActivity {
@@ -43,7 +44,7 @@ public class Game extends SimpleBaseGameActivity {
 	private StatsHud mStatsHud;
 	private HUD mHud;
 	private boolean pZoomedIn;
-
+	private Enemy mEnemy;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -115,8 +116,7 @@ public class Game extends SimpleBaseGameActivity {
 		 * LAYER - HUDs
 		 */
 		this.mHud = new HUD();
-		
-		this.mStatsHud = new StatsHud(this);
+		this.mStatsHud = new StatsHud(this, mEnemy);
 		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
 		this.mControlsHud = new ControlsHud(this, this.mHero);
 		
