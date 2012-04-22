@@ -22,6 +22,7 @@ import com.termono.display.Display;
 import com.termono.display.hud.ControlsHud;
 import com.termono.display.hud.SpellbarHud;
 import com.termono.display.hud.StatsHud;
+import com.termono.methods.Timers;
 import com.termono.player.Enemy;
 import com.termono.player.Player;
 
@@ -45,6 +46,7 @@ public class Game extends SimpleBaseGameActivity {
 	private HUD mHud;
 	private boolean pZoomedIn;
 	private Enemy mEnemy;
+	private Timers mTimers;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -82,7 +84,7 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	protected Scene onCreateScene() {
 		// TODO Auto-generated method stub
-		this.mEngine.registerUpdateHandler(new FPSLogger());
+		this.mEngine.registerUpdateHandler(new FPSLogger());		
 		this.mScene = new Scene();
 
 		/*
@@ -120,13 +122,19 @@ public class Game extends SimpleBaseGameActivity {
 		this.mEnemy.getAnimatedSprite().setPosition(64, 64);
 		this.mScene.attachChild(this.mEnemy.getAnimatedSprite());
 		
+		//Timer
+		this.mTimers = new Timers(this, mEnemy);
+		this.mTimers.createMobMovementTimeHandler();
+		
+		
+		
 		/*
 		 * LAYER - HUDs
 		 */
 		this.mHud = new HUD();
 		this.mStatsHud = new StatsHud(this, mEnemy);
 		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
-		this.mControlsHud = new ControlsHud(this, this.mHero, this.mEnemy);
+		this.mControlsHud = new ControlsHud(this, this.mHero);
 		
 		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
