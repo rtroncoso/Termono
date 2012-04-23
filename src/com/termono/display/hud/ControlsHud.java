@@ -30,17 +30,18 @@ public class ControlsHud extends HUD {
 	private DigitalOnScreenControl mDigitalOnScreenControl;
 	private Game mGame;
 	private Player mPlayer;
-	
+	private Enemy mMob2;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public ControlsHud(Game pGame, Player pPlayer)
+	public ControlsHud(Game pGame, Player pPlayer, Enemy pMob2)
 	{
 		// Set internal Fields
 		this.mGame = pGame;
 		this.mPlayer = pPlayer;
-
+		this.mMob2 = pMob2;
+		
 		// Load controls texture into memory
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.mGame.getTextureManager(), 512, 128);
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.mGame.getApplicationContext(), "onscreen_control_base.png", 0, 0);
@@ -60,6 +61,7 @@ public class ControlsHud extends HUD {
 						
 						// Controls it's attached Entity
 						ControlsHud.this.mPlayer.onControlChange(pBaseOnScreenControl, pValueX, pValueY);
+						ControlsHud.this.mMob2.RandomPath();
 					}
 				});
 

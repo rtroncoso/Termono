@@ -47,6 +47,8 @@ public class Game extends SimpleBaseGameActivity {
 	private boolean pZoomedIn;
 	private Enemy mEnemy;
 	private Timers mTimers;
+	
+	private Enemy mMob2;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -122,6 +124,14 @@ public class Game extends SimpleBaseGameActivity {
 		this.mEnemy.getAnimatedSprite().setPosition(64, 64);
 		this.mScene.attachChild(this.mEnemy.getAnimatedSprite());
 		
+		this.mMob2 = new Enemy(this);
+		this.mMob2.loadTexture("Mob2.png", 128, 256, 0, 0, 4, 4);
+		this.mMob2.getAnimatedSprite().setPosition(96, 96);
+		this.mScene.attachChild(this.mMob2.getAnimatedSprite());
+		
+		
+		
+		
 		//Timer
 		this.mTimers = new Timers(this, mEnemy);
 		this.mTimers.createMobMovementTimeHandler();
@@ -134,7 +144,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHud = new HUD();
 		this.mStatsHud = new StatsHud(this, mEnemy);
 		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
-		this.mControlsHud = new ControlsHud(this, this.mHero);
+		this.mControlsHud = new ControlsHud(this, this.mHero, this.mMob2);
 		
 		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());

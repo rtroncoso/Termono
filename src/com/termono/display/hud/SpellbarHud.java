@@ -29,7 +29,9 @@ public class SpellbarHud extends HUD{
 	private BitmapTextureAtlas mSpellTextureAtlas;
 	private ITextureRegion mSpellTextureRegion;
 	private SpriteBatch mSpellBatch;
+	
 
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -38,7 +40,7 @@ public class SpellbarHud extends HUD{
 		// Init local Variables
 		this.mGame = pGame;
 		this.mHud = pHud;
-		
+	
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
