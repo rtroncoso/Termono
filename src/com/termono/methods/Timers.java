@@ -19,14 +19,15 @@ public class Timers {
 		// ===========================================================
 		private Game mGame;
 		private Enemy mEnemy;
-		
+		private Enemy mMob2;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
 	
-		public Timers(Game pGame, Enemy pEnemy) {
+		public Timers(Game pGame, Enemy pEnemy, Enemy pMob2) {
 			this.mGame = pGame;
-			this.mEnemy = pEnemy;					
+			this.mEnemy = pEnemy;		
+			this.mMob2 = pMob2;
 			// TODO Auto-generated constructor stub
 		}
 		
@@ -50,13 +51,14 @@ public class Timers {
 		        
 		        //this.mGame.getEngine().registerUpdateHandler(MobMovementTimerHandler = new TimerHandler(1 / 20.0f,true, new ITimerCallback()
 				//this.mGame.getEngine().registerUpdateHandler(new TimerHandler(1 / 20.0f,true, new ITimerCallback()
-				this.mGame.getEngine().registerUpdateHandler(new TimerHandler(100,true, new ITimerCallback()
+				this.mGame.getEngine().registerUpdateHandler(new TimerHandler(4,true, new ITimerCallback()
 		        {                      
 		            
 		        	@Override
 		            public void onTimePassed(final TimerHandler pTimerHandler)
 		            {
 		        		Timers.this.mEnemy.RandomPath();
+		        		Timers.this.mMob2.RandomPath();
 		            }
 		            
 		            

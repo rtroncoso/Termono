@@ -3,6 +3,7 @@ package com.termono.game;
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -17,6 +18,8 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.debug.Debug;
+
+import android.widget.Toast;
 
 import com.termono.display.Display;
 import com.termono.display.hud.ControlsHud;
@@ -74,7 +77,7 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	public Engine onCreateEngine(EngineOptions pEngineOptions) {
 		// TODO Auto-generated method stub
-		return new FixedStepEngine(pEngineOptions, 30);
+		return new FixedStepEngine(pEngineOptions, 60);
 	}
 
 	@Override
@@ -119,6 +122,7 @@ public class Game extends SimpleBaseGameActivity {
 		
 		
 		//Enemyyyy
+		
 		this.mEnemy = new Enemy(this);
 		this.mEnemy.loadTexture("Mob.png", 128, 256, 0, 0, 4, 4);
 		this.mEnemy.getAnimatedSprite().setPosition(64, 64);
@@ -133,7 +137,7 @@ public class Game extends SimpleBaseGameActivity {
 		
 		
 		//Timer
-		this.mTimers = new Timers(this, mEnemy);
+		this.mTimers = new Timers(this, mEnemy, mMob2);
 		this.mTimers.createMobMovementTimeHandler();
 		
 		
@@ -143,7 +147,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHud = new HUD();
 		this.mStatsHud = new StatsHud(this, mEnemy);
 		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
-		this.mControlsHud = new ControlsHud(this, this.mHero, this.mMob2);
+		this.mControlsHud = new ControlsHud(this, this.mHero);
 		
 		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
@@ -199,6 +203,14 @@ public class Game extends SimpleBaseGameActivity {
 
 	public void setControlsHud(ControlsHud pControlsHud) {
 		this.mControlsHud = pControlsHud;
+	}
+
+	public StatsHud getStatsHud() {
+		return mStatsHud;
+	}
+
+	public void setStatsHud(StatsHud pStatsHud) {
+		this.mStatsHud = pStatsHud;
 	}
 
 	// ===========================================================

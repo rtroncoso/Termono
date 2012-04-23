@@ -25,7 +25,7 @@ public class Enemy extends Entity{
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private final float SPEED_MODIFIER = 5.0f;
+	private final float SPEED_MODIFIER = 3.0f;
 	private final float TILE_WIDTH = 32;
 	private final float TILE_HEIGHT = 32;
 
@@ -120,7 +120,7 @@ public void moveToTile(final float pToTileX, final float pToTileY, final float p
 			{	
 				float moveToXTile = this.mAnimatedSprite.getX();
 				float moveToYTile = this.mAnimatedSprite.getY();
-				switch(this.GetRandom(1, 10))
+				switch(this.GetRandom(1, 8))
 				{
 				case 1://Arriba
 					 moveToXTile = this.mAnimatedSprite.getX();
@@ -154,11 +154,19 @@ public void moveToTile(final float pToTileX, final float pToTileY, final float p
 					 moveToXTile = this.mAnimatedSprite.getX() - 32;
 					 moveToYTile = this.mAnimatedSprite.getY();
 					 break;
-				default :
+				/*case 9:
 					//nada, se queda en el lugar
-					
+					 moveToXTile = this.mAnimatedSprite.getX();
+					 moveToYTile = this.mAnimatedSprite.getY();
+					 break;
+				case 10:
+					//nada, se queda en el lugar
+					 moveToXTile = this.mAnimatedSprite.getX();
+					 moveToYTile = this.mAnimatedSprite.getY();
+					break;*/
 				}		
 				this.moveToTile(moveToXTile, moveToYTile, 1.0f);
+				//this.mGame.getStatsHud().getTermono().setText("PUTOOO");
 			}		
 	}
 	
