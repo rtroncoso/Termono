@@ -46,16 +46,17 @@ public class Timers {
 		// ===========================================================
 		public void createMobMovementTimeHandler()
 		{
-		        TimerHandler MobMovementTimerHandler;
+		        //TimerHandler MobMovementTimerHandler;
 		        
-		        this.mGame.getEngine().registerUpdateHandler(MobMovementTimerHandler = new TimerHandler(100,true, new ITimerCallback()
+		        //this.mGame.getEngine().registerUpdateHandler(MobMovementTimerHandler = new TimerHandler(1 / 20.0f,true, new ITimerCallback()
+				//this.mGame.getEngine().registerUpdateHandler(new TimerHandler(1 / 20.0f,true, new ITimerCallback()
+				this.mGame.getEngine().registerUpdateHandler(new TimerHandler(100,true, new ITimerCallback()
 		        {                      
 		            
 		        	@Override
 		            public void onTimePassed(final TimerHandler pTimerHandler)
 		            {
 		        		Timers.this.mEnemy.RandomPath();
-		        		
 		            }
 		            
 		            

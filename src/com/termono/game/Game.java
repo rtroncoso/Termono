@@ -137,7 +137,6 @@ public class Game extends SimpleBaseGameActivity {
 		this.mTimers.createMobMovementTimeHandler();
 		
 		
-		
 		/*
 		 * LAYER - HUDs
 		 */
