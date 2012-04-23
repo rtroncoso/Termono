@@ -120,7 +120,7 @@ public void moveToTile(final float pToTileX, final float pToTileY, final float p
 			{	
 				float moveToXTile = this.mAnimatedSprite.getX();
 				float moveToYTile = this.mAnimatedSprite.getY();
-				switch(this.GetRandom(1, 4))
+				switch(this.GetRandom(1, 10))
 				{
 				case 1://Arriba
 					 moveToXTile = this.mAnimatedSprite.getX();
@@ -154,6 +154,9 @@ public void moveToTile(final float pToTileX, final float pToTileY, final float p
 					 moveToXTile = this.mAnimatedSprite.getX() - 32;
 					 moveToYTile = this.mAnimatedSprite.getY();
 					 break;
+				default :
+					//nada, se queda en el lugar
+					
 				}		
 				this.moveToTile(moveToXTile, moveToYTile, 1.0f);
 			}		
