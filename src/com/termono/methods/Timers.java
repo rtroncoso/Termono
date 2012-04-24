@@ -51,7 +51,7 @@ public class Timers {
 		        
 		        //this.mGame.getEngine().registerUpdateHandler(MobMovementTimerHandler = new TimerHandler(1 / 20.0f,true, new ITimerCallback()
 				//this.mGame.getEngine().registerUpdateHandler(new TimerHandler(1 / 20.0f,true, new ITimerCallback()
-				this.mGame.getEngine().registerUpdateHandler(new TimerHandler(4,true, new ITimerCallback()
+				this.mGame.getEngine().registerUpdateHandler(new TimerHandler(3,true, new ITimerCallback()
 		        {                      
 		            
 		        	@Override

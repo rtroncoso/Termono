@@ -121,7 +121,7 @@ public class Game extends SimpleBaseGameActivity {
 		
 		
 		
-		//Enemyyyy
+		//Enemyyyyasdas
 		
 		this.mEnemy = new Enemy(this);
 		this.mEnemy.loadTexture("Mob.png", 128, 256, 0, 0, 4, 4);
@@ -132,6 +132,8 @@ public class Game extends SimpleBaseGameActivity {
 		this.mMob2.loadTexture("Mob2.png", 128, 256, 0, 0, 4, 4);
 		this.mMob2.getAnimatedSprite().setPosition(96, 96);
 		this.mScene.attachChild(this.mMob2.getAnimatedSprite());
+		
+		//
 		
 		
 		
