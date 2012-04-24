@@ -27,7 +27,7 @@ public class Player extends Entity implements IOnScreenControlListener {
 	// ===========================================================
 	private PathModifier mPathModifier;
 	private Path mPath;
-	
+	//prueba
 	// ===========================================================
 	// Constructors
 	// ===========================================================

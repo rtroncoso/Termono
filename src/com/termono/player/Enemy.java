@@ -190,7 +190,7 @@ public void moveToTile(final float pToTileX, final float pToTileY, final float p
 		rand = new Random();	
 		int RandomNum = rand.nextInt(max - min + 1) + min;
 		return RandomNum;
-		}
+		}//prueba 2
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================

@@ -3,7 +3,6 @@ package com.termono.game;
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -19,10 +18,9 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.debug.Debug;
 
-import android.widget.Toast;
-
 import com.termono.display.Display;
 import com.termono.display.hud.ControlsHud;
+import com.termono.display.hud.MenuHud;
 import com.termono.display.hud.SpellbarHud;
 import com.termono.display.hud.StatsHud;
 import com.termono.methods.Timers;
@@ -50,6 +48,7 @@ public class Game extends SimpleBaseGameActivity {
 	private boolean pZoomedIn;
 	private Enemy mEnemy;
 	private Timers mTimers;
+	private MenuHud mMenuHud;
 	
 	private Enemy mMob2;
 	// ===========================================================
@@ -121,7 +120,7 @@ public class Game extends SimpleBaseGameActivity {
 		
 		
 		
-		//Enemyyyyasdas
+		//Enemy
 		
 		this.mEnemy = new Enemy(this);
 		this.mEnemy.loadTexture("Mob.png", 128, 256, 0, 0, 4, 4);
@@ -133,7 +132,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mMob2.getAnimatedSprite().setPosition(96, 96);
 		this.mScene.attachChild(this.mMob2.getAnimatedSprite());
 		
-		//
+		
 		
 		
 		
@@ -150,12 +149,14 @@ public class Game extends SimpleBaseGameActivity {
 		this.mStatsHud = new StatsHud(this, mEnemy);
 		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
 		this.mControlsHud = new ControlsHud(this, this.mHero);
+		this.mMenuHud = new MenuHud(this);
 		
 		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
 		this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
 		this.mHud.attachChild(this.mStatsHud.getTermono());
 		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
+		this.mHud.attachChild(this.mMenuHud.getMenuSprite());
 		
 		this.mDisplay.getCamera().setHUD(this.mHud);
 		
