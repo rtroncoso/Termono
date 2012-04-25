@@ -149,7 +149,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mStatsHud = new StatsHud(this, mEnemy);
 		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
 		this.mControlsHud = new ControlsHud(this, this.mHero);
-		this.mMenuHud = new MenuHud(this);
+		this.mMenuHud = new MenuHud(this, mHud);
 		
 		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
@@ -157,6 +157,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHud.attachChild(this.mStatsHud.getTermono());
 		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.attachChild(this.mMenuHud.getMenuSprite());
+		//this.mHud.attachChild(this.mMenuHud.getMenu2Sprite());
 		
 		this.mDisplay.getCamera().setHUD(this.mHud);
 		

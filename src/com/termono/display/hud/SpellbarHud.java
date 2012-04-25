@@ -74,7 +74,7 @@ public class SpellbarHud extends HUD{
 			
 			this.mHud.registerTouchArea(this.mSpells[i]);
 			this.mSpells[i].setAlpha(0.6f);
-			this.mSpells[i].setScale(2.0f); // geeksters
+			this.mSpells[i].setScale(2.0f); 
 		}
 		
 		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, this.mGame.getVertexBufferObjectManager()) {
