@@ -1,8 +1,8 @@
 package com.termono.display.hud;
 
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -50,28 +50,51 @@ public class MenuHud extends HUD{
 			float posY = -236;
 			this.mMenuSprite = new Sprite(posX, posY, this.mMenuTextureRegion, this.mGame.getVertexBufferObjectManager()) {
 			
+		
+					
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-						//	this.setScale(2.0f);
-							this.setPosition(this.getInitialX(), this.getInitialY());
-												
+							MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getInitialX(), MenuHud.this.mMenuSprite.getInitialY());
+							MenuHud.this.mMenuSprite.setAlpha(1.0f);
+							/*
+							
+							MenuHud.this.mGame.getScene().registerUpdateHandler(new IUpdateHandler() 
+							{
+								@Override
+								public void onUpdate(float pSecondsElapsed)
+								 {
+									for(float i=MenuHud.this.mMenuSprite.getInitialX(); i<500; i++)
+										{
+									
+									
+										}
+									}
+								@Override
+								public void reset() {
+									// TODO Auto-generated method stub			
+													}
+							});			
+								*/				
 									break;
 						case TouchEvent.ACTION_MOVE:
 							this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+							MenuHud.this.mMenuSprite.setAlpha(1.0f);
+							MenuHud.this.mGame.getStatsHud().getTermono().setText(String.valueOf("X: " + String.valueOf(pSceneTouchEvent.getX()) + "\n Y: " + String.valueOf(pSceneTouchEvent.getY() + "\n Alpha: " + String.valueOf(MenuHud.this.mMenuSprite.getAlpha()))));
 							break;
 						case TouchEvent.ACTION_CANCEL:
 						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
-							this.setScale(1.0f);
+							//MenuHud.this.mMenuSprite.setAlpha(1.0f);
 							break;
 					}
+				//	MenuHud.this.mMenuSprite.setAlpha(0.3f);
 					return true;
 				}
 			};
 			this.mHud.registerTouchArea(this.mMenuSprite);
-		//	this.mMenuSprite.setAlpha(0.6f);
+			this.mMenuSprite.setAlpha(0.3f);
 		//	this.mMenuSprite.setScale(1.0f); 
 			
 			
