@@ -2,6 +2,7 @@ package com.termono.display.hud;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -53,13 +54,13 @@ public class MenuHud extends HUD{
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-							this.setScale(2.0f);
-							
-							//MenuHud.this.mMenuSprite = new Sprite(MenuHud.this.mGame.getDisplay().getCamera().getWidth() - MenuHud.this.mMenu2TextureRegion.getWidth(), 0, MenuHud.this.mMenu2TextureRegion, MenuHud.this.mGame.getVertexBufferObjectManager());
-							//MenuHud.this.mGame.getDisplay().getCamera().getHUD().attachChild(MenuHud.this.mMenuSprite);
-							
+						//	this.setScale(2.0f);
+							this.setPosition(this.getInitialX(), this.getInitialY());
+												
 									break;
-						//case TouchEvent.ACTION_MOVE:
+						case TouchEvent.ACTION_MOVE:
+							this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+							break;
 						case TouchEvent.ACTION_CANCEL:
 						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
