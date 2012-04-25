@@ -45,8 +45,7 @@ public class StatsHud extends HUD {
 		this.mGame.getEngine().getTextureManager().loadTexture(this.mFontTexture);
 		this.mGame.getEngine().getFontManager().loadFont(this.mFont);
 		
-	//	this.mTermono = new Text(20, 20, this.mFont, "Termono", "Tuvieja".length(), this.mGame.getVertexBufferObjectManager());
-		this.mTermono = new Text(20, 20, this.mFont, String.valueOf(this.mEnemy.GetRandom(1, 4)), "T".length(), this.mGame.getVertexBufferObjectManager());
+		this.mTermono = new Text(20, 20, this.mFont, "Termono", "Tuvieja".length(), this.mGame.getVertexBufferObjectManager());
 	}
 	
 	// ===========================================================

@@ -132,11 +132,6 @@ public class Game extends SimpleBaseGameActivity {
 		this.mMob2.getAnimatedSprite().setPosition(96, 96);
 		this.mScene.attachChild(this.mMob2.getAnimatedSprite());
 		
-		
-		
-		
-		
-		
 		//Timer
 		this.mTimers = new Timers(this, mEnemy, mMob2);
 		this.mTimers.createMobMovementTimeHandler();
@@ -157,7 +152,6 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHud.attachChild(this.mStatsHud.getTermono());
 		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
 		this.mHud.attachChild(this.mMenuHud.getMenuSprite());
-		//this.mHud.attachChild(this.mMenuHud.getMenu2Sprite());
 		
 		this.mDisplay.getCamera().setHUD(this.mHud);
 		

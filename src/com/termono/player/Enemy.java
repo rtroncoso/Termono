@@ -45,152 +45,89 @@ public class Enemy extends Entity{
 		// TODO Auto-generated constructor stub
 	}
 
-
 	// ===========================================================
 	// Methods
 	// ===========================================================
-public void moveToTile(final float pToTileX, final float pToTileY, final float pSpeed) {
-		
-		this.mPath = new Path(2).to(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY()).to(pToTileX, pToTileY);
-		
-		this.mPathModifier = new PathModifier(pSpeed / SPEED_MODIFIER, this.mPath, new IPathModifierListener() {
-
-			@Override
-			public void onPathStarted(PathModifier pPathModifier,
-					IEntity pEntity) {
-				// TODO Auto-generated method stub
-				Enemy.this.isWalking = true;
-				
-				long frameDuration = (long) ((pSpeed / SPEED_MODIFIER) * 1000) / 4;
-				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
-				
-				// RIGHT
-				if(Enemy.this.mAnimatedSprite.getX() - pToTileX < 0)
-					Enemy.this.mAnimatedSprite.animate(frameDurations, 8, 11, false);
-				// LEFT
-				if(Enemy.this.mAnimatedSprite.getX() - pToTileX > 0)
-					Enemy.this.mAnimatedSprite.animate(frameDurations, 4, 7, false);
-				// DOWN
-				if(Enemy.this.mAnimatedSprite.getY() - pToTileY < 0)
-					Enemy.this.mAnimatedSprite.animate(frameDurations, 0, 3, false);
-				// UP
-				if(Enemy.this.mAnimatedSprite.getY() - pToTileY > 0)
-					Enemy.this.mAnimatedSprite.animate(frameDurations, 12, 15, false);
-				
+	public void randomPath() 
+	{		
+		if(!this.isWalking) 
+		{	boolean move = false;
+			float moveToXTile = this.mAnimatedSprite.getX();
+			float moveToYTile = this.mAnimatedSprite.getY();
+			switch(this.getRandom(1, 10))
+			{
+			case 1://Arriba
+				 moveToXTile = this.mAnimatedSprite.getX();
+				 moveToYTile = this.mAnimatedSprite.getY() - 32;
+				 move = true;
+				break;
+			case 2://Abajo
+				 moveToXTile = this.mAnimatedSprite.getX();
+				 moveToYTile = this.mAnimatedSprite.getY() + 32;
+				 move = true;
+				break;
+			case 3://Derecha
+				 moveToXTile = this.mAnimatedSprite.getX() + 32;
+				 moveToYTile = this.mAnimatedSprite.getY();
+				 move = true;
+				break;
+			case 4://Izquierda
+				 moveToXTile = this.mAnimatedSprite.getX() - 32;
+				 moveToYTile = this.mAnimatedSprite.getY();
+				 move = true;
+				break;			
+			case 5://Arriba 2
+				 moveToXTile = this.mAnimatedSprite.getX();
+				 moveToYTile = this.mAnimatedSprite.getY() - 64;
+				 move = true;
+				break;
+			case 6://Abajo 2
+				 moveToXTile = this.mAnimatedSprite.getX();
+				 moveToYTile = this.mAnimatedSprite.getY() + 64;
+				 move = true;
+				 break;
+			case 7://Derecha 2
+				 moveToXTile = this.mAnimatedSprite.getX() + 64;
+				 moveToYTile = this.mAnimatedSprite.getY();
+				 move = true;
+				 break;
+			case 8://Izquierda 2
+				 moveToXTile = this.mAnimatedSprite.getX() - 32;
+				 moveToYTile = this.mAnimatedSprite.getY();
+				 move = true;
+				 break;
+			case 9:
+				//nada, se queda en el lugar
+				 moveToXTile = this.mAnimatedSprite.getX();
+				 moveToYTile = this.mAnimatedSprite.getY();
+				 move = false;
+				 break;
+			case 10:
+				//nada, se queda en el lugar
+				 moveToXTile = this.mAnimatedSprite.getX();
+				 moveToYTile = this.mAnimatedSprite.getY();
+				 move = false;
+				break;
+			}		
+			if(move == true)
+			{
+				this.moveToTile(moveToXTile, moveToYTile, 1.0f);
 			}
-
-			@Override
-			public void onPathWaypointStarted(PathModifier pPathModifier,
-					IEntity pEntity, int pWaypointIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onPathWaypointFinished(PathModifier pPathModifier,
-					IEntity pEntity, int pWaypointIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onPathFinished(PathModifier pPathModifier,
-					IEntity pEntity) {
-				// TODO Auto-generated method stub
-				
-				Enemy.this.isWalking = false;
-				//Enemy.this.mAnimatedSprite.stopAnimation();
-				
-			}	
-		}, EaseLinear.getInstance());
-		
-		this.mAnimatedSprite.registerEntityModifier(this.mPathModifier);
+		}		
 	}
 	
-	
+	private int getRandom(int min, int max)
+	{
+		rand = new Random();	
+		int RandomNum = rand.nextInt(max - min + 1) + min;
+		return RandomNum;
+	}
 	
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 	
-	public void RandomPath() 
-	{		
-			if(!this.isWalking) 
-			{	boolean move = false;
-				float moveToXTile = this.mAnimatedSprite.getX();
-				float moveToYTile = this.mAnimatedSprite.getY();
-				switch(this.GetRandom(1, 10))
-				{
-				case 1://Arriba
-					 moveToXTile = this.mAnimatedSprite.getX();
-					 moveToYTile = this.mAnimatedSprite.getY() - 32;
-					 move = true;
-					break;
-				case 2://Abajo
-					 moveToXTile = this.mAnimatedSprite.getX();
-					 moveToYTile = this.mAnimatedSprite.getY() + 32;
-					 move = true;
-					break;
-				case 3://Derecha
-					 moveToXTile = this.mAnimatedSprite.getX() + 32;
-					 moveToYTile = this.mAnimatedSprite.getY();
-					 move = true;
-					break;
-				case 4://Izquierda
-					 moveToXTile = this.mAnimatedSprite.getX() - 32;
-					 moveToYTile = this.mAnimatedSprite.getY();
-					 move = true;
-					break;			
-				case 5://Arriba 2
-					 moveToXTile = this.mAnimatedSprite.getX();
-					 moveToYTile = this.mAnimatedSprite.getY() - 64;
-					 move = true;
-					break;
-				case 6://Abajo 2
-					 moveToXTile = this.mAnimatedSprite.getX();
-					 moveToYTile = this.mAnimatedSprite.getY() + 64;
-					 move = true;
-					 break;
-				case 7://Derecha 2
-					 moveToXTile = this.mAnimatedSprite.getX() + 64;
-					 moveToYTile = this.mAnimatedSprite.getY();
-					 move = true;
-					 break;
-				case 8://Izquierda 2
-					 moveToXTile = this.mAnimatedSprite.getX() - 32;
-					 moveToYTile = this.mAnimatedSprite.getY();
-					 move = true;
-					 break;
-				case 9:
-					//nada, se queda en el lugar
-					 moveToXTile = this.mAnimatedSprite.getX();
-					 moveToYTile = this.mAnimatedSprite.getY();
-					 move = false;
-					 break;
-				case 10:
-					//nada, se queda en el lugar
-					 moveToXTile = this.mAnimatedSprite.getX();
-					 moveToYTile = this.mAnimatedSprite.getY();
-					 move = false;
-					break;
-				}		
-				if(move == true)
-				{
-					this.moveToTile(moveToXTile, moveToYTile, 1.0f);
-				}
-				//this.mGame.getStatsHud().getTermono().setText("PUTOOO");
-			}		
-	}
-	
-		
-		
-		public int GetRandom(int min, int max)
-		{
-		rand = new Random();	
-		int RandomNum = rand.nextInt(max - min + 1) + min;
-		return RandomNum;
-		}//prueba 2
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================

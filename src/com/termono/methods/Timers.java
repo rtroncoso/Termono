@@ -57,8 +57,8 @@ public class Timers {
 		        	@Override
 		            public void onTimePassed(final TimerHandler pTimerHandler)
 		            {
-		        		Timers.this.mEnemy.RandomPath();
-		        		Timers.this.mMob2.RandomPath();
+		        		Timers.this.mEnemy.randomPath();
+		        		Timers.this.mMob2.randomPath();
 		            }
 		            
 		            
