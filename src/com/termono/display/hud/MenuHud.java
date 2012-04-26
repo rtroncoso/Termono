@@ -57,7 +57,7 @@ public class MenuHud extends HUD{
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
 							MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getInitialX(), MenuHud.this.mMenuSprite.getInitialY());
-							MenuHud.this.mMenuSprite.setAlpha(1.0f);
+							MenuHud.this.mMenuSprite.setAlpha(0.3f);
 							/*
 							
 							MenuHud.this.mGame.getScene().registerUpdateHandler(new IUpdateHandler() 
@@ -81,7 +81,8 @@ public class MenuHud extends HUD{
 						case TouchEvent.ACTION_MOVE:
 							this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
 							MenuHud.this.mMenuSprite.setAlpha(1.0f);
-							MenuHud.this.mGame.getStatsHud().getTermono().setText(String.valueOf("X: " + String.valueOf(pSceneTouchEvent.getX()) + "\n Y: " + String.valueOf(pSceneTouchEvent.getY() + "\n Alpha: " + String.valueOf(MenuHud.this.mMenuSprite.getAlpha()))));
+							MenuHud.this.mMenuSprite.setAlpha((pSceneTouchEvent.getX() + pSceneTouchEvent.getY()) / 1200);
+							MenuHud.this.mGame.getStatsHud().getTermono().setText("X: " + String.valueOf(pSceneTouchEvent.getX()) + "\n Y: " + String.valueOf(pSceneTouchEvent.getY()) + "\n Alpha: " + String.valueOf(MenuHud.this.mMenuSprite.getAlpha()));
 							break;
 						case TouchEvent.ACTION_CANCEL:
 						case TouchEvent.ACTION_OUTSIDE:
@@ -94,8 +95,8 @@ public class MenuHud extends HUD{
 				}
 			};
 			this.mHud.registerTouchArea(this.mMenuSprite);
-			this.mMenuSprite.setAlpha(0.3f);
-		//	this.mMenuSprite.setScale(1.0f); 
+			//this.mMenuSprite.setAlpha(0.3f);
+			//this.mMenuSprite.setScale(1.0f); 
 			
 			
 			
