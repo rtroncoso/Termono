@@ -21,6 +21,7 @@ public class Entity {
 	// ===========================================================
 	protected final float SPEED_MODIFIER = 5.0f;
 	protected final float TILE_WIDTH = 32;
+//	protected final float TILE_HEIGHT = 32;
 	protected final float TILE_HEIGHT = 32;
 	
 	// ===========================================================
