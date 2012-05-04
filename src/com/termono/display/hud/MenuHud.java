@@ -104,7 +104,7 @@ public class MenuHud extends HUD{
 									@Override
 									public void onUpdate(float pSecondsElapsed) {
 										updater = true;
-										if(MenuHud.this.mMenuSprite.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}//updater=false;}// MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getInitialX(), MenuHud.this.mMenuSprite.getInitialY());}
+										if(MenuHud.this.mMenuSprite.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}
 										MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getX() - 20, MenuHud.this.mMenuSprite.getY() + 12);
 									}
 								
@@ -114,7 +114,7 @@ public class MenuHud extends HUD{
 									}
 								});		
 
-							} else if(updater == true && MenuHud.this.mMenuSprite.getX() < 230) { updater = false; MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getInitialX(), MenuHud.this.mMenuSprite.getInitialY()); }
+							} else if(updater == true && MenuHud.this.mMenuSprite.getX() < 230) { updater = false; MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getInitialX(), MenuHud.this.mMenuSprite.getInitialY());}
 						break;
 
 													
@@ -128,9 +128,9 @@ public class MenuHud extends HUD{
 				}
 			};
 
-			this.mHud.registerTouchArea(this.mMenuSprite);
-
-			this.mCancelSprite = new Sprite(416, 27, this.mCancelTextureRegion, this.mGame.getVertexBufferObjectManager());/* {
+			this.mHud.registerTouchArea(this.mMenuSprite);//416 - 27
+			this.mCancelSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 15, 0, this.mCancelTextureRegion, this.mGame.getVertexBufferObjectManager()){
+			
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -147,8 +147,8 @@ public class MenuHud extends HUD{
 					return true;
 				}
 			};
-
-			this.mHud.registerTouchArea(this.mCancelSprite);*/
+			this.mMenuSprite.attachChild(this.mCancelSprite,0);
+			this.mHud.registerTouchArea(this.mCancelSprite);
 		
 		
 		
