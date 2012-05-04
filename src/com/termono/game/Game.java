@@ -151,7 +151,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
 		this.mHud.attachChild(this.mStatsHud.getTermono());
 		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
-		this.mHud.attachChild(this.mMenuHud.getMenuBatch());
+		this.mHud.attachChild(this.mMenuHud.getMenuSprite());
 		
 		this.mDisplay.getCamera().setHUD(this.mHud);
 		
