@@ -5,12 +5,14 @@ package com.termono.display.hud;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.Entity;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.util.modifier.ease.EaseBackOut;
 
 import com.termono.game.Game;
 
@@ -82,14 +84,17 @@ public class MenuHud extends HUD{
 					// TODO Auto-generated method stub
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-							if(updater == false) {	
-								MenuHud.this.mGame.getScene().registerUpdateHandler(pUpdatehandler = new IUpdateHandler() {
+							if(updater == false) {
+								updater = true;
+								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, MenuHud.this.mGame.getDisplay().getCameraWidth()-96, 200, -236, 100, EaseBackOut.getInstance()));
+
+								/*					MenuHud.this.mGame.getScene().registerUpdateHandler(pUpdatehandler = new IUpdateHandler() {
 								
 									@Override
 									public void onUpdate(float pSecondsElapsed) {
 										updater = true;
 										if(MenuHud.this.mMenuEntity.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}
-										MenuHud.this.mMenuEntity.setPosition(MenuHud.this.mMenuEntity.getX() - 20, MenuHud.this.mMenuEntity.getY() + 12);
+										MenuHud.this.mMenuEntity.setPositi	on(MenuHud.this.mMenuEntity.getX() - 20, MenuHud.this.mMenuEntity.getY() + 12);
 									}
 								
 									@Override
@@ -97,7 +102,7 @@ public class MenuHud extends HUD{
 										// TODO Auto-generated method stub			
 									}
 								});		
-
+*/
 							} 
 						break;
 
