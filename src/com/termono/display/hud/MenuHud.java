@@ -3,28 +3,14 @@ package com.termono.display.hud;
 
 
 import org.andengine.engine.camera.hud.HUD;
-
 import org.andengine.engine.handler.IUpdateHandler;
-
+import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
-
-import org.andengine.entity.sprite.batch.DynamicSpriteBatch;
-
-import org.andengine.entity.sprite.batch.SpriteBatch;
-
-import org.andengine.entity.text.Text;
-
 import org.andengine.input.touch.TouchEvent;
-
 import org.andengine.opengl.texture.TextureOptions;
-
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-
 import org.andengine.opengl.texture.region.ITextureRegion;
-
-
 
 import com.termono.game.Game;
 
@@ -55,6 +41,7 @@ public class MenuHud extends HUD{
 		private ITextureRegion mCancelTextureRegion;
 		private Sprite mMenuSprite;
 		private Sprite mCancelSprite;
+		private Entity mMenuEntity;
 		
 		
 
@@ -71,7 +58,8 @@ public class MenuHud extends HUD{
 			this.mHud = pHud;
 
 			
-
+			this.mMenuEntity = new Entity(this.mGame.getDisplay().getCameraWidth()-96, -236);
+			
 			// Set base path for Textures
 
 			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/");
@@ -85,12 +73,8 @@ public class MenuHud extends HUD{
 			
 			// Load Texture into memory and on the screen
 			this.mMenuTextureAtlas.load();
-
-
-
-			
  
-			this.mMenuSprite = new Sprite(this.mGame.getDisplay().getCameraWidth()-96, -236, this.mMenuTextureRegion, this.mGame.getVertexBufferObjectManager()) {
+			this.mMenuSprite = new Sprite(0,0, this.mMenuTextureRegion, this.mGame.getVertexBufferObjectManager()) {
 
 				@Override
 				public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
@@ -104,8 +88,8 @@ public class MenuHud extends HUD{
 									@Override
 									public void onUpdate(float pSecondsElapsed) {
 										updater = true;
-										if(MenuHud.this.mMenuSprite.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}
-										MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getX() - 20, MenuHud.this.mMenuSprite.getY() + 12);
+										if(MenuHud.this.mMenuEntity.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}
+										MenuHud.this.mMenuEntity.setPosition(MenuHud.this.mMenuEntity.getX() - 20, MenuHud.this.mMenuEntity.getY() + 12);
 									}
 								
 									@Override
@@ -114,7 +98,7 @@ public class MenuHud extends HUD{
 									}
 								});		
 
-							} else if(updater == true && MenuHud.this.mMenuSprite.getX() < 230) { updater = false; MenuHud.this.mMenuSprite.setPosition(MenuHud.this.mMenuSprite.getInitialX(), MenuHud.this.mMenuSprite.getInitialY());}
+							} 
 						break;
 
 													
@@ -125,33 +109,36 @@ public class MenuHud extends HUD{
 							break;
 					}
 					return true;
+					
 				}
 			};
-
-			this.mHud.registerTouchArea(this.mMenuSprite);//416 - 27
-			this.mCancelSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 15, 0, this.mCancelTextureRegion, this.mGame.getVertexBufferObjectManager()){
+			
+			
+			this.mCancelSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 120, 40, this.mCancelTextureRegion, this.mGame.getVertexBufferObjectManager()){
 			
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-							MenuHud.this.mCancelSprite.setScale(2.0f);
+							if(updater == true && MenuHud.this.mMenuEntity.getX() < 230) { updater = false; MenuHud.this.mMenuEntity.setPosition(MenuHud.this.mMenuEntity.getInitialX(), MenuHud.this.mMenuEntity.getInitialY());}
 							break;
 						case TouchEvent.ACTION_MOVE:
 						case TouchEvent.ACTION_CANCEL:
 						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
-							MenuHud.this.mCancelSprite.setScale(1.0f);
+							MenuHud.this.mCancelSprite.setScale(2.0f);
 							break;
 					}
 					return true;
 				}
 			};
-			this.mMenuSprite.attachChild(this.mCancelSprite,0);
+			
+			this.mCancelSprite.setScale(2.0f);
 			this.mHud.registerTouchArea(this.mCancelSprite);
-		
-		
-		
+			this.mHud.registerTouchArea(this.mMenuSprite);//416 - 27
+			
+			this.mMenuEntity.attachChild(this.mMenuSprite);
+			this.mMenuEntity.attachChild(this.mCancelSprite);
 		}
 
 
@@ -178,6 +165,9 @@ public class MenuHud extends HUD{
 			return this.mMenuSprite;
 		}
 
+		public Entity getMenuEntity() {
+			return this.mMenuEntity;
+		}
 		
 
 }
