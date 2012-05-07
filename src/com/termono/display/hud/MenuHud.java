@@ -41,8 +41,10 @@ public class MenuHud extends HUD{
 		private boolean updater = false;
 		private ITextureRegion mMenuTextureRegion;
 		private ITextureRegion mCancelTextureRegion;
+		private ITextureRegion mInventoryTextureRegion;
 		private Sprite mMenuSprite;
 		private Sprite mCancelSprite;
+		private Sprite mInventorySprite;
 		private Entity mMenuEntity;
 		
 		
@@ -69,9 +71,10 @@ public class MenuHud extends HUD{
 			
 
 			// Create Texture objects
-			this.mMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 512, 512, TextureOptions.BILINEAR);		
+			this.mMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);		
 			this.mMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "menu.png", 0, 0);
-			this.mCancelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "cruz.png", 0, 320);
+			this.mCancelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "cruz.png", 0, 310);
+			this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "Inventory.png", 40, 350);
 			
 			// Load Texture into memory and on the screen
 			this.mMenuTextureAtlas.load();
@@ -87,22 +90,6 @@ public class MenuHud extends HUD{
 							if(updater == false) {
 								updater = true;
 								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, MenuHud.this.mGame.getDisplay().getCameraWidth()-96, 200, -236, 100, EaseBackOut.getInstance()));
-
-								/*					MenuHud.this.mGame.getScene().registerUpdateHandler(pUpdatehandler = new IUpdateHandler() {
-								
-									@Override
-									public void onUpdate(float pSecondsElapsed) {
-										updater = true;
-										if(MenuHud.this.mMenuEntity.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}
-										MenuHud.this.mMenuEntity.setPositi	on(MenuHud.this.mMenuEntity.getX() - 20, MenuHud.this.mMenuEntity.getY() + 12);
-									}
-								
-									@Override
-									public void reset() {
-										// TODO Auto-generated method stub			
-									}
-								});		
-*/
 							} 
 						break;
 
@@ -118,6 +105,7 @@ public class MenuHud extends HUD{
 				}
 			};
 			
+			//fin del menu
 			
 			this.mCancelSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 120, 40, this.mCancelTextureRegion, this.mGame.getVertexBufferObjectManager()){
 			
@@ -137,13 +125,36 @@ public class MenuHud extends HUD{
 					return true;
 				}
 			};
-			
 			this.mCancelSprite.setScale(2.0f);
+			//fin del cancel
+			
+			
+			this.mInventorySprite = new Sprite(100,100,this.mInventoryTextureRegion,this.mGame.getVertexBufferObjectManager()){
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+						case TouchEvent.ACTION_DOWN:
+							if(updater == true && MenuHud.this.mMenuEntity.getX() < 230) {MenuHud.this.mInventorySprite.setScale(5.0f);}
+							break;
+						case TouchEvent.ACTION_OUTSIDE:
+						case TouchEvent.ACTION_UP:
+							MenuHud.this.mInventorySprite.setScale(3.0f);
+							break;
+						}
+					return true;
+				}		
+			};
+			this.mInventorySprite.setScale(3.0f);
+			//fin del Inventory
+			
+
+			this.mHud.registerTouchArea(this.mInventorySprite);
 			this.mHud.registerTouchArea(this.mCancelSprite);
-			this.mHud.registerTouchArea(this.mMenuSprite);//416 - 27
+			this.mHud.registerTouchArea(this.mMenuSprite);
 			
 			this.mMenuEntity.attachChild(this.mMenuSprite);
 			this.mMenuEntity.attachChild(this.mCancelSprite);
+			this.mMenuEntity.attachChild(this.mInventorySprite);
 		}
 
 
@@ -176,3 +187,22 @@ public class MenuHud extends HUD{
 		
 
 }
+
+
+
+
+/*					MenuHud.this.mGame.getScene().registerUpdateHandler(pUpdatehandler = new IUpdateHandler() {
+
+	@Override
+	public void onUpdate(float pSecondsElapsed) {
+		updater = true;
+		if(MenuHud.this.mMenuEntity.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}
+		MenuHud.this.mMenuEntity.setPositi	on(MenuHud.this.mMenuEntity.getX() - 20, MenuHud.this.mMenuEntity.getY() + 12);
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub			
+	}
+});		
+*/
