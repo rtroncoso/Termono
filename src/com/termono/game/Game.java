@@ -9,20 +9,16 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
-import org.andengine.extension.tmx.TMXLayer;
-import org.andengine.extension.tmx.TMXLoader;
 import org.andengine.extension.tmx.TMXTiledMap;
-import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
-import org.andengine.util.debug.Debug;
 
 import com.termono.display.Display;
 import com.termono.display.hud.ControlsHud;
 import com.termono.display.hud.MenuHud;
 import com.termono.display.hud.SpellbarHud;
 import com.termono.display.hud.StatsHud;
+import com.termono.map.Map;
 import com.termono.methods.Timers;
 import com.termono.player.Enemy;
 import com.termono.player.Player;
@@ -49,6 +45,7 @@ public class Game extends SimpleBaseGameActivity {
 	private Enemy mEnemy;
 	private Timers mTimers;
 	private MenuHud mMenuHud;
+	private Map mMap;
 	
 	private Enemy mMob2;
 	// ===========================================================
@@ -94,16 +91,9 @@ public class Game extends SimpleBaseGameActivity {
 		/*
 		 * LAYER - MAP
 		 */
-		try {
-			final TMXLoader tmxLoader = new TMXLoader(this.getAssets(), this.mEngine.getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.getVertexBufferObjectManager());
-			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/desert.tmx");
-		} catch (final TMXLoadException tmxle) {
-			Debug.e(tmxle);
-		}
-
-		final TMXLayer tmxLayer = this.mTMXTiledMap.getTMXLayers().get(0);
-		this.mScene.attachChild(tmxLayer);
-
+		this.mMap = new Map(this, "desert");
+		this.mScene.attachChild(this.mMap.getTMXTiledMap().getTMXLayers().get(0));
+		
 		/*
 		 * LAYER - ENTITIES
 		 */
@@ -187,13 +177,7 @@ public class Game extends SimpleBaseGameActivity {
 		this.mScene = pScene;
 	}
 
-	public TMXTiledMap getTMXTiledMap() {
-		return mTMXTiledMap;
-	}
 
-	public void setTMXTiledMap(TMXTiledMap pTMXTiledMap) {
-		this.mTMXTiledMap = pTMXTiledMap;
-	}
 
 	public ControlsHud getControlsHud() {
 		return mControlsHud;
