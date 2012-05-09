@@ -58,7 +58,7 @@ public class GameScene extends Scene {
 			 */
 			// Create the Player
 			this.mHero = new Player(this.mGame);
-			this.mHero.loadTexture("Mage.png", 128, 256, 0, 0, 4, 4);
+			this.mHero.load("Mage.png", 128, 256, 0, 0, 4, 4);
 
 			// Center the Player in the Screen
 			this.mHero.getAnimatedSprite().setPosition(0, 0 - (this.mHero.getTiledTextureRegion().getHeight() - 32));
@@ -72,12 +72,12 @@ public class GameScene extends Scene {
 			//Enemy
 			
 			this.mEnemy = new Enemy(this.mGame);
-			this.mEnemy.loadTexture("Mob.png", 128, 256, 0, 0, 4, 4);
+			this.mEnemy.load("Mob.png", 128, 256, 0, 0, 4, 4);
 			this.mEnemy.getAnimatedSprite().setPosition(64, 64);
 			this.attachChild(this.mEnemy.getAnimatedSprite());
 			
 			this.mMob2 = new Enemy(this.mGame);
-			this.mMob2.loadTexture("Mob2.png", 128, 256, 0, 0, 4, 4);
+			this.mMob2.load("Mob2.png", 128, 256, 0, 0, 4, 4);
 			this.mMob2.getAnimatedSprite().setPosition(96, 96);
 			this.attachChild(this.mMob2.getAnimatedSprite());
 			
