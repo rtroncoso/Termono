@@ -12,8 +12,6 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.termono.game.Game;
-import com.termono.methods.Point;
-import com.termono.player.Player;
 
 public class Entity {
 	// ===========================================================
@@ -67,7 +65,7 @@ public class Entity {
 				return Entity.this.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
 			}
 		};
-
+		
 		return this;
 	}
 
@@ -152,15 +150,6 @@ public class Entity {
 
 	public TiledTextureRegion getTiledTextureRegion() {
 		return this.mTiledTextureRegion;
-	}
-	
-	public Point getPosition() {
-		return new Point(this.mAnimatedSprite.getX(), this.mAnimatedSprite.getY());
-	}
-	
-	public Entity setPosition(Point pNewPos) {
-		this.mAnimatedSprite.setPosition(pNewPos.getX(), pNewPos.getY());
-		return this;
 	}
 
 	public AnimatedSprite getAnimatedSprite() {

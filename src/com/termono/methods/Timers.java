@@ -4,7 +4,7 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 
 import com.termono.game.Game;
-import com.termono.player.Enemy;
+import com.termono.player.Mob;
 
 
 
@@ -18,13 +18,13 @@ public class Timers {
 		// Fields
 		// ===========================================================
 		private Game mGame;
-		private Enemy mEnemy;
-		private Enemy mMob2;
+		private Mob mEnemy;
+		private Mob mMob2;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
 	
-		public Timers(Game pGame, Enemy pEnemy, Enemy pMob2) {
+		public Timers(Game pGame, Mob pEnemy, Mob pMob2) {
 			this.mGame = pGame;
 			this.mEnemy = pEnemy;		
 			this.mMob2 = pMob2;

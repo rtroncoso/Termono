@@ -10,7 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.termono.game.Game;
-import com.termono.player.Enemy;
+import com.termono.player.Mob;
 
 public class StatsHud extends HUD {
 
@@ -23,7 +23,7 @@ public class StatsHud extends HUD {
 	// Fields
 	// ===========================================================
 	private Game mGame;
-	private Enemy mEnemy;
+	private Mob mEnemy;
 	private BitmapTextureAtlas mFontTexture;
 	private StrokeFont mFont;
 	private Text mTermono;
@@ -31,7 +31,7 @@ public class StatsHud extends HUD {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public StatsHud(Game pGame, Enemy pEnemy) {
+	public StatsHud(Game pGame, Mob pEnemy) {
 		
 		this.mGame = pGame;
 		this.mEnemy = pEnemy;

@@ -2,27 +2,14 @@ package com.termono.game;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
-import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.util.FPSLogger;
-import org.andengine.extension.tmx.TMXTiledMap;
-import org.andengine.input.touch.TouchEvent;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
 import com.termono.display.Display;
-import com.termono.display.hud.ControlsHud;
-import com.termono.display.hud.MenuHud;
-import com.termono.display.hud.SpellbarHud;
-import com.termono.display.hud.StatsHud;
 import com.termono.helpers.SceneManager;
-import com.termono.map.Map;
-import com.termono.methods.Timers;
-import com.termono.player.Enemy;
-import com.termono.player.Player;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================

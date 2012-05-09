@@ -17,7 +17,6 @@ public class SceneManager {
 	// Fields
 	// ===========================================================
 	private Scene mScene;
-	private SceneManager mSceneManager;
 	private Game mGame;
 	
 	// ===========================================================

@@ -1,20 +1,17 @@
 package com.termono.scenes;
 
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
-import org.andengine.extension.tmx.TMXTiledMap;
-import org.andengine.input.touch.TouchEvent;
 
 import com.termono.display.hud.ControlsHud;
 import com.termono.display.hud.MenuHud;
 import com.termono.display.hud.SpellbarHud;
 import com.termono.display.hud.StatsHud;
 import com.termono.game.Game;
-import com.termono.map.Map;
+import com.termono.helpers.MapManager;
 import com.termono.methods.Timers;
-import com.termono.player.Enemy;
+import com.termono.player.Mob;
 import com.termono.player.Player;
 
 public class GameScene extends Scene {
@@ -27,10 +24,10 @@ public class GameScene extends Scene {
 		// Fields
 		// ===========================================================
 		private Game mGame;
-		private Map mMap;
-		private Enemy mMob2;
+		private MapManager mMapManager;
+		private Mob mMob2;
 		private Player mHero;
-		private Enemy mEnemy;
+		private Mob mEnemy;
 		private Timers mTimers;
 		private MenuHud mMenuHud;
 		private HUD mHud;
@@ -50,8 +47,8 @@ public class GameScene extends Scene {
 			/*
 			 * LAYER - MAP
 			 */
-			this.mMap = new Map(this.mGame, "desert");
-			this.attachChild(this.mMap.getTMXTiledMap().getTMXLayers().get(0));
+			this.mMapManager = new MapManager(this.mGame, "desert");
+			this.attachChild(this.mMapManager.getTMXTiledMap().getTMXLayers().get(0));
 			
 			/*
 			 * LAYER - ENTITIES
@@ -67,16 +64,13 @@ public class GameScene extends Scene {
 			// Attach it
 			this.attachChild(this.mHero.getAnimatedSprite());
 			
-			
-			
 			//Enemy
-			
-			this.mEnemy = new Enemy(this.mGame);
+			this.mEnemy = new Mob(this.mGame);
 			this.mEnemy.load("Mob.png", 128, 256, 0, 0, 4, 4);
 			this.mEnemy.getAnimatedSprite().setPosition(64, 64);
 			this.attachChild(this.mEnemy.getAnimatedSprite());
 			
-			this.mMob2 = new Enemy(this.mGame);
+			this.mMob2 = new Mob(this.mGame);
 			this.mMob2.load("Mob2.png", 128, 256, 0, 0, 4, 4);
 			this.mMob2.getAnimatedSprite().setPosition(96, 96);
 			this.attachChild(this.mMob2.getAnimatedSprite());
