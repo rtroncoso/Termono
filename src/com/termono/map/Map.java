@@ -44,7 +44,7 @@ public class Map {
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 	
-	// mapa(x)(y)wwwwwwwwwwwwwwwwwwwwwwwwwwww
+	// mapa(x)(y)
 	
 	// ===========================================================
 	// Getter & Setter

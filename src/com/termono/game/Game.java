@@ -18,6 +18,7 @@ import com.termono.display.hud.ControlsHud;
 import com.termono.display.hud.MenuHud;
 import com.termono.display.hud.SpellbarHud;
 import com.termono.display.hud.StatsHud;
+import com.termono.helpers.SceneManager;
 import com.termono.map.Map;
 import com.termono.methods.Timers;
 import com.termono.player.Enemy;
@@ -34,20 +35,8 @@ public class Game extends SimpleBaseGameActivity {
 	// Fields
 	// ===========================================================
 	private Display mDisplay;
-	private Scene mScene;
-	private Player mHero;
-	private TMXTiledMap mTMXTiledMap;
-	private ControlsHud mControlsHud;
-	private SpellbarHud mSpellbarHud;
-	private StatsHud mStatsHud;
-	private HUD mHud;
-	private boolean pZoomedIn;
-	private Enemy mEnemy;
-	private Timers mTimers;
-	private MenuHud mMenuHud;
-	private Map mMap;
-	
-	private Enemy mMob2;
+	private SceneManager mSceneManager;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -79,83 +68,14 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	protected void onCreateResources() {
 		// TODO Auto-generated method stub
-		
-	}
+		}
 
+	
 	@Override
 	protected Scene onCreateScene() {
-		// TODO Auto-generated method stub
-		this.mEngine.registerUpdateHandler(new FPSLogger());		
-		this.mScene = new Scene();
-
-		/*
-		 * LAYER - MAP
-		 */
-		this.mMap = new Map(this, "desert");
-		this.mScene.attachChild(this.mMap.getTMXTiledMap().getTMXLayers().get(0));
-		
-		/*
-		 * LAYER - ENTITIES
-		 */
-		// Create the Player
-		this.mHero = new Player(this);
-		this.mHero.loadTexture("Mage.png", 128, 256, 0, 0, 4, 4);
-
-		// Center the Player in the Screen
-		this.mHero.getAnimatedSprite().setPosition(0, 0 - (this.mHero.getTiledTextureRegion().getHeight() - 32));
-		this.getDisplay().doFocusCamera(this.mHero);
-		
-		// Attach it
-		this.mScene.attachChild(this.mHero.getAnimatedSprite());
-		
-		
-		
-		//Enemy
-		
-		this.mEnemy = new Enemy(this);
-		this.mEnemy.loadTexture("Mob.png", 128, 256, 0, 0, 4, 4);
-		this.mEnemy.getAnimatedSprite().setPosition(64, 64);
-		this.mScene.attachChild(this.mEnemy.getAnimatedSprite());
-		
-		this.mMob2 = new Enemy(this);
-		this.mMob2.loadTexture("Mob2.png", 128, 256, 0, 0, 4, 4);
-		this.mMob2.getAnimatedSprite().setPosition(96, 96);
-		this.mScene.attachChild(this.mMob2.getAnimatedSprite());
-		
-		//Timer
-		this.mTimers = new Timers(this, mEnemy, mMob2);
-		this.mTimers.createMobMovementTimeHandler();
-		
-		
-		/*
-		 * LAYER - HUDs
-		 */
-		this.mHud = new HUD();
-		this.mStatsHud = new StatsHud(this, mEnemy);
-		this.mSpellbarHud = new SpellbarHud(this, this.mHud);
-		this.mControlsHud = new ControlsHud(this, this.mHero);
-		this.mMenuHud = new MenuHud(this, mHud);
-		
-		this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
-		this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
-		this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
-		this.mHud.attachChild(this.mStatsHud.getTermono());
-		this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
-		this.mHud.attachChild(this.mMenuHud.getMenuEntity());
-		
-		this.mDisplay.getCamera().setHUD(this.mHud);
-		
-		this.mScene.setOnSceneTouchListener(new IOnSceneTouchListener() {
-			@Override
-			public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
-				if(Game.this.mDisplay.getCamera().getZoomFactor() == 1.7f) { pZoomedIn = true; } 
-				else if(Game.this.mDisplay.getCamera().getZoomFactor() == 1.0f) { pZoomedIn = false; }
-				Game.this.mDisplay.getCamera().setZoomFactor((pZoomedIn) ? 1.0f : 1.7f);
-				return true;
-			}
-		});
-		
-		return this.mScene;
+		this.mSceneManager = new SceneManager(this);
+		this.mSceneManager.setGameScene();
+		return this.mSceneManager.getCurrScene();
 	}
 
 	// ===========================================================
@@ -167,32 +87,6 @@ public class Game extends SimpleBaseGameActivity {
 
 	public Display getDisplay() {
 		return mDisplay;
-	}
-
-	public Scene getScene() {
-		return mScene;
-	}
-
-	public void setScene(Scene pScene) {
-		this.mScene = pScene;
-	}
-
-
-
-	public ControlsHud getControlsHud() {
-		return mControlsHud;
-	}
-
-	public void setControlsHud(ControlsHud pControlsHud) {
-		this.mControlsHud = pControlsHud;
-	}
-
-	public StatsHud getStatsHud() {
-		return mStatsHud;
-	}
-
-	public void setStatsHud(StatsHud pStatsHud) {
-		this.mStatsHud = pStatsHud;
 	}
 
 	// ===========================================================
