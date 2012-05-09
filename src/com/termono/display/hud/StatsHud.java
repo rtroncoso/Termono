@@ -23,7 +23,6 @@ public class StatsHud extends HUD {
 	// Fields
 	// ===========================================================
 	private Game mGame;
-	private Mob mEnemy;
 	private BitmapTextureAtlas mFontTexture;
 	private StrokeFont mFont;
 	private Text mTermono;

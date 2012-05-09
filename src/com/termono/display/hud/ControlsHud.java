@@ -11,7 +11,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.termono.game.Game;
-import com.termono.player.Mob;
 import com.termono.player.Player;
 
 public class ControlsHud extends HUD {

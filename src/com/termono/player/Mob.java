@@ -5,13 +5,6 @@ package com.termono.player;
 
 import java.util.Random;
 
-import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.PathModifier;
-import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
-import org.andengine.entity.modifier.PathModifier.Path;
-import org.andengine.util.modifier.ease.EaseLinear;
-
 import com.termono.game.Game;
 import com.termono.objects.Entity;
 
@@ -25,16 +18,10 @@ public class Mob extends Entity{
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private final float SPEED_MODIFIER = 3.0f;
-	private final float TILE_WIDTH = 32;
-	private final float TILE_HEIGHT = 32;
 
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private int Vida;
-	private PathModifier mPathModifier;
-	private Path mPath;
 	private Random rand;
 	
 	// ===========================================================

@@ -2,11 +2,6 @@ package com.termono.player;
 
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.PathModifier;
-import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
-import org.andengine.entity.modifier.PathModifier.Path;
-import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.termono.game.Game;
 import com.termono.objects.Entity;
