@@ -21,7 +21,6 @@ public class Entity {
 	// ===========================================================
 	protected final float SPEED_MODIFIER = 5.0f;
 	protected final float TILE_WIDTH = 32;
-//	protected final float TILE_HEIGHT = 32;
 	protected final float TILE_HEIGHT = 32;
 	
 	// ===========================================================
@@ -47,7 +46,7 @@ public class Entity {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public Entity loadTexture(String pPath, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
+	public Entity load(String pPath, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
@@ -132,9 +131,9 @@ public class Entity {
 		return this;
 	}
 	
-	public Entity loadTexture(String pPath, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY) {
+	public Entity load(String pPath, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY) {
 
-		return this.loadTexture(pPath, pFrameWidth, pFrameHeight, pFramePosX,
+		return this.load(pPath, pFrameWidth, pFrameHeight, pFramePosX,
 				pFramePosY, 1, 1);
 	}
 	
