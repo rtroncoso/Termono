@@ -2,6 +2,7 @@ package com.termono.game;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -34,10 +35,12 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
-		//sdf
+		
 		// Init Objects
 		this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
 				getWindowManager().getDefaultDisplay().getHeight());
+		
+	
 		
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mDisplay.getCamera());;
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);

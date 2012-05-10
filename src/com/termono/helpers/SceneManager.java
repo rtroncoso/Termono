@@ -40,13 +40,16 @@ public class SceneManager {
     }
 
     public void setGameScene(){
-    	this.mScene = new GameScene(this.mGame);
-    	this.mGame.getEngine().setScene(this.mScene);
+    	final GameScene gs = new GameScene(this.mGame);
+    	this.mGame.getEngine().setScene(gs);
+    	this.mGame.getDisplay().doFocusCamera(gs.getHero());
+    	this.mScene = gs;
     }
 
     public void setInventoryScene(){
     	this.mScene = new InventoryScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);
+    	
     }
         
     

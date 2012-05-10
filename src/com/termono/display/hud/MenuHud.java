@@ -14,6 +14,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.modifier.ease.EaseBackOut;
 
 import com.termono.game.Game;
+import com.termono.helpers.SceneManager;
 
 
 
@@ -44,7 +45,7 @@ public class MenuHud extends HUD{
 		private Sprite mCancelSprite;
 		private Sprite mInventorySprite;
 		private Entity mMenuEntity;
-		
+		private SceneManager mSceneManager;
 		
 
 		// ===========================================================
@@ -56,7 +57,8 @@ public class MenuHud extends HUD{
 			//Init local Variables
 			this.mGame = pGame;
 			this.mHud = pHud;
-
+			this.mSceneManager = new SceneManager(mGame);
+			
 			this.mMenuEntity = new Entity(this.mGame.getDisplay().getCameraWidth()-96, -236);
 			
 			// Set base path for Textures
@@ -119,11 +121,12 @@ public class MenuHud extends HUD{
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-							MenuHud.this.mInventorySprite.setScale(5.0f);
+							//MenuHud.this.mInventorySprite.setScale(5.0f);
 							break;
 						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
-							MenuHud.this.mInventorySprite.setScale(3.0f);
+							//MenuHud.this.mInventorySprite.setScale(3.0f);
+							MenuHud.this.mSceneManager.setInventoryScene();
 							break;
 						}
 					return true;
@@ -133,13 +136,13 @@ public class MenuHud extends HUD{
 			//fin del Inventory
 			
 
-			//this.mHud.registerTouchArea(this.mInventorySprite);
+			this.mHud.registerTouchArea(this.mInventorySprite);
 			this.mHud.registerTouchArea(this.mCancelSprite);
 			this.mHud.registerTouchArea(this.mMenuSprite);
 			
 			this.mMenuEntity.attachChild(this.mMenuSprite);
 			this.mMenuEntity.attachChild(this.mCancelSprite);
-			//this.mMenuEntity.attachChild(this.mInventorySprite);
+			this.mMenuEntity.attachChild(this.mInventorySprite);
 		}
 
 

@@ -16,7 +16,6 @@ public class Display {
 	private int mCameraHeight;
 	private int mDisplayWidth;
 	private int mDisplayHeight;
-	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -26,18 +25,21 @@ public class Display {
 		this.mDisplayWidth = pDisplayWidth;
 		this.mDisplayHeight = pDisplayHeight;
 
+		
 		this.mBoundChaseCamera = new BoundCamera(0, 0, this.mCameraWidth, this.mCameraHeight) { 
-			@Override
-			public void setCenter(float pCenterX, float pCenterY) {
-				super.setCenter((int)pCenterX, (int)pCenterY);
-			}
-			
-		};
+				@Override
+				public void setCenter(float pCenterX, float pCenterY) {
+					super.setCenter((int)pCenterX, (int)pCenterY);
+				}
+				
+			};
+		
 		
 		this.mCamera = new SmoothCamera(0, 0, this.mCameraWidth, this.mCameraHeight, 170, 170, 1.7f);
 		this.mCamera.setZoomFactor(1.7f);
 	}
 	
+		
 	public Display(int pDisplayWidth, int pDisplayHeight) {
 		this(pDisplayWidth, pDisplayHeight, pDisplayWidth, pDisplayHeight);
 	}
@@ -59,6 +61,7 @@ public class Display {
 	// Getter & Setter
 	// ===========================================================
 
+		
 	public int getCameraWidth() {
 		return this.mCameraWidth;
 	}

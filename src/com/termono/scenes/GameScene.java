@@ -123,6 +123,9 @@ public class GameScene extends Scene {
 			this.mStatsHud = pStatsHud;
 		}
 		
+		public Player getHero() {
+			return this.mHero;
+		}
 
 		// ===========================================================
 		// Methods
