@@ -45,7 +45,7 @@ public class SceneManager {
     }
 
     public void setInventoryScene(){
-    	this.mScene = new InventoryScene();
+    	this.mScene = new InventoryScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);
     }
         

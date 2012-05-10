@@ -4,6 +4,7 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -22,7 +23,7 @@ public class InventoryScene extends Scene {
 	// ===========================================================
 	private Game mGame;
 	private HUD mHud;
-	private BitmapTextureAtlas mInvetoryTextureAtlas;
+	private BitmapTextureAtlas mInventoryTextureAtlas;
 	private ITextureRegion mInventoryTextureRegion;
 	private Sprite mInventorySprite;
 	private Entity mInventoryEntity;
@@ -36,7 +37,8 @@ public class InventoryScene extends Scene {
 		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/");
-		
+		this.mInventoryTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024,512, TextureOptions.BILINEAR);		
+		this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "menu ingame.png", 0, 0);
 		
 	}
 	

@@ -26,14 +26,14 @@ public class StatsHud extends HUD {
 	private BitmapTextureAtlas mFontTexture;
 	private StrokeFont mFont;
 	private Text mTermono;
-	
+	private Mob mMob;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public StatsHud(Game pGame, Mob pEnemy) {
+	public StatsHud(Game pGame, Mob pMob) {
 		
 		this.mGame = pGame;
-		this.mEnemy = pEnemy;
+		this.mMob = pMob;
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
