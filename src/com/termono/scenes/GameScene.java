@@ -4,6 +4,7 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 
+import com.termono.display.Display;
 import com.termono.display.hud.ControlsHud;
 import com.termono.display.hud.MenuHud;
 import com.termono.display.hud.SpellbarHud;
@@ -18,8 +19,9 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Constants
 		// ===========================================================
-		
-		
+		private static int CAMERA_WIDTH = 800;
+		private static int CAMERA_HEIGHT = 480;
+			
 		// ===========================================================
 		// Fields
 		// ===========================================================
@@ -41,6 +43,8 @@ public class GameScene extends Scene {
 		public GameScene(Game pGame){
 			this.mGame = pGame;
 
+				
+			
 			// TODO Auto-generated method stub
 			this.mGame.getEngine().registerUpdateHandler(new FPSLogger());
 

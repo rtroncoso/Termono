@@ -39,10 +39,10 @@ public class MenuHud extends HUD{
 		private HUD mHud;
 		private boolean updater = false;
 		private ITextureRegion mMenuTextureRegion;
-		private ITextureRegion mCancelTextureRegion;
+		private ITextureRegion mCloseTextureRegion;
 		private ITextureRegion mInventoryTextureRegion;
 		private Sprite mMenuSprite;
-		private Sprite mCancelSprite;
+		private Sprite mCloseSprite;
 		private Sprite mInventorySprite;
 		private Entity mMenuEntity;
 		private SceneManager mSceneManager;
@@ -67,7 +67,7 @@ public class MenuHud extends HUD{
 			// Create Texture objects
 			this.mMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);		
 			this.mMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "menu ingame.png", 0, 0);
-			this.mCancelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "cruz.png", 0, 322);
+			this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "cruz.png", 0, 322);
 			this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "Inventory.png", 602, 0);
 			
 			// Load Texture into memory and on the screen
@@ -94,25 +94,25 @@ public class MenuHud extends HUD{
 			
 			//fin del menu
 			
-			this.mCancelSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 120, 40, this.mCancelTextureRegion, this.mGame.getVertexBufferObjectManager()){
+			this.mCloseSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 120, 40, this.mCloseTextureRegion, this.mGame.getVertexBufferObjectManager()){
 			
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
-						case TouchEvent.ACTION_DOWN:
-							if(updater == true && MenuHud.this.mMenuEntity.getX() < 100) { updater = false; MenuHud.this.mMenuEntity.setPosition(MenuHud.this.mMenuEntity.getInitialX(), MenuHud.this.mMenuEntity.getInitialY());}
+						case TouchEvent.ACTION_DOWN://&& MenuHud.this.mMenuEntity.getX() < 100
+							if(updater == true) { updater = false; MenuHud.this.mMenuEntity.setPosition(MenuHud.this.mMenuEntity.getInitialX(), MenuHud.this.mMenuEntity.getInitialY());}
 							break;
 						case TouchEvent.ACTION_MOVE:
 						case TouchEvent.ACTION_CANCEL:
 						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
-							MenuHud.this.mCancelSprite.setScale(2.0f);
+							MenuHud.this.mCloseSprite.setScale(2.0f);
 							break;
 					}
 					return true;
 				}
 			};
-			this.mCancelSprite.setScale(2.0f);
+			this.mCloseSprite.setScale(2.0f);
 			//fin del cancel
 			
 			
@@ -137,11 +137,11 @@ public class MenuHud extends HUD{
 			
 
 			this.mHud.registerTouchArea(this.mInventorySprite);
-			this.mHud.registerTouchArea(this.mCancelSprite);
+			this.mHud.registerTouchArea(this.mCloseSprite);
 			this.mHud.registerTouchArea(this.mMenuSprite);
 			
 			this.mMenuEntity.attachChild(this.mMenuSprite);
-			this.mMenuEntity.attachChild(this.mCancelSprite);
+			this.mMenuEntity.attachChild(this.mCloseSprite);
 			this.mMenuEntity.attachChild(this.mInventorySprite);
 		}
 

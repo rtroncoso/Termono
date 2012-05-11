@@ -18,13 +18,12 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	private static int CAMERA_WIDTH = 800;
 	private static int CAMERA_HEIGHT = 480;
-
+	
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Display mDisplay;
 	private SceneManager mSceneManager;
-
+	private Display mDisplay;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -39,7 +38,8 @@ public class Game extends SimpleBaseGameActivity {
 		// Init Objects
 		this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
 				getWindowManager().getDefaultDisplay().getHeight());
-		
+
+
 	
 		
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mDisplay.getCamera());;

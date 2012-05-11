@@ -1,7 +1,9 @@
 package com.termono.helpers;
 
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.Scene;
 
+import com.termono.display.Display;
 import com.termono.game.Game;
 import com.termono.scenes.GameScene;
 import com.termono.scenes.InventoryScene;
@@ -25,6 +27,7 @@ public class SceneManager {
 	public SceneManager(Game pGame){
 		this.mGame = pGame;
     }
+	
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -47,8 +50,10 @@ public class SceneManager {
     }
 
     public void setInventoryScene(){
+    	this.mGame.getDisplay().setCamera(new SmoothCamera(0, 0, this.mGame.getDisplay().getCameraWidth(), this.mGame.getDisplay().getCameraHeight(), 170, 170, 1.7f));
     	this.mScene = new InventoryScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);
+    	
     	
     }
         
