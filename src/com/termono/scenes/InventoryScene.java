@@ -48,6 +48,9 @@ public class InventoryScene extends Scene {
 		this.mSceneManager = new SceneManager(mGame);
 		//this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
 	//			this.mGame.getWindowManager().getDefaultDisplay().getHeight());
+		this.mInventoryEntity = new Entity(0,0);
+		
+		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/Inventory/");
 		this.mInventoryTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
@@ -62,7 +65,7 @@ public class InventoryScene extends Scene {
 		this.mInventorySprite = new Sprite(0, 0, this.mInventoryTextureRegion, this.mGame.getVertexBufferObjectManager()) {		};
 		this.attachChild(mInventorySprite);
 		
-		this.mCloseSprite = new Sprite(InventoryScene.this.mInventorySprite.getWidth() - 120, 40,this.mCloseTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mCloseSprite = new Sprite(InventoryScene.this.mInventorySprite.getWidth() - 368, 10,this.mCloseTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 			
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -83,6 +86,8 @@ public class InventoryScene extends Scene {
 		
 		
 		
+		this.attachChild(mInventoryEntity);
+		this.mInventoryEntity.attachChild(mCloseSprite);
 		
 		
 		
