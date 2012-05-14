@@ -70,8 +70,7 @@ public class InventoryScene extends Scene {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_DOWN:
-				break;
+			case TouchEvent.ACTION_DOWN:		
 			case TouchEvent.ACTION_MOVE:
 			case TouchEvent.ACTION_CANCEL:
 			case TouchEvent.ACTION_OUTSIDE:
