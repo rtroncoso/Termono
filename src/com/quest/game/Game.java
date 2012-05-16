@@ -1,4 +1,4 @@
-package com.termono.game;
+package com.quest.game;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
@@ -9,8 +9,8 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
-import com.termono.display.Display;
-import com.termono.helpers.SceneManager;
+import com.quest.display.Display;
+import com.quest.helpers.SceneHelper;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
@@ -22,7 +22,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private SceneManager mSceneManager;
+	private SceneHelper mSceneManager;
 	private Display mDisplay;
 	// ===========================================================
 	// Constructors
@@ -63,7 +63,7 @@ public class Game extends SimpleBaseGameActivity {
 	
 	@Override
 	protected Scene onCreateScene() {
-		this.mSceneManager = new SceneManager(this);
+		this.mSceneManager = new SceneHelper(this);
 		this.mSceneManager.setGameScene();
 		return this.mSceneManager.getCurrScene();
 	}

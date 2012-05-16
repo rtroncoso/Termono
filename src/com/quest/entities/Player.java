@@ -1,10 +1,9 @@
-package com.termono.player;
+package com.quest.entities;
 
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 
-import com.termono.game.Game;
-import com.termono.objects.Entity;
+import com.quest.game.Game;
 
 
 public class Player extends Entity implements IOnScreenControlListener {

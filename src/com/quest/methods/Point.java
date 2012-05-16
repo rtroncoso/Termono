@@ -1,4 +1,4 @@
-package com.termono.methods;
+package com.quest.methods;
 
 public class Point {
 

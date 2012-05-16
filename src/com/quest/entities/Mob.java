@@ -1,12 +1,11 @@
 /**
  * 
  */
-package com.termono.player;
+package com.quest.entities;
 
 import java.util.Random;
 
-import com.termono.game.Game;
-import com.termono.objects.Entity;
+import com.quest.game.Game;
 
 /**
  * @author raccoon

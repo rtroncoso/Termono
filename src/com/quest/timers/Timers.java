@@ -1,12 +1,13 @@
-package com.termono.methods;
+package com.quest.timers;
 
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 
-import com.termono.game.Game;
-import com.termono.player.Mob;
+import com.quest.entities.Mob;
+import com.quest.game.Game;
 
-
+// TODO Mover a una clase principal que los demás timers hereden de esto
+// 		usando un updatehandler
 
 public class Timers {
 		// ===========================================================

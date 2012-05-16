@@ -1,4 +1,4 @@
-package com.termono.display.hud;
+package com.quest.display.hud;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -10,8 +10,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import com.termono.game.Game;
-import com.termono.player.Player;
+import com.quest.entities.Player;
+import com.quest.game.Game;
 
 public class ControlsHud extends HUD {
 

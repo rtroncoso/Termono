@@ -1,4 +1,4 @@
-package com.termono.scenes;
+package com.quest.scenes;
 
 import org.andengine.entity.scene.Scene;
 

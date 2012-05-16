@@ -1,19 +1,19 @@
-package com.termono.scenes;
+package com.quest.scenes;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 
-import com.termono.display.Display;
-import com.termono.display.hud.ControlsHud;
-import com.termono.display.hud.MenuHud;
-import com.termono.display.hud.SpellbarHud;
-import com.termono.display.hud.StatsHud;
-import com.termono.game.Game;
-import com.termono.helpers.MapManager;
-import com.termono.methods.Timers;
-import com.termono.player.Mob;
-import com.termono.player.Player;
+import com.quest.display.Display;
+import com.quest.display.hud.ControlsHud;
+import com.quest.display.hud.MenuHud;
+import com.quest.display.hud.SpellbarHud;
+import com.quest.display.hud.StatsHud;
+import com.quest.entities.Mob;
+import com.quest.entities.Player;
+import com.quest.game.Game;
+import com.quest.helpers.MapHelper;
+import com.quest.timers.Timers;
 
 public class GameScene extends Scene {
 		// ===========================================================
@@ -26,7 +26,7 @@ public class GameScene extends Scene {
 		// Fields
 		// ===========================================================
 		private Game mGame;
-		private MapManager mMapManager;
+		private MapHelper mMapManager;
 		private Mob mMob2;
 		private Player mHero;
 		private Mob mEnemy;
@@ -49,7 +49,7 @@ public class GameScene extends Scene {
 			/*
 			 * LAYER - MAP
 			 */
-			this.mMapManager = new MapManager(this.mGame, "desert");
+			this.mMapManager = new MapHelper(this.mGame, "desert");
 			this.attachChild(this.mMapManager.getTMXTiledMap().getTMXLayers().get(0));
 			
 			/*

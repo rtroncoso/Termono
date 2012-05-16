@@ -1,4 +1,4 @@
-package com.termono.helpers;
+package com.quest.helpers;
 
 import org.andengine.extension.tmx.TMXLoader;
 import org.andengine.extension.tmx.TMXTiledMap;
@@ -6,9 +6,9 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.util.debug.Debug;
 
-import com.termono.game.Game;
+import com.quest.game.Game;
 
-public class MapManager {
+public class MapHelper {
 
 	// ===========================================================
 	// Constants
@@ -25,7 +25,7 @@ public class MapManager {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public MapManager(Game pGame, String pPath) {
+	public MapHelper(Game pGame, String pPath) {
 		this.mGame = pGame;
 		this.mPath = pPath;
 		

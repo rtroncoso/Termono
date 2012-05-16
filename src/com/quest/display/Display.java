@@ -1,9 +1,9 @@
-package com.termono.display;
+package com.quest.display;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 
-import com.termono.objects.Entity;
+import com.quest.entities.Entity;
 
 public class Display {
 	
@@ -16,6 +16,7 @@ public class Display {
 	private int mCameraHeight;
 	private int mDisplayWidth;
 	private int mDisplayHeight;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================

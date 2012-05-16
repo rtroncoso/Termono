@@ -1,4 +1,4 @@
-package com.termono.scenes;
+package com.quest.scenes;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.Entity;
@@ -10,9 +10,9 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import com.termono.display.Display;
-import com.termono.game.Game;
-import com.termono.helpers.SceneManager;
+import com.quest.display.Display;
+import com.quest.game.Game;
+import com.quest.helpers.SceneHelper;
 
 public class InventoryScene extends Scene {
 	// ===========================================================
@@ -27,7 +27,7 @@ public class InventoryScene extends Scene {
 	// ===========================================================
 	private Game mGame;
 	private HUD mHud;
-	private SceneManager mSceneManager;
+	private SceneHelper mSceneManager;
 	private Entity mInventoryEntity;
 	private Display mDisplay;
 	
@@ -45,7 +45,7 @@ public class InventoryScene extends Scene {
 	// ===========================================================
 	public InventoryScene(Game pGame){
 		this.mGame = pGame;
-		this.mSceneManager = new SceneManager(mGame);
+		this.mSceneManager = new SceneHelper(mGame);
 		//this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
 	//			this.mGame.getWindowManager().getDefaultDisplay().getHeight());
 		this.mInventoryEntity = new Entity(0,0);

@@ -1,15 +1,15 @@
-package com.termono.helpers;
+package com.quest.helpers;
 
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.Scene;
 
-import com.termono.display.Display;
-import com.termono.game.Game;
-import com.termono.scenes.GameScene;
-import com.termono.scenes.InventoryScene;
-import com.termono.scenes.MainMenuScene;
+import com.quest.display.Display;
+import com.quest.game.Game;
+import com.quest.scenes.GameScene;
+import com.quest.scenes.InventoryScene;
+import com.quest.scenes.MainMenuScene;
 
-public class SceneManager {
+public class SceneHelper {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -24,7 +24,7 @@ public class SceneManager {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public SceneManager(Game pGame){
+	public SceneHelper(Game pGame){
 		this.mGame = pGame;
     }
 	

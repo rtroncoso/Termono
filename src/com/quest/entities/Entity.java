@@ -1,4 +1,4 @@
-package com.termono.objects;
+package com.quest.entities;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
@@ -11,7 +11,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.modifier.ease.EaseLinear;
 
-import com.termono.game.Game;
+import com.quest.game.Game;
 
 public class Entity {
 	// ===========================================================

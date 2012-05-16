@@ -1,4 +1,4 @@
-package com.termono.display.hud;
+package com.quest.display.hud;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.Sprite;
@@ -10,7 +10,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import com.termono.game.Game;
+import com.quest.game.Game;
 
 public class SpellbarHud extends HUD{
 

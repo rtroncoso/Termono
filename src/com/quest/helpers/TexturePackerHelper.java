@@ -1,4 +1,4 @@
-package com.termono.helpers;
+package com.quest.helpers;
 
 import java.util.HashMap;
 
@@ -6,7 +6,7 @@ import org.andengine.extension.texturepacker.opengl.texture.util.texturepacker.T
 import org.andengine.extension.texturepacker.opengl.texture.util.texturepacker.TexturePackLoader;
 import org.andengine.extension.texturepacker.opengl.texture.util.texturepacker.exception.TexturePackParseException;
 
-import com.termono.game.Game;
+import com.quest.game.Game;
 
 public class TexturePackerHelper {
 

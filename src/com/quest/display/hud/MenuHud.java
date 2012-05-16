@@ -1,4 +1,4 @@
-package com.termono.display.hud;
+package com.quest.display.hud;
 
 
 
@@ -13,8 +13,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.modifier.ease.EaseBackOut;
 
-import com.termono.game.Game;
-import com.termono.helpers.SceneManager;
+import com.quest.game.Game;
+import com.quest.helpers.SceneHelper;
 
 
 
@@ -45,7 +45,7 @@ public class MenuHud extends HUD{
 		private Sprite mCloseSprite;
 		private Sprite mInventorySprite;
 		private Entity mMenuEntity;
-		private SceneManager mSceneManager;
+		private SceneHelper mSceneManager;
 		
 
 		// ===========================================================
@@ -57,7 +57,7 @@ public class MenuHud extends HUD{
 			//Init local Variables
 			this.mGame = pGame;
 			this.mHud = pHud;
-			this.mSceneManager = new SceneManager(mGame);
+			this.mSceneManager = new SceneHelper(mGame);
 			
 			this.mMenuEntity = new Entity(this.mGame.getDisplay().getCameraWidth()-96, -236);
 			
