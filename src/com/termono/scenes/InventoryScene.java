@@ -49,7 +49,7 @@ public class InventoryScene extends Scene {
 		//this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
 	//			this.mGame.getWindowManager().getDefaultDisplay().getHeight());
 		this.mInventoryEntity = new Entity(0,0);
-		
+	
 		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/Inventory/");
@@ -86,8 +86,11 @@ public class InventoryScene extends Scene {
 		
 		
 		this.attachChild(mInventoryEntity);
-		this.mInventoryEntity.attachChild(mCloseSprite);
+		this.attachChild(mCloseSprite);
+//		this.mInventoryEntity.attachChild(mCloseSprite);
 		
+		
+		this.registerTouchArea(this.mCloseSprite);
 		
 		
 	}

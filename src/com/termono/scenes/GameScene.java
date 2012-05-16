@@ -42,8 +42,6 @@ public class GameScene extends Scene {
 		// ===========================================================
 		public GameScene(Game pGame){
 			this.mGame = pGame;
-
-				
 			
 			// TODO Auto-generated method stub
 			this.mGame.getEngine().registerUpdateHandler(new FPSLogger());
