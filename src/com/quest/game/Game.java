@@ -64,7 +64,13 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	protected Scene onCreateScene() {
 		this.mSceneManager = new SceneHelper(this);
-		this.mSceneManager.setGameScene();
+		
+		//###################################################
+		//	this.mSceneManager.setGameScene();
+		
+			this.mSceneManager.setMainMenuScene();		
+		//###################################################
+
 		return this.mSceneManager.getCurrScene();
 	}
 

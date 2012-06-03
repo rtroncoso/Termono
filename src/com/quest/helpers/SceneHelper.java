@@ -3,11 +3,11 @@ package com.quest.helpers;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.Scene;
 
-import com.quest.display.Display;
 import com.quest.game.Game;
 import com.quest.scenes.GameScene;
 import com.quest.scenes.InventoryScene;
 import com.quest.scenes.MainMenuScene;
+import com.quest.scenes.OptionsScene;
 
 public class SceneHelper {
 	// ===========================================================
@@ -38,7 +38,7 @@ public class SceneHelper {
 	// Getter & Setter
 	// ===========================================================
     public void setMainMenuScene(){
-    	this.mScene = new MainMenuScene();
+    	this.mScene = new MainMenuScene(this.mGame);
         this.mGame.getEngine().setScene(this.mScene);
     }
 
@@ -53,10 +53,12 @@ public class SceneHelper {
     	this.mGame.getDisplay().setCamera(new SmoothCamera(0, 0, this.mGame.getDisplay().getCameraWidth(), this.mGame.getDisplay().getCameraHeight(), 170, 170, 1.7f));
     	this.mScene = new InventoryScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);
-    	
-    	
     }
         
+    public void setOptionsScene(){
+    	this.mScene = new OptionsScene(this.mGame);
+        this.mGame.getEngine().setScene(this.mScene);
+    }
     
     public Scene getCurrScene(){
         return this.mScene;
