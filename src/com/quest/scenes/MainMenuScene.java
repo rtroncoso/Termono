@@ -45,67 +45,67 @@ public class MainMenuScene extends Scene {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MainMenu/");
 		this.mMainMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 2048,2048, TextureOptions.BILINEAR);		
 		this.mMainMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, this.mGame.getApplicationContext(), "Background.jpg", 0, 0);
-		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, this.mGame.getApplicationContext(), "Jugar.jpg", 0, 480);
+		this.mPlayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, this.mGame.getApplicationContext(), "Jugar.jpg", 0, 480);
 		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, this.mGame.getApplicationContext(), "Opciones.jpg", 256, 480);
 		this.mMainMenuTextureAtlas.load();
 		
 		
 		//Background
-		this.mMainMenuSprite = new Sprite(0, 0, this.mMainMenuTextureRegion, this.mGame.getVertexBufferObjectManager()) {		};
+		this.mMainMenuSprite = new Sprite(0, 0, this.mMainMenuTextureRegion, this.mGame.getVertexBufferObjectManager());
 		this.attachChild(mMainMenuSprite);
 				
 		//Play
 		this.mPlaySprite = new Sprite(MainMenuScene.this.mMainMenuSprite.getWidth() - 300, 400,this.mPlayTextureRegion,this.mGame.getVertexBufferObjectManager()) {
-					
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					switch(pSceneTouchEvent.getAction()) {
+			
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+				MainMenuScene.this.mPlaySprite.setScale(1.5f);
+			case TouchEvent.ACTION_CANCEL:
+			case TouchEvent.ACTION_OUTSIDE:
+				MainMenuScene.this.mPlaySprite.setScale(1.0f);
+				break;
+			case TouchEvent.ACTION_UP:
+				MainMenuScene.this.mPlaySprite.setScale(1.0f);
+				MainMenuScene.this.mSceneManager.setGameScene();
+				break;
+			}
+			return true;
+			}
+			
+		};
+	
+		
+		//Opciones
+		this.mOptionsSprite = new Sprite(MainMenuScene.this.mMainMenuSprite.getWidth() - 300, 400,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+				
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
 					case TouchEvent.ACTION_DOWN:
-						MainMenuScene.this.mPlaySprite.setScale(1.5f);
+						MainMenuScene.this.mOptionsSprite.setScale(1.5f);
 					case TouchEvent.ACTION_CANCEL:
 					case TouchEvent.ACTION_OUTSIDE:
-						MainMenuScene.this.mPlaySprite.setScale(1.0f);
+						MainMenuScene.this.mOptionsSprite.setScale(1.0f);
 						break;
 					case TouchEvent.ACTION_UP:
-						MainMenuScene.this.mPlaySprite.setScale(1.0f);
-						MainMenuScene.this.mSceneManager.setGameScene();
+						MainMenuScene.this.mOptionsSprite.setScale(1.0f);
+						MainMenuScene.this.mSceneManager.setOptionsScene();
 						break;
 					}
-					return true;
-					}
-					
-				};
-			
-				
-			//Opciones
-			this.mOptionsSprite = new Sprite(MainMenuScene.this.mMainMenuSprite.getWidth() - 300, 400,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
-						
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						switch(pSceneTouchEvent.getAction()) {
-							case TouchEvent.ACTION_DOWN:
-								MainMenuScene.this.mOptionsSprite.setScale(1.5f);
-							case TouchEvent.ACTION_CANCEL:
-							case TouchEvent.ACTION_OUTSIDE:
-								MainMenuScene.this.mOptionsSprite.setScale(1.0f);
-								break;
-							case TouchEvent.ACTION_UP:
-								MainMenuScene.this.mOptionsSprite.setScale(1.0f);
-								MainMenuScene.this.mSceneManager.setOptionsScene();
-								break;
-							}
-						return true;
-						}
-				};
-				
-				//Attach a la escena
-				this.attachChild(mPlaySprite);
-				this.attachChild(mOptionsSprite);
+				return true;
+			}
+		};
 		
-				
-				//Registro Touch Areas
-				this.registerTouchArea(this.mPlaySprite);
-				this.registerTouchArea(this.mOptionsSprite);
+		//Attach a la escena
+		this.attachChild(mPlaySprite);
+		this.attachChild(mOptionsSprite);
+
+		
+		//Registro Touch Areas
+		this.registerTouchArea(this.mPlaySprite);
+		this.registerTouchArea(this.mOptionsSprite);
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
