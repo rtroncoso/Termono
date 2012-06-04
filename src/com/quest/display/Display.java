@@ -20,7 +20,7 @@ public class Display {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Display(int pCameraWidth, int pCameraHeight, int pDisplayWidth, int pDisplayHeight) {
+	public Display(int pCameraWidth, int pCameraHeight, int pDisplayWidth, int pDisplayHeight, float zoom) {
 		this.mCameraWidth = pCameraWidth;
 		this.mCameraHeight = pCameraHeight;
 		this.mDisplayWidth = pDisplayWidth;
@@ -37,12 +37,12 @@ public class Display {
 		
 		
 		this.mCamera = new SmoothCamera(0, 0, this.mCameraWidth, this.mCameraHeight, 170, 170, 1.7f);
-		this.mCamera.setZoomFactor(1.7f);
+		this.mCamera.setZoomFactor(zoom);
 	}
 	
 		
-	public Display(int pDisplayWidth, int pDisplayHeight) {
-		this(pDisplayWidth, pDisplayHeight, pDisplayWidth, pDisplayHeight);
+	public Display(int pDisplayWidth, int pDisplayHeight, float pzoom) {
+		this(pDisplayWidth, pDisplayHeight, pDisplayWidth, pDisplayHeight, pzoom);
 	}
 	
 	// ===========================================================

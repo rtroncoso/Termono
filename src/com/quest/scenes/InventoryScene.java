@@ -46,8 +46,6 @@ public class InventoryScene extends Scene {
 	public InventoryScene(Game pGame){
 		this.mGame = pGame;
 		this.mSceneManager = new SceneHelper(mGame);
-		//this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
-	//			this.mGame.getWindowManager().getDefaultDisplay().getHeight());
 		this.mInventoryEntity = new Entity(0,0);
 	
 		

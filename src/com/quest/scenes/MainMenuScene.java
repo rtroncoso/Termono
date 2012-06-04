@@ -55,7 +55,7 @@ public class MainMenuScene extends Scene {
 		this.attachChild(mMainMenuSprite);
 				
 		//Play
-		this.mPlaySprite = new Sprite(MainMenuScene.this.mMainMenuSprite.getWidth() - 300, 400,this.mPlayTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mPlaySprite = new Sprite(MainMenuScene.this.mMainMenuSprite.getWidth() - 300, 100,this.mPlayTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 			
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -78,7 +78,7 @@ public class MainMenuScene extends Scene {
 	
 		
 		//Opciones
-		this.mOptionsSprite = new Sprite(MainMenuScene.this.mMainMenuSprite.getWidth() - 300, 400,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mOptionsSprite = new Sprite(MainMenuScene.this.mMainMenuSprite.getWidth() - 300, 300,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 				
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {

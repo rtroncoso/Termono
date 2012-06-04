@@ -35,9 +35,10 @@ public class Game extends SimpleBaseGameActivity {
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
 		
+		
 		// Init Objects
-		this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
-				getWindowManager().getDefaultDisplay().getHeight());
+				this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
+						getWindowManager().getDefaultDisplay().getHeight(), 1.0f);
 
 
 	
@@ -67,8 +68,8 @@ public class Game extends SimpleBaseGameActivity {
 		
 		//###################################################
 		//	this.mSceneManager.setGameScene();
-		
-			this.mSceneManager.setMainMenuScene();		
+
+		this.mSceneManager.setMainMenuScene();		
 		//###################################################
 
 		return this.mSceneManager.getCurrScene();

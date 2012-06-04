@@ -28,6 +28,7 @@ public class SceneHelper {
 		this.mGame = pGame;
     }
 	
+	
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -63,7 +64,8 @@ public class SceneHelper {
     public Scene getCurrScene(){
         return this.mScene;
     }
-
+    
+    
 
 	// ===========================================================
 	// Methods
