@@ -61,7 +61,7 @@ public class GameScene extends Scene {
 
 			// Center the Player in the Screen
 			this.mHero.getAnimatedSprite().setPosition(0, 0 - (this.mHero.getTiledTextureRegion().getHeight() - 32));
-			this.mGame.getDisplay().doFocusCamera(this.mHero);
+			this.mGame.getSceneManager().getDisplay().doFocusCamera(this.mHero);
 			
 			// Attach it
 			this.attachChild(this.mHero.getAnimatedSprite());
@@ -98,7 +98,7 @@ public class GameScene extends Scene {
 			this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
 			this.mHud.attachChild(this.mMenuHud.getMenuEntity());
 			
-			this.mGame.getDisplay().getCamera().setHUD(this.mHud);
+			this.mGame.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
 		// ===========================================================

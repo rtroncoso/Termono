@@ -59,7 +59,7 @@ public class MenuHud extends HUD{
 			this.mHud = pHud;
 			this.mSceneManager = new SceneHelper(mGame);
 			
-			this.mMenuEntity = new Entity(this.mGame.getDisplay().getCameraWidth()-96, -236);
+			this.mMenuEntity = new Entity(this.mGame.getSceneManager().getDisplay().getCameraWidth()-96, -236);
 			
 			// Set base path for Textures
 			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/");
@@ -83,7 +83,7 @@ public class MenuHud extends HUD{
 						case TouchEvent.ACTION_DOWN:
 							if(updater == false) {
 								updater = true;
-								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, MenuHud.this.mGame.getDisplay().getCameraWidth() - 96, 100, -236, 50, EaseBackOut.getInstance()));
+								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, MenuHud.this.mGame.getSceneManager().getDisplay().getCameraWidth() - 96, 100, -236, 50, EaseBackOut.getInstance()));
 							} 
 						break;
 					}

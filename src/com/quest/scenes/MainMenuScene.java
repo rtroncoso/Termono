@@ -23,7 +23,6 @@ public class MainMenuScene extends Scene {
 	// Fields
 	// ===========================================================
 	private Game mGame;
-	private Display mDisplay;
 	private SceneHelper mSceneManager;
 	
 	private BitmapTextureAtlas mMainMenuTextureAtlas;

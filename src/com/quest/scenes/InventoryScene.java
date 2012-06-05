@@ -29,7 +29,6 @@ public class InventoryScene extends Scene {
 	private HUD mHud;
 	private SceneHelper mSceneManager;
 	private Entity mInventoryEntity;
-	private Display mDisplay;
 	
 	//Textures y Sprites
 	private BitmapTextureAtlas mInventoryTextureAtlas;

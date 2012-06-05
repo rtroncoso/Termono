@@ -53,7 +53,7 @@ public class SpellbarHud extends HUD{
 		
 		for(int i = 0; i < this.mSpells.length; i++) {
 			float posX = 190.0f;
-			this.mSpells[i] = new Sprite(posX + (90 * i), this.mGame.getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, this.mGame.getVertexBufferObjectManager()) {
+			this.mSpells[i] = new Sprite(posX + (90 * i), this.mGame.getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, this.mGame.getVertexBufferObjectManager()) {
 
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {

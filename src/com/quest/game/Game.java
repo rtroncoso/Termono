@@ -23,7 +23,7 @@ public class Game extends SimpleBaseGameActivity {
 	// Fields
 	// ===========================================================
 	private SceneHelper mSceneManager;
-	private Display mDisplay;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -35,15 +35,10 @@ public class Game extends SimpleBaseGameActivity {
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
 		
-		
 		// Init Objects
-				this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, getWindowManager().getDefaultDisplay().getWidth(),
-						getWindowManager().getDefaultDisplay().getHeight(), 1.0f);
-
-
-	
+		this.mSceneManager = new SceneHelper(this);
 		
-		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mDisplay.getCamera());;
+		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mSceneManager.getDisplay().getCamera());
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
 		
 		// Return the Engine Options
@@ -64,11 +59,10 @@ public class Game extends SimpleBaseGameActivity {
 	
 	@Override
 	protected Scene onCreateScene() {
-		this.mSceneManager = new SceneHelper(this);
 		
 		//###################################################
 		//	this.mSceneManager.setGameScene();
-
+		//this.mSceneManager.setInventoryScene();
 		this.mSceneManager.setMainMenuScene();		
 		//###################################################
 
@@ -78,14 +72,14 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public void setDisplay(Display pDisplay) {
-		this.mDisplay = pDisplay;
+	public SceneHelper getSceneManager() {
+		return mSceneManager;
 	}
 
-	public Display getDisplay() {
-		return mDisplay;
+	public void setSceneManager(SceneHelper pSceneManager) {
+		this.mSceneManager = pSceneManager;
 	}
-
+	
 	// ===========================================================
 	// Methods
 	// ===========================================================

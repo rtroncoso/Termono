@@ -1,8 +1,8 @@
 package com.quest.helpers;
 
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.Scene;
 
+import com.quest.display.Display;
 import com.quest.game.Game;
 import com.quest.scenes.GameScene;
 import com.quest.scenes.InventoryScene;
@@ -20,15 +20,17 @@ public class SceneHelper {
 	// ===========================================================
 	private Scene mScene;
 	private Game mGame;
+	private Display mDisplay;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public SceneHelper(Game pGame){
 		this.mGame = pGame;
+		
+		this.mDisplay = new Display(this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
+				this.mGame.getWindowManager().getDefaultDisplay().getHeight(), 1.0f);
     }
-	
-	
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -38,20 +40,31 @@ public class SceneHelper {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public void setDisplay(Display pDisplay) {
+		this.mDisplay = pDisplay;
+	}
+
+	public Display getDisplay() {
+		return mDisplay;
+	}
+	
     public void setMainMenuScene(){
+    	this.mDisplay.getCamera().setZoomFactor(1.0f);
     	this.mScene = new MainMenuScene(this.mGame);
         this.mGame.getEngine().setScene(this.mScene);
     }
 
     public void setGameScene(){
+    	this.mDisplay.getCamera().setZoomFactor(1.7f);
     	final GameScene gs = new GameScene(this.mGame);
     	this.mGame.getEngine().setScene(gs);
-    	this.mGame.getDisplay().doFocusCamera(gs.getHero());
+    	this.mDisplay.doFocusCamera(gs.getHero());
     	this.mScene = gs;
     }
 
     public void setInventoryScene(){
-    	this.mGame.getDisplay().setCamera(new SmoothCamera(0, 0, this.mGame.getDisplay().getCameraWidth(), this.mGame.getDisplay().getCameraHeight(), 170, 170, 1.7f));
+    	this.mDisplay.getCamera().setZoomFactor(1.7f);
+    	this.mDisplay.getCamera().setCenter(400, 240);//.setCamera(new SmoothCamera(0, 0, this.mGame.getDisplay().getCameraWidth(), this.mGame.getDisplay().getCameraHeight(), 170, 170, 1.7f));
     	this.mScene = new InventoryScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);
     }

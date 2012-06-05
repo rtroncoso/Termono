@@ -16,7 +16,6 @@ public class OptionsScene extends Scene {
 	// Fields
 	// ===========================================================
 	private Game mGame;
-	private Display mDisplay;
 	private SceneHelper mSceneManager;
 	
 	// ===========================================================
