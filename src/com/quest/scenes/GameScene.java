@@ -86,7 +86,7 @@ public class GameScene extends Scene {
 			 * LAYER - HUDs
 			 */
 			this.mHud = new HUD();
-			this.mStatsHud = new StatsHud(this.mGame, mEnemy);
+			this.mStatsHud = new StatsHud(this.mGame);
 			this.mSpellbarHud = new SpellbarHud(this.mGame, this.mHud);
 			this.mControlsHud = new ControlsHud(this.mGame, this.mHero);
 			this.mMenuHud = new MenuHud(this.mGame, mHud);

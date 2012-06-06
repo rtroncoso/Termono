@@ -63,7 +63,8 @@ public class Game extends SimpleBaseGameActivity {
 		//###################################################
 		//	this.mSceneManager.setGameScene();
 		//this.mSceneManager.setInventoryScene();
-		this.mSceneManager.setMainMenuScene();		
+		this.mSceneManager.setMainMenuScene();
+		//this.mSceneManager.setPauseMenuScene();
 		//###################################################
 
 		return this.mSceneManager.getCurrScene();

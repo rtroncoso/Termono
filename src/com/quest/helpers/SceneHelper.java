@@ -8,6 +8,7 @@ import com.quest.scenes.GameScene;
 import com.quest.scenes.InventoryScene;
 import com.quest.scenes.MainMenuScene;
 import com.quest.scenes.OptionsScene;
+import com.quest.scenes.PauseMenuScene;
 
 public class SceneHelper {
 	// ===========================================================
@@ -54,6 +55,12 @@ public class SceneHelper {
         this.mGame.getEngine().setScene(this.mScene);
     }
 
+    public void setPauseMenuScene(){
+    	this.mDisplay.getCamera().setZoomFactor(1.0f);
+    	this.mScene = new PauseMenuScene(this.mGame);
+        this.mGame.getEngine().setScene(this.mScene);    	
+    }
+    
     public void setGameScene(){
     	this.mDisplay.getCamera().setZoomFactor(1.7f);
     	final GameScene gs = new GameScene(this.mGame);

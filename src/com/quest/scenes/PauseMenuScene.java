@@ -8,6 +8,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import com.quest.display.hud.StatsHud;
 import com.quest.game.Game;
 import com.quest.helpers.SceneHelper;
 
@@ -34,13 +35,14 @@ public class PauseMenuScene extends Scene {
 	private Sprite mResumeSprite;
 	private Sprite mOptionsSprite;
 	private Sprite mQuitSprite;
-	
+	private StatsHud mStatsHud;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public PauseMenuScene(Game pGame){
 		this.mGame = pGame;
 		this.mSceneManager = new SceneHelper(mGame);
+		this.mStatsHud = new StatsHud(this.mGame);
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/PauseMenu/");
 		this.mPauseMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 2048,2048, TextureOptions.BILINEAR);		
@@ -52,8 +54,10 @@ public class PauseMenuScene extends Scene {
 		
 		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, this.mGame.getVertexBufferObjectManager());
 		this.attachChild(mBackgroundSprite);
+		this.mStatsHud.getTermono().setText("a");
+		this.attachChild(this.mStatsHud.getTermono());
 		
-		this.mResumeSprite = new Sprite(this.mBackgroundSprite.getWidth() - 100, 50,this.mResumeTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mResumeSprite = new Sprite(80, 200,this.mResumeTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -72,7 +76,7 @@ public class PauseMenuScene extends Scene {
 					}					
 				};
 		
-				this.mOptionsSprite = new Sprite(this.mBackgroundSprite.getWidth() - 200, 200,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+				this.mOptionsSprite = new Sprite(535, 200,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -91,7 +95,7 @@ public class PauseMenuScene extends Scene {
 					}					
 				};
 				
-				this.mQuitSprite = new Sprite(this.mBackgroundSprite.getWidth() - 300, 350,this.mQuitTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+				this.mQuitSprite = new Sprite(315, 360,this.mQuitTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -111,7 +115,13 @@ public class PauseMenuScene extends Scene {
 				};
 				
 				
+				this.registerTouchArea(this.mResumeSprite);
+				this.registerTouchArea(this.mOptionsSprite);
+				this.registerTouchArea(this.mQuitSprite);
 				
+				this.attachChild(this.mResumeSprite);
+				this.attachChild(this.mOptionsSprite);
+				this.attachChild(this.mQuitSprite);
 				
 	}
 	
