@@ -10,7 +10,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import com.quest.display.Display;
+import com.quest.display.hud.StatsHud;
 import com.quest.game.Game;
 import com.quest.helpers.SceneHelper;
 
@@ -26,50 +26,49 @@ public class InventoryScene extends Scene {
 	// Fields
 	// ===========================================================
 	private Game mGame;
-	private HUD mHud;
 	private SceneHelper mSceneManager;
-	private Entity mInventoryEntity;
 	
 	//Textures y Sprites
 	private BitmapTextureAtlas mInventoryTextureAtlas;
 	
 	private ITextureRegion mInventoryTextureRegion;
 	private ITextureRegion mCloseTextureRegion;
+	private ITextureRegion mArmasTextureRegion;
+	private ITextureRegion mConsumiblesTextureRegion;
 	
 	private Sprite mInventorySprite;
 	private Sprite mCloseSprite;
-		
+	private Sprite mArmasSprite;
+	private Sprite mConsumiblesSprite;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public InventoryScene(Game pGame){
 		this.mGame = pGame;
 		this.mSceneManager = new SceneHelper(mGame);
-		this.mInventoryEntity = new Entity(0,0);
-	
 		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/Inventory/");
 		this.mInventoryTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
 		this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "inventory.png", 0, 0);
-		this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "cruz.png", 0, 480);
+		this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "Close.png", 0, 480);
+		this.mArmasTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "BtnArmas.png", 100, 480);
+		this.mConsumiblesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "BtnConsumibles.png", 200, 480);
 		
 		this.mInventoryTextureAtlas.load();
 		
 		
-		
 		//Fondo principal
 		this.mInventorySprite = new Sprite(0, 0, this.mInventoryTextureRegion, this.mGame.getVertexBufferObjectManager()) {		};
-		this.attachChild(mInventorySprite);
+		this.attachChild(mInventorySprite);	
 		
-		this.mCloseSprite = new Sprite(InventoryScene.this.mInventorySprite.getWidth() - 368, 10,this.mCloseTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mCloseSprite = new Sprite(InventoryScene.this.mInventorySprite.getWidth() - 45, 10,this.mCloseTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 			
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_DOWN:		
-			case TouchEvent.ACTION_MOVE:
-			case TouchEvent.ACTION_CANCEL:
+			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_OUTSIDE:
 			case TouchEvent.ACTION_UP:
 				InventoryScene.this.mSceneManager.setGameScene();
@@ -80,15 +79,48 @@ public class InventoryScene extends Scene {
 			
 		};
 		
+		this.mArmasSprite = new Sprite(50, 75,this.mArmasTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+			case TouchEvent.ACTION_CANCEL:
+			case TouchEvent.ACTION_OUTSIDE:
+				break;
+			case TouchEvent.ACTION_UP:
+				break;
+			}
+			return true;
+			}					
+		};
 		
 		
-		this.attachChild(mInventoryEntity);
+		this.mConsumiblesSprite = new Sprite(150, 75,this.mConsumiblesTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+			case TouchEvent.ACTION_CANCEL:
+			case TouchEvent.ACTION_OUTSIDE:
+				break;
+			case TouchEvent.ACTION_UP:
+				break;
+			}
+			return true;
+			}					
+		};
+		
+		
+		
+		
 		this.attachChild(mCloseSprite);
-//		this.mInventoryEntity.attachChild(mCloseSprite);
+		this.attachChild(mArmasSprite);
+		this.attachChild(mConsumiblesSprite);
 		
 		
 		this.registerTouchArea(this.mCloseSprite);
-		
+		this.registerTouchArea(this.mArmasSprite);
+		this.registerTouchArea(this.mConsumiblesSprite);
 		
 	}
 

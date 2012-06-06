@@ -48,7 +48,7 @@ public class SceneHelper {
 	public Display getDisplay() {
 		return mDisplay;
 	}
-	
+	//#############MENUS
     public void setMainMenuScene(){
     	this.mDisplay.getCamera().setZoomFactor(1.0f);
     	this.mScene = new MainMenuScene(this.mGame);
@@ -61,26 +61,37 @@ public class SceneHelper {
         this.mGame.getEngine().setScene(this.mScene);    	
     }
     
-    public void setGameScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.7f);
-    	final GameScene gs = new GameScene(this.mGame);
-    	this.mGame.getEngine().setScene(gs);
-    	this.mDisplay.doFocusCamera(gs.getHero());
-    	this.mScene = gs;
-    }
-
-    public void setInventoryScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.7f);
-    	this.mDisplay.getCamera().setCenter(400, 240);
-    	this.mScene = new InventoryScene(this.mGame);
-    	this.mGame.getEngine().setScene(this.mScene);
-    }
-        
     public void setOptionsScene(){
     	this.mScene = new OptionsScene(this.mGame);
         this.mGame.getEngine().setScene(this.mScene);
     }
     
+    
+    //#############JUEGO
+    public void setGameScene(){
+    	this.mDisplay.getCamera().setZoomFactor(1.7f);
+    	final GameScene gs = new GameScene(this.mGame);
+    	gs.initPhysics();
+    	gs.loadMap("desert");
+    	gs.loadEntities();
+    	gs.loadHUD();
+    	this.mGame.getEngine().setScene(gs);
+    	this.mDisplay.doFocusCamera(gs.getHero());
+    	this.mScene = gs;
+    }
+
+    
+    //############INTERFACES
+    public void setInventoryScene(){
+    	this.mDisplay.getCamera().setZoomFactor(1.0f);
+    	//this.mDisplay.getCamera().setCenter(400, 240);
+    	this.mScene = new InventoryScene(this.mGame);
+    	this.mGame.getEngine().setScene(this.mScene);
+    }
+    
+    
+    
+    //############MISC
     public Scene getCurrScene(){
         return this.mScene;
     }

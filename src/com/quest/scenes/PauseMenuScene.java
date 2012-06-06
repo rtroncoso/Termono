@@ -35,14 +35,13 @@ public class PauseMenuScene extends Scene {
 	private Sprite mResumeSprite;
 	private Sprite mOptionsSprite;
 	private Sprite mQuitSprite;
-	private StatsHud mStatsHud;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public PauseMenuScene(Game pGame){
 		this.mGame = pGame;
 		this.mSceneManager = new SceneHelper(mGame);
-		this.mStatsHud = new StatsHud(this.mGame);
+		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/PauseMenu/");
 		this.mPauseMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 2048,2048, TextureOptions.BILINEAR);		
@@ -54,9 +53,7 @@ public class PauseMenuScene extends Scene {
 		
 		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, this.mGame.getVertexBufferObjectManager());
 		this.attachChild(mBackgroundSprite);
-		this.mStatsHud.getTermono().setText("a");
-		this.attachChild(this.mStatsHud.getTermono());
-		
+				
 		this.mResumeSprite = new Sprite(80, 200,this.mResumeTextureRegion,this.mGame.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
