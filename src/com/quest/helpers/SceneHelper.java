@@ -64,7 +64,7 @@ public class SceneHelper {
 
     public void setInventoryScene(){
     	this.mDisplay.getCamera().setZoomFactor(1.7f);
-    	this.mDisplay.getCamera().setCenter(400, 240);//.setCamera(new SmoothCamera(0, 0, this.mGame.getDisplay().getCameraWidth(), this.mGame.getDisplay().getCameraHeight(), 170, 170, 1.7f));
+    	this.mDisplay.getCamera().setCenter(400, 240);
     	this.mScene = new InventoryScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);
     }
