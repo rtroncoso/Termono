@@ -25,8 +25,16 @@ public class MapHelper {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public MapHelper(Game pGame, String pPath) {
+	/**
+	 * Solo instancia el game
+	 * @param pGame
+	 */
+	public MapHelper(Game pGame) {
 		this.mGame = pGame;
+		
+	}
+	
+	public void loadMap(String pPath) {
 		this.mPath = pPath;
 		
 		try {
@@ -35,7 +43,6 @@ public class MapHelper {
 		} catch (final TMXLoadException tmxle) {
 			Debug.e(tmxle);
 		}
-		
 	}
 	
 	// ===========================================================
