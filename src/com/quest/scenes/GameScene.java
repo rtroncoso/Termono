@@ -3,8 +3,12 @@ package com.quest.scenes;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
+import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
 
-import com.quest.display.Display;
+import android.hardware.SensorManager;
+
+import com.badlogic.gdx.math.Vector2;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
@@ -36,6 +40,7 @@ public class GameScene extends Scene {
 		private ControlsHud mControlsHud;
 		private SpellbarHud mSpellbarHud;
 		private StatsHud mStatsHud;
+		private PhysicsWorld mPhysicsWorld;
 		
 		// ===========================================================
 		// Constructors
@@ -45,16 +50,17 @@ public class GameScene extends Scene {
 			
 			// TODO Auto-generated method stub
 			this.mGame.getEngine().registerUpdateHandler(new FPSLogger());
+		}
+		
+		public void loadMap(String pMap) {
 
-			/*
-			 * LAYER - MAP
-			 */
-			this.mMapManager = new MapHelper(this.mGame, "desert");
+			this.mMapManager = new MapHelper(this.mGame);
+			this.mMapManager.loadMap("desert");
 			this.attachChild(this.mMapManager.getTMXTiledMap().getTMXLayers().get(0));
-			
-			/*
-			 * LAYER - ENTITIES
-			 */
+		}
+		
+		public void loadEntities() {
+
 			// Create the Player
 			this.mHero = new Player(this.mGame);
 			this.mHero.load("Mage.png", 128, 256, 0, 0, 4, 4);
@@ -80,11 +86,9 @@ public class GameScene extends Scene {
 			//Timer
 			this.mTimers = new Timers(this.mGame, mEnemy, mMob2);
 			this.mTimers.createMobMovementTimeHandler();
-			
-			
-			/*
-			 * LAYER - HUDs
-			 */
+		}
+		
+		public void loadHUD() {
 			this.mHud = new HUD();
 			this.mStatsHud = new StatsHud(this.mGame);
 			this.mSpellbarHud = new SpellbarHud(this.mGame, this.mHud);
@@ -99,6 +103,19 @@ public class GameScene extends Scene {
 			this.mHud.attachChild(this.mMenuHud.getMenuEntity());
 			
 			this.mGame.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
+		}
+		
+		public void unloadHUD()	{
+			this.mHud.detachChild(this.mSpellbarHud);
+			this.mHud.detachChild(this.mStatsHud);
+			this.mHud.detachChild(this.mControlsHud);
+			this.mHud.detachChild(this.mMenuHud);
+		}
+		
+		public void initPhysics() {
+			
+			this.mPhysicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, SensorManager.GRAVITY_EARTH), false);
+			this.registerUpdateHandler(this.mPhysicsWorld);
 		}
 		
 		// ===========================================================
