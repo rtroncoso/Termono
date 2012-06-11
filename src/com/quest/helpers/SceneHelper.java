@@ -4,6 +4,8 @@ import org.andengine.entity.scene.Scene;
 
 import com.quest.display.Display;
 import com.quest.game.Game;
+import com.quest.scenes.ConectionScene;
+import com.quest.scenes.EquipmentScene;
 import com.quest.scenes.GameScene;
 import com.quest.scenes.InventoryScene;
 import com.quest.scenes.MainMenuScene;
@@ -22,6 +24,8 @@ public class SceneHelper {
 	private Scene mScene;
 	private Game mGame;
 	private Display mDisplay;
+	private GameScene mGameScene;
+	
 	
 	// ===========================================================
 	// Constructors
@@ -66,18 +70,26 @@ public class SceneHelper {
         this.mGame.getEngine().setScene(this.mScene);
     }
     
+    public void setConectionScene(){
+    	this.mScene = new ConectionScene(this.mGame);
+        this.mGame.getEngine().setScene(this.mScene);
+    }
     
     //#############JUEGO
     public void setGameScene(){
     	this.mDisplay.getCamera().setZoomFactor(1.7f);
-    	final GameScene gs = new GameScene(this.mGame);
-    	gs.initPhysics();
-    	gs.loadMap("desert");
-    	gs.loadEntities();
-    	gs.loadHUD();
-    	this.mGame.getEngine().setScene(gs);
-    	this.mDisplay.doFocusCamera(gs.getHero());
-    	this.mScene = gs;
+    	this.mGameScene = new GameScene(this.mGame);
+    	this.mGameScene.initPhysics();
+    	this.mGameScene.loadMap("desert");
+    	this.mGameScene.loadEntities();
+    	this.mGameScene.loadHUD();
+    	this.mGame.getEngine().setScene(this.mGameScene);
+    	this.mDisplay.doFocusCamera(this.mGameScene.getHero());
+    	this.mScene = this.mGameScene;
+    }
+    
+    public GameScene getGameScene(){
+    	return this.mGameScene;
     }
 
     
@@ -89,12 +101,20 @@ public class SceneHelper {
     	this.mGame.getEngine().setScene(this.mScene);
     }
     
+    public void setEquipmentScene(){
+    	this.mDisplay.getCamera().setZoomFactor(1.0f);
+    	//this.mDisplay.getCamera().setCenter(400, 240);
+    	this.mScene = new EquipmentScene(this.mGame);
+    	this.mGame.getEngine().setScene(this.mScene);
+    }
     
     
     //############MISC
     public Scene getCurrScene(){
         return this.mScene;
     }
+    
+    
     
     
 

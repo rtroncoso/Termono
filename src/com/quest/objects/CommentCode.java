@@ -1,25 +1,49 @@
 package com.quest.objects;
 
+import org.andengine.entity.sprite.Sprite;
+import org.andengine.input.touch.TouchEvent;
+
 import com.quest.display.hud.StatsHud;
 
 public class CommentCode {/*
 
-	############################################################
+	###############################
 	Mover sprite con touch
-	##############################
-	private StatsHud mStatsHud;
-	
-	this.mStatsHud = new StatsHud(this.mGame);
-	this.mStatsHud.getTermono().setText("a");
-	this.attachChild(this.mStatsHud.getTermono());
+	##############################	
 	this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
 	
 	
 	#########################################
 	set texto
 	##########################################
-	mStatsHud.getTermono().setText(String.valueOf(mOptionsSprite.getX())+ "  " + String.valueOf(mOptionsSprite.getY()));
+	private StatsHud mStatsHud;
+	
+	this.mStatsHud = new StatsHud(this.mGame);
+	this.mStatsHud.getTermono().setText("a");
+	this.attachChild(this.mStatsHud.getTermono());
+	mStatsHud.getTermono().setText(String.valueOf(this.getX())+ "  " + String.valueOf(this.getY()));
 
+
+   #############################
+   ejemplo
+   #############################
+   	this.mItemsSprite = new Sprite(80, 200,this.mItemsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+			case TouchEvent.ACTION_MOVE:
+					this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+					mStatsHud.getTermono().setText(String.valueOf(this.getX())+ "  " + String.valueOf(this.getY()));
+			case TouchEvent.ACTION_CANCEL:
+			case TouchEvent.ACTION_OUTSIDE:
+				break;
+			case TouchEvent.ACTION_UP:
+				break;
+			}
+			return true;
+			}					
+		};
 
 	
 	

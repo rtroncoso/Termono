@@ -15,6 +15,7 @@ import org.andengine.util.modifier.ease.EaseBackOut;
 
 import com.quest.game.Game;
 import com.quest.helpers.SceneHelper;
+import com.quest.scenes.GameScene;
 
 
 
@@ -57,7 +58,6 @@ public class MenuHud extends HUD{
 			//Init local Variables
 			this.mGame = pGame;
 			this.mHud = pHud;
-			this.mSceneManager = new SceneHelper(mGame);
 			
 			this.mMenuEntity = new Entity(this.mGame.getSceneManager().getDisplay().getCameraWidth()-96, -236);
 			
@@ -126,7 +126,8 @@ public class MenuHud extends HUD{
 						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
 							//MenuHud.this.mInventorySprite.setScale(3.0f);
-							MenuHud.this.mSceneManager.setInventoryScene();
+							//MenuHud.this.mGame.getSceneManager().getGameScene().unloadHUD();
+							MenuHud.this.mGame.getSceneManager().setInventoryScene();
 							break;
 						}
 					return true;

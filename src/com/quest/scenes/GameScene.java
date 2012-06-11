@@ -7,6 +7,7 @@ import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 
 import android.hardware.SensorManager;
+import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
 import com.quest.display.hud.ControlsHud;
@@ -88,6 +89,8 @@ public class GameScene extends Scene {
 			this.mTimers.createMobMovementTimeHandler();
 		}
 		
+		
+		
 		public void loadHUD() {
 			this.mHud = new HUD();
 			this.mStatsHud = new StatsHud(this.mGame);
@@ -105,6 +108,17 @@ public class GameScene extends Scene {
 			this.mGame.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
+		public boolean onKeyDown(int keyCode, KeyEvent event) {
+            if(keyCode == KeyEvent.KEYCODE_BACK){
+            	this.mStatsHud.getTermono().setText("touch");
+            }
+            return false;//super.onKeyDown(keyCode, event);
+    }
+		
+		
+	        //pKeyCode == KeyEvent.KEYCODE_BACK && pEvent.getAction() == KeyEvent.ACTION_DOWN) {
+	    
+	        
 		public void unloadHUD()	{
 			this.mHud.detachChild(this.mSpellbarHud);
 			this.mHud.detachChild(this.mStatsHud);

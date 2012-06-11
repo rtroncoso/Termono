@@ -44,7 +44,7 @@ public class PauseMenuScene extends Scene {
 		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/PauseMenu/");
-		this.mPauseMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 2048,2048, TextureOptions.BILINEAR);		
+		this.mPauseMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, this.mGame.getApplicationContext(), "Background.jpg", 0, 0);
 		this.mResumeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, this.mGame.getApplicationContext(), "Resume.jpg", 0, 480);
 		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, this.mGame.getApplicationContext(), "Options.jpg", 256, 480);

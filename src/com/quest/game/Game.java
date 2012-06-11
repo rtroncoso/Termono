@@ -2,14 +2,14 @@ package com.quest.game;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
-import com.quest.display.Display;
+import android.view.KeyEvent;
+
 import com.quest.helpers.SceneHelper;
 
 public class Game extends SimpleBaseGameActivity {
@@ -56,6 +56,7 @@ public class Game extends SimpleBaseGameActivity {
 		// TODO Auto-generated method stub
 		}
 
+		
 	
 	@Override
 	protected Scene onCreateScene() {
