@@ -28,7 +28,7 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 	private PathModifier mPathModifier;
 	private Path mPath;
 	
-	protected boolean isWalking;
+	protected boolean isWalkingputo;
 	protected Game mGame;
 	protected AnimatedSprite mBodySprite;
 
@@ -64,7 +64,23 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 				return BaseEntity.this.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
 			}
 		};
-		
+		/*
+		 *   _
+			//\
+			V  \
+			 \  \_
+			  \,'.`-.
+			   |\ `. `.       
+			   ( \  `. `-.                        _,.-:\
+			    \ \   `.  `-._             __..--' ,-';/
+			     \ `.   `-.   `-..___..---'   _.--' ,'/
+			      `. `.    `-._        __..--'    ,' /
+			        `. `-_     ``--..''       _.-' ,'
+			          `-_ `-.___        __,--'   ,'
+			             `-.__  `----"""    __.-'
+			                  `--..____..--'
+		 * 
+		 */
 		this.attachChild(this.mBodySprite);
 		
 		return this;
