@@ -3,7 +3,7 @@ package com.quest.display;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 
-import com.quest.entities.Entity;
+import com.quest.entities.BaseEntity;
 
 public class Display {
 	
@@ -48,7 +48,7 @@ public class Display {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void doFocusCamera(Entity pEntity) {
+	public void doFocusCamera(BaseEntity pEntity) {
 
 		this.mCamera.setChaseEntity(pEntity.getAnimatedSprite());
 	}
@@ -87,6 +87,16 @@ public class Display {
 		this.mCamera = pCamera;
 	}
 
+	public void setZoom(Float pZoom){
+		this.mCamera.setZoomFactor(pZoom);
+	}
+	
+	public void setPos(float pX, float pY){
+		//this.mCamera.setBoundsEnabled(false);
+		//this.mCamera.reset();
+		this.mCamera.setCenter(pX, pY);
+	}
+	
 	public void setCameraWidth(int pCameraWidth) {
 		// TODO Auto-generated method stub
 		this.mCameraWidth = pCameraWidth;

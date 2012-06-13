@@ -12,7 +12,7 @@ import com.quest.game.Game;
  *
  */
 //public class Enemy extends Entity implements IOnScreenControlListener{
-public class Mob extends Entity{
+public class Mob extends BaseEntity{
 	
 	// ===========================================================
 	// Constants
@@ -38,60 +38,60 @@ public class Mob extends Entity{
 	{		
 		if(!this.isWalking) 
 		{	boolean move = false;
-			float moveToXTile = this.mAnimatedSprite.getX();
-			float moveToYTile = this.mAnimatedSprite.getY();
+			float moveToXTile = this.getX();
+			float moveToYTile = this.getY();
 			switch(this.getRandom(1, 10))
 			{
 			case 1://Arriba
-				 moveToXTile = this.mAnimatedSprite.getX();
-				 moveToYTile = this.mAnimatedSprite.getY() - 32;
+				 moveToXTile = this.getX();
+				 moveToYTile = this.getY() - 32;
 				 move = true;
 				break;
 			case 2://Abajo
-				 moveToXTile = this.mAnimatedSprite.getX();
-				 moveToYTile = this.mAnimatedSprite.getY() + 32;
+				 moveToXTile = this.getX();
+				 moveToYTile = this.getY() + 32;
 				 move = true;
 				break;
 			case 3://Derecha
-				 moveToXTile = this.mAnimatedSprite.getX() + 32;
-				 moveToYTile = this.mAnimatedSprite.getY();
+				 moveToXTile = this.getX() + 32;
+				 moveToYTile = this.getY();
 				 move = true;
 				break;
 			case 4://Izquierda
-				 moveToXTile = this.mAnimatedSprite.getX() - 32;
-				 moveToYTile = this.mAnimatedSprite.getY();
+				 moveToXTile = this.getX() - 32;
+				 moveToYTile = this.getY();
 				 move = true;
 				break;			
 			case 5://Arriba 2
-				 moveToXTile = this.mAnimatedSprite.getX();
-				 moveToYTile = this.mAnimatedSprite.getY() - 64;
+				 moveToXTile = this.getX();
+				 moveToYTile = this.getY() - 64;
 				 move = true;
 				break;
 			case 6://Abajo 2
-				 moveToXTile = this.mAnimatedSprite.getX();
-				 moveToYTile = this.mAnimatedSprite.getY() + 64;
+				 moveToXTile = this.getX();
+				 moveToYTile = this.getY() + 64;
 				 move = true;
 				 break;
 			case 7://Derecha 2
-				 moveToXTile = this.mAnimatedSprite.getX() + 64;
-				 moveToYTile = this.mAnimatedSprite.getY();
+				 moveToXTile = this.getX() + 64;
+				 moveToYTile = this.getY();
 				 move = true;
 				 break;
 			case 8://Izquierda 2
-				 moveToXTile = this.mAnimatedSprite.getX() - 32;
-				 moveToYTile = this.mAnimatedSprite.getY();
+				 moveToXTile = this.getX() - 32;
+				 moveToYTile = this.getY();
 				 move = true;
 				 break;
 			case 9:
 				//nada, se queda en el lugar
-				 moveToXTile = this.mAnimatedSprite.getX();
-				 moveToYTile = this.mAnimatedSprite.getY();
+				 moveToXTile = this.getX();
+				 moveToYTile = this.getY();
 				 move = false;
 				 break;
 			case 10:
 				//nada, se queda en el lugar
-				 moveToXTile = this.mAnimatedSprite.getX();
-				 moveToYTile = this.mAnimatedSprite.getY();
+				 moveToXTile = this.getX();
+				 moveToYTile = this.getY();
 				 move = false;
 				break;
 			}		

@@ -11,13 +11,12 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import android.view.KeyEvent;
 
 import com.quest.helpers.SceneHelper;
+import com.quest.interfaces.IMeasureConstants;
 
-public class Game extends SimpleBaseGameActivity {
+public class Game extends SimpleBaseGameActivity implements IMeasureConstants {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static int CAMERA_WIDTH = 800;
-	private static int CAMERA_HEIGHT = 480;
 	
 	// ===========================================================
 	// Fields
@@ -27,7 +26,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -80,6 +79,13 @@ public class Game extends SimpleBaseGameActivity {
 
 	public void setSceneManager(SceneHelper pSceneManager) {
 		this.mSceneManager = pSceneManager;
+	}
+	
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	// ===========================================================

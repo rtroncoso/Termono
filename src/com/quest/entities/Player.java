@@ -6,7 +6,7 @@ import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenCon
 import com.quest.game.Game;
 
 
-public class Player extends Entity implements IOnScreenControlListener {
+public class Player extends BaseEntity implements IOnScreenControlListener {
 
 
 	// ===========================================================
@@ -43,8 +43,8 @@ public class Player extends Entity implements IOnScreenControlListener {
 		if(pValueX != 0.0f || pValueY != 0.0f) {
 			if(!this.isWalking) {
 				// Gets the new Tile
-				float moveToXTile = this.mAnimatedSprite.getX() + (TILE_WIDTH * pValueX);
-				float moveToYTile = this.mAnimatedSprite.getY() + (TILE_HEIGHT * pValueY);
+				float moveToXTile = this.getX() + (TILE_WIDTH * pValueX);
+				float moveToYTile = this.getY() + (TILE_HEIGHT * pValueY);
 				
 				// Moves to it
 				this.moveToTile(moveToXTile, moveToYTile, 1.0f);

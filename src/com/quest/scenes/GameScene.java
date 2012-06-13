@@ -24,8 +24,6 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Constants
 		// ===========================================================
-		private static int CAMERA_WIDTH = 800;
-		private static int CAMERA_HEIGHT = 480;
 			
 		// ===========================================================
 		// Fields
@@ -65,24 +63,20 @@ public class GameScene extends Scene {
 			// Create the Player
 			this.mHero = new Player(this.mGame);
 			this.mHero.load("Mage.png", 128, 256, 0, 0, 4, 4);
-
-			// Center the Player in the Screen
-			this.mHero.getAnimatedSprite().setPosition(0, 0 - (this.mHero.getTiledTextureRegion().getHeight() - 32));
+			this.mHero.setPosition(0, 0 - (this.mHero.getTiledTextureRegion().getHeight() - 32));
 			this.mGame.getSceneManager().getDisplay().doFocusCamera(this.mHero);
+			this.attachChild(this.mHero);
 			
-			// Attach it
-			this.attachChild(this.mHero.getAnimatedSprite());
-			
-			//Enemy
+			//Enemies
 			this.mEnemy = new Mob(this.mGame);
 			this.mEnemy.load("Mob.png", 128, 256, 0, 0, 4, 4);
-			this.mEnemy.getAnimatedSprite().setPosition(64, 64);
-			this.attachChild(this.mEnemy.getAnimatedSprite());
+			this.mEnemy.setPosition(64, 64);
+			this.attachChild(this.mEnemy);
 			
 			this.mMob2 = new Mob(this.mGame);
 			this.mMob2.load("Mob2.png", 128, 256, 0, 0, 4, 4);
-			this.mMob2.getAnimatedSprite().setPosition(96, 96);
-			this.attachChild(this.mMob2.getAnimatedSprite());
+			this.mMob2.setPosition(96, 96);
+			this.attachChild(this.mMob2);
 			
 			//Timer
 			this.mTimers = new Timers(this.mGame, mEnemy, mMob2);
@@ -108,16 +102,6 @@ public class GameScene extends Scene {
 			this.mGame.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
-		public boolean onKeyDown(int keyCode, KeyEvent event) {
-            if(keyCode == KeyEvent.KEYCODE_BACK){
-            	this.mStatsHud.getTermono().setText("touch");
-            }
-            return false;//super.onKeyDown(keyCode, event);
-    }
-		
-		
-	        //pKeyCode == KeyEvent.KEYCODE_BACK && pEvent.getAction() == KeyEvent.ACTION_DOWN) {
-	    
 	        
 		public void unloadHUD()	{
 			this.mHud.detachChild(this.mSpellbarHud);
