@@ -11,12 +11,13 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import android.view.KeyEvent;
 
 import com.quest.helpers.SceneHelper;
-import com.quest.interfaces.IMeasureConstants;
 
-public class Game extends SimpleBaseGameActivity implements IMeasureConstants {
+public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
+	private static int CAMERA_WIDTH = 800;
+	private static int CAMERA_HEIGHT = 480;
 	
 	// ===========================================================
 	// Fields

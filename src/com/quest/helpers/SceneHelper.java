@@ -34,9 +34,6 @@ public class SceneHelper implements IMeasureConstants {
 	public SceneHelper(Game pGame){
 		this.mGame = pGame;
 		
-		//this.mDisplay = new Display(CAMERA_WIDTH, CAMERA_HEIGHT, 1.0f);
-		//this.mDisplay = new Display(this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
-		//this.mGame.getWindowManager().getDefaultDisplay().getHeight(), 1.0f);
 		this.mDisplay = new Display(this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
 				this.mGame.getWindowManager().getDefaultDisplay().getHeight(), 1.7f);
     }
