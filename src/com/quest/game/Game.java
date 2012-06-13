@@ -27,7 +27,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -80,6 +80,13 @@ public class Game extends SimpleBaseGameActivity {
 
 	public void setSceneManager(SceneHelper pSceneManager) {
 		this.mSceneManager = pSceneManager;
+	}
+	
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	// ===========================================================

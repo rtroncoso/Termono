@@ -34,7 +34,7 @@ public class SceneHelper {
 		this.mGame = pGame;
 		
 		this.mDisplay = new Display(this.mGame.getWindowManager().getDefaultDisplay().getWidth(),
-				this.mGame.getWindowManager().getDefaultDisplay().getHeight(), 1.0f);
+				this.mGame.getWindowManager().getDefaultDisplay().getHeight(), 1.7f);
     }
 
 	// ===========================================================
@@ -66,6 +66,7 @@ public class SceneHelper {
     }
     
     public void setOptionsScene(){
+    	this.mDisplay.getCamera().setZoomFactor(1.0f);
     	this.mScene = new OptionsScene(this.mGame);
         this.mGame.getEngine().setScene(this.mScene);
     }
@@ -77,7 +78,7 @@ public class SceneHelper {
     
     //#############JUEGO
     public void setGameScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.7f);
+    	this.mDisplay.setZoom(1.7f);
     	this.mGameScene = new GameScene(this.mGame);
     	this.mGameScene.initPhysics();
     	this.mGameScene.loadMap("desert");
@@ -95,14 +96,13 @@ public class SceneHelper {
     
     //############INTERFACES
     public void setInventoryScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.0f);
-    	//this.mDisplay.getCamera().setCenter(400, 240);
+    	this.mDisplay.setZoom(1.0f);
+    	this.mDisplay.setPos(800, 240);
     	this.mScene = new InventoryScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);
     }
     
     public void setEquipmentScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.0f);
     	//this.mDisplay.getCamera().setCenter(400, 240);
     	this.mScene = new EquipmentScene(this.mGame);
     	this.mGame.getEngine().setScene(this.mScene);

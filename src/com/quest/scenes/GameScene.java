@@ -108,13 +108,7 @@ public class GameScene extends Scene {
 			this.mGame.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
-		public boolean onKeyDown(int keyCode, KeyEvent event) {
-            if(keyCode == KeyEvent.KEYCODE_BACK){
-            	this.mStatsHud.getTermono().setText("touch");
-            }
-            return false;//super.onKeyDown(keyCode, event);
-    }
-		
+	
 		
 	        //pKeyCode == KeyEvent.KEYCODE_BACK && pEvent.getAction() == KeyEvent.ACTION_DOWN) {
 	    

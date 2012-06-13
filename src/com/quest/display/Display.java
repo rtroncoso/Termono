@@ -87,6 +87,14 @@ public class Display {
 		this.mCamera = pCamera;
 	}
 
+	public void setZoom(Float pZoom){
+		this.mCamera.setZoomFactor(pZoom);
+	}
+	
+	public void setPos(float pX, float pY){
+		this.mCamera.setCenter(pX, pY);
+	}
+	
 	public void setCameraWidth(int pCameraWidth) {
 		// TODO Auto-generated method stub
 		this.mCameraWidth = pCameraWidth;
