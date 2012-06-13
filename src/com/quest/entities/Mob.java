@@ -28,6 +28,9 @@ public class Mob extends BaseEntity{
 	// ===========================================================
 	public Mob() {
 		// TODO Auto-generated constructor stub
+		super();
+		
+		this.mEntityType = "Mob";
 	}
 
 	// ===========================================================

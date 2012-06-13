@@ -1,16 +1,23 @@
 package com.quest.entities;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
+import org.andengine.entity.shape.IAreaShape;
 import org.andengine.entity.sprite.AnimatedSprite;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.modifier.ease.EaseLinear;
 
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.quest.game.Game;
 import com.quest.interfaces.IMeasureConstants;
 
@@ -19,6 +26,7 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 	// Constants
 	// ===========================================================
 	protected final float SPEED_MODIFIER = 5.0f;
+    private final FixtureDef OBJECT_FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 	
 	// ===========================================================
 	// Fields
@@ -28,6 +36,8 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 	private PathModifier mPathModifier;
 	private Path mPath;
 	
+	protected Body mBody;
+	protected String mEntityType;
 	protected boolean isWalking;
 	protected AnimatedSprite mBodySprite;
 
@@ -35,7 +45,7 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 	// Constructors
 	// ===========================================================
 	public BaseEntity() {
-
+		this.mEntityType = "BaseEntity";
 	}
 
 	// ===========================================================
@@ -79,6 +89,11 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 			                  `--..____..--'
 		 * 
 		 */
+		
+	    this.mBody = PhysicsFactory.createBoxBody(Game.getSceneManager().getGameScene().getPhysicsWorld(), this.mBodySprite, BodyType.DynamicBody, OBJECT_FIXTURE_DEF);
+	    this.mBody.setUserData(this.mEntityType);
+	    Game.getSceneManager().getGameScene().getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this.mBodySprite, this.mBody, true, true));
+	    
 		this.attachChild(this.mBodySprite);
 		
 		return this;
@@ -173,6 +188,15 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 
 	public void setAnimatedSprite(AnimatedSprite pAnimatedSprite) {
 		this.mBodySprite = pAnimatedSprite;
+	}
+
+	public String getEntityType() {
+		// TODO Auto-generated method stub
+		return this.mEntityType;
+	}
+	public void setEntityType(String pEntityType) {
+		// TODO Auto-generated method stub
+		this.mEntityType = pEntityType;
 	}
 
 	// ===========================================================

@@ -23,6 +23,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 	// ===========================================================
 	public Player() {
 		// TODO Auto-generated constructor stub
+		super();
+		
+		this.mEntityType = "Player";
 	}
 
 	// ===========================================================
@@ -45,7 +48,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 				float moveToYTile = this.getY() + (TILE_HEIGHT * pValueY);
 				
 				// Moves to it
-				this.moveToTile(moveToXTile, moveToYTile, 1.0f);
+				this.moveToTile(moveToXTile, moveToYTile, 1.5f);
 			}
 		}
 	}

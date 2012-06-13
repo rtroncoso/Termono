@@ -6,14 +6,19 @@ import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 
-import android.hardware.SensorManager;
-import android.view.KeyEvent;
+import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
 import com.quest.display.hud.StatsHud;
+import com.quest.entities.BaseEntity;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.game.Game;
@@ -112,6 +117,41 @@ public class GameScene extends Scene {
 			
 			this.mPhysicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
 			this.registerUpdateHandler(this.mPhysicsWorld);
+			
+			this.mPhysicsWorld.setContactListener(new ContactListener() {
+
+				@Override
+				public void beginContact(Contact contact) {
+					// TODO Auto-generated method stub
+					
+	                final Fixture x1 = contact.getFixtureA();
+	                final Fixture x2 = contact.getFixtureB();
+	                
+	                Log.d("CONTACT", "Contact between " + x1.getUserData() + " and " + x2.getUserData());
+				}
+
+				@Override
+				public void endContact(Contact contact) {
+					// TODO Auto-generated method stub
+
+	                final Fixture x1 = contact.getFixtureA();
+	                final Fixture x2 = contact.getFixtureB();
+				}
+
+				@Override
+				public void preSolve(Contact contact, Manifold oldManifold) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void postSolve(Contact contact, ContactImpulse impulse) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				
+			});
 		}
 		
 		// ===========================================================
