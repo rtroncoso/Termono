@@ -19,7 +19,6 @@ public class MapHelper {
 	// Fields
 	// ===========================================================
 	private TMXTiledMap mTMXTiledMap;
-	private Game mGame;
 	private String mPath;
 	
 	// ===========================================================
@@ -29,8 +28,7 @@ public class MapHelper {
 	 * Solo instancia el game
 	 * @param pGame
 	 */
-	public MapHelper(Game pGame) {
-		this.mGame = pGame;
+	public MapHelper() {
 		
 	}
 	
@@ -38,7 +36,7 @@ public class MapHelper {
 		this.mPath = pPath;
 		
 		try {
-			TMXLoader tmxLoader = new TMXLoader(this.mGame.getAssets(), this.mGame.getEngine().getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.mGame.getVertexBufferObjectManager());
+			TMXLoader tmxLoader = new TMXLoader(Game.getInstance().getAssets(), Game.getInstance().getEngine().getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, Game.getInstance().getVertexBufferObjectManager());
 			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/" + this.mPath + ".tmx");
 		} catch (final TMXLoadException tmxle) {
 			Debug.e(tmxle);

@@ -22,9 +22,6 @@ public class MainMenuScene extends Scene {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Game mGame;
-	private SceneHelper mSceneManager;
-	
 	private BitmapTextureAtlas mMainMenuTextureAtlas;
 	private ITextureRegion mMainMenuTextureRegion;
 	private ITextureRegion mOptionsTextureRegion;
@@ -36,25 +33,21 @@ public class MainMenuScene extends Scene {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public MainMenuScene(Game pGame){
-		this.mGame = pGame;
-		this.mSceneManager = new SceneHelper(mGame);
-		
-		
+	public MainMenuScene(){
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MainMenu/");
-		this.mMainMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 2048,2048, TextureOptions.BILINEAR);		
-		this.mMainMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, this.mGame.getApplicationContext(), "Background.jpg", 0, 0);
-		this.mPlayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, this.mGame.getApplicationContext(), "Jugar.jpg", 0, 480);
-		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, this.mGame.getApplicationContext(), "Opciones.jpg", 256, 480);
+		this.mMainMenuTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2048,2048, TextureOptions.BILINEAR);		
+		this.mMainMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Background.jpg", 0, 0);
+		this.mPlayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Jugar.jpg", 0, 480);
+		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Opciones.jpg", 256, 480);
 		this.mMainMenuTextureAtlas.load();
 		
 		
 		//Background
-		this.mMainMenuSprite = new Sprite(0, 0, this.mMainMenuTextureRegion, this.mGame.getVertexBufferObjectManager());
+		this.mMainMenuSprite = new Sprite(0, 0, this.mMainMenuTextureRegion, Game.getInstance().getVertexBufferObjectManager());
 		this.attachChild(mMainMenuSprite);
 				
 		//Play
-		this.mPlaySprite = new Sprite(mMainMenuSprite.getWidth() - 300, 100,this.mPlayTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mPlaySprite = new Sprite(mMainMenuSprite.getWidth() - 300, 100,this.mPlayTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -67,7 +60,7 @@ public class MainMenuScene extends Scene {
 				break;
 			case TouchEvent.ACTION_UP:
 				MainMenuScene.this.mPlaySprite.setScale(1.0f);
-				MainMenuScene.this.mSceneManager.setGameScene();
+				Game.getSceneManager().setGameScene();
 				break;
 			}
 			return true;
@@ -77,7 +70,7 @@ public class MainMenuScene extends Scene {
 	
 		
 		//Opciones
-		this.mOptionsSprite = new Sprite(mMainMenuSprite.getWidth() - 300, 300,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mOptionsSprite = new Sprite(mMainMenuSprite.getWidth() - 300, 300,this.mOptionsTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 				
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -90,7 +83,7 @@ public class MainMenuScene extends Scene {
 						break;
 					case TouchEvent.ACTION_UP:
 						MainMenuScene.this.mOptionsSprite.setScale(1.0f);
-						MainMenuScene.this.mSceneManager.setOptionsScene();
+						Game.getSceneManager().setOptionsScene();
 						break;
 					}
 				return true;

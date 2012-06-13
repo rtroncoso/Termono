@@ -25,8 +25,6 @@ public class InventoryScene extends Scene {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Game mGame;
-	private SceneHelper mSceneManager;
 	
 	//Textures y Sprites
 	private BitmapTextureAtlas mInventoryTextureAtlas;
@@ -44,26 +42,22 @@ public class InventoryScene extends Scene {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public InventoryScene(Game pGame){
-		this.mGame = pGame;
-		this.mSceneManager = new SceneHelper(mGame);
-		
-		
+	public InventoryScene(){
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/Inventory/");
-		this.mInventoryTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
-		this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "inventory.png", 0, 0);
-		this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "Close.png", 0, 480);
-		this.mArmasTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "BtnArmas.png", 100, 480);
-		this.mConsumiblesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, this.mGame.getApplicationContext(), "BtnConsumibles.png", 200, 480);
+		this.mInventoryTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
+		this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "inventory.png", 0, 0);
+		this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Close.png", 0, 480);
+		this.mArmasTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "BtnArmas.png", 100, 480);
+		this.mConsumiblesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "BtnConsumibles.png", 200, 480);
 		
 		this.mInventoryTextureAtlas.load();
 		
 		
 		//Fondo principal
-		this.mInventorySprite = new Sprite(0, 0, this.mInventoryTextureRegion, this.mGame.getVertexBufferObjectManager()) {		};
+		this.mInventorySprite = new Sprite(0, 0, this.mInventoryTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {		};
 		this.attachChild(mInventorySprite);	
 		
-		this.mCloseSprite = new Sprite(InventoryScene.this.mInventorySprite.getWidth() - 45, 10,this.mCloseTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mCloseSprite = new Sprite(InventoryScene.this.mInventorySprite.getWidth() - 45, 10,this.mCloseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -71,7 +65,7 @@ public class InventoryScene extends Scene {
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_OUTSIDE:
 			case TouchEvent.ACTION_UP:
-				InventoryScene.this.mSceneManager.setGameScene();
+				Game.getSceneManager().setGameScene();
 				break;
 			}
 			return true;
@@ -79,7 +73,7 @@ public class InventoryScene extends Scene {
 			
 		};
 		
-		this.mArmasSprite = new Sprite(50, 75,this.mArmasTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mArmasSprite = new Sprite(50, 75,this.mArmasTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
@@ -95,7 +89,7 @@ public class InventoryScene extends Scene {
 		};
 		
 		
-		this.mConsumiblesSprite = new Sprite(150, 75,this.mConsumiblesTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mConsumiblesSprite = new Sprite(150, 75,this.mConsumiblesTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {

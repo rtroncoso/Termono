@@ -18,15 +18,13 @@ public class Timers {
 		// ===========================================================
 		// Fields
 		// ===========================================================
-		private Game mGame;
 		private Mob mEnemy;
 		private Mob mMob2;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
 	
-		public Timers(Game pGame, Mob pEnemy, Mob pMob2) {
-			this.mGame = pGame;
+		public Timers(Mob pEnemy, Mob pMob2) {
 			this.mEnemy = pEnemy;		
 			this.mMob2 = pMob2;
 			// TODO Auto-generated constructor stub
@@ -52,7 +50,7 @@ public class Timers {
 		        
 		        //this.mGame.getEngine().registerUpdateHandler(MobMovementTimerHandler = new TimerHandler(1 / 20.0f,true, new ITimerCallback()
 				//this.mGame.getEngine().registerUpdateHandler(new TimerHandler(1 / 20.0f,true, new ITimerCallback()
-				this.mGame.getEngine().registerUpdateHandler(new TimerHandler(3,true, new ITimerCallback()
+				Game.getInstance().getEngine().registerUpdateHandler(new TimerHandler(3,true, new ITimerCallback()
 		        {                      
 		            
 		        	@Override

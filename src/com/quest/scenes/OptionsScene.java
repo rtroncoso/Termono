@@ -15,15 +15,11 @@ public class OptionsScene extends Scene {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Game mGame;
-	private SceneHelper mSceneManager;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public OptionsScene(Game pGame){
-		this.mGame = pGame;
-		this.mSceneManager = new SceneHelper(mGame);
+	public OptionsScene(){
 		
 		
 	}

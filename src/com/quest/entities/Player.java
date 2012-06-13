@@ -21,9 +21,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Player(Game pEngine) {
-		super(pEngine);
-		
+	public Player() {
 		// TODO Auto-generated constructor stub
 	}
 

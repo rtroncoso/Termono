@@ -26,8 +26,7 @@ public class Mob extends BaseEntity{
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Mob(Game pEngine) {
-		super(pEngine);	
+	public Mob() {
 		// TODO Auto-generated constructor stub
 	}
 

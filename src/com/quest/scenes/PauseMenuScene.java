@@ -22,9 +22,6 @@ public class PauseMenuScene extends Scene {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Game mGame;
-	private SceneHelper mSceneManager;	
-	
 	//Texturas
 	private BitmapTextureAtlas mPauseMenuTextureAtlas;
 	private ITextureRegion mBackgroundTextureRegion;
@@ -38,23 +35,19 @@ public class PauseMenuScene extends Scene {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public PauseMenuScene(Game pGame){
-		this.mGame = pGame;
-		this.mSceneManager = new SceneHelper(mGame);
-		
-		
+	public PauseMenuScene(){
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/PauseMenu/");
-		this.mPauseMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
-		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, this.mGame.getApplicationContext(), "Background.jpg", 0, 0);
-		this.mResumeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, this.mGame.getApplicationContext(), "Resume.jpg", 0, 480);
-		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, this.mGame.getApplicationContext(), "Options.jpg", 256, 480);
-		this.mQuitTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, this.mGame.getApplicationContext(), "QuittoMainMenu.jpg", 512, 480);
+		this.mPauseMenuTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
+		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Background.jpg", 0, 0);
+		this.mResumeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Resume.jpg", 0, 480);
+		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Options.jpg", 256, 480);
+		this.mQuitTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, Game.getInstance().getApplicationContext(), "QuittoMainMenu.jpg", 512, 480);
 		this.mPauseMenuTextureAtlas.load();
 		
-		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, this.mGame.getVertexBufferObjectManager());
+		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager());
 		this.attachChild(mBackgroundSprite);
 				
-		this.mResumeSprite = new Sprite(80, 200,this.mResumeTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mResumeSprite = new Sprite(80, 200,this.mResumeTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -66,14 +59,14 @@ public class PauseMenuScene extends Scene {
 						break;
 					case TouchEvent.ACTION_UP:
 						mResumeSprite.setScale(1.0f);
-						mSceneManager.setGameScene();
+						Game.getSceneManager().setGameScene();
 						break;
 					}
 					return true;
 					}					
 				};
 		
-				this.mOptionsSprite = new Sprite(535, 200,this.mOptionsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+				this.mOptionsSprite = new Sprite(535, 200,this.mOptionsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -85,14 +78,14 @@ public class PauseMenuScene extends Scene {
 						break;
 					case TouchEvent.ACTION_UP:
 						mOptionsSprite.setScale(1.0f);
-						mSceneManager.setOptionsScene();
+						Game.getSceneManager().setOptionsScene();
 						break;
 					}
 					return true;
 					}					
 				};
 				
-				this.mQuitSprite = new Sprite(315, 360,this.mQuitTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+				this.mQuitSprite = new Sprite(315, 360,this.mQuitTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -104,7 +97,7 @@ public class PauseMenuScene extends Scene {
 						break;
 					case TouchEvent.ACTION_UP:
 						mQuitSprite.setScale(1.0f);
-						mSceneManager.setMainMenuScene();
+						Game.getSceneManager().setMainMenuScene();
 						break;
 					}
 					return true;

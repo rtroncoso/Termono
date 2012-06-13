@@ -27,31 +27,29 @@ public class ControlsHud extends HUD {
 	private ITextureRegion mOnScreenControlBaseTextureRegion;
 	private ITextureRegion mOnScreenControlKnobTextureRegion;
 	private DigitalOnScreenControl mDigitalOnScreenControl;
-	private Game mGame;
 	private Player mPlayer;
 	
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public ControlsHud(Game pGame, Player pPlayer)
+	public ControlsHud(Player pPlayer)
 	{
 		// Set internal Fields
-		this.mGame = pGame;
 		this.mPlayer = pPlayer;
 				
 		// Load controls texture into memory
-		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.mGame.getTextureManager(), 512, 128);
-		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.mGame.getApplicationContext(), "onscreen_control_base.png", 0, 0);
-		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.mGame.getApplicationContext(), "onscreen_control_knob.png", 128, 0);
-		this.mGame.getTextureManager().loadTexture(this.mOnScreenControlTexture);
+		this.mOnScreenControlTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512, 128);
+		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, Game.getInstance().getApplicationContext(), "onscreen_control_base.png", 0, 0);
+		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, Game.getInstance().getApplicationContext(), "onscreen_control_knob.png", 128, 0);
+		Game.getInstance().getTextureManager().loadTexture(this.mOnScreenControlTexture);
 
 		// Register ControlListener
-		this.mDigitalOnScreenControl = new DigitalOnScreenControl(0, this.mGame.getSceneManager().getDisplay().getCameraHeight() - this.mOnScreenControlBaseTextureRegion.getHeight(),
-				this.mGame.getSceneManager().getDisplay().getCamera(),
+		this.mDigitalOnScreenControl = new DigitalOnScreenControl(0, Game.getInstance().getSceneManager().getDisplay().getCameraHeight() - this.mOnScreenControlBaseTextureRegion.getHeight(),
+				Game.getInstance().getSceneManager().getDisplay().getCamera(),
 				this.mOnScreenControlBaseTextureRegion,
 				this.mOnScreenControlKnobTextureRegion, 0.01f,
-				this.mGame.getVertexBufferObjectManager(),
+				Game.getInstance().getVertexBufferObjectManager(),
 				new IOnScreenControlListener() {
 			
 					@Override

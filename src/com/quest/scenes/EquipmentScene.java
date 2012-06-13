@@ -12,7 +12,6 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import com.quest.display.hud.StatsHud;
 import com.quest.game.Game;
-import com.quest.helpers.SceneHelper;
 
 public class EquipmentScene extends Scene {
 
@@ -24,9 +23,6 @@ public class EquipmentScene extends Scene {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Game mGame;
-	private SceneHelper mSceneManager;
-	
 	private BitmapTextureAtlas mEquipmentTextureAtlas;
 	private ITextureRegion mBackgroundTextureRegion;
 	private ITextureRegion mQuitTextureRegion;
@@ -42,27 +38,25 @@ public class EquipmentScene extends Scene {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public EquipmentScene(Game pGame){
-		this.mGame = pGame;
-		this.mSceneManager = new SceneHelper(mGame);
-		this.mStatsHud = new StatsHud(this.mGame);
+	public EquipmentScene(){
+		this.mStatsHud = new StatsHud();
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Equipment/PauseMenu/");
-		this.mEquipmentTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
-		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, this.mGame.getApplicationContext(), "Background.png", 0, 0);
-		this.mQuitTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, this.mGame.getApplicationContext(), "Quit.png", 200, 480);
-		this.mItemsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mEquipmentTextureAtlas, this.mGame.getApplicationContext(), "Items.png", 0, 0, 1,2);
-		this.mAttributesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mEquipmentTextureAtlas, this.mGame.getApplicationContext(), "Attributes.png", 0, 0, 1,2);		
+		this.mEquipmentTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
+		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);
+		this.mQuitTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Quit.png", 200, 480);
+		this.mItemsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Items.png", 0, 0, 1,2);
+		this.mAttributesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Attributes.png", 0, 0, 1,2);		
 		this.mEquipmentTextureAtlas.load();
 		
 		
-		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, this.mGame.getVertexBufferObjectManager());
+		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager());
 		this.attachChild(mBackgroundSprite);
 		
 		this.attachChild(this.mStatsHud.getTermono());
 		
 
-		this.mItemsSprite = new AnimatedSprite(80, 200,this.mItemsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mItemsSprite = new AnimatedSprite(80, 200,this.mItemsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
@@ -82,7 +76,7 @@ public class EquipmentScene extends Scene {
 		};
 		
 		
-		this.mAttributesSprite = new AnimatedSprite(130, 200,this.mItemsTextureRegion,this.mGame.getVertexBufferObjectManager()) {
+		this.mAttributesSprite = new AnimatedSprite(130, 200,this.mItemsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {

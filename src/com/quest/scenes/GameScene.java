@@ -28,7 +28,6 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Fields
 		// ===========================================================
-		private Game mGame;
 		private MapHelper mMapManager;
 		private Mob mMob2;
 		private Player mHero;
@@ -44,16 +43,15 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Constructors
 		// ===========================================================
-		public GameScene(Game pGame){
-			this.mGame = pGame;
+		public GameScene(){
 			
 			// TODO Auto-generated method stub
-			this.mGame.getEngine().registerUpdateHandler(new FPSLogger());
+			Game.getInstance().getEngine().registerUpdateHandler(new FPSLogger());
 		}
 		
 		public void loadMap(String pMap) {
 
-			this.mMapManager = new MapHelper(this.mGame);
+			this.mMapManager = new MapHelper();
 			this.mMapManager.loadMap("desert");
 			this.attachChild(this.mMapManager.getTMXTiledMap().getTMXLayers().get(0));
 		}
@@ -61,25 +59,25 @@ public class GameScene extends Scene {
 		public void loadEntities() {
 
 			// Create the Player
-			this.mHero = new Player(this.mGame);
+			this.mHero = new Player();
 			this.mHero.load("Mage.png", 128, 256, 0, 0, 4, 4);
 			this.mHero.setPosition(0, 0 - (this.mHero.getTiledTextureRegion().getHeight() - 32));
-			this.mGame.getSceneManager().getDisplay().doFocusCamera(this.mHero);
+			Game.getSceneManager().getDisplay().doFocusCamera(this.mHero);
 			this.attachChild(this.mHero);
 			
 			//Enemies
-			this.mEnemy = new Mob(this.mGame);
+			this.mEnemy = new Mob();
 			this.mEnemy.load("Mob.png", 128, 256, 0, 0, 4, 4);
 			this.mEnemy.setPosition(64, 64);
 			this.attachChild(this.mEnemy);
 			
-			this.mMob2 = new Mob(this.mGame);
+			this.mMob2 = new Mob();
 			this.mMob2.load("Mob2.png", 128, 256, 0, 0, 4, 4);
 			this.mMob2.setPosition(96, 96);
 			this.attachChild(this.mMob2);
 			
 			//Timer
-			this.mTimers = new Timers(this.mGame, mEnemy, mMob2);
+			this.mTimers = new Timers(mEnemy, mMob2);
 			this.mTimers.createMobMovementTimeHandler();
 		}
 		
@@ -87,10 +85,10 @@ public class GameScene extends Scene {
 		
 		public void loadHUD() {
 			this.mHud = new HUD();
-			this.mStatsHud = new StatsHud(this.mGame);
-			this.mSpellbarHud = new SpellbarHud(this.mGame, this.mHud);
-			this.mControlsHud = new ControlsHud(this.mGame, this.mHero);
-			this.mMenuHud = new MenuHud(this.mGame, mHud);
+			this.mStatsHud = new StatsHud();
+			this.mSpellbarHud = new SpellbarHud(this.mHud);
+			this.mControlsHud = new ControlsHud(this.mHero);
+			this.mMenuHud = new MenuHud(mHud);
 			
 			this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 			this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
@@ -99,7 +97,7 @@ public class GameScene extends Scene {
 			this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
 			this.mHud.attachChild(this.mMenuHud.getMenuEntity());
 			
-			this.mGame.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
+			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
 	        
@@ -112,7 +110,7 @@ public class GameScene extends Scene {
 		
 		public void initPhysics() {
 			
-			this.mPhysicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, SensorManager.GRAVITY_EARTH), false);
+			this.mPhysicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
 			this.registerUpdateHandler(this.mPhysicsWorld);
 		}
 		
@@ -142,6 +140,10 @@ public class GameScene extends Scene {
 		
 		public Player getHero() {
 			return this.mHero;
+		}
+		
+		public PhysicsWorld getPhysicsWorld() {
+			return this.mPhysicsWorld;
 		}
 
 		// ===========================================================

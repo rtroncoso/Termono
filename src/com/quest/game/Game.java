@@ -22,7 +22,8 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private SceneHelper mSceneManager;
+	private static SceneHelper mSceneManager;
+	private static Game mInstance;
 	
 	// ===========================================================
 	// Constructors
@@ -32,13 +33,20 @@ public class Game extends SimpleBaseGameActivity {
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
+		Game.setInstance(this);
 		
 		// Init Objects
-		this.mSceneManager = new SceneHelper(this);
+		Game.mSceneManager = new SceneHelper();
 		
-		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mSceneManager.getDisplay().getCamera());
+		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), Game.mSceneManager.getDisplay().getCamera());
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
 		
 		// Return the Engine Options
@@ -64,29 +72,36 @@ public class Game extends SimpleBaseGameActivity {
 		//###################################################
 		//	this.mSceneManager.setGameScene();
 		//this.mSceneManager.setInventoryScene();
-		this.mSceneManager.setMainMenuScene();
+		Game.mSceneManager.setMainMenuScene();
 		//this.mSceneManager.setPauseMenuScene();
 		//###################################################
 
-		return this.mSceneManager.getCurrScene();
+		return Game.mSceneManager.getCurrScene();
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public SceneHelper getSceneManager() {
-		return mSceneManager;
+	public static SceneHelper getSceneManager() {
+		return Game.mSceneManager;
 	}
 
-	public void setSceneManager(SceneHelper pSceneManager) {
-		this.mSceneManager = pSceneManager;
+	public static void setSceneManager(SceneHelper pSceneManager) {
+		Game.mSceneManager = pSceneManager;
 	}
 	
+	/**
+	 * @return the mInstance
+	 */
+	public static Game getInstance() {
+		return mInstance;
+	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		return super.onKeyDown(keyCode, event);
+	/**
+	 * @param mInstance the mInstance to set
+	 */
+	public static void setInstance(Game mInstance) {
+		Game.mInstance = mInstance;
 	}
 	
 	// ===========================================================

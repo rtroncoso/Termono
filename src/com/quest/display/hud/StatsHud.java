@@ -22,27 +22,24 @@ public class StatsHud extends HUD {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Game mGame;
 	private BitmapTextureAtlas mFontTexture;
 	private StrokeFont mFont;
 	private Text mTermono;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public StatsHud(Game pGame) {
-		
-		this.mGame = pGame;
+	public StatsHud() {
 				
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
-		this.mFontTexture = new BitmapTextureAtlas(this.mGame.getTextureManager(), 256, 256);
+		this.mFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256);
 		
-		this.mFont = new StrokeFont(this.mGame.getFontManager(), this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.BLACK, 2, Color.WHITE);
+		this.mFont = new StrokeFont(Game.getInstance().getFontManager(), this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.BLACK, 2, Color.WHITE);
 		
-		this.mGame.getEngine().getTextureManager().loadTexture(this.mFontTexture);
-		this.mGame.getEngine().getFontManager().loadFont(this.mFont);
+		Game.getInstance().getEngine().getTextureManager().loadTexture(this.mFontTexture);
+		Game.getInstance().getEngine().getFontManager().loadFont(this.mFont);
 		
-		this.mTermono = new Text(20, 20, this.mFont, "Termono", "Tuviejaaaaaaaaaaaaaa000000000000000000000000aaaaaaaa".length(), this.mGame.getVertexBufferObjectManager());
+		this.mTermono = new Text(20, 20, this.mFont, "Termono", "Tuviejaaaaaaaaaaaaaa000000000000000000000000aaaaaaaa".length(), Game.getInstance().getVertexBufferObjectManager());
 	}
 	
 	// ===========================================================

@@ -34,8 +34,6 @@ public class MenuHud extends HUD{
 		// ===========================================================
 		// Fields
 		// ===========================================================
-
-		private Game mGame;
 		private BitmapTextureAtlas mMenuTextureAtlas;
 		private HUD mHud;
 		private boolean updater = false;
@@ -52,38 +50,35 @@ public class MenuHud extends HUD{
 		private Sprite mSkillsSprite;
 		private Sprite mEquipmentSprite;
 		private Entity mMenuEntity;
-		private SceneHelper mSceneManager;
 
 		// ===========================================================
 		// Constructor
 		// ===========================================================
 
-		public MenuHud(Game pGame, HUD pHud){
+		public MenuHud(HUD pHud){
 
 			//Init local Variables
-			this.mGame = pGame;
 			this.mHud = pHud;
-			this.mSceneManager = new SceneHelper(mGame);
-			this.mMenuEntity = new Entity(this.mGame.getSceneManager().getDisplay().getCameraWidth()-96, -236);
+			this.mMenuEntity = new Entity(Game.getInstance().getSceneManager().getDisplay().getCameraWidth()-96, -236);
 			
 			// Set base path for Textures
 			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/");
 
 			// Create Texture objects
-			this.mMenuTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);		
-			this.mMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "IngameMenu.png", 0, 0);
-			this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "Close.png", 0, 322);
-			this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "Inventory.png", 600, 0);
-			this.mSkillsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "Skills.png", 600, 110);
-			this.mAttributesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "Attributes.png", 600, 220);
-			this.mEquipmentTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, this.mGame.getApplicationContext(), "Equipment.png", 600, 330);
+			this.mMenuTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);		
+			this.mMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, Game.getInstance().getApplicationContext(), "IngameMenu.png", 0, 0);
+			this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Close.png", 0, 322);
+			this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Inventory.png", 600, 0);
+			this.mSkillsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Skills.png", 600, 110);
+			this.mAttributesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Attributes.png", 600, 220);
+			this.mEquipmentTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Equipment.png", 600, 330);
 			
 			
 			
 			// Load Texture into memory and on the screen
 			this.mMenuTextureAtlas.load();
  
-			this.mMenuSprite = new Sprite(0, 0, this.mMenuTextureRegion, this.mGame.getVertexBufferObjectManager()) {
+			this.mMenuSprite = new Sprite(0, 0, this.mMenuTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 
 				@Override
 				public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
@@ -93,7 +88,7 @@ public class MenuHud extends HUD{
 						case TouchEvent.ACTION_DOWN:
 							if(updater == false) {
 								updater = true;
-								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, MenuHud.this.mGame.getSceneManager().getDisplay().getCameraWidth() - 96, 100, -236, 50, EaseBackOut.getInstance()));
+								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, Game.getInstance().getSceneManager().getDisplay().getCameraWidth() - 96, 100, -236, 50, EaseBackOut.getInstance()));
 							} 
 						break;
 					}
@@ -104,7 +99,7 @@ public class MenuHud extends HUD{
 			
 			//fin del menu
 			
-			this.mCloseSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 50, 10, this.mCloseTextureRegion, this.mGame.getVertexBufferObjectManager()){
+			this.mCloseSprite = new Sprite(MenuHud.this.mMenuSprite.getWidth() - 50, 10, this.mCloseTextureRegion, Game.getInstance().getVertexBufferObjectManager()){
 			
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -119,13 +114,13 @@ public class MenuHud extends HUD{
 			//fin del cancel
 			
 			
-			this.mInventorySprite = new Sprite(55,30, this.mInventoryTextureRegion,this.mGame.getVertexBufferObjectManager()){
+			this.mInventorySprite = new Sprite(55,30, this.mInventoryTextureRegion,Game.getInstance().getVertexBufferObjectManager()){
 				
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 					case TouchEvent.ACTION_UP:
-					MenuHud.this.mSceneManager.setInventoryScene();
+					Game.getSceneManager().setInventoryScene();
 					break;
 					}
 				return true;
@@ -134,7 +129,7 @@ public class MenuHud extends HUD{
 				
 			};
 			
-			this.mEquipmentSprite = new Sprite(55,155, this.mEquipmentTextureRegion,this.mGame.getVertexBufferObjectManager()){
+			this.mEquipmentSprite = new Sprite(55,155, this.mEquipmentTextureRegion,Game.getInstance().getVertexBufferObjectManager()){
 				
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -147,7 +142,7 @@ public class MenuHud extends HUD{
 				}				
 			};
 			
-			this.mSkillsSprite = new Sprite(290,155, this.mSkillsTextureRegion,this.mGame.getVertexBufferObjectManager()){
+			this.mSkillsSprite = new Sprite(290,155, this.mSkillsTextureRegion,Game.getInstance().getVertexBufferObjectManager()){
 						
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -162,7 +157,7 @@ public class MenuHud extends HUD{
 						
 			};
 						
-			this.mAttributesSprite = new Sprite(290,30, this.mAttributesTextureRegion,this.mGame.getVertexBufferObjectManager()){
+			this.mAttributesSprite = new Sprite(290,30, this.mAttributesTextureRegion,Game.getInstance().getVertexBufferObjectManager()){
 									
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -226,12 +221,12 @@ public class MenuHud extends HUD{
 
 
 
-/*					MenuHud.this.mGame.getScene().registerUpdateHandler(pUpdatehandler = new IUpdateHandler() {
+/*					MenuHud.Game.getInstance().getScene().registerUpdateHandler(pUpdatehandler = new IUpdateHandler() {
 
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
 		updater = true;
-		if(MenuHud.this.mMenuEntity.getX() < 230){MenuHud.this.mGame.getScene().unregisterUpdateHandler(pUpdatehandler);}
+		if(MenuHud.this.mMenuEntity.getX() < 230){MenuHud.Game.getInstance().getScene().unregisterUpdateHandler(pUpdatehandler);}
 		MenuHud.this.mMenuEntity.setPositi	on(MenuHud.this.mMenuEntity.getX() - 20, MenuHud.this.mMenuEntity.getY() + 12);
 	}
 

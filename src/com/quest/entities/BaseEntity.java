@@ -29,15 +29,13 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 	private Path mPath;
 	
 	protected boolean isWalking;
-	protected Game mGame;
 	protected AnimatedSprite mBodySprite;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public BaseEntity(Game pGame) {
+	public BaseEntity() {
 
-		this.mGame = pGame;
 	}
 
 	// ===========================================================
@@ -49,14 +47,14 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
 		// Craete Texture Objects
-		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), pFrameWidth, pFrameHeight);
-		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBitmapTextureAtlas, this.mGame.getApplicationContext(), pTexturePath, pFramePosX, pFramePosY, pCols, pRows);
+		this.mBitmapTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), pFrameWidth, pFrameHeight);
+		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBitmapTextureAtlas, Game.getInstance().getApplicationContext(), pTexturePath, pFramePosX, pFramePosY, pCols, pRows);
 
 		// Load Texture into memory and on the screen
 		this.mBitmapTextureAtlas.load();
 
 		// Create the sprite and add it to the scene.
-		this.mBodySprite = new AnimatedSprite(0, 0, this.mTiledTextureRegion, this.mGame.getVertexBufferObjectManager()) {
+		this.mBodySprite = new AnimatedSprite(0, 0, this.mTiledTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {

@@ -24,7 +24,6 @@ public class SpellbarHud extends HUD{
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Game mGame;
 	private HUD mHud;
 	private BitmapTextureAtlas mSpellTextureAtlas;
 	private ITextureRegion mSpellTextureRegion;
@@ -35,25 +34,24 @@ public class SpellbarHud extends HUD{
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public SpellbarHud(Game pGame, HUD pHud) {
+	public SpellbarHud(HUD pHud) {
 
 		// Init local Variables
-		this.mGame = pGame;
 		this.mHud = pHud;
 	
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
 		// Create Texture objects
-		this.mSpellTextureAtlas = new BitmapTextureAtlas(this.mGame.getTextureManager(), 64, 64, TextureOptions.BILINEAR);
-		this.mSpellTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSpellTextureAtlas, this.mGame.getApplicationContext(), "Spell.png", 0, 0);
+		this.mSpellTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 64, 64, TextureOptions.BILINEAR);
+		this.mSpellTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSpellTextureAtlas, Game.getInstance().getApplicationContext(), "Spell.png", 0, 0);
 
 		// Load Texture into memory and on the screen
-		this.mGame.getTextureManager().loadTexture(this.mSpellTextureAtlas);
+		Game.getInstance().getTextureManager().loadTexture(this.mSpellTextureAtlas);
 		
 		for(int i = 0; i < this.mSpells.length; i++) {
 			float posX = 190.0f;
-			this.mSpells[i] = new Sprite(posX + (90 * i), this.mGame.getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, this.mGame.getVertexBufferObjectManager()) {
+			this.mSpells[i] = new Sprite(posX + (90 * i), Game.getInstance().getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -77,7 +75,7 @@ public class SpellbarHud extends HUD{
 			this.mSpells[i].setScale(2.0f); 
 		}
 		
-		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, this.mGame.getVertexBufferObjectManager()) {
+		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onUpdateSpriteBatch() {
 				for(int i = 0; i < SpellbarHud.this.mSpells.length; i++) {

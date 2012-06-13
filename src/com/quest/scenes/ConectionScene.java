@@ -15,17 +15,11 @@ public class ConectionScene extends Scene {
 		// ===========================================================
 		// Fields
 		// ===========================================================
-		private Game mGame;
-		private SceneHelper mSceneManager;
-			
+	
 		// ===========================================================
 		// Constructors
 		// ===========================================================
-		public ConectionScene(Game pGame){
-			this.mGame = pGame;
-			this.mSceneManager = new SceneHelper(mGame);
-			
-			
+		public ConectionScene(){
 		}
 		
 		// ===========================================================
