@@ -28,7 +28,7 @@ public class BaseEntity extends org.andengine.entity.Entity implements IMeasureC
 	private PathModifier mPathModifier;
 	private Path mPath;
 	
-	protected boolean isWalkingputo;
+	protected boolean isWalking;
 	protected Game mGame;
 	protected AnimatedSprite mBodySprite;
 

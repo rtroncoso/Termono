@@ -10,7 +10,7 @@ public class CommentCode {/*
 	###############################
 	Mover sprite con touch
 	##############################	
-	this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+	this.setPosition(pSceneTouchEvent.getX() - this.getWidth(), pSceneTouchEvent.getY() - this.getHeight());
 	
 	
 	#########################################
