@@ -108,10 +108,6 @@ public class GameScene extends Scene {
 			this.mGame.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
-	
-		
-	        //pKeyCode == KeyEvent.KEYCODE_BACK && pEvent.getAction() == KeyEvent.ACTION_DOWN) {
-	    
 	        
 		public void unloadHUD()	{
 			this.mHud.detachChild(this.mSpellbarHud);

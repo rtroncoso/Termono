@@ -92,6 +92,8 @@ public class Display {
 	}
 	
 	public void setPos(float pX, float pY){
+		//this.mCamera.setBoundsEnabled(false);
+		//this.mCamera.reset();
 		this.mCamera.setCenter(pX, pY);
 	}
 	

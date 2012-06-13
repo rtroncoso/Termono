@@ -78,7 +78,7 @@ public class SceneHelper {
     
     //#############JUEGO
     public void setGameScene(){
-    	this.mDisplay.setZoom(1.7f);
+    	this.mDisplay.setZoom(3.0f);
     	this.mGameScene = new GameScene(this.mGame);
     	this.mGameScene.initPhysics();
     	this.mGameScene.loadMap("desert");
