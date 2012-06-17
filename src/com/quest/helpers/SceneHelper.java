@@ -91,13 +91,12 @@ public class SceneHelper implements IMeasureConstants {
     //############INTERFACES
     public void setInventoryScene(){
     	this.mDisplay.setZoom(1.0f);
-    	this.mDisplay.setPos(800, 240);
     	this.mScene = new InventoryScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
     
     public void setEquipmentScene(){
-    	//this.mDisplay.getCamera().setCenter(400, 240);
+    	this.mDisplay.getCamera().setCenter(400, 240);
     	this.mScene = new EquipmentScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }

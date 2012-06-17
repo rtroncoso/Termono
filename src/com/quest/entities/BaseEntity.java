@@ -42,7 +42,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public BaseEntity(float pInitialPosX, float pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
+	public BaseEntity(int pInitialPosX, int pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		this.mEntityType = "BaseEntity";
 
 		// Set base path for Textures
@@ -60,13 +60,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 		
 		this.attachChild(this.mBodySprite);
 		
-		//final TMXTile tmpTMXTile = Game.getSceneManager().getGameScene().getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTile(pInitialPosX, pInitialPosY);
-
-		final float pNewX = (this.mBodySprite.getWidth() > 32) ? pInitialPosX - (this.mBodySprite.getWidth() - 32) : pInitialPosX;
-		final float pNewY = (this.mBodySprite.getHeight() > 32) ? pInitialPosY - (this.mBodySprite.getHeight() - 32) : pInitialPosY;
-
-		this.mX = pNewX;
-		this.mY = pNewY;
+		this.setTileAt(pInitialPosX, pInitialPosY);
 	}
 
 	// ===========================================================
@@ -75,12 +69,12 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	public BaseEntity moveToTile(final float pToTileX, final float pToTileY, final float pSpeed) {
 		
 		// get which tile are we going to
-		final TMXTile tmxTileTo = Game.getSceneManager().getGameScene().getMapManager().getTMXTileAt(pToTileX, pToTileY);
-		final TMXTile tmxTileAt = Game.getSceneManager().getGameScene().getMapManager().getTMXTileAt(this.getX(), this.getY());
+		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(pToTileX, pToTileY);
+		final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(this.getX(), this.getY());
 		
 		// Unblock our current Tile and block our new one
-		Game.getSceneManager().getGameScene().getMapManager().unregisterCollisionTile(tmxTileAt);
-		Game.getSceneManager().getGameScene().getMapManager().registerCollisionTile(tmxTileTo);
+		Game.getMapManager().unregisterCollisionTile(tmxTileAt);
+		Game.getMapManager().registerCollisionTile(tmxTileTo);
 
 		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pToTileX, pToTileY);
 
@@ -170,7 +164,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	
 	public void setTileAt(int tileX, int tileY) {
 		
-		final TMXTile tmpTMXTile = Game.getSceneManager().getGameScene().getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTile(tileX, tileY);
+		final TMXTile tmpTMXTile = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTile(tileX, tileY);
 
 		final float pNewX = (this.mBodySprite.getWidth() > 32) ? tmpTMXTile.getTileX() - (this.mBodySprite.getWidth() - 32) : tmpTMXTile.getTileX();
 		final float pNewY = (this.mBodySprite.getHeight() > 32) ? tmpTMXTile.getTileY() - (this.mBodySprite.getHeight() - 32) : tmpTMXTile.getTileY();

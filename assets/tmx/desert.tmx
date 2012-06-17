@@ -63,8 +63,8 @@
   <object x="992" y="1056" width="32" height="32"/>
   <object x="1184" y="1088" width="32" height="32"/>
   <object x="160" y="128" width="960" height="32"/>
-  <object x="1088" y="128" width="32" height="992"/>
-  <object x="160" y="128" width="32" height="992"/>
   <object x="160" y="1088" width="960" height="32"/>
+  <object x="1056" y="128" width="32" height="992"/>
+  <object x="224" y="128" width="32" height="992"/>
  </objectgroup>
 </map>

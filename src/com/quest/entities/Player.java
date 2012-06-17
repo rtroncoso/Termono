@@ -22,7 +22,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Player(float pInitialPosX, float pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
+	public Player(int pInitialPosX, int pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		// TODO Auto-generated constructor stub
 		super(pInitialPosX, pInitialPosY, pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);
 		
@@ -48,10 +48,10 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 				float moveToXTile = this.getX() + (TILE_SIZE * pValueX);
 				float moveToYTile = this.getY() + (TILE_SIZE * pValueY);
 
-				final TMXTile tmxTileAt = Game.getSceneManager().getGameScene().getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+				final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
 				// Moves to it if not blocked
-				if(!Game.getSceneManager().getGameScene().getMapManager().collisionCheck(tmxTileAt)) this.moveToTile(moveToXTile, moveToYTile, 1.0f);
+				if(!Game.getMapManager().collisionCheck(tmxTileAt)) this.moveToTile(moveToXTile, moveToYTile, 1.0f);
 			}
 		}
 	}

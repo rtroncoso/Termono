@@ -10,6 +10,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 
 import android.view.KeyEvent;
 
+import com.quest.helpers.MapHelper;
 import com.quest.helpers.SceneHelper;
 
 public class Game extends SimpleBaseGameActivity {
@@ -23,6 +24,7 @@ public class Game extends SimpleBaseGameActivity {
 	// Fields
 	// ===========================================================
 	private static SceneHelper mSceneManager;
+	private static MapHelper mMapManager;
 	private static Game mInstance;
 	
 	// ===========================================================
@@ -68,6 +70,8 @@ public class Game extends SimpleBaseGameActivity {
 	
 	@Override
 	protected Scene onCreateScene() {
+
+		Game.mMapManager = new MapHelper();
 		
 		//###################################################
 		//	this.mSceneManager.setGameScene();
@@ -88,6 +92,20 @@ public class Game extends SimpleBaseGameActivity {
 
 	public static void setSceneManager(SceneHelper pSceneManager) {
 		Game.mSceneManager = pSceneManager;
+	}
+	
+	/**
+	 * @return the mMapManager
+	 */
+	public static MapHelper getMapManager() {
+		return Game.mMapManager;
+	}
+
+	/**
+	 * @param mMapManager the mMapManager to set
+	 */
+	public static void setMapManager(MapHelper pMapManager) {
+		Game.mMapManager = pMapManager;
 	}
 	
 	/**

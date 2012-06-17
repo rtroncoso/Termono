@@ -33,7 +33,6 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Fields
 		// ===========================================================
-		private MapHelper mMapManager;
 		private Mob mMob2;
 		private Player mHero;
 		private Mob mEnemy;
@@ -51,16 +50,14 @@ public class GameScene extends Scene {
 			
 			// TODO Auto-generated method stub
 			Game.getInstance().getEngine().registerUpdateHandler(new FPSLogger());
-
-			this.mMapManager = new MapHelper();
-			this.mMapManager.loadMap("desert");
+			Game.getMapManager().loadMap("desert");
 			
 			// Create the Player
-			this.mHero = new Player(256, 196, "Mage.png", 128, 256, 0, 0, 4, 4);
+			this.mHero = new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4);
 			
 			//Enemies
-			this.mEnemy = new Mob(196, 256, "Mob.png", 128, 256, 0, 0, 4, 4);
-			this.mMob2 = new Mob(288, 256, "Mob2.png", 128, 256, 0, 0, 4, 4);
+			this.mEnemy = new Mob(15, 15, "Mob.png", 128, 256, 0, 0, 4, 4);
+			this.mMob2 = new Mob(25, 15, "Mob2.png", 128, 256, 0, 0, 4, 4);
 			
 			//Timer
 			this.mTimers = new Timers(mEnemy, mMob2);
@@ -76,7 +73,7 @@ public class GameScene extends Scene {
 			this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
 
 			// Map Layers
-			for(final TMXLayer tLayer : this.mMapManager.getCurrentMap().getTMXLayers()) {
+			for(final TMXLayer tLayer : Game.getMapManager().getCurrentMap().getTMXLayers()) {
 				this.attachChild(tLayer);
 			}
 			
@@ -121,20 +118,6 @@ public class GameScene extends Scene {
 		
 		public Player getHero() {
 			return this.mHero;
-		}
-		
-		/**
-		 * @return the mMapManager
-		 */
-		public MapHelper getMapManager() {
-			return mMapManager;
-		}
-
-		/**
-		 * @param mMapManager the mMapManager to set
-		 */
-		public void setMapManager(MapHelper pMapManager) {
-			this.mMapManager = pMapManager;
 		}
 
 		// ===========================================================
