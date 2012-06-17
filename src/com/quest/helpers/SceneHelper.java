@@ -53,19 +53,19 @@ public class SceneHelper implements IMeasureConstants {
 	}
 	//#############MENUS
     public void setMainMenuScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.0f);
+    	this.mDisplay.setZoom(1.0f);
     	this.mScene = new MainMenuScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
 
     public void setPauseMenuScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.0f);
+    	this.mDisplay.setZoom(1.0f);
     	this.mScene = new PauseMenuScene();
         Game.getInstance().getEngine().setScene(this.mScene);    	
     }
     
     public void setOptionsScene(){
-    	this.mDisplay.getCamera().setZoomFactor(1.0f);
+    	this.mDisplay.setZoom(1.0f);
     	this.mScene = new OptionsScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
@@ -77,14 +77,9 @@ public class SceneHelper implements IMeasureConstants {
     
     //#############JUEGO
     public void setGameScene(){
-    	this.mDisplay.setZoom(2.0f);
+    	this.mDisplay.setZoom(1.6f);
     	this.mGameScene = new GameScene();
-    	this.mGameScene.initPhysics();
-    	this.mGameScene.loadMap("desert");
-    	this.mGameScene.loadEntities();
-    	this.mGameScene.loadHUD();
     	Game.getInstance().getEngine().setScene(this.mGameScene);
-    	this.mDisplay.doFocusCamera(this.mGameScene.getHero());
     	this.mScene = this.mGameScene;
     }
     

@@ -2,8 +2,7 @@ package com.quest.display;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
-
-import com.quest.entities.BaseEntity;
+import org.andengine.entity.Entity;
 
 public class Display {
 	
@@ -48,9 +47,9 @@ public class Display {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void doFocusCamera(BaseEntity pEntity) {
+	public void doFocusCamera(Entity pEntity) {
 
-		this.mCamera.setChaseEntity(pEntity.getAnimatedSprite());
+		this.mCamera.setChaseEntity(pEntity);
 	}
 	
 	public void setMapBounds(int pWidth, int pHeight) {

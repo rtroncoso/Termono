@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="Index" value="0"/>
+ </properties>
+ <tileset firstgid="1" name="images" tilewidth="32" tileheight="32">
+  <image source="images.png" width="512" height="384"/>
+ </tileset>
+ <layer name="Area 1 Layer 1" width="20" height="20">
+  <properties>
+   <property name="L1" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NiYGBgIgJzQzExaokxiweKyTVzNRCvoaJ5u4F4D5J5uVT0cyIShokx4sDEmikIxEJINKnmFQJxERXd0wjETVQ0D+Y+dJrcOIC5D51GDk9qpO2hZt50NEypueSagcsN1HATrc2jZvgNNQwAWiaTREAGAAA=
+  </data>
+ </layer>
+ <layer name="Area 1 Layer 2" width="20" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGDmAhcpmUdO84QamQjE2wImESQXTkNimWMyklnmkAmT/mlJoFrlAGoh5cGCZAXAPLYAoEIsh0awUmqcKxGpINKXmo+tHN59U84hxHylmEuM+UswDADUU53lABgAA
+  </data>
+ </layer>
+ <layer name="Animation Layer" width="20" height="20">
+  <properties>
+   <property name="Animate" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAWjYPiBiUDMTEXzmKFmjoJRMAoQAABbLt88QAYAAA==
+  </data>
+ </layer>
+ <layer name="Top Layer" width="20" height="20">
+  <properties>
+   <property name="Top" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGBqAFYoHq3mjYBSMglEw0gAA21qiMkAGAAA=
+  </data>
+ </layer>
+ <objectgroup name="Area 1 Collide 1" width="20" height="20">
+  <properties>
+   <property name="Collide" value="true"/>
+  </properties>
+  <object x="64" y="288" width="64" height="64"/>
+  <object x="288" y="32" width="32" height="96"/>
+  <object x="384" y="32" width="32" height="96"/>
+  <object x="384" y="256" width="32" height="64"/>
+  <object x="96" y="384" width="256" height="32"/>
+  <object x="576" y="96" width="64" height="32"/>
+  <object x="608" y="64" width="32" height="32"/>
+  <object x="320" y="448" width="96" height="32"/>
+  <object x="512" y="384" width="128" height="32"/>
+  <object x="512" y="512" width="128" height="32"/>
+  <object x="320" y="320" width="64" height="32"/>
+  <object x="320" y="224" width="64" height="32"/>
+  <object x="576" y="800" width="352" height="32"/>
+  <object x="800" y="832" width="32"/>
+  <object x="768" y="832" width="160" height="32"/>
+  <object x="0" y="480" width="160" height="32"/>
+  <object x="128" y="512" width="160" height="32"/>
+  <object x="128" y="544" width="160" height="96"/>
+  <object x="288" y="576" width="32" height="64"/>
+  <object x="320" y="0" width="64" height="32"/>
+  <object x="512" y="416" width="32" height="96"/>
+  <object x="0" y="512" width="128" height="128"/>
+  <object x="416" y="832" width="32" height="96"/>
+  <object x="352" y="96" width="32" height="32"/>
+  <object x="416" y="288" height="32"/>
+  <object x="416" y="320" width="64" height="32"/>
+  <object x="480" y="256" width="32" height="64"/>
+ </objectgroup>
+ <objectgroup name="Exit1a" width="20" height="20">
+  <properties>
+   <property name="Exit" value="1"/>
+   <property name="Link" value="0"/>
+   <property name="Player" value="4"/>
+  </properties>
+  <object x="320" y="256" width="32" height="64"/>
+ </objectgroup>
+ <objectgroup name="Exit1b" width="20" height="20">
+  <properties>
+   <property name="Exit" value="1"/>
+   <property name="Link" value="1"/>
+   <property name="Player" value="8"/>
+  </properties>
+  <object x="416" y="256" width="64" height="32"/>
+ </objectgroup>
+ <objectgroup name="Exit2" width="20" height="20">
+  <properties>
+   <property name="Exit" value="2"/>
+   <property name="Player" value="2"/>
+  </properties>
+  <object x="320" y="96" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup name="Property 1" width="20" height="20">
+  <properties>
+   <property name="Property" value="1"/>
+  </properties>
+  <object x="192" y="64" width="64" height="64"/>
+ </objectgroup>
+</map>

@@ -14,8 +14,6 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.modifier.ease.EaseBackOut;
 
 import com.quest.game.Game;
-import com.quest.helpers.SceneHelper;
-import com.quest.scenes.GameScene;
 
 
 
@@ -59,7 +57,7 @@ public class MenuHud extends HUD{
 
 			//Init local Variables
 			this.mHud = pHud;
-			this.mMenuEntity = new Entity(Game.getInstance().getSceneManager().getDisplay().getCameraWidth()-96, -236);
+			this.mMenuEntity = new Entity(Game.getSceneManager().getDisplay().getCameraWidth()-96, -236);
 			
 			// Set base path for Textures
 			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/");
@@ -88,7 +86,7 @@ public class MenuHud extends HUD{
 						case TouchEvent.ACTION_DOWN:
 							if(updater == false) {
 								updater = true;
-								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, Game.getInstance().getSceneManager().getDisplay().getCameraWidth() - 96, 100, -236, 50, EaseBackOut.getInstance()));
+								MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, Game.getSceneManager().getDisplay().getCameraWidth() - 96, 100, -236, 50, EaseBackOut.getInstance()));
 							} 
 						break;
 					}

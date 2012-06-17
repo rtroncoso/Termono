@@ -5,6 +5,8 @@ package com.quest.entities;
 
 import java.util.Random;
 
+import org.andengine.extension.tmx.TMXTile;
+
 import com.quest.game.Game;
 
 /**
@@ -26,9 +28,9 @@ public class Mob extends BaseEntity{
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Mob() {
+	public Mob(float pInitialPosX, float pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		// TODO Auto-generated constructor stub
-		super();
+		super(pInitialPosX, pInitialPosY, pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);
 		
 		this.mEntityType = "Mob";
 	}
@@ -99,7 +101,10 @@ public class Mob extends BaseEntity{
 			}		
 			if(move == true)
 			{
-				this.moveToTile(moveToXTile, moveToYTile, 1.0f);
+				final TMXTile tmxTileAt = Game.getSceneManager().getGameScene().getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+				
+				// Moves to it if not blocked
+				if(!Game.getSceneManager().getGameScene().getMapManager().collisionCheck(tmxTileAt)) this.moveToTile(moveToXTile, moveToYTile, 1.0f);
 			}
 		}		
 	}

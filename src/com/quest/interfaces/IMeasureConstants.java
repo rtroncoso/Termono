@@ -14,6 +14,10 @@ public interface IMeasureConstants {
 	/**
 	 * Map
 	 */
-	public final float TILE_WIDTH = 32;
-	public final float TILE_HEIGHT = 32;
+	public final int TILE_SIZE = 32;
+	
+	/**
+	 * Player
+	 */
+	public final float SPEED_MODIFIER = 4.0f;
 }

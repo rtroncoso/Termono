@@ -9,7 +9,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-import com.quest.entities.Mob;
 import com.quest.game.Game;
 
 public class StatsHud extends HUD {

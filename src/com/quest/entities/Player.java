@@ -2,6 +2,7 @@ package com.quest.entities;
 
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
+import org.andengine.extension.tmx.TMXTile;
 
 import com.quest.game.Game;
 
@@ -21,9 +22,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Player() {
+	public Player(float pInitialPosX, float pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		// TODO Auto-generated constructor stub
-		super();
+		super(pInitialPosX, pInitialPosY, pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);
 		
 		this.mEntityType = "Player";
 	}
@@ -44,11 +45,13 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 		if(pValueX != 0.0f || pValueY != 0.0f) {
 			if(!this.isWalking) {
 				// Gets the new Tile
-				float moveToXTile = this.getX() + (TILE_WIDTH * pValueX);
-				float moveToYTile = this.getY() + (TILE_HEIGHT * pValueY);
+				float moveToXTile = this.getX() + (TILE_SIZE * pValueX);
+				float moveToYTile = this.getY() + (TILE_SIZE * pValueY);
+
+				final TMXTile tmxTileAt = Game.getSceneManager().getGameScene().getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
-				// Moves to it
-				this.moveToTile(moveToXTile, moveToYTile, 1.5f);
+				// Moves to it if not blocked
+				if(!Game.getSceneManager().getGameScene().getMapManager().collisionCheck(tmxTileAt)) this.moveToTile(moveToXTile, moveToYTile, 1.0f);
 			}
 		}
 	}
