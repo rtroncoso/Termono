@@ -82,7 +82,7 @@ public class GameScene extends Scene {
 			this.attachChild(this.mEnemy);
 			this.attachChild(this.mMob2);
 			
-			// HUD
+			// HUD 
 			this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
 			this.mHud.attachChild(this.mStatsHud.getTermono());
 			this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());

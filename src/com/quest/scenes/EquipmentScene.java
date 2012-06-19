@@ -1,5 +1,6 @@
 package com.quest.scenes;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
@@ -35,6 +36,7 @@ public class EquipmentScene extends Scene {
 	private boolean mCurrent = false;
 	
 	private StatsHud mStatsHud;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -55,7 +57,7 @@ public class EquipmentScene extends Scene {
 		
 		this.attachChild(this.mStatsHud.getTermono());
 		
-
+		
 		this.mItemsSprite = new AnimatedSprite(80, 200,this.mItemsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {

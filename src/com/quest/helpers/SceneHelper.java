@@ -53,24 +53,28 @@ public class SceneHelper implements IMeasureConstants {
 	}
 	//#############MENUS
     public void setMainMenuScene(){
+    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
     	this.mScene = new MainMenuScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
 
     public void setPauseMenuScene(){
+    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
     	this.mScene = new PauseMenuScene();
         Game.getInstance().getEngine().setScene(this.mScene);    	
     }
     
     public void setOptionsScene(){
+    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
     	this.mScene = new OptionsScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
     
     public void setConectionScene(){
+    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mScene = new ConectionScene();
         Game.getInstance().getEngine().setScene(this.mScene);
     }
@@ -90,13 +94,14 @@ public class SceneHelper implements IMeasureConstants {
     
     //############INTERFACES
     public void setInventoryScene(){
+    	
     	this.mDisplay.setZoom(1.0f);
     	this.mScene = new InventoryScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
     
     public void setEquipmentScene(){
-    	this.mDisplay.getCamera().setCenter(400, 240);
+    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mScene = new EquipmentScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
@@ -109,8 +114,6 @@ public class SceneHelper implements IMeasureConstants {
     
     
     
-    
-
 	// ===========================================================
 	// Methods
 	// ===========================================================

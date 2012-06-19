@@ -52,7 +52,6 @@ public class InventoryScene extends Scene {
 		
 		this.mInventoryTextureAtlas.load();
 		
-		
 		//Fondo principal
 		this.mInventorySprite = new Sprite(0, 0, this.mInventoryTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {		};
 		this.attachChild(mInventorySprite);	
