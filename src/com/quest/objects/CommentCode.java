@@ -4,6 +4,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 
 import com.quest.display.hud.StatsHud;
+import com.quest.game.Game;
 
 public class CommentCode {/*
 
@@ -45,6 +46,9 @@ public class CommentCode {/*
 			}					
 		};
 
-	
+	############################################
+	codigo para detachear la camara de la entity
+	############################################
+	Game.getSceneManager().getDisplay().getCamera().setChaseEntity(null);
 	
 */}

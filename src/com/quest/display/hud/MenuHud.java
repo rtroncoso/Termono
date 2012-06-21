@@ -118,6 +118,7 @@ public class MenuHud extends HUD{
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 					case TouchEvent.ACTION_UP:
+					Game.getSceneManager().getDisplay().getCamera().setChaseEntity(null);
 					Game.getSceneManager().setInventoryScene();
 					break;
 					}
