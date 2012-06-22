@@ -86,7 +86,7 @@ public class GameScene extends Scene {
 			this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
 			this.mHud.attachChild(this.mStatsHud.getTermono());
 			this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
-			this.mHud.attachChild(this.mMenuHud.getMenuEntity());
+			this.mHud.attachChild(this.mMenuHud.getMenuSprite());
 			
 			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 			Game.getSceneManager().getDisplay().doFocusCamera(this.mHero);

@@ -35,7 +35,7 @@ public class ControlsHud extends HUD {
 	// ===========================================================
 	public ControlsHud(Player pPlayer)
 	{
-		// Set internal Fields
+		// Set internal Fields a
 		this.mPlayer = pPlayer;
 				
 		// Load controls texture into memory

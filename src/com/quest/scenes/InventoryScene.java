@@ -43,34 +43,8 @@ public class InventoryScene extends Scene {
 	// Constructors
 	// ===========================================================
 	public InventoryScene(){
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/Inventory/");
-		this.mInventoryTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
-		this.mInventoryTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "inventory.png", 0, 0);
-		this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Close.png", 0, 480);
-		this.mArmasTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "BtnArmas.png", 100, 480);
-		this.mConsumiblesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "BtnConsumibles.png", 200, 480);
 		
-		this.mInventoryTextureAtlas.load();
 		
-		//Fondo principal
-		this.mInventorySprite = new Sprite(0, 0, this.mInventoryTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {		};
-		this.attachChild(mInventorySprite);	
-		
-		this.mCloseSprite = new Sprite(InventoryScene.this.mInventorySprite.getWidth() - 45, 10,this.mCloseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_UP:
-				Game.getSceneManager().setGameScene();
-				break;
-			}
-			return true;
-			}
-			
-		};
 		
 		this.mArmasSprite = new Sprite(50, 75,this.mArmasTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override

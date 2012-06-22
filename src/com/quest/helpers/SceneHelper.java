@@ -6,9 +6,8 @@ import com.quest.display.Display;
 import com.quest.game.Game;
 import com.quest.interfaces.IMeasureConstants;
 import com.quest.scenes.ConectionScene;
-import com.quest.scenes.EquipmentScene;
+import com.quest.scenes.GameMenuScene;
 import com.quest.scenes.GameScene;
-import com.quest.scenes.InventoryScene;
 import com.quest.scenes.MainMenuScene;
 import com.quest.scenes.OptionsScene;
 import com.quest.scenes.PauseMenuScene;
@@ -93,18 +92,13 @@ public class SceneHelper implements IMeasureConstants {
 
     
     //############INTERFACES
-    public void setInventoryScene(){
+    public void setGameMenuScene(){
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
-    	this.mScene = new InventoryScene();
+    	this.mScene = new GameMenuScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
     
-    public void setEquipmentScene(){
-    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
-    	this.mScene = new EquipmentScene();
-    	Game.getInstance().getEngine().setScene(this.mScene);
-    }
     
     
     //############MISC
