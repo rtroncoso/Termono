@@ -295,6 +295,17 @@ public class GameMenuScene extends Scene{
 		
 		this.attachChild(this.mStatsHud.getTermono());
 		
+		
+		
+		
+		/*TO DO
+		 * -Funcion de cargar items
+		 * -Cargar items al inicio del menu 
+		 * -Cargar items por tabs(osea al tocar se cargan)
+		 * 
+		 * 
+		 * */
+		
 		//################FIN DE ENTIDAD INVENTORY#########################
 	//	this.attachChild(mEquipmentEntity);
 		
