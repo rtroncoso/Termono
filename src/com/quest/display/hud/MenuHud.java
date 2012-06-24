@@ -53,6 +53,7 @@ public class MenuHud extends HUD{
 					// TODO Auto-generated method stub
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_UP:
+							Game.getSceneManager().getDisplay().getCamera().setHUD(null);
 							Game.getSceneManager().getDisplay().getCamera().setChaseEntity(null);
 							Game.getSceneManager().setGameMenuScene();							
 						break;
