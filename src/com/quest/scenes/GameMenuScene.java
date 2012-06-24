@@ -22,6 +22,8 @@ public class GameMenuScene extends Scene{
 	// ===========================================================
 	// Fields
 	// ===========================================================
+	//HACER UN BOOLEAN PARA CURRENT TAB
+	
 	//Entidades
 	private Entity mGameMenuEntity;
 	private Entity mInventoryEntity;
@@ -29,7 +31,7 @@ public class GameMenuScene extends Scene{
 	private Entity mSkillsEntity;
 	private Entity mAttributesEntity;
 	private Entity mInfoEntity;
-
+	private Entity mCurrentEntity;
 
 	//Textures Atlas
 	private BitmapTextureAtlas mSceneTextureAtlas;
@@ -38,17 +40,19 @@ public class GameMenuScene extends Scene{
 	private BitmapTextureAtlas mSkillsTextureAtlas;
 	private BitmapTextureAtlas mAttributesTextureAtlas;
 	private BitmapTextureAtlas mInfoTextureAtlas;
-	
+		
 	//Texture regions
 	private ITextureRegion mInventoryTabTextureRegion;
 		private ITextureRegion mInventoryUseTextureRegion;
 		private ITextureRegion mInventoryTossTextureRegion;
 		private ITextureRegion mInventoryMoneyTextureRegion;
+		private ITextureRegion mItemTextureRegion;
 	private ITextureRegion mEquipmentTabTextureRegion;
 	private ITextureRegion mSkillsTabTextureRegion;
 	private ITextureRegion mAttributesTabTextureRegion;
 	private ITextureRegion mInfoTabTextureRegion;
 	private ITextureRegion mCloseTextureRegion;
+	private ITextureRegion mBackgroundTextureRegion;
 	
 	
 	
@@ -57,13 +61,13 @@ public class GameMenuScene extends Scene{
 		private Sprite mInventoryUseSprite;
 		private Sprite mInventoryTossSprite;
 		private Sprite mInventoryMoneySprite;
+		private Sprite mItemSprite;
 	private Sprite mEquipmentTabSprite;
 	private Sprite mSkillsTabSprite;
 	private Sprite mAttributesTabSprite;
 	private Sprite mInfoTabSprite;
 	private Sprite mCloseSprite;
 	private Sprite mBackgroundSprite;
-	private ITextureRegion mBackgroundTextureRegion;
 	
 	private StatsHud mStatsHud;
 	
@@ -129,8 +133,11 @@ public class GameMenuScene extends Scene{
 				//cargar datos?
 				break;
 			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
+			case TouchEvent.ACTION_UP:				
 				GameMenuScene.this.mInventoryTabSprite.setAlpha(0.5f);
+				UnloadEntity(mCurrentEntity);
+				mCurrentEntity = LoadInventoryEntity();
+				GameMenuScene.this.attachChild(mCurrentEntity);
 				break;
 			}
 			return true;
@@ -150,6 +157,9 @@ public class GameMenuScene extends Scene{
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_UP:
 				GameMenuScene.this.mEquipmentTabSprite.setAlpha(0.5f);
+				UnloadEntity(mCurrentEntity);
+				mCurrentEntity = LoadEquipmentEntity();
+				GameMenuScene.this.attachChild(mCurrentEntity);
 				break;
 			}
 			return true;
@@ -168,7 +178,10 @@ public class GameMenuScene extends Scene{
 				break;
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_UP:
-				GameMenuScene.this.mSkillsTabSprite.setAlpha(0.5f);
+			GameMenuScene.this.mSkillsTabSprite.setAlpha(0.5f);
+			UnloadEntity(mCurrentEntity);
+			mCurrentEntity = LoadSkillsEntity();
+			GameMenuScene.this.attachChild(mCurrentEntity);
 				break;
 			}
 			return true;
@@ -186,6 +199,9 @@ public class GameMenuScene extends Scene{
 				break;
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mAttributesTabSprite.setAlpha(0.5f);
+				UnloadEntity(mCurrentEntity);
+				mCurrentEntity = LoadAttributesEntity();
+				GameMenuScene.this.attachChild(mCurrentEntity);
 				break;
 			}
 			return true;
@@ -204,6 +220,9 @@ public class GameMenuScene extends Scene{
 				break;
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mInfoTabSprite.setAlpha(0.5f);
+				UnloadEntity(mCurrentEntity);
+				mCurrentEntity = LoadInfoEntity();
+				GameMenuScene.this.attachChild(mCurrentEntity);
 				break;
 			}
 			return true;
@@ -218,105 +237,164 @@ public class GameMenuScene extends Scene{
 		this.registerTouchArea(this.mSkillsTabSprite);
 		this.registerTouchArea(this.mAttributesTabSprite);
 		this.registerTouchArea(this.mInfoTabSprite);
+		
 			
+		this.mInventoryTabSprite.setAlpha(0.5f);
+		mCurrentEntity = LoadInventoryEntity();
+		GameMenuScene.this.attachChild(mCurrentEntity);
 		
 		//##############FIN DE LA ENTIDAD PRINCIPAL########################
-		
-		
-		
-		//##############COMIENZO DE ENTIDAD INVENTORY######################
-		//atachearlas cuando se llame a la tab
-		this.attachChild(mInventoryEntity);
-		
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Inventory/");
-		this.mInventoryTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,512, TextureOptions.BILINEAR);
-		this.mInventoryUseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "UseEquip.png", 0, 0);
-		this.mInventoryTossTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Toss.png", 100, 0);
-		this.mInventoryMoneyTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Money.png", 0, 145);
-		this.mInventoryTextureAtlas.load();
-		
-		//Use Sprite
-		this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_UP:
-			case TouchEvent.ACTION_DOWN:
-				GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
-				break;
-			}
-			return true;
-			}					
-		};
-		this.mInventoryEntity.attachChild(mInventoryUseSprite);
-		
-		this.registerTouchArea(mInventoryUseSprite);		
+	}
+			
 	
-		
-		//Toss Sprite
-		this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_UP:
-			case TouchEvent.ACTION_DOWN:	
-				GameMenuScene.this.mInventoryTossSprite.setAlpha(0.5f);
-				break;
-			}
-			return true;
-			}					
-		};
-		this.mInventoryEntity.attachChild(mInventoryTossSprite);
-		this.registerTouchArea(mInventoryTossSprite);
-		
-		
-		//Money Sprite
-		this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, 125,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
-				break;
-			}
-			return true;
-			}					
-		};
-		this.mInventoryEntity.attachChild(mInventoryMoneySprite);
-		
-		this.attachChild(this.mStatsHud.getTermono());
-		
-		
-		
-		
-		/*TO DO
-		 * -Funcion de cargar items
-		 * -Cargar items al inicio del menu 
-		 * -Cargar items por tabs(osea al tocar se cargan)
-		 * 
-		 * 
-		 * */
-		
-		//################FIN DE ENTIDAD INVENTORY#########################
-	//	this.attachChild(mEquipmentEntity);
-		
-	//	this.attachChild(mSkillsEntity);
-		
-	//	this.attachChild(mAttributesEntity);
-		
-//		this.attachChild(mInfoEntity);
 	
+	
+	
+	//#################INVENTORY ENTITY######################
+	public Entity LoadInventoryEntity(){
+				this.mInventoryEntity.detachChildren();//La limpio, necesario?
 		
+				BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Inventory/");
+				this.mInventoryTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
+				this.mInventoryUseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "UseEquip.png", 0, 0);
+				this.mInventoryTossTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Toss.png", 100, 0);
+				this.mInventoryMoneyTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Money.png", 0, 145);
+				this.mInventoryTextureAtlas.load();
+				
+				//Use Sprite
+				this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_OUTSIDE:
+					case TouchEvent.ACTION_CANCEL:
+						break;
+					case TouchEvent.ACTION_UP:
+					case TouchEvent.ACTION_DOWN:
+						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
+						break;
+					}
+					return true;
+					}					
+				};
+				this.mInventoryEntity.attachChild(mInventoryUseSprite);
+				
+				this.registerTouchArea(mInventoryUseSprite);		
+			
+				
+				//Toss Sprite
+				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_OUTSIDE:
+					case TouchEvent.ACTION_CANCEL:
+						break;
+					case TouchEvent.ACTION_UP:
+					case TouchEvent.ACTION_DOWN:	
+						GameMenuScene.this.mInventoryTossSprite.setAlpha(0.5f);
+						LoadInventoryEntity();
+						break;
+					}
+					return true;
+					}					
+				};
+				this.mInventoryEntity.attachChild(mInventoryTossSprite);
+				this.registerTouchArea(mInventoryTossSprite);
+				
+				
+				//Money Sprite
+				this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, 125,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_OUTSIDE:
+					case TouchEvent.ACTION_CANCEL:
+						break;
+					case TouchEvent.ACTION_DOWN:
+					case TouchEvent.ACTION_UP:
+						break;
+					}
+					return true;
+					}					
+				};
+				this.mInventoryEntity.attachChild(mInventoryMoneySprite);
+					
+				
+				//load a los objetos(funcion?)######################################################################
+					this.mInventoryTextureAtlas.unload();
+					this.mItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Item.png", 100, 145);
+					this.mInventoryTextureAtlas.load();
+					this.mItemSprite = new Sprite(50, 100,this.mItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+						@Override
+						public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						switch(pSceneTouchEvent.getAction()) {
+						case TouchEvent.ACTION_OUTSIDE:
+						case TouchEvent.ACTION_CANCEL:
+							break;
+						case TouchEvent.ACTION_DOWN:
+						case TouchEvent.ACTION_UP:
+							break;
+						}
+						return true;
+						}					
+					};
+					this.mInventoryEntity.attachChild(mItemSprite);
+					
+					return this.mInventoryEntity;
 	}	
+	
+	
+	
+	
+	
+	//#################EQUIPMENT ENTITY######################
+	public Entity LoadEquipmentEntity(){
+		this.mEquipmentEntity.detachChildren();//La limpio, necesario?
+		
+		
+		return this.mEquipmentEntity;
+	}
+	
+	
+	
+	
+	//#################SKILLS ENTITY######################	
+	public Entity LoadSkillsEntity(){
+		this.mSkillsEntity.detachChildren();//La limpio, necesario?
+		
+		
+		return this.mSkillsEntity;
+	}
+	
+	
+	
+	
+	//#################ATTRIBUTES ENTITY######################
+	public Entity LoadAttributesEntity(){
+		this.mAttributesEntity.detachChildren();//La limpio, necesario?
+		
+		
+		return this.mAttributesEntity;
+	}
+	
+	
+	
+	//#################INFO ENTITY######################
+	public Entity LoadInfoEntity(){
+		this.mInfoEntity.detachChildren();//La limpio, necesario?
+		
+		
+		return this.mInfoEntity;
+	}
+	
+	
+	
+	
+	//#################UNLOAD ENTITY######################
+	public void UnloadEntity(Entity pEntity){
+		this.detachChild(pEntity);
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
