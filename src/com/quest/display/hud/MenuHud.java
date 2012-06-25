@@ -52,8 +52,10 @@ public class MenuHud extends HUD{
 						float pTouchAreaLocalX, float pTouchAreaLocalY) {
 					// TODO Auto-generated method stub
 					switch(pSceneTouchEvent.getAction()) {
-						case TouchEvent.ACTION_UP:
-							Game.getSceneManager().getDisplay().getCamera().setHUD(null);
+						case TouchEvent.ACTION_CANCEL://como mierda detecto el cancel!?
+							break;
+						case TouchEvent.ACTION_DOWN:
+							Game.getSceneManager().getGameScene().unloadHUD();														
 							Game.getSceneManager().getDisplay().getCamera().setChaseEntity(null);
 							Game.getSceneManager().setGameMenuScene();							
 						break;
@@ -64,7 +66,6 @@ public class MenuHud extends HUD{
 			};
 			
 			//fin del menu
-
 			this.mHud.registerTouchArea(this.mMenuSprite);			
 		}
 

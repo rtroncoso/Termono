@@ -120,6 +120,10 @@ public class GameScene extends Scene {
 			return this.mHero;
 		}
 
+		public void unloadHUD(){
+			Game.getSceneManager().getDisplay().getCamera().setHUD(null);
+			this.mHud.clearTouchAreas();			
+		}
 		// ===========================================================
 		// Methods
 		// ===========================================================

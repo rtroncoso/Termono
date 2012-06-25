@@ -138,13 +138,13 @@ public class GameMenuScene extends Scene{
 					case TouchEvent.ACTION_OUTSIDE:
 						break;
 					case TouchEvent.ACTION_DOWN:
-					case TouchEvent.ACTION_UP:
 							Game.getSceneManager().setGameScene();
 						break;
 					}
 					return true;
 					}					
 				};
+				this.mCloseSprite.setScale(1.3f);
 				this.mGameMenuEntity.attachChild(mCloseSprite);
 				
 		
@@ -263,7 +263,7 @@ public class GameMenuScene extends Scene{
 		this.registerTouchArea(this.mAttributesTabSprite);
 		this.registerTouchArea(this.mInfoTabSprite);
 		
-			
+					
 		this.mInventoryTabSprite.setAlpha(0.5f);
 		mCurrentEntity = LoadInventoryEntity();
 		GameMenuScene.this.attachChild(mCurrentEntity);
@@ -591,6 +591,7 @@ public class GameMenuScene extends Scene{
 			return true;
 			}					
 		};
+		this.mEquipmentSwordItemSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(mEquipmentSwordItemSprite);
 		this.registerTouchArea(mEquipmentSwordItemSprite);
 		
@@ -616,6 +617,7 @@ public class GameMenuScene extends Scene{
 			return true;
 			}					
 		};
+		this.mEquipmentShieldItemSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(mEquipmentShieldItemSprite);
 		this.registerTouchArea(mEquipmentShieldItemSprite);
 		
@@ -641,6 +643,7 @@ public class GameMenuScene extends Scene{
 			return true;
 			}					
 		};
+		this.mEquipmentPlateItemSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(mEquipmentPlateItemSprite);
 		this.registerTouchArea(mEquipmentPlateItemSprite);
 
@@ -727,8 +730,6 @@ public class GameMenuScene extends Scene{
  * 
  * -FUNCION PARA CARGAR Y DESCARGAR TOUCH AREAS
  * -CENTRAR LA POSICION A LOS ITEMS (- THIS.WIDTH / 2, FIJARME SI HAY SET CENTER O HACER UNA FUNCION)
- * -ARREGLAR LOS THIS. POR GAMEMENUSCENE.THIS.
- * -ARREGLAR LOS SPRITES 
  * 
  * 
  * 
