@@ -80,10 +80,12 @@ public class SceneHelper implements IMeasureConstants {
     
     //#############JUEGO
     public void setGameScene(){
-    	this.mDisplay.setZoom(1.6f);
-    	this.mGameScene = new GameScene();
+    	if(this.mGameScene == null) {
+        	this.mGameScene = new GameScene();
+    	}
     	Game.getInstance().getEngine().setScene(this.mGameScene);
     	this.mScene = this.mGameScene;
+    	this.mDisplay.setZoom(1.6f);
     }
     
     public GameScene getGameScene(){
