@@ -4,6 +4,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 
 import com.quest.display.hud.StatsHud;
+import com.quest.game.Game;
 
 public class CommentCode {/*
 
@@ -45,6 +46,35 @@ public class CommentCode {/*
 			}					
 		};
 
+	############################################
+	codigo para detachear la camara de la entity
+	############################################
+	Game.getSceneManager().getDisplay().getCamera().setChaseEntity(null);
 	
 	
+	#####################################
+	movimiento ease con entity
+	#####################################
+	MenuHud.this.mMenuEntity.registerEntityModifier(new MoveModifier(0.7f, Game.getSceneManager().getDisplay().getCameraWidth() - 96, 100, -236, 50, EaseBackOut.getInstance()));
+	
+	###########################
+	otro movimiento
+	###########################
+		MenuHud.Game.getInstance().getScene().registerUpdateHandler(pUpdatehandler = new IUpdateHandler() {
+			@Override
+			public void onUpdate(float pSecondsElapsed) {
+				updater = true;
+					if(MenuHud.this.mMenuEntity.getX() < 230){MenuHud.Game.getInstance().getScene().unregisterUpdateHandler(pUpdatehandler);}
+					MenuHud.this.mMenuEntity.setPositi	on(MenuHud.this.mMenuEntity.getX() - 20, MenuHud.this.mMenuEntity.getY() + 12);
+				}
+			
+				@Override
+				public void reset() {
+					// TODO Auto-generated method stub			
+				}
+		});		
+		
+		
+		
+		
 */}

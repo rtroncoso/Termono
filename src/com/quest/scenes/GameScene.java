@@ -82,11 +82,11 @@ public class GameScene extends Scene {
 			this.attachChild(this.mEnemy);
 			this.attachChild(this.mMob2);
 			
-			// HUD
+			// HUD 
 			this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
 			this.mHud.attachChild(this.mStatsHud.getTermono());
 			this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
-			this.mHud.attachChild(this.mMenuHud.getMenuEntity());
+			this.mHud.attachChild(this.mMenuHud.getMenuSprite());
 			
 			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 			Game.getSceneManager().getDisplay().doFocusCamera(this.mHero);
@@ -120,6 +120,10 @@ public class GameScene extends Scene {
 			return this.mHero;
 		}
 
+		public void unloadHUD(){
+			Game.getSceneManager().getDisplay().getCamera().setHUD(null);
+			this.mHud.clearTouchAreas();			
+		}
 		// ===========================================================
 		// Methods
 		// ===========================================================

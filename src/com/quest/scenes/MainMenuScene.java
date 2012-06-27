@@ -1,5 +1,6 @@
 package com.quest.scenes;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
@@ -29,7 +30,7 @@ public class MainMenuScene extends Scene {
 	private Sprite mMainMenuSprite;
 	private Sprite mPlaySprite;
 	private Sprite mOptionsSprite;
-	
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================

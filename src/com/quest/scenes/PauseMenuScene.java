@@ -1,5 +1,6 @@
 package com.quest.scenes;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
@@ -32,6 +33,7 @@ public class PauseMenuScene extends Scene {
 	private Sprite mResumeSprite;
 	private Sprite mOptionsSprite;
 	private Sprite mQuitSprite;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -43,6 +45,7 @@ public class PauseMenuScene extends Scene {
 		this.mOptionsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Options.jpg", 256, 480);
 		this.mQuitTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mPauseMenuTextureAtlas, Game.getInstance().getApplicationContext(), "QuittoMainMenu.jpg", 512, 480);
 		this.mPauseMenuTextureAtlas.load();
+		
 		
 		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager());
 		this.attachChild(mBackgroundSprite);
