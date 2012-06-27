@@ -48,10 +48,10 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 				float moveToXTile = this.getX() + (TILE_SIZE * pValueX);
 				float moveToYTile = this.getY() + (TILE_SIZE * pValueY);
 
-				final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
 				// Moves to it if not blocked
-				if(!Game.getMapManager().collisionCheck(tmxTileAt)) this.moveToTile(moveToXTile, moveToYTile, 1.0f);
+				if(!Game.getMapManager().collisionCheck(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);
 			}
 		}
 	}

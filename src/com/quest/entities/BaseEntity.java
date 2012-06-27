@@ -37,6 +37,13 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	protected AnimatedSprite mBodySprite;
 	protected TMXTile mTMXTileAt;
 	protected boolean isWalking;
+	protected enum PlayerDirection {
+		UP,
+		DOWN,
+		RIGHT,
+		LEFT,
+		DEFAULT
+	}
 	
 
 	// ===========================================================
@@ -66,17 +73,51 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public BaseEntity moveToTile(final float pToTileX, final float pToTileY, final float pSpeed) {
+	public BaseEntity setAnimationDirection(PlayerDirection pFacingDirection, long[] frameDurations, boolean restartAnimation) {
+		if(restartAnimation && !BaseEntity.this.mBodySprite.isAnimationRunning()) return this;
+		switch(pFacingDirection) {
+		case RIGHT:
+			BaseEntity.this.mBodySprite.animate(frameDurations, 8, 11, false);
+			break;
+		case LEFT:
+			BaseEntity.this.mBodySprite.animate(frameDurations, 4, 7, false);
+			break;
+		case DOWN:
+			BaseEntity.this.mBodySprite.animate(frameDurations, 0, 3, false);
+			break;
+		case UP:
+			BaseEntity.this.mBodySprite.animate(frameDurations, 12, 15, false);
+			break;		
+		}
+		return this;
+	}
+	
+	public PlayerDirection getFacingDirectionToTile(final TMXTile pTileTo) {
+		// RIGHT
+		if(BaseEntity.this.getX() - pTileTo.getTileX() < 0)
+			return PlayerDirection.RIGHT;
+		// LEFT
+		if(BaseEntity.this.getX() - pTileTo.getTileX() > 0)
+			return PlayerDirection.LEFT;
+		// DOWN
+		if(BaseEntity.this.getY() - pTileTo.getTileY() < 0)
+			return PlayerDirection.DOWN;
+		// UP
+		if(BaseEntity.this.getY() - pTileTo.getTileY() > 0)
+			return PlayerDirection.UP;
+		return PlayerDirection.DEFAULT;
+	}
+	
+	public BaseEntity moveToTile(final TMXTile pTileTo, final float pSpeed) {
 		
 		// get which tile are we going to
-		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(pToTileX, pToTileY);
 		final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(this.getX(), this.getY());
 		
 		// Unblock our current Tile and block our new one
 		Game.getMapManager().unregisterCollisionTile(tmxTileAt);
-		Game.getMapManager().registerCollisionTile(tmxTileTo);
+		Game.getMapManager().registerCollisionTile(pTileTo);
 
-		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pToTileX, pToTileY);
+		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pTileTo.getTileX(), pTileTo.getTileY());
 
 		this.mPathModifier = new PathModifier(pSpeed / SPEED_MODIFIER, this.mPath, new IPathModifierListener() {
 
@@ -88,19 +129,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
 				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
 
-				// RIGHT
-				if(BaseEntity.this.getX() - pToTileX < 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 8, 11, false);
-				// LEFT
-				if(BaseEntity.this.getX() - pToTileX > 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 4, 7, false);
-				// DOWN
-				if(BaseEntity.this.getY() - pToTileY < 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 0, 3, false);
-				// UP
-				if(BaseEntity.this.getY() - pToTileY > 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 12, 15, false);
-				
+				BaseEntity.this.setAnimationDirection(BaseEntity.this.getFacingDirectionToTile(pTileTo), frameDurations, false);
 				BaseEntity.this.isWalking = true;
 			}
 
@@ -164,7 +193,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	
 	public void setTileAt(int tileX, int tileY) {
 		
-		final TMXTile tmpTMXTile = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTile(tileX, tileY);
+		final TMXTile tmpTMXTile = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTileAt(tileX, tileY);
 
 		final float pNewX = (this.mBodySprite.getWidth() > 32) ? tmpTMXTile.getTileX() - (this.mBodySprite.getWidth() - 32) : tmpTMXTile.getTileX();
 		final float pNewY = (this.mBodySprite.getHeight() > 32) ? tmpTMXTile.getTileY() - (this.mBodySprite.getHeight() - 32) : tmpTMXTile.getTileY();

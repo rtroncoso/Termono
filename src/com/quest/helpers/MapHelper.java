@@ -91,7 +91,7 @@ public class MapHelper implements IMeasureConstants {
 				for (final TMXObject object : group.getTMXObjects()) {
 
 					int objectX = object.getX() + TILE_SIZE / 2;
-					int objectY = object.getY() - TILE_SIZE / 2;
+					int objectY = object.getY() + TILE_SIZE / 2;
 					// Gets the number of rows and columns in the
 					// object
 					int objectHeight = object.getHeight() / TILE_SIZE;

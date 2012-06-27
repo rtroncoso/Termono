@@ -101,10 +101,10 @@ public class Mob extends BaseEntity{
 			}		
 			if(move == true)
 			{
-				final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
 				// Moves to it if not blocked
-				if(!Game.getMapManager().collisionCheck(tmxTileAt)) this.moveToTile(moveToXTile, moveToYTile, 1.0f);
+				if(!Game.getMapManager().collisionCheck(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);
 			}
 		}		
 	}
