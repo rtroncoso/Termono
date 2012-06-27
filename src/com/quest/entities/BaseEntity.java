@@ -67,6 +67,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 		
 		this.attachChild(this.mBodySprite);
 		
+		
 		this.setTileAt(pInitialPosX, pInitialPosY);
 	}
 
@@ -193,7 +194,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	
 	public void setTileAt(int tileX, int tileY) {
 		
-		final TMXTile tmpTMXTile = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTileAt(tileX, tileY);
+		final TMXTile tmpTMXTile = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTile(tileX, tileY);
 
 		final float pNewX = (this.mBodySprite.getWidth() > 32) ? tmpTMXTile.getTileX() - (this.mBodySprite.getWidth() - 32) : tmpTMXTile.getTileX();
 		final float pNewY = (this.mBodySprite.getHeight() > 32) ? tmpTMXTile.getTileY() - (this.mBodySprite.getHeight() - 32) : tmpTMXTile.getTileY();
