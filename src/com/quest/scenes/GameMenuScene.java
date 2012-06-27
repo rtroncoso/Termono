@@ -285,31 +285,14 @@ public class GameMenuScene extends Scene{
 				BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Inventory/");
 				this.mInventoryTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 				this.mInventoryUseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "UseEquip.png", 0, 0);
-				this.mInventoryTossTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Toss.png", 100, 0);
-				this.mInventoryMoneyTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Money.png", 0, 145);
+				this.mInventoryTossTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Toss.png", 192, 0);
+				this.mInventoryMoneyTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Money.png", 0, 290);
 				this.mInventoryTextureAtlas.load();
 				
 				//Use Sprite
-				this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 184, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					switch(pSceneTouchEvent.getAction()) {
-					case TouchEvent.ACTION_OUTSIDE:
-					case TouchEvent.ACTION_CANCEL:
-						break;
-					case TouchEvent.ACTION_UP:
-					case TouchEvent.ACTION_DOWN:
-						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
-						break;
-					}
-					return true;
-					}					
-				};
-				this.mInventoryUseSprite.setScale(2.0f);
+				this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 184, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 				this.mInventoryEntity.attachChild(mInventoryUseSprite);
 				
-				this.registerTouchArea(mInventoryUseSprite);		
-			
 				
 				//Toss Sprite
 				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 400, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
@@ -323,7 +306,6 @@ public class GameMenuScene extends Scene{
 					case TouchEvent.ACTION_UP:
 					case TouchEvent.ACTION_DOWN:
 						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
-						GameMenuScene.this.checkInside(GameMenuScene.this.mInventoryUseSprite, GameMenuScene.this.mItemSprite);
 						break;
 					}
 					return true;
@@ -334,27 +316,14 @@ public class GameMenuScene extends Scene{
 				
 				
 				//Money Sprite
-				this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, 125,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
-				@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					switch(pSceneTouchEvent.getAction()) {
-					case TouchEvent.ACTION_OUTSIDE:
-					case TouchEvent.ACTION_CANCEL:
-						break;
-					case TouchEvent.ACTION_UP:
-					case TouchEvent.ACTION_DOWN:
-						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
-						break;
-					}
-					return true;
-					}					
-				};
+				this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, 125,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 				this.mInventoryEntity.attachChild(mInventoryMoneySprite);
+				
 					
 				
 				//load a los objetos(funcion?)####### Texture atlas distinto para items??###############################################################
 					this.mInventoryTextureAtlas.unload();
-					this.mItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Item.png", 100, 145);
+					this.mItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Item.png", 190, 290);
 					this.mInventoryTextureAtlas.load();
 					
 					this.mItemSprite = new Sprite(50, 100,this.mItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
@@ -368,6 +337,7 @@ public class GameMenuScene extends Scene{
 							break;
 						case TouchEvent.ACTION_MOVE:
 							if(this.mGrabbed) {
+								GameMenuScene.this.checkInside(GameMenuScene.this.mInventoryUseSprite, GameMenuScene.this.mItemSprite);
 								GameMenuScene.this.mItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mInventoryTossSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mInventoryTossSprite.getHeight() / 2);
 							}
 							break;
@@ -783,7 +753,6 @@ public class GameMenuScene extends Scene{
  * 
  * 
  * */
-
 
 
 
