@@ -312,7 +312,7 @@ public class GameMenuScene extends Scene{
 			
 				
 				//Toss Sprite
-				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 400, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
 					boolean mGrabbed = false;
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -323,6 +323,7 @@ public class GameMenuScene extends Scene{
 					case TouchEvent.ACTION_UP:
 					case TouchEvent.ACTION_DOWN:
 						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
+						GameMenuScene.this.checkInside(GameMenuScene.this.mInventoryUseSprite, GameMenuScene.this.mItemSprite);
 						break;
 					}
 					return true;
@@ -709,18 +710,34 @@ public class GameMenuScene extends Scene{
 	
 	//###################CHECK TOUCH AREA#################
 	  public boolean checkInside(Sprite pSprite1, Sprite pSprite2){
-	        float[] VerticesA= new float[4];
-	        float[] VerticesB= new float[4];
-	 /*       RectangularShapeCollisionChecker.fillVertices(this, VerticesA);
-	        RectangularShapeCollisionChecker.fillVertices(objA, VerticesB);
-	        if(	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[0], VerticesA[0 + VERTEX_INDEX_Y])&&
-	        	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[2], VerticesA[2 + VERTEX_INDEX_Y])&&
-	        	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[4], VerticesA[4 + VERTEX_INDEX_Y])&&
-	        	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[6], VerticesA[6 + VERTEX_INDEX_Y])) {
-	 */          if (ShapeCollisionChecker.checkContains(VerticesA, 4, pSprite1.getX(), pSprite1.getY())){
-		 		return true;
-	        } else {
-	            return false;
+	        float[] VerticesA= new float[8];
+	        float[] VerticesB= new float[8];
+	        //por ahora lo hago a lo negro, despues me fijo si tengo funcionde cargar vertices
+	        	VerticesA[0] = pSprite1.getX();
+	        	VerticesA[1] = pSprite1.getY();	        	
+	        	VerticesA[2] = pSprite1.getX() + pSprite1.getWidth();
+	        	VerticesA[3] = pSprite1.getY();	        	
+	        	VerticesA[4] = pSprite1.getX();
+	        	VerticesA[5] = pSprite1.getY() + pSprite1.getHeight();       	
+	        	VerticesA[6] = pSprite1.getX() + pSprite1.getWidth();
+	        	VerticesA[7] = pSprite1.getY() + pSprite1.getHeight();
+	        	
+	        	VerticesB[0] = pSprite2.getX();
+	        	VerticesB[1] = pSprite2.getY();	        	
+	        	VerticesB[2] = pSprite2.getX() + pSprite2.getWidth();
+	        	VerticesB[3] = pSprite2.getY();	        	
+	        	VerticesB[4] = pSprite2.getX();
+	        	VerticesB[5] = pSprite2.getY() + pSprite2.getHeight();       	
+	        	VerticesB[6] = pSprite2.getX() + pSprite2.getWidth();
+	        	VerticesB[7] = pSprite2.getY() + pSprite2.getHeight();
+	        	
+	        	
+	    		if (ShapeCollisionChecker.checkCollision(VerticesA, 4, VerticesB, 4)){
+	    			this.mInfoTabSprite.setScale(2.0f);
+	    			return true;
+	    		} else {
+	        		this.mInfoTabSprite.setScale(0.5f);
+	        		return false;
 	        }
 	    }
 	
