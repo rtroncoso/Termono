@@ -8,6 +8,8 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.util.algorithm.collision.RectangularShapeCollisionChecker;
+import org.andengine.util.algorithm.collision.ShapeCollisionChecker;
 
 import com.quest.display.hud.StatsHud;
 import com.quest.game.Game;
@@ -65,7 +67,6 @@ public class GameMenuScene extends Scene{
 	private ITextureRegion mInfoTabTextureRegion;
 	private ITextureRegion mCloseTextureRegion;
 	private ITextureRegion mBackgroundTextureRegion;
-	
 	
 	
 	//Sprites
@@ -269,6 +270,8 @@ public class GameMenuScene extends Scene{
 		GameMenuScene.this.attachChild(mCurrentEntity);
 		
 		//##############FIN DE LA ENTIDAD PRINCIPAL########################
+		
+		this.setTouchAreaBindingOnActionDownEnabled(true);
 	}
 			
 	
@@ -287,7 +290,7 @@ public class GameMenuScene extends Scene{
 				this.mInventoryTextureAtlas.load();
 				
 				//Use Sprite
-				this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+				this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 184, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -302,6 +305,7 @@ public class GameMenuScene extends Scene{
 					return true;
 					}					
 				};
+				this.mInventoryUseSprite.setScale(2.0f);
 				this.mInventoryEntity.attachChild(mInventoryUseSprite);
 				
 				this.registerTouchArea(mInventoryUseSprite);		
@@ -309,6 +313,7 @@ public class GameMenuScene extends Scene{
 				
 				//Toss Sprite
 				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+					boolean mGrabbed = false;
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -316,9 +321,8 @@ public class GameMenuScene extends Scene{
 					case TouchEvent.ACTION_CANCEL:
 						break;
 					case TouchEvent.ACTION_UP:
-					case TouchEvent.ACTION_DOWN:	
-						GameMenuScene.this.mInventoryTossSprite.setAlpha(0.5f);
-						LoadInventoryEntity();
+					case TouchEvent.ACTION_DOWN:
+						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
 						break;
 					}
 					return true;
@@ -330,14 +334,15 @@ public class GameMenuScene extends Scene{
 				
 				//Money Sprite
 				this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, 125,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
-					@Override
+				@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 					case TouchEvent.ACTION_OUTSIDE:
 					case TouchEvent.ACTION_CANCEL:
 						break;
-					case TouchEvent.ACTION_DOWN:
 					case TouchEvent.ACTION_UP:
+					case TouchEvent.ACTION_DOWN:
+						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
 						break;
 					}
 					return true;
@@ -352,20 +357,30 @@ public class GameMenuScene extends Scene{
 					this.mInventoryTextureAtlas.load();
 					
 					this.mItemSprite = new Sprite(50, 100,this.mItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+						boolean mGrabbed = false;
 						@Override
 						public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						switch(pSceneTouchEvent.getAction()) {
-						case TouchEvent.ACTION_OUTSIDE:
-						case TouchEvent.ACTION_CANCEL:
-							break;
 						case TouchEvent.ACTION_DOWN:
+							GameMenuScene.this.mItemSprite.setScale(3f);
+							this.mGrabbed = true;
+							break;
+						case TouchEvent.ACTION_MOVE:
+							if(this.mGrabbed) {
+								GameMenuScene.this.mItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mInventoryTossSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mInventoryTossSprite.getHeight() / 2);
+							}
+							break;
 						case TouchEvent.ACTION_UP:
-							this.setAlpha(0.1f);
+							if(this.mGrabbed) {
+								this.mGrabbed = false;
+								GameMenuScene.this.mItemSprite.setScale(2.0f);
+							}
 							break;
 						}
 						return true;
 						}					
 					};
+					GameMenuScene.this.mItemSprite.setScale(2.0f);
 					this.mInventoryEntity.attachChild(mItemSprite);
 					this.registerTouchArea(mItemSprite);
 					
@@ -686,12 +701,29 @@ public class GameMenuScene extends Scene{
 	}
 	
 	
-	
-	
 	//#################UNLOAD ENTITY######################
 	public void UnloadEntity(Entity pEntity){
 		this.detachChild(pEntity);
-	}
+		}
+	
+	
+	//###################CHECK TOUCH AREA#################
+	  public boolean checkInside(Sprite pSprite1, Sprite pSprite2){
+	        float[] VerticesA= new float[4];
+	        float[] VerticesB= new float[4];
+	 /*       RectangularShapeCollisionChecker.fillVertices(this, VerticesA);
+	        RectangularShapeCollisionChecker.fillVertices(objA, VerticesB);
+	        if(	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[0], VerticesA[0 + VERTEX_INDEX_Y])&&
+	        	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[2], VerticesA[2 + VERTEX_INDEX_Y])&&
+	        	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[4], VerticesA[4 + VERTEX_INDEX_Y])&&
+	        	ShapeCollisionChecker.checkContains(VerticesB, 8, VerticesA[6], VerticesA[6 + VERTEX_INDEX_Y])) {
+	 */          if (ShapeCollisionChecker.checkContains(VerticesA, 4, pSprite1.getX(), pSprite1.getY())){
+		 		return true;
+	        } else {
+	            return false;
+	        }
+	    }
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
