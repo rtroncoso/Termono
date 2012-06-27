@@ -85,21 +85,21 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 					IEntity pEntity) {
 				// TODO Auto-generated method stub
 				
-				long frameDuration = (long) ((1.5f / SPEED_MODIFIER) * 1000) / 4;
+				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
 				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
 
 				// RIGHT
 				if(BaseEntity.this.getX() - pToTileX < 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 8, 11, true);
+					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 8, 11, false);
 				// LEFT
 				if(BaseEntity.this.getX() - pToTileX > 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 4, 7, true);
+					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 4, 7, false);
 				// DOWN
 				if(BaseEntity.this.getY() - pToTileY < 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 0, 3, true);
+					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 0, 3, false);
 				// UP
 				if(BaseEntity.this.getY() - pToTileY > 0)
-					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 12, 15, true);
+					if(!BaseEntity.this.mBodySprite.isAnimationRunning()) BaseEntity.this.mBodySprite.animate(frameDurations, 12, 15, false);
 				
 				BaseEntity.this.isWalking = true;
 			}
@@ -124,7 +124,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 				// TODO Auto-generated method stub
 
 				BaseEntity.this.isWalking = false;
-				BaseEntity.this.mBodySprite.stopAnimation();
+				//BaseEntity.this.mBodySprite.stopAnimation();
 
 			}	
 		}, EaseLinear.getInstance());

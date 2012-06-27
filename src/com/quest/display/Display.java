@@ -2,6 +2,7 @@ package com.quest.display;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
+import org.andengine.engine.camera.ZoomCamera;
 import org.andengine.entity.Entity;
 
 public class Display {
@@ -9,7 +10,7 @@ public class Display {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private SmoothCamera mCamera;
+	private ZoomCamera mCamera;
 	private BoundCamera mBoundChaseCamera;
 	private int mCameraWidth;
 	private int mCameraHeight;
@@ -35,7 +36,7 @@ public class Display {
 			};
 		
 		
-		this.mCamera = new SmoothCamera(0, 0, this.mCameraWidth, this.mCameraHeight, 170, 170, 1.7f);
+		this.mCamera = new ZoomCamera(0, 0, this.mCameraWidth, this.mCameraHeight);
 		this.mCamera.setZoomFactor(pZoom);
 	}
 	
@@ -50,6 +51,7 @@ public class Display {
 	public void doFocusCamera(Entity pEntity) {
 
 		this.mCamera.setChaseEntity(pEntity);
+	//	this.mCamera.updateChaseEntity();  fijarme esto aaaaaaaaaaaaaaaaaaa
 	}
 	
 	public void setMapBounds(int pWidth, int pHeight) {
@@ -60,7 +62,8 @@ public class Display {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-
+	
+	
 		
 	public int getCameraWidth() {
 		return this.mCameraWidth;
@@ -78,7 +81,7 @@ public class Display {
 		return this.mDisplayHeight;
 	}
 	
-	public SmoothCamera getCamera() {
+	public ZoomCamera getCamera() {
 		return this.mCamera;
 	}
 
@@ -88,12 +91,6 @@ public class Display {
 
 	public void setZoom(Float pZoom){
 		this.mCamera.setZoomFactor(pZoom);
-	}
-	
-	public void setPos(float pX, float pY){
-		//this.mCamera.setBoundsEnabled(false);
-		//this.mCamera.reset();
-		this.mCamera.setCenter(pX, pY);
 	}
 	
 	public void setCameraWidth(int pCameraWidth) {

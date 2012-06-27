@@ -112,6 +112,9 @@ public class Game extends SimpleBaseGameActivity {
 	 * @return the mInstance
 	 */
 	public static Game getInstance() {
+		if(mInstance == null) {
+			mInstance = new Game();
+		}
 		return mInstance;
 	}
 
