@@ -568,7 +568,8 @@ public class GameMenuScene extends Scene{
 			case TouchEvent.ACTION_UP:
 				if(this.mGrabbed) {
 					this.mGrabbed = false;
-					if(GameMenuScene.this.mEquipmentSwordItemSprite.collidesWith(mEquipmentWeaponSprite)){
+					if(GameMenuScene.this.mEquipmentSwordItemSprite.collidesWith(mEquipmentBoxSprite)){
+					//if(GameMenuScene.this.mEquipmentSwordItemSprite.collidesWith(mEquipmentWeaponSprite)){
 						GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(0.5f);
 						GameMenuScene.this.mEquipmentSwordItemSprite.setX(GameMenuScene.this.mEquipmentWeaponSprite.getX() + GameMenuScene.this.mEquipmentWeaponSprite.getWidth() / 2 - GameMenuScene.this.mEquipmentSwordItemSprite.getWidth() / 2);//centrarlo bien despues
 						GameMenuScene.this.mEquipmentSwordItemSprite.setY(GameMenuScene.this.mEquipmentWeaponSprite.getY() + GameMenuScene.this.mEquipmentWeaponSprite.getHeight() / 2 - GameMenuScene.this.mEquipmentSwordItemSprite.getHeight() / 2);
