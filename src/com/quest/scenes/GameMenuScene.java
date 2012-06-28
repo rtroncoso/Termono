@@ -93,10 +93,7 @@ public class GameMenuScene extends Scene{
 	private Sprite mAttributesTabSprite;
 	private Sprite mInfoTabSprite;
 	private Sprite mCloseSprite;
-	private Sprite mBackgroundSprite;
-	
-	private StatsHud mStatsHud;
-	
+	private Sprite mBackgroundSprite;	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -107,13 +104,10 @@ public class GameMenuScene extends Scene{
 		this.mSkillsEntity = new Entity(0,0);
 		this.mAttributesEntity = new Entity(0,0);
 		this.mInfoEntity = new Entity(0,0);
-
-		mStatsHud = new StatsHud();
 		
 		//###################COMIENZO DE ENTIDAD PRINCIPAL############################
 		
-		this.attachChild(mGameMenuEntity);
-					
+		this.attachChild(mGameMenuEntity);					
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);
@@ -272,6 +266,7 @@ public class GameMenuScene extends Scene{
 		//##############FIN DE LA ENTIDAD PRINCIPAL########################
 		
 		this.setTouchAreaBindingOnActionDownEnabled(true);
+		
 	}
 			
 	
@@ -295,22 +290,7 @@ public class GameMenuScene extends Scene{
 				
 				
 				//Toss Sprite
-				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 400, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
-					boolean mGrabbed = false;
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					switch(pSceneTouchEvent.getAction()) {
-					case TouchEvent.ACTION_OUTSIDE:
-					case TouchEvent.ACTION_CANCEL:
-						break;
-					case TouchEvent.ACTION_UP:
-					case TouchEvent.ACTION_DOWN:
-						GameMenuScene.this.mInventoryUseSprite.setAlpha(0.5f);
-						break;
-					}
-					return true;
-					}					
-				};
+				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 400, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 				this.mInventoryEntity.attachChild(mInventoryTossSprite);
 				this.registerTouchArea(mInventoryTossSprite);
 				
@@ -318,9 +298,9 @@ public class GameMenuScene extends Scene{
 				//Money Sprite
 				this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, 125,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 				this.mInventoryEntity.attachChild(mInventoryMoneySprite);
-				
+
 					
-				
+				//ITEM
 				//load a los objetos(funcion?)####### Texture atlas distinto para items??###############################################################
 					this.mInventoryTextureAtlas.unload();
 					this.mItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Item.png", 190, 290);
@@ -337,8 +317,12 @@ public class GameMenuScene extends Scene{
 							break;
 						case TouchEvent.ACTION_MOVE:
 							if(this.mGrabbed) {
-								GameMenuScene.this.checkInside(GameMenuScene.this.mInventoryUseSprite, GameMenuScene.this.mItemSprite);
-								GameMenuScene.this.mItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mInventoryTossSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mInventoryTossSprite.getHeight() / 2);
+								if(GameMenuScene.this.mItemSprite.collidesWith(GameMenuScene.this.mInventoryUseSprite)){
+									GameMenuScene.this.mInfoTabSprite.setScale(2.0f);
+								} else {
+					        		GameMenuScene.this.mInfoTabSprite.setScale(0.5f);
+								}
+								GameMenuScene.this.mItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mItemSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mItemSprite.getHeight() / 2);
 							}
 							break;
 						case TouchEvent.ACTION_UP:
@@ -666,10 +650,11 @@ public class GameMenuScene extends Scene{
 	//#################INFO ENTITY######################
 	public Entity LoadInfoEntity(){
 		this.mInfoEntity.detachChildren();//La limpio, necesario?
-		
-		
+
+
 		return this.mInfoEntity;
 	}
+	
 	
 	
 	//#################UNLOAD ENTITY######################
@@ -677,40 +662,7 @@ public class GameMenuScene extends Scene{
 		this.detachChild(pEntity);
 		}
 	
-	
-	//###################CHECK TOUCH AREA#################
-	  public boolean checkInside(Sprite pSprite1, Sprite pSprite2){
-	        float[] VerticesA= new float[8];
-	        float[] VerticesB= new float[8];
-	        //por ahora lo hago a lo negro, despues me fijo si tengo funcionde cargar vertices
-	        	VerticesA[0] = pSprite1.getX();
-	        	VerticesA[1] = pSprite1.getY();	        	
-	        	VerticesA[2] = pSprite1.getX() + pSprite1.getWidth();
-	        	VerticesA[3] = pSprite1.getY();	        	
-	        	VerticesA[4] = pSprite1.getX();
-	        	VerticesA[5] = pSprite1.getY() + pSprite1.getHeight();       	
-	        	VerticesA[6] = pSprite1.getX() + pSprite1.getWidth();
-	        	VerticesA[7] = pSprite1.getY() + pSprite1.getHeight();
-	        	
-	        	VerticesB[0] = pSprite2.getX();
-	        	VerticesB[1] = pSprite2.getY();	        	
-	        	VerticesB[2] = pSprite2.getX() + pSprite2.getWidth();
-	        	VerticesB[3] = pSprite2.getY();	        	
-	        	VerticesB[4] = pSprite2.getX();
-	        	VerticesB[5] = pSprite2.getY() + pSprite2.getHeight();       	
-	        	VerticesB[6] = pSprite2.getX() + pSprite2.getWidth();
-	        	VerticesB[7] = pSprite2.getY() + pSprite2.getHeight();
-	        	
-	        	
-	    		if (ShapeCollisionChecker.checkCollision(VerticesA, 4, VerticesB, 4)){
-	    			this.mInfoTabSprite.setScale(2.0f);
-	    			return true;
-	    		} else {
-	        		this.mInfoTabSprite.setScale(0.5f);
-	        		return false;
-	        }
-	    }
-	
+		
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
