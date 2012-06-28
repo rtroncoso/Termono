@@ -8,10 +8,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.util.algorithm.collision.RectangularShapeCollisionChecker;
-import org.andengine.util.algorithm.collision.ShapeCollisionChecker;
 
-import com.quest.display.hud.StatsHud;
 import com.quest.game.Game;
 
 
@@ -285,14 +282,13 @@ public class GameMenuScene extends Scene{
 				this.mInventoryTextureAtlas.load();
 				
 				//Use Sprite
-				this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 184, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
+				this.mInventoryUseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 150,this.mInventoryUseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 				this.mInventoryEntity.attachChild(mInventoryUseSprite);
 				
 				
 				//Toss Sprite
-				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 400, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
+				this.mInventoryTossSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 92, 295,this.mInventoryTossTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 				this.mInventoryEntity.attachChild(mInventoryTossSprite);
-				this.registerTouchArea(mInventoryTossSprite);
 				
 				
 				//Money Sprite
@@ -419,7 +415,6 @@ public class GameMenuScene extends Scene{
 				break;
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_UP:
-				GameMenuScene.this.mEquipmentHelmSprite.setAlpha(0.5f);
 				break;
 			}
 			return true;
@@ -466,22 +461,38 @@ public class GameMenuScene extends Scene{
 		
 		//Weapon Sprite
 		this.mEquipmentWeaponSprite = new Sprite(46, 180,this.mEquipmentWeaponTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
+			case TouchEvent.ACTION_DOWN:	
+				this.mGrabbed = true;
+				GameMenuScene.this.mEquipmentSwordItemSprite.setAlpha(0.5f);
+				//checkear si ya tiene algo atacheado, si no tiene:
+				//Leer que items en equipment son weapons y ponerlos en algun color
+				//si tiene:
+				//dragear el item afuera del sprite y desatachearlo y registrar el touch area
 				break;
-			case TouchEvent.ACTION_DOWN:
+			case TouchEvent.ACTION_MOVE:
+				if(this.mGrabbed) {
+					//GameMenuScene.this.ITEM ATACHEADO.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mITEM ATACHEADO.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mITEM ATACHEADO.getHeight() / 2);
+				}
+				break;
 			case TouchEvent.ACTION_UP:
-				GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(0.5f);
+				if(this.mGrabbed) {
+					this.mGrabbed = false;
+					GameMenuScene.this.mEquipmentSwordItemSprite.setAlpha(1f);
+					//checkear si ya tiene algo atacheado, si no tiene:
+					//Leer que items en equipment son weapons y ponerlos en algun color
+					//si tiene:
+					//dragear el item afuera del sprite y desatachearlo y registrar el touch area
+				}
 				break;
 			}
 			return true;
 			}					
 		};
 		this.mEquipmentEntity.attachChild(mEquipmentWeaponSprite);
-		
 		
 		//Offhand Sprite
 		this.mEquipmentOffhandSprite = new Sprite(284, 180,this.mEquipmentOffhandTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
@@ -540,22 +551,34 @@ public class GameMenuScene extends Scene{
 		this.mEquipmentPlateItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "PlateItem.png", 210, 406);
 		this.mEquipmentTextureAtlas.load();
 		//sword
-		this.mEquipmentSwordItemSprite = new Sprite(GameMenuScene.this.mEquipmentWeaponSprite.getX()+ GameMenuScene.this.mEquipmentWeaponSprite.getWidth()/2, GameMenuScene.this.mEquipmentWeaponSprite.getY()+ GameMenuScene.this.mEquipmentWeaponSprite.getHeight()/2,this.mEquipmentSwordItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mEquipmentSwordItemSprite = new Sprite(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 50,this.mEquipmentSwordItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
 			case TouchEvent.ACTION_DOWN:
+				GameMenuScene.this.mEquipmentSwordItemSprite.setScale(3.0f);
+				this.mGrabbed = true;
+				break;
+			case TouchEvent.ACTION_MOVE:
+				if(this.mGrabbed) {
+					GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mEquipmentSwordItemSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mEquipmentSwordItemSprite.getHeight() / 2);
+				}
+				break;
 			case TouchEvent.ACTION_UP:
-					if(GameMenuScene.this.mEquipmentSwordItemSprite.getX() == GameMenuScene.this.mEquipmentWeaponSprite.getX()+ GameMenuScene.this.mEquipmentWeaponSprite.getWidth()/2 && GameMenuScene.this.mEquipmentSwordItemSprite.getY() == GameMenuScene.this.mEquipmentWeaponSprite.getY()+ GameMenuScene.this.mEquipmentWeaponSprite.getHeight()/2){
-						GameMenuScene.this.mEquipmentSwordItemSprite.setX(GameMenuScene.this.mEquipmentWeaponSprite.getX()+ GameMenuScene.this.mEquipmentWeaponSprite.getWidth()/2 + 100);
-						GameMenuScene.this.mEquipmentSwordItemSprite.setY(GameMenuScene.this.mEquipmentWeaponSprite.getY()+ GameMenuScene.this.mEquipmentWeaponSprite.getHeight()/2 + 100);
-					}else if(GameMenuScene.this.mEquipmentSwordItemSprite.getX() == GameMenuScene.this.mEquipmentWeaponSprite.getX()+ GameMenuScene.this.mEquipmentWeaponSprite.getWidth()/2 + 100 && GameMenuScene.this.mEquipmentSwordItemSprite.getY() == GameMenuScene.this.mEquipmentWeaponSprite.getY()+ GameMenuScene.this.mEquipmentWeaponSprite.getHeight()/2 + 100){
-						GameMenuScene.this.mEquipmentSwordItemSprite.setX(GameMenuScene.this.mEquipmentWeaponSprite.getX()+ GameMenuScene.this.mEquipmentWeaponSprite.getWidth()/2);
-						GameMenuScene.this.mEquipmentSwordItemSprite.setY(GameMenuScene.this.mEquipmentWeaponSprite.getY()+ GameMenuScene.this.mEquipmentWeaponSprite.getHeight()/2);												
+				if(this.mGrabbed) {
+					this.mGrabbed = false;
+					if(GameMenuScene.this.mEquipmentSwordItemSprite.collidesWith(mEquipmentWeaponSprite)){
+						GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(0.5f);
+						GameMenuScene.this.mEquipmentSwordItemSprite.setX(GameMenuScene.this.mEquipmentWeaponSprite.getX() + GameMenuScene.this.mEquipmentWeaponSprite.getWidth() / 2 - GameMenuScene.this.mEquipmentSwordItemSprite.getWidth() / 2);//centrarlo bien despues
+						GameMenuScene.this.mEquipmentSwordItemSprite.setY(GameMenuScene.this.mEquipmentWeaponSprite.getY() + GameMenuScene.this.mEquipmentWeaponSprite.getHeight() / 2 - GameMenuScene.this.mEquipmentSwordItemSprite.getHeight() / 2);
+					}else {
+						GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(1.0f);
+						GameMenuScene.this.mEquipmentSwordItemSprite.setX(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50);//centrarlo bien despues
+						GameMenuScene.this.mEquipmentSwordItemSprite.setY(GameMenuScene.this.mEquipmentBox2Sprite.getY() + 50);
 					}
+					GameMenuScene.this.mEquipmentSwordItemSprite.setScale(2.0f);
+				}
 				break;
 			}
 			return true;
@@ -564,6 +587,7 @@ public class GameMenuScene extends Scene{
 		this.mEquipmentSwordItemSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(mEquipmentSwordItemSprite);
 		this.registerTouchArea(mEquipmentSwordItemSprite);
+		
 		
 		//shield
 		this.mEquipmentShieldItemSprite = new Sprite(GameMenuScene.this.mEquipmentOffhandSprite.getX()+ GameMenuScene.this.mEquipmentOffhandSprite.getWidth()/2, GameMenuScene.this.mEquipmentOffhandSprite.getY()+ GameMenuScene.this.mEquipmentOffhandSprite.getHeight()/2,this.mEquipmentShieldItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
