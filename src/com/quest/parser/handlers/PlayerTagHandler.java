@@ -2,9 +2,9 @@ package com.quest.parser.handlers;
 
 import org.xml.sax.SAXException;
 
-public class PlayerHandler extends BaseHandler {
+public class PlayerTagHandler extends BaseTagHandler {
 
-	public PlayerHandler(String name) {
+	public PlayerTagHandler(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}

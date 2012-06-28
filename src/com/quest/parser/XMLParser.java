@@ -13,11 +13,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.quest.parser.handlers.BaseHandler;
+import com.quest.parser.handlers.BaseTagHandler;
 
 
 /**
- * Allows the parsing of an XML Document using {@link BaseHandler}'s.
+ * Allows the parsing of an XML Document using {@link BaseTagHandler}'s.
  * 
  * @author Adam Goodchild
  *
@@ -26,7 +26,7 @@ public class XMLParser extends DefaultHandler {
 
     private SAXParser mSaxParser = null;
     private XMLReader mXMLReader = null;
-    private BaseHandler mTagHandler = null;
+    private BaseTagHandler mTagHandler = null;
     
     public XMLParser() throws ParserConfigurationException, SAXException, FactoryConfigurationError {
             mSaxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -52,7 +52,7 @@ public class XMLParser extends DefaultHandler {
             mXMLReader.parse(source);
     }
     
-    public void setElementHandler(BaseHandler handler) {
+    public void setElementHandler(BaseTagHandler handler) {
             mTagHandler = handler;
     }
     

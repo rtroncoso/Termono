@@ -6,7 +6,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * An {@link BaseHandler} is a superclass for all XML Tags. An {@link BaseHandler} catches events within an XML Document by name
+ * An {@link BaseTagHandler} is a superclass for all XML Tags. An {@link BaseTagHandler} catches events within an XML Document by name
  * and parses them.
  * 
  * You can override the methods beginning with "handle" to perform actions you would like to do whilst parsing.
@@ -14,9 +14,9 @@ import org.xml.sax.SAXException;
  * @author Adam Goodchild
  *
  */
-public class BaseHandler {
+public class BaseTagHandler {
 
-        private List<BaseHandler> mSubTagHandlerList = null;
+        private List<BaseTagHandler> mSubTagHandlerList = null;
         protected boolean mIsTagActive = false;
         private String mTagName = null;
         private Attributes mTagAttributes = null;
@@ -24,9 +24,9 @@ public class BaseHandler {
         private int mTagDepth = 0;
         private int mCurrentTagHandler = -1;
         
-        public BaseHandler(String name) {
+        public BaseTagHandler(String name) {
                 mTagName = name;
-                mSubTagHandlerList = new ArrayList<BaseHandler>();
+                mSubTagHandlerList = new ArrayList<BaseTagHandler>();
         }
         
         final public String getTagName() {
@@ -45,7 +45,7 @@ public class BaseHandler {
                 return mCharacterDataBuffer.toString();
         }
         
-        public void addChildTagHandler(BaseHandler handler) {
+        public void addChildTagHandler(BaseTagHandler handler) {
                 mSubTagHandlerList.add(handler);
         }
         
