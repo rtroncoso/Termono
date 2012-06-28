@@ -67,7 +67,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 		
 		this.attachChild(this.mBodySprite);
 		
-		
 		this.setTileAt(pInitialPosX, pInitialPosY);
 	}
 
@@ -154,13 +153,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 				// TODO Auto-generated method stub
 
 				BaseEntity.this.isWalking = false;
+				BaseEntity.this.onEntityMoved(pTileTo);
 				//BaseEntity.this.mBodySprite.stopAnimation();
 
 			}	
 		}, EaseLinear.getInstance());
 
 		this.registerEntityModifier(this.mPathModifier);
-
+		
 		return this;
 	}
 
@@ -221,6 +221,10 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 		
 		//this.mTMXTileAt = Game.getSceneManager().getGameScene().getMapManager().getTMXTileAt((int) pX, (int) pY);
 		
+	}
+
+	public void onEntityMoved(TMXTile pNewTile) {
+		return;
 	}
 
 	// ===========================================================

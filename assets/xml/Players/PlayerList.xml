@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<player name="Mage">
+    <sprite>
+    	<path>gfx/Players/Mage.png</path>
+        <playerOffsetX>0</playerOffsetX>
+        <playerOffsetY>16</playerOffsetY>
+        <headOffsetX>0</headOffsetX>
+		<headOffsetY>0</headOffsetY>
+        <columns>4</columns>
+        <rows>4</rows>
+    </sprite>
+</player>
