@@ -2,6 +2,9 @@ package com.quest.helpers;
 
 import org.andengine.entity.sprite.Sprite;
 
+import com.quest.game.Game;
+import com.quest.scenes.GameMenuScene;
+
 public class EquipmentHelper {
 	// ===========================================================
 	// Constants

@@ -616,6 +616,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(GameMenuScene.this.mEquipmentSwordItemSprite.getInitialX(),GameMenuScene.this.mEquipmentSwordItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(GameMenuScene.this.mEquipmentSwordItemSprite.getInitialX(),GameMenuScene.this.mEquipmentSwordItemSprite.getInitialY());
 						}
 					GameMenuScene.this.mEquipmentSwordItemSprite.setScale(2.0f);
@@ -629,7 +632,6 @@ public class GameMenuScene extends Scene{
 		this.mEquipmentSwordItemSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(mEquipmentSwordItemSprite);
 		this.registerTouchArea(mEquipmentSwordItemSprite);
-		
 		
 		
 		//shield
@@ -659,6 +661,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentShieldItemSprite.setPosition(GameMenuScene.this.mEquipmentShieldItemSprite.getInitialX(),GameMenuScene.this.mEquipmentShieldItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentShieldItemSprite.setPosition(GameMenuScene.this.mEquipmentShieldItemSprite.getInitialX(),GameMenuScene.this.mEquipmentShieldItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentShieldItemSprite.setScale(2.0f);
@@ -701,6 +706,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentPlate1ItemSprite.setPosition(GameMenuScene.this.mEquipmentPlate1ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentPlate1ItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentPlate1ItemSprite.setPosition(GameMenuScene.this.mEquipmentPlate1ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentPlate1ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentPlate1ItemSprite.setScale(2.0f);
@@ -744,6 +752,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentPlate2ItemSprite.setPosition(GameMenuScene.this.mEquipmentPlate2ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentPlate2ItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentPlate2ItemSprite.setPosition(GameMenuScene.this.mEquipmentPlate2ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentPlate2ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentPlate2ItemSprite.setScale(2.0f);
@@ -789,6 +800,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentAxeItemSprite.setPosition(GameMenuScene.this.mEquipmentAxeItemSprite.getInitialX(),GameMenuScene.this.mEquipmentAxeItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentAxeItemSprite.setPosition(GameMenuScene.this.mEquipmentAxeItemSprite.getInitialX(),GameMenuScene.this.mEquipmentAxeItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentAxeItemSprite.setScale(2.0f);
@@ -831,6 +845,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentLegsItemSprite.setPosition(GameMenuScene.this.mEquipmentLegsItemSprite.getInitialX(),GameMenuScene.this.mEquipmentLegsItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentLegsItemSprite.setPosition(GameMenuScene.this.mEquipmentLegsItemSprite.getInitialX(),GameMenuScene.this.mEquipmentLegsItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentLegsItemSprite.setScale(2.0f);
@@ -875,6 +892,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentHelm1ItemSprite.setPosition(GameMenuScene.this.mEquipmentHelm1ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentHelm1ItemSprite.getInitialY());
 						}
 					} else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentHelm1ItemSprite.setPosition(GameMenuScene.this.mEquipmentHelm1ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentHelm1ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentHelm1ItemSprite.setScale(2.0f);
@@ -918,6 +938,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentHelm2ItemSprite.setPosition(GameMenuScene.this.mEquipmentHelm2ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentHelm2ItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentHelm2ItemSprite.setPosition(GameMenuScene.this.mEquipmentHelm2ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentHelm2ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentHelm2ItemSprite.setScale(2.0f);
@@ -960,6 +983,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentRingItemSprite.setPosition(GameMenuScene.this.mEquipmentRingItemSprite.getInitialX(),GameMenuScene.this.mEquipmentRingItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentRingItemSprite.setPosition(GameMenuScene.this.mEquipmentRingItemSprite.getInitialX(),GameMenuScene.this.mEquipmentRingItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentRingItemSprite.setScale(2.0f);
@@ -973,8 +999,7 @@ public class GameMenuScene extends Scene{
 		this.mEquipmentRingItemSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(mEquipmentRingItemSprite);
 		this.registerTouchArea(mEquipmentRingItemSprite);
-		
-		
+				
 		//Necklace
 		this.mEquipmentNecklaceItemSprite = new Sprite(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 100,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 300,this.mEquipmentNecklaceItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -1002,6 +1027,9 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentNecklaceItemSprite.setPosition(GameMenuScene.this.mEquipmentNecklaceItemSprite.getInitialX(),GameMenuScene.this.mEquipmentNecklaceItemSprite.getInitialY());
 						}
 					}else{
+						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+						}
 						GameMenuScene.this.mEquipmentNecklaceItemSprite.setPosition(GameMenuScene.this.mEquipmentNecklaceItemSprite.getInitialX(),GameMenuScene.this.mEquipmentNecklaceItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentNecklaceItemSprite.setScale(2.0f);
