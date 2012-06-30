@@ -10,6 +10,9 @@ public class EquipmentHelper {
 	//HACER FUNCION PARA DETECTAR DONDE VA A TERMINAR EL COSO DESEQUIPADO
 	//Meter la funcion de mType dentro de getEquiped y setEquiped?
 	//Eliminar el mType y mandar directo el mEquiped/mEquipedXXXXX? ###########
+	//Hacer que detecte armas complejas tipo arco (weapon + offhand)
+	//Debuggear para ver si los mEquipedXXXX se cargan bien
+	//limpiar el mEquiped? - checkear si esta bien
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -29,12 +32,18 @@ public class EquipmentHelper {
 	// Constructors
 	// ===========================================================
 
-	public EquipmentHelper(Sprite pSprite){//Cambiar el Sprite por un "item"
+	public EquipmentHelper(){
+		//vacio para crearlo, ni idea
+	}
+	
+	public boolean EquipmentFunction(Sprite pSprite){//Cambiar el Sprite por un "item"
 		if(this.IsEquiped(pSprite,this.SortEquip(pSprite)) == false){//me fijo si es igual a lo que ya esta ocupado para saber si estan switcheando items o sacando
 		this.UnequipItem(pSprite,this.SortEquip(pSprite));
 		this.EquipItem(pSprite,this.SortEquip(pSprite));
+		return true;
 		} else {
 			this.UnequipItem(pSprite,this.SortEquip(pSprite));
+			return false;
 		}
 		//hacer una variable para sortEquip asi no lo llamo tantas veces y optimizo?
 	}
