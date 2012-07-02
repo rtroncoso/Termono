@@ -331,22 +331,29 @@ public class GameMenuScene extends Scene{
 						public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-							GameMenuScene.this.mItemSprite.setScale(3f);
+							GameMenuScene.this.mItemSprite.setScale(3.0f);
 							this.mGrabbed = true;
 							break;
 						case TouchEvent.ACTION_MOVE:
 							if(this.mGrabbed) {
-								if(GameMenuScene.this.mItemSprite.collidesWith(GameMenuScene.this.mInventoryUseSprite)){
-									GameMenuScene.this.mInfoTabSprite.setScale(2.0f);
-								} else {
-					        		GameMenuScene.this.mInfoTabSprite.setScale(0.5f);
-								}
 								GameMenuScene.this.mItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mItemSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mItemSprite.getHeight() / 2);
 							}
 							break;
 						case TouchEvent.ACTION_UP:
 							if(this.mGrabbed) {
 								this.mGrabbed = false;
+								if(GameMenuScene.this.mItemSprite.collidesWith(mInventoryUseSprite)){
+								//	if(GameMenuScene.this.mEquipmentManager.EquipmentFunction(mEquipmentSwordItemSprite)== true){
+									//borrarlo, se usa
+								//	}else {
+									GameMenuScene.this.mItemSprite.setPosition(GameMenuScene.this.mItemSprite.getInitialX(),GameMenuScene.this.mItemSprite.getInitialY());
+								//	}
+								}else{
+								//	if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+								//		GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
+								//	}
+								//	GameMenuScene.this.mItemSprite.setPosition(GameMenuScene.this.mItemSprite.getInitialX(),GameMenuScene.this.mItemSprite.getInitialY());
+									}
 								GameMenuScene.this.mItemSprite.setScale(2.0f);
 							}
 							break;
@@ -367,6 +374,8 @@ public class GameMenuScene extends Scene{
 	
 	//#################EQUIPMENT ENTITY######################
 	public Entity LoadEquipmentEntity(){
+		//HACER FUNCION PARA CARGAR EL EQUIPMENT VIEJO, NECESITO EL SQL
+		
 		this.mEquipmentEntity.detachChildren();//La limpio, necesario?
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Equipment/");
@@ -429,56 +438,15 @@ public class GameMenuScene extends Scene{
 		//##########################BODY###################################
 		
 		//Helm Sprite
-		this.mEquipmentHelmSprite = new Sprite(165, 85,this.mEquipmentHelmTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
-				break;
-			}
-			return true;
-			}					
-		};
+		this.mEquipmentHelmSprite = new Sprite(165, 85,this.mEquipmentHelmTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.mEquipmentEntity.attachChild(mEquipmentHelmSprite);
 		
 		//Plate Sprite
-		this.mEquipmentPlateSprite = new Sprite(144, 186,this.mEquipmentPlateTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
-				GameMenuScene.this.mEquipmentPlateSprite.setAlpha(0.5f);
-				break;
-			}
-			return true;
-			}					
-		};
+		this.mEquipmentPlateSprite = new Sprite(144, 186,this.mEquipmentPlateTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.mEquipmentEntity.attachChild(mEquipmentPlateSprite);
 		
 		//Legs Sprite
-		this.mEquipmentLegsSprite = new Sprite(169, 306,this.mEquipmentLegsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
-				GameMenuScene.this.mEquipmentLegsSprite.setAlpha(0.5f);
-				break;
-			}
-			return true;
-			}					
-		};
+		this.mEquipmentLegsSprite = new Sprite(169, 306,this.mEquipmentLegsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.mEquipmentEntity.attachChild(mEquipmentLegsSprite);
 		
 		
@@ -517,53 +485,20 @@ public class GameMenuScene extends Scene{
 		};
 		this.mEquipmentEntity.attachChild(mEquipmentWeaponSprite);
 		
+		
 		//Offhand Sprite
-		this.mEquipmentOffhandSprite = new Sprite(284, 180,this.mEquipmentOffhandTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
-				GameMenuScene.this.mEquipmentOffhandSprite.setAlpha(0.5f);
-				break;
-			}
-			return true;
-			}					
-		};
+		this.mEquipmentOffhandSprite = new Sprite(284, 180,this.mEquipmentOffhandTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.mEquipmentEntity.attachChild(mEquipmentOffhandSprite);
 		
 		
 		//Extra Sprite
-		this.mEquipmentExtraSprite = new Sprite(272, 311,this.mEquipmentExtraTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
-				GameMenuScene.this.mEquipmentExtraSprite.setAlpha(0.5f);
-				break;
-			}
-			return true;
-			}					
-		};
+		this.mEquipmentExtraSprite = new Sprite(272, 311,this.mEquipmentExtraTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.mEquipmentEntity.attachChild(mEquipmentExtraSprite);
 		
 				//Funcion para registrar touch areas??
 		this.registerTouchArea(this.mEquipmentAttributesSprite);
 		this.registerTouchArea(this.mEquipmentItemsSprite);
-	/*	this.registerTouchArea(this.mEquipmentHelmSprite);
-		this.registerTouchArea(this.mEquipmentPlateSprite);
-		this.registerTouchArea(this.mEquipmentLegsSprite);
-		this.registerTouchArea(this.mEquipmentWeaponSprite);
-		this.registerTouchArea(this.mEquipmentOffhandSprite);		
-		this.registerTouchArea(this.mEquipmentExtraSprite);
-		*/
+
 		//########################FIN DEL BODY#############################
 		
 		

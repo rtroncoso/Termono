@@ -36,7 +36,7 @@ public class EquipmentHelper {
 	// ===========================================================
 
 	public EquipmentHelper(){
-		//vacio para crearlo, ni idea
+		//vacio para crearlo, ni idea. cargarlo en otro lugar asi queda guardado todo el equipment?
 	}
 	
 	public boolean EquipmentFunction(Sprite pSprite){//Cambiar el Sprite por un "item"
