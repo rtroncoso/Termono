@@ -1023,10 +1023,9 @@ public class GameMenuScene extends Scene{
 				pItemSprite.setPosition(pSprite.getX() + pSprite.getWidth() / 2 - pItemSprite.getWidth() / 2,pSprite.getY() + pSprite.getHeight() / 2 - pItemSprite.getHeight() / 2);//lo pone donde corresponde
 				pSprite.setAlpha(0.5f);
 			} else {//Si se desequipo(porque ya estaba equipado) lo devuelve al final
-				pItemSprite.setPosition(pItemSprite.getInitialX(),pItemSprite.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
+				//pItemSprite.setPosition(pItemSprite.getInitialX(),pItemSprite.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
 				pSprite.setAlpha(1.0f);
 			}
-			
 		} else{//Si no colisiona
 			if(this.mEquipmentManager.IsEquiped(pItemSprite,this.mEquipmentManager.SortEquip(pItemSprite)) == true){//se fija si estaba equipado
 			this.mEquipmentManager.UnequipItem(pItemSprite,this.mEquipmentManager.SortEquip(pItemSprite));//si lo estaba lo desequipa

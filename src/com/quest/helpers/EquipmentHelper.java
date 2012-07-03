@@ -77,7 +77,7 @@ public class EquipmentHelper {
 		//*****************************
 		this.getEquiped(pType);
 		if(this.mEquiped != null){
-	//	this.mEquiped.setPosition(this.mEquiped.getInitialX(), this.mEquiped.getInitialY());
+		this.mEquiped.setPosition(this.mEquiped.getInitialX(), this.mEquiped.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
 		}
 		//*****************************
 		
