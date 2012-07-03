@@ -16,6 +16,10 @@ public class EquipmentHelper {
 	//Hacer que detecte armas complejas tipo arco (weapon + offhand)
 	//Debuggear para ver si los mEquipedXXXX se cargan bien
 	//limpiar el mEquiped? - checkear si esta bien
+	
+	//hacer codigo para que distinga a donde ir
+	//cambiarle el rgb al containerspriet segun que item es
+	
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -46,7 +50,7 @@ public class EquipmentHelper {
 		return true;
 		} else {
 			this.UnequipItem(pSprite,this.SortEquip(pSprite));
-			return false;
+		return false;
 		}
 		//hacer una variable para sortEquip asi no lo llamo tantas veces y optimizo?
 	}
@@ -73,7 +77,7 @@ public class EquipmentHelper {
 		//*****************************
 		this.getEquiped(pType);
 		if(this.mEquiped != null){
-		this.mEquiped.setPosition(this.mEquiped.getInitialX(), this.mEquiped.getInitialY());
+	//	this.mEquiped.setPosition(this.mEquiped.getInitialX(), this.mEquiped.getInitialY());
 		}
 		//*****************************
 		
@@ -169,6 +173,8 @@ public class EquipmentHelper {
 		}
 		return this.mEquiped;
 	}
+	
+	
 	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces

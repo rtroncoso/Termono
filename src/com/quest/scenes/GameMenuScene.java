@@ -8,6 +8,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.util.color.Color;
 
 import com.quest.game.Game;
 import com.quest.helpers.EquipmentHelper;
@@ -72,7 +73,7 @@ public class GameMenuScene extends Scene{
 	private ITextureRegion mSkillsTabTextureRegion;
 	private ITextureRegion mAttributesTabTextureRegion;
 	private ITextureRegion mInfoTabTextureRegion;
-	private ITextureRegion mCloseTextureRegion;
+	private ITextureRegion mSettingsTextureRegion;
 	private ITextureRegion mBackgroundTextureRegion;
 	
 	
@@ -107,9 +108,12 @@ public class GameMenuScene extends Scene{
 	private Sprite mSkillsTabSprite;
 	private Sprite mAttributesTabSprite;
 	private Sprite mInfoTabSprite;
-	private Sprite mCloseSprite;
+	private Sprite mSettingsSprite;
 	private Sprite mBackgroundSprite;
 	
+	private float mColor1;
+	private float mColor2;
+	private float mColor3;
 	
 	private EquipmentHelper mEquipmentManager;
 	// ===========================================================
@@ -131,12 +135,12 @@ public class GameMenuScene extends Scene{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);
-		this.mCloseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Close.png", 800, 0);
-		this.mInventoryTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Inventory.png", 800, 50);
-		this.mEquipmentTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Equipment.png", 800, 100);
-		this.mSkillsTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Skills.png", 800, 150);
-		this.mAttributesTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Attributes.png", 800, 200);
-		this.mInfoTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Info.png", 800, 250);
+		this.mSettingsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Settings.png", 800, 0);
+		this.mInventoryTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Inventory.png", 800, 64);
+		this.mEquipmentTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Equipment.png", 800, 114);
+		this.mSkillsTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Skills.png", 800, 164);
+		this.mAttributesTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Attributes.png", 800, 214);
+		this.mInfoTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Info.png", 800, 264);
 		this.mSceneTextureAtlas.load();
 		//Cargar los otros atlas ahora?
 	
@@ -144,8 +148,8 @@ public class GameMenuScene extends Scene{
 		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
 		this.mGameMenuEntity.attachChild(mBackgroundSprite);		
 		
-		//Close
-		this.mCloseSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 42, 10,this.mCloseTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+		//Settings
+		this.mSettingsSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 64, 20,this.mSettingsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
@@ -153,14 +157,14 @@ public class GameMenuScene extends Scene{
 					case TouchEvent.ACTION_OUTSIDE:
 						break;
 					case TouchEvent.ACTION_DOWN:
-							Game.getSceneManager().setGameScene();
+							//Game.getSceneManager().setGameScene();
 						break;
 					}
 					return true;
 					}					
 				};
-				this.mCloseSprite.setScale(1.3f);
-				this.mGameMenuEntity.attachChild(mCloseSprite);
+				this.mSettingsSprite.setScale(1.3f);
+				this.mGameMenuEntity.attachChild(mSettingsSprite);
 				
 		
 		//Inventory Tab
@@ -271,7 +275,7 @@ public class GameMenuScene extends Scene{
 		this.mGameMenuEntity.attachChild(mInfoTabSprite);
 		
 			
-		this.registerTouchArea(this.mCloseSprite);
+		this.registerTouchArea(this.mSettingsSprite);
 		this.registerTouchArea(this.mInventoryTabSprite);
 		this.registerTouchArea(this.mEquipmentTabSprite);
 		this.registerTouchArea(this.mSkillsTabSprite);
@@ -532,30 +536,18 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentSwordItemSprite.setScale(3.0f);
+				GameMenuScene.this.EquipItem(GameMenuScene.this.mEquipmentSwordItemSprite,true,false,false);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
 				if(this.mGrabbed) {
-					GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mEquipmentSwordItemSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mEquipmentSwordItemSprite.getHeight() / 2);
+					GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
 				}
 				break;
 			case TouchEvent.ACTION_UP:
 				if(this.mGrabbed) {
-					this.mGrabbed = false;
-					if(GameMenuScene.this.mEquipmentSwordItemSprite.collidesWith(mEquipmentBoxSprite)){
-						if(GameMenuScene.this.mEquipmentManager.EquipmentFunction(mEquipmentSwordItemSprite)== true){
-						GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(0.5f);
-						GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(GameMenuScene.this.mEquipmentWeaponSprite.getX() + GameMenuScene.this.mEquipmentWeaponSprite.getWidth() / 2 - GameMenuScene.this.mEquipmentSwordItemSprite.getWidth() / 2,GameMenuScene.this.mEquipmentWeaponSprite.getY() + GameMenuScene.this.mEquipmentWeaponSprite.getHeight() / 2 - GameMenuScene.this.mEquipmentSwordItemSprite.getHeight() / 2);
-						}else {
-						GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(1.0f);
-						GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(GameMenuScene.this.mEquipmentSwordItemSprite.getInitialX(),GameMenuScene.this.mEquipmentSwordItemSprite.getInitialY());
-						}
-					}else{
-						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
-							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
-						}
-						GameMenuScene.this.mEquipmentSwordItemSprite.setPosition(GameMenuScene.this.mEquipmentSwordItemSprite.getInitialX(),GameMenuScene.this.mEquipmentSwordItemSprite.getInitialY());
-						}
+					this.mGrabbed = false;					
+					GameMenuScene.this.EquipItem(GameMenuScene.this.mEquipmentSwordItemSprite, false,GameMenuScene.this.mEquipmentManager.EquipmentFunction(GameMenuScene.this.mEquipmentSwordItemSprite),GameMenuScene.this.mEquipmentSwordItemSprite.collidesWith(mEquipmentBoxSprite));//inicia la funcion de equipamiento, si devuelve true hace el equipamiento grafico, si devuelve false no la hace(la devuelve al lugar de antes), tambien se fija si hay colision 
 					GameMenuScene.this.mEquipmentSwordItemSprite.setScale(2.0f);
 				}
 				break;
@@ -577,43 +569,31 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentShieldItemSprite.setScale(3.0f);
+				GameMenuScene.this.EquipItem(GameMenuScene.this.mEquipmentShieldItemSprite,true,false,false);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
 				if(this.mGrabbed) {
-					GameMenuScene.this.mEquipmentShieldItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mEquipmentShieldItemSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mEquipmentShieldItemSprite.getHeight() / 2);
+					GameMenuScene.this.mEquipmentShieldItemSprite.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
 				}
 				break;
 			case TouchEvent.ACTION_UP:
 				if(this.mGrabbed) {
-					this.mGrabbed = false;
-					if(GameMenuScene.this.mEquipmentShieldItemSprite.collidesWith(mEquipmentBoxSprite)){
-						if(GameMenuScene.this.mEquipmentManager.EquipmentFunction(mEquipmentShieldItemSprite)== true){
-						GameMenuScene.this.mEquipmentOffhandSprite.setAlpha(0.5f);
-						GameMenuScene.this.mEquipmentShieldItemSprite.setPosition(GameMenuScene.this.mEquipmentOffhandSprite.getX() + GameMenuScene.this.mEquipmentOffhandSprite.getWidth() / 2 - GameMenuScene.this.mEquipmentShieldItemSprite.getWidth() / 2,GameMenuScene.this.mEquipmentOffhandSprite.getY() + GameMenuScene.this.mEquipmentOffhandSprite.getHeight() / 2 - GameMenuScene.this.mEquipmentShieldItemSprite.getHeight() / 2);
-						}else {
-						GameMenuScene.this.mEquipmentOffhandSprite.setAlpha(1.0f);
-						GameMenuScene.this.mEquipmentShieldItemSprite.setPosition(GameMenuScene.this.mEquipmentShieldItemSprite.getInitialX(),GameMenuScene.this.mEquipmentShieldItemSprite.getInitialY());
-						}
-					}else{
-						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
-							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
-						}
-						GameMenuScene.this.mEquipmentShieldItemSprite.setPosition(GameMenuScene.this.mEquipmentShieldItemSprite.getInitialX(),GameMenuScene.this.mEquipmentShieldItemSprite.getInitialY());
-					}
+					this.mGrabbed = false;					
+					GameMenuScene.this.EquipItem(GameMenuScene.this.mEquipmentShieldItemSprite, false,GameMenuScene.this.mEquipmentManager.EquipmentFunction(GameMenuScene.this.mEquipmentShieldItemSprite),GameMenuScene.this.mEquipmentShieldItemSprite.collidesWith(mEquipmentBoxSprite));//inicia la funcion de equipamiento, si devuelve true hace el equipamiento grafico, si devuelve false no la hace(la devuelve al lugar de antes), tambien se fija si hay colision 
 					GameMenuScene.this.mEquipmentShieldItemSprite.setScale(2.0f);
 				}
 				break;
 			}
 			return true;
-			}					
+			}							
 		};
 		this.mEquipmentShieldItemSprite.setAlpha(0.99f);
 		this.mEquipmentShieldItemSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(mEquipmentShieldItemSprite);
 		this.registerTouchArea(mEquipmentShieldItemSprite);
 		
-		
+		/*
 		//plate 1
 		this.mEquipmentPlate1ItemSprite = new Sprite(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 150,this.mEquipmentPlate1ItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -622,6 +602,7 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentPlate1ItemSprite.setScale(3.0f);
+				GameMenuScene.this.SortEquipVisual(this,true);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -647,6 +628,7 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentPlate1ItemSprite.setPosition(GameMenuScene.this.mEquipmentPlate1ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentPlate1ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentPlate1ItemSprite.setScale(2.0f);
+					GameMenuScene.this.SortEquipVisual(this,false);
 				}
 				break;
 			}
@@ -668,6 +650,7 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentPlate2ItemSprite.setScale(3.0f);
+				GameMenuScene.this.SortEquipVisual(this,true);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -693,6 +676,7 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentPlate2ItemSprite.setPosition(GameMenuScene.this.mEquipmentPlate2ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentPlate2ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentPlate2ItemSprite.setScale(2.0f);
+					GameMenuScene.this.SortEquipVisual(this,false);
 				}
 				break;
 			}
@@ -706,7 +690,7 @@ public class GameMenuScene extends Scene{
 
 		
 		
-		
+		*/
 		
 		//Axe
 		this.mEquipmentAxeItemSprite = new Sprite(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 100,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 50,this.mEquipmentAxeItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
@@ -716,30 +700,18 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentAxeItemSprite.setScale(3.0f);
+				GameMenuScene.this.EquipItem(GameMenuScene.this.mEquipmentAxeItemSprite,true,false,false);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
 				if(this.mGrabbed) {
-					GameMenuScene.this.mEquipmentAxeItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mEquipmentAxeItemSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mEquipmentAxeItemSprite.getHeight() / 2);
+					GameMenuScene.this.mEquipmentAxeItemSprite.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
 				}
 				break;
 			case TouchEvent.ACTION_UP:
 				if(this.mGrabbed) {
-					this.mGrabbed = false;
-					if(GameMenuScene.this.mEquipmentAxeItemSprite.collidesWith(mEquipmentBoxSprite)){
-						if(GameMenuScene.this.mEquipmentManager.EquipmentFunction(mEquipmentAxeItemSprite)== true){
-						GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(0.5f);
-						GameMenuScene.this.mEquipmentAxeItemSprite.setPosition(GameMenuScene.this.mEquipmentWeaponSprite.getX() + GameMenuScene.this.mEquipmentWeaponSprite.getWidth() / 2 - GameMenuScene.this.mEquipmentAxeItemSprite.getWidth() / 2,GameMenuScene.this.mEquipmentWeaponSprite.getY() + GameMenuScene.this.mEquipmentWeaponSprite.getHeight() / 2 - GameMenuScene.this.mEquipmentAxeItemSprite.getHeight() / 2);
-						}else {
-						GameMenuScene.this.mEquipmentWeaponSprite.setAlpha(1.0f);
-						GameMenuScene.this.mEquipmentAxeItemSprite.setPosition(GameMenuScene.this.mEquipmentAxeItemSprite.getInitialX(),GameMenuScene.this.mEquipmentAxeItemSprite.getInitialY());
-						}
-					}else{
-						if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
-							GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
-						}
-						GameMenuScene.this.mEquipmentAxeItemSprite.setPosition(GameMenuScene.this.mEquipmentAxeItemSprite.getInitialX(),GameMenuScene.this.mEquipmentAxeItemSprite.getInitialY());
-					}
+					this.mGrabbed = false;					
+					GameMenuScene.this.EquipItem(GameMenuScene.this.mEquipmentAxeItemSprite, false,GameMenuScene.this.mEquipmentManager.EquipmentFunction(GameMenuScene.this.mEquipmentAxeItemSprite),GameMenuScene.this.mEquipmentAxeItemSprite.collidesWith(mEquipmentBoxSprite));//inicia la funcion de equipamiento, si devuelve true hace el equipamiento grafico, si devuelve false no la hace(la devuelve al lugar de antes), tambien se fija si hay colision 
 					GameMenuScene.this.mEquipmentAxeItemSprite.setScale(2.0f);
 				}
 				break;
@@ -752,7 +724,7 @@ public class GameMenuScene extends Scene{
 		this.mEquipmentEntity.attachChild(mEquipmentAxeItemSprite);
 		this.registerTouchArea(mEquipmentAxeItemSprite);
 		
-		
+		/*
 		//legs
 		this.mEquipmentLegsItemSprite = new Sprite(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 200,this.mEquipmentLegsItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -761,6 +733,7 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentLegsItemSprite.setScale(3.0f);
+				GameMenuScene.this.SortEquipVisual(this,true);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -786,6 +759,7 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentLegsItemSprite.setPosition(GameMenuScene.this.mEquipmentLegsItemSprite.getInitialX(),GameMenuScene.this.mEquipmentLegsItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentLegsItemSprite.setScale(2.0f);
+					GameMenuScene.this.SortEquipVisual(this,false);
 				}
 				break;
 			}
@@ -808,6 +782,7 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentHelm1ItemSprite.setScale(3.0f);
+				GameMenuScene.this.SortEquipVisual(this,true);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -833,6 +808,7 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentHelm1ItemSprite.setPosition(GameMenuScene.this.mEquipmentHelm1ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentHelm1ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentHelm1ItemSprite.setScale(2.0f);
+					GameMenuScene.this.SortEquipVisual(this,false);
 				}
 				break;
 			}
@@ -854,6 +830,7 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentHelm2ItemSprite.setScale(3.0f);
+				GameMenuScene.this.SortEquipVisual(this,true);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -879,6 +856,7 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentHelm2ItemSprite.setPosition(GameMenuScene.this.mEquipmentHelm2ItemSprite.getInitialX(),GameMenuScene.this.mEquipmentHelm2ItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentHelm2ItemSprite.setScale(2.0f);
+					GameMenuScene.this.SortEquipVisual(this,false);
 				}
 				break;
 			}
@@ -899,6 +877,7 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentRingItemSprite.setScale(3.0f);
+				GameMenuScene.this.SortEquipVisual(this,true);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -924,6 +903,7 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentRingItemSprite.setPosition(GameMenuScene.this.mEquipmentRingItemSprite.getInitialX(),GameMenuScene.this.mEquipmentRingItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentRingItemSprite.setScale(2.0f);
+					GameMenuScene.this.SortEquipVisual(this,false);
 				}
 				break;
 			}
@@ -943,6 +923,7 @@ public class GameMenuScene extends Scene{
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
 				GameMenuScene.this.mEquipmentNecklaceItemSprite.setScale(3.0f);
+				GameMenuScene.this.SortEquipVisual(this,true);
 				this.mGrabbed = true;
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -968,6 +949,7 @@ public class GameMenuScene extends Scene{
 						GameMenuScene.this.mEquipmentNecklaceItemSprite.setPosition(GameMenuScene.this.mEquipmentNecklaceItemSprite.getInitialX(),GameMenuScene.this.mEquipmentNecklaceItemSprite.getInitialY());
 					}
 					GameMenuScene.this.mEquipmentNecklaceItemSprite.setScale(2.0f);
+					GameMenuScene.this.SortEquipVisual(this,false);
 				}
 				break;
 			}
@@ -982,9 +964,81 @@ public class GameMenuScene extends Scene{
 		
 		//fin de carga de items
 		
-		
+		*/
 		return this.mEquipmentEntity;
 	}
+	
+	
+	
+	//################################################################################################
+	//								FUNCIONES DE EQUIPMENT ENTITY
+	//################################################################################################
+	public void EquipItem(Sprite pSprite, Boolean pColorChange, Boolean pEquipped, Boolean pCollides){
+		final Sprite tempSprite = pSprite;//es final, me cambia algo?
+		switch(this.mEquipmentManager.SortEquip(pSprite)){//iguala pSprite al container que corresponde
+		case 0:
+			pSprite = this.mEquipmentHelmSprite;		
+			break;
+		case 1:
+			pSprite = this.mEquipmentPlateSprite;
+			break;
+		case 2:
+			pSprite = this.mEquipmentLegsSprite;
+			break;
+		case 3:
+			pSprite = this.mEquipmentExtraSprite;
+			break;
+		case 4:
+			pSprite = this.mEquipmentOffhandSprite;
+			break;
+		case 5:
+			pSprite = this.mEquipmentWeaponSprite;
+			break;
+		}
+		this.ColorSprite(pSprite, pColorChange);//cambia el color
+		
+		if(pColorChange == false){//si ColorChange = false (osea que es en el Action_UP)
+			this.MoveItem(pSprite, tempSprite, pEquipped,pCollides);//Ejecuta el equipamiento
+		}
+		
+	}
+	
+	public void ColorSprite(Sprite pSprite, Boolean pChangeColor){//funcion para cambiar colores
+			if(pChangeColor==true){//si es en el Action_DOWN cambia el color a verde
+				pSprite.setGreen(1f);
+				pSprite.setRed(0.2f);
+				pSprite.setBlue(0.2f);
+			}else {//Si es en el Action_UP resetea el color ***ESTA ANDANDO MAL***(lo deja amarillo !?!?)
+				pSprite.setGreen(1);
+				pSprite.setRed(1);
+				pSprite.setBlue(1);			
+			}
+			
+		}
+	
+	
+	public void MoveItem(Sprite pSprite, Sprite pItemSprite,Boolean pEquipped,Boolean pCollides){//Funcion para iniciar equipamiento grafico + helper
+		if(pCollides == true){//Si colisiona
+			if(pEquipped == true){//Si se equipo
+				pItemSprite.setPosition(pSprite.getX() + pSprite.getWidth() / 2 - pItemSprite.getWidth() / 2,pSprite.getY() + pSprite.getHeight() / 2 - pItemSprite.getHeight() / 2);//lo pone donde corresponde
+				pSprite.setAlpha(0.5f);
+			} else {//Si se desequipo(porque ya estaba equipado) lo devuelve al final
+				pItemSprite.setPosition(pItemSprite.getInitialX(),pItemSprite.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
+				pSprite.setAlpha(1.0f);
+			}
+			
+		} else{//Si no colisiona
+			if(this.mEquipmentManager.IsEquiped(pItemSprite,this.mEquipmentManager.SortEquip(pItemSprite)) == true){//se fija si estaba equipado
+			this.mEquipmentManager.UnequipItem(pItemSprite,this.mEquipmentManager.SortEquip(pItemSprite));//si lo estaba lo desequipa
+			pItemSprite.setPosition(pItemSprite.getInitialX(),pItemSprite.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
+			} else{//Si no estaba equipado
+				pItemSprite.setPosition(pItemSprite.getInitialX(),pItemSprite.getInitialY());//despues hacer la funcion que se fije donde quedaria(tiene que volver a donde estaba, no al final)
+			}
+		}
+	}
+	
+	//################################################################################################
+	//################################################################################################	
 	
 	
 	
