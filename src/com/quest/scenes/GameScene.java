@@ -3,18 +3,8 @@ package com.quest.scenes;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
-import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
-import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.tmx.TMXLayer;
 
-import android.util.Log;
-
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
@@ -22,7 +12,6 @@ import com.quest.display.hud.StatsHud;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.game.Game;
-import com.quest.helpers.MapHelper;
 import com.quest.timers.Timers;
 
 public class GameScene extends Scene {

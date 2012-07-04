@@ -12,19 +12,19 @@ import android.view.KeyEvent;
 
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.SceneHelper;
+import com.quest.helpers.TextureHelper;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static int CAMERA_WIDTH = 800;
-	private static int CAMERA_HEIGHT = 480;
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
 	private static SceneHelper mSceneManager;
 	private static MapHelper mMapManager;
+	private static TextureHelper mTextureManager;
 	private static Game mInstance;
 	
 	// ===========================================================
@@ -47,8 +47,12 @@ public class Game extends SimpleBaseGameActivity {
 		
 		// Init Objects
 		Game.mSceneManager = new SceneHelper();
+		Game.mTextureManager = new TextureHelper();
 		
-		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), Game.mSceneManager.getDisplay().getCamera());
+		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, 
+				new RatioResolutionPolicy(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth(), 
+						Game.getInstance().getWindowManager().getDefaultDisplay().getHeight()), 
+				Game.mSceneManager.getDisplay().getCamera());
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
 		
 		// Return the Engine Options
@@ -64,7 +68,9 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	protected void onCreateResources() {
 		// TODO Auto-generated method stub
-		}
+		Game.mTextureManager.loadSpritesheet("Players");
+		Game.mTextureManager.loadSpritesheet("Mobs");
+	}
 
 		
 	
@@ -92,6 +98,20 @@ public class Game extends SimpleBaseGameActivity {
 
 	public static void setSceneManager(SceneHelper pSceneManager) {
 		Game.mSceneManager = pSceneManager;
+	}
+
+	/**
+	 * @return the mMapManager
+	 */
+	public static TextureHelper getTextureHelper() {
+		return Game.mTextureManager;
+	}
+
+	/**
+	 * @param mMapManager the mMapManager to set
+	 */
+	public static void setTextureManager(TextureHelper pTextureManager) {
+		Game.mTextureManager = pTextureManager;
 	}
 	
 	/**

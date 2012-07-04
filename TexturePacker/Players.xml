@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texture version="1" file="Players.png" type="bitmap" width="256" height="512" pixelformat="RGBA_8888" minfilter="linear" magfilter="linear" wrapt="clamp" wraps="clamp" premultiplyalpha="false">
+    <!-- Created with TexturePacker http://texturepacker.com -->
+    <!--  -->
+    <textureregion id="0" src="Adventurer.png" x="2" y="132" width="97" height="128" rotated="true" trimmed="false" srcx="0" srcy="0" srcwidth="97" srcheight="128"/>
+    <textureregion id="1" src="Archer.png" x="132" y="132" width="72" height="128" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="72" srcheight="128"/>
+    <textureregion id="2" src="Mage.png" x="2" y="2" width="128" height="192" rotated="true" trimmed="false" srcx="0" srcy="0" srcwidth="128" srcheight="192"/>
+</texture>
