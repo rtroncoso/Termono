@@ -103,7 +103,28 @@ public class myDatabase extends SQLiteOpenHelper {
                  return numRowsAffected;
          }
                
-               
+         
+         public int BeatLevel(int ID, String isBeat)
+         {
+// THIS METHOD IS CALLED BY YOUR MAIN ACTIVITY TO WRITE A VALUE TO THE DATABASE          
+                 SQLiteDatabase myDB = this.getWritableDatabase();
+                 ContentValues cv = new ContentValues();
+                 cv.put(fLevelBeat,isBeat);   
+                 int numRowsAffected = myDB.update(tLevels, cv, fLevelID+"=?", new String []{String.valueOf(ID)});
+                 return numRowsAffected;
+         }
+         
+         public String isLevelBeat(int ID) {
+        	// THIS METHOD IS CALLED BY YOUR MAIN ACTIVITY TO READ A VALUE FROM THE DATABASE                 
+        	                 SQLiteDatabase myDB = this.getReadableDatabase();
+        	                 String[] mySearch = new String[]{String.valueOf(ID)};
+        	                 Cursor myCursor = myDB.rawQuery("SELECT "+ fLevelBeat +" FROM "+ tLevels +" WHERE "+ fLevelID +"=?",mySearch);
+        	                 myCursor.moveToFirst();
+        	                 int index = myCursor.getColumnIndex(fLevelBeat);
+        	                 String myAnswer = myCursor.getString(index);
+        	                 myCursor.close();
+        	                 return myAnswer;
+        	         }
 /*       
  * MORE ADVANCED EXAMPLES OF USAGE
  *
