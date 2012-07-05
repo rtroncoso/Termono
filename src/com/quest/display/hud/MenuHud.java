@@ -8,7 +8,12 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.quest.game.Game;
+import com.quest.scenes.GameMenuScene;
+import com.quest.scenes.GameScene;
 
 public class MenuHud extends HUD{
 
@@ -55,6 +60,7 @@ public class MenuHud extends HUD{
 						case TouchEvent.ACTION_CANCEL://como mierda detecto el cancel!?
 							break;
 						case TouchEvent.ACTION_DOWN:
+						//	Toast.makeText(Game.getInstance().getApplicationContext(),"TEST", 10).show();
 							Game.getSceneManager().getGameScene().unloadHUD();														
 							Game.getSceneManager().getDisplay().getCamera().setChaseEntity(null);
 							Game.getSceneManager().setGameMenuScene();							
