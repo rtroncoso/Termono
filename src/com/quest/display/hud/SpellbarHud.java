@@ -10,6 +10,10 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.util.Log;
+
+import com.quest.database.DataHandler;
+import com.quest.database.myDatabase;
 import com.quest.game.Game;
 
 public class SpellbarHud extends HUD{
@@ -28,8 +32,9 @@ public class SpellbarHud extends HUD{
 	private BitmapTextureAtlas mSpellTextureAtlas;
 	private ITextureRegion mSpellTextureRegion;
 	private SpriteBatch mSpellBatch;
-	
-
+	private Sprite mConsultarSprite;
+	private Sprite mSetearSprite;
+	private DataHandler mDataHandler;
 	
 	// ===========================================================
 	// Constructors
@@ -38,7 +43,7 @@ public class SpellbarHud extends HUD{
 
 		// Init local Variables
 		this.mHud = pHud;
-	
+		this.mDataHandler = new DataHandler();
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
@@ -49,6 +54,63 @@ public class SpellbarHud extends HUD{
 		// Load Texture into memory and on the screen
 		Game.getInstance().getTextureManager().loadTexture(this.mSpellTextureAtlas);
 		
+		this.mConsultarSprite = new Sprite(150, 60, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()){
+			private Boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						this.setScale(2.5f);
+						this.mGrabbed = true;
+						break;
+					case TouchEvent.ACTION_UP:
+						if(this.mGrabbed == true){
+								Log.d("Logd", "consultar");
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getType("Sword"));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getImagePath("Sword"));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemPrice("Sword")));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getInventoryCount()));
+								this.setScale(2.0f);
+								this.mGrabbed= false;
+						}
+					}
+					return true;
+				}
+			};
+			this.mHud.attachChild(mConsultarSprite);
+			this.mHud.registerTouchArea(this.mConsultarSprite);
+			this.mConsultarSprite.setAlpha(0.6f);
+			this.mConsultarSprite.setScale(2.0f);
+		
+		
+			this.mSetearSprite = new Sprite(250, 60, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()){
+				private Boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						switch(pSceneTouchEvent.getAction()) {
+						case TouchEvent.ACTION_DOWN:
+							this.setScale(2.5f);
+							this.mGrabbed = true;
+							break;
+						case TouchEvent.ACTION_UP:
+							if(this.mGrabbed == true){
+									this.setScale(2.0f);
+									this.mGrabbed= false;
+									Log.d("Logd", "setear");
+							}
+						}
+						return true;
+					}
+				};
+				this.mHud.attachChild(mSetearSprite);
+				this.mHud.registerTouchArea(this.mSetearSprite);
+				this.mSetearSprite.setAlpha(0.6f);
+				this.mSetearSprite.setScale(2.0f);
+			
+			
+				
+				
+				
 		for(int i = 0; i < this.mSpells.length; i++) {
 			float posX = 190.0f;
 			this.mSpells[i] = new Sprite(posX + (90 * i), Game.getInstance().getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
@@ -88,6 +150,8 @@ public class SpellbarHud extends HUD{
 		
 	}
 
+
+    
 	// ===========================================================
 	// Methods
 	// ===========================================================

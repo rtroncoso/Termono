@@ -1,13 +1,17 @@
 package com.quest.entities.objects;
 
 import org.andengine.entity.Entity;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import com.quest.database.DataHandler;
 import com.quest.game.Game;
+import com.quest.scenes.GameMenuScene;
+
 
 public class Item extends Entity{
 	
@@ -19,42 +23,66 @@ public class Item extends Entity{
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private BitmapTextureAtlas mItemTextureAtlas;
-	private ITextureRegion mIconTextureRegion;
-	private ITextureRegion mItemTextureRegion;
-	private Sprite mIconSprite;
-	private Sprite mItemSprite;
-	
-	
-	private String mNombre; // El nombre superficial del ítem.
-	private int mID; // El ID clave del ítem.
-	private int mNivel; // El nivel mínimo del ítem para ser equipado.
-	private float mPeso; // El peso del ítem en kgs, ejemplo para una armadura metálica: 30.4.
-	private int mClase; // Tipo de equipo: espada, botas, etcétera.
-	private boolean mQuestItem; // Si el ítem le pertenece a una quest.
-	
+	private Sprite mItemSprite;	
+	private String mImagePath;
+	private int mPrice;
+	private ITextureRegion mITextureRegion;
+	private GameMenuScene mGameMenuScene;
+	private int mFunction;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	
-	public Item(String pPath, int itemID) {
+	public Item(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pSpriteX,int pSpriteY,Entity pEntity,Scene pScene,String pName, int pFunction) {
 		
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
-		this.mItemTextureAtlas  = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 32, 32, TextureOptions.BILINEAR);
-		this.mIconTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mItemTextureAtlas, Game.getInstance().getApplicationContext(), pPath, 0, 0);
-		this.mItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mItemTextureAtlas, Game.getInstance().getApplicationContext(), pPath, 0, 0);
-		this.mItemTextureAtlas.load();
+		mImagePath = pDataHandler.getImagePath(pName);		
+		this.mFunction = pFunction;
+		this.mPrice = pDataHandler.getItemPrice(pName);
 		
-		this.mIconSprite = new Sprite(0, 0, this.mIconTextureRegion, Game.getInstance().getVertexBufferObjectManager());
-		this.mItemSprite = new Sprite(0, 0, this.mItemTextureRegion, Game.getInstance().getVertexBufferObjectManager());
+		this.mITextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pTextureAtlas, Game.getInstance().getApplicationContext(), mImagePath, pAtlasX, AtlasY);
+		this.mItemSprite = new Sprite(pSpriteX, pSpriteY, mITextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+				this.setScale(3.0f);
+				mGrabbed = true;
+				if(Item.this.mFunction == 0){
+					Game.getSceneManager().getGameMenuScene().EquipItem(this, true, false);
+					}
+				break;
+			case TouchEvent.ACTION_MOVE:
+				if(this.mGrabbed) {
+					this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+				}
+				break;
+			case TouchEvent.ACTION_UP:
+				if(mGrabbed) {
+					mGrabbed = false;	 
+					this.setScale(2.0f);
+					if(Item.this.mFunction == 0){
+						Game.getSceneManager().getGameMenuScene().EquipItem(this, false,this.collidesWith(Game.getSceneManager().getGameMenuScene().getEquipmentBoxSprite()));
+						}
+				}
+				break;
+			}
+			return true;
+			}					
+		};
+		this.mItemSprite.setAlpha(1.0f);
+		this.mItemSprite.setScale(2.0f);
+		pEntity.attachChild(this.mItemSprite);
+		pScene.registerTouchArea(this.mItemSprite);
+		
+	
+	
 	}
 	
 	
-	public void loadNewTexture() {	
-		
-	} // 
 
+	
+	
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -65,33 +93,14 @@ public class Item extends Entity{
 	// Getter & Setter
 	// ===========================================================
 
-	public ITextureRegion getIconTextureRegion() {
-		return mIconTextureRegion;
-	}
-
-
-	public void setIconTextureRegion(ITextureRegion mIconTextureRegion) {
-		this.mIconTextureRegion = mIconTextureRegion;
-	}
-
-
-	public Sprite getIconSprite() {
-		return mIconSprite;
-	}
-
-
-	public void setIconSprite(Sprite pIconSprite) {
-		this.mIconSprite = pIconSprite;
+	public ITextureRegion getTextureRegion(){
+		return this.mITextureRegion;
 	}
 	
-	public Sprite getItemSprite() {
-		return mIconSprite;
+	public Sprite getSprite() {
+		return mItemSprite;
 	}
 
-
-	public void setItemSprite(Sprite pItemSprite) {
-		this.mItemSprite = pItemSprite;
-	}
 	
 
 	// ===========================================================
