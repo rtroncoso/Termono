@@ -12,6 +12,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 
 import android.util.Log;
 
+import com.quest.database.DataHandler;
 import com.quest.database.myDatabase;
 import com.quest.game.Game;
 
@@ -33,7 +34,7 @@ public class SpellbarHud extends HUD{
 	private SpriteBatch mSpellBatch;
 	private Sprite mConsultarSprite;
 	private Sprite mSetearSprite;
-
+	private DataHandler mDataHandler;
 	
 	// ===========================================================
 	// Constructors
@@ -42,7 +43,7 @@ public class SpellbarHud extends HUD{
 
 		// Init local Variables
 		this.mHud = pHud;
-	
+		this.mDataHandler = new DataHandler();
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
@@ -65,10 +66,10 @@ public class SpellbarHud extends HUD{
 					case TouchEvent.ACTION_UP:
 						if(this.mGrabbed == true){
 								Log.d("Logd", "consultar");
-								//Log.d("Logd", SpellbarHud.this.isLevelUnLocked(1));
-							//	Log.d("Logd", SpellbarHud.this.isLevelUnLocked(2));
-							//	Log.d("Logd", SpellbarHud.this.isLevelUnLocked(3));
-								Log.d("Logd", SpellbarHud.this.isLevelBeat(1));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getType("Sword"));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getImagePath("Sword"));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemPrice("Sword")));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getInventoryCount()));
 								this.setScale(2.0f);
 								this.mGrabbed= false;
 						}
@@ -96,11 +97,6 @@ public class SpellbarHud extends HUD{
 									this.setScale(2.0f);
 									this.mGrabbed= false;
 									Log.d("Logd", "setear");
-								//	SpellbarHud.this.unLockLevel(2, "true");
-								//	SpellbarHud.this.unLockLevel(3, "false");
-								//	SpellbarHud.this.unLockLevel(3, "false");
-									SpellbarHud.this.BeatLevel(1, "true");
-									
 							}
 						}
 						return true;
@@ -154,35 +150,7 @@ public class SpellbarHud extends HUD{
 		
 	}
 
-	
-	private String isLevelUnLocked(int levelNum){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.isLevelUnLocked(levelNum);
-        myDB.close();
-        return myReturn;
-    }
-       
-    private int unLockLevel(int levelNum, String isUnLocked){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.unLockLevel(levelNum, isUnLocked);
-        myDB.close();
-        return myReturn;
-    }
-    
-    private int BeatLevel(int levelNum, String isBeat){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.BeatLevel(levelNum, isBeat);
-        myDB.close();
-        return myReturn;
-    }
-    
-    private String isLevelBeat(int levelNum){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.isLevelBeat(levelNum);
-        myDB.close();
-        return myReturn;
-    }
-    
+
     
 	// ===========================================================
 	// Methods

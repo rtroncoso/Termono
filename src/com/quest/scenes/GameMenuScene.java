@@ -1,7 +1,6 @@
 package com.quest.scenes;
 
 import org.andengine.entity.Entity;
-import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
@@ -10,8 +9,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import android.util.Log;
-
+import com.quest.database.DataHandler;
+import com.quest.entities.objects.Item;
 import com.quest.game.Game;
 import com.quest.helpers.EquipmentHelper;
 
@@ -114,6 +113,8 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	
 	private EquipmentHelper mEquipmentManager;
+	private DataHandler mDataHandler;
+	private Item mItem;
 	
 	//FALTA HACER BIEN LA CARGA DE ENTIDADES
 	//FALTA HACER LA CARGA DE TEXTURAS DINAMICAS
@@ -123,6 +124,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	// Constructors
 	// ===========================================================
 	public GameMenuScene(){
+		this.mDataHandler = new DataHandler();
 		this.mGameMenuEntity = new Entity(0,0);
 		this.mInventoryEntity = new Entity(0,0);
 		this.mEquipmentEntity = new Entity(0,0);
@@ -439,7 +441,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				if(this.mGrabbed) {
 					this.mGrabbed = false;					
 					GameMenuScene.this.mEquipmentItemsSprite.setAlpha(0.5f);
-					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 50,GameMenuScene.this.mEquipmentSwordItemTextureRegion, 1.0f);
+		//			GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 50,GameMenuScene.this.mEquipmentSwordItemTextureRegion, 1.0f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 100,GameMenuScene.this.mEquipmentShieldItemTextureRegion,0.99f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 150,GameMenuScene.this.mEquipmentPlate1ItemTextureRegion,0.96f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 100,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 150,GameMenuScene.this.mEquipmentPlate2ItemTextureRegion,0.96f);
@@ -469,6 +471,8 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_UP:
 				GameMenuScene.this.mEquipmentAttributesSprite.setAlpha(0.5f);
+				final Item sword = new Item(mDataHandler, mEquipmentTextureAtlas, 400, 0, 600, 250, mEquipmentEntity, GameMenuScene.this, "Sword",0);
+				
 				break;
 			}
 			return true;
@@ -548,7 +552,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		this.mEquipmentTextureAtlas.unload();//se pierde lo que estaba antes?? / Necesito unloadear?
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Equipment/Items/");
-		this.mEquipmentSwordItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Sword.png", 160, 406);
+	//	this.mEquipmentSwordItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Sword.png", 160, 406);
 		this.mEquipmentShieldItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Shield.png", 185, 406);
 		this.mEquipmentPlate1ItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Plate1.png", 210, 406);
 		this.mEquipmentPlate2ItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "Plate2.png", 210, 430);
@@ -639,8 +643,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	private void checkItem(){
 		//checkear si el item es equipamiento, consumible o de quest (esta funcion sirve para todo, no solo equipment)
-	
-		
+				
 		//return el tipo de item
 	}
 	
@@ -678,6 +681,11 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		tempSprite.setScale(2.0f);
 		this.mEquipmentEntity.attachChild(tempSprite);
 		this.registerTouchArea(tempSprite);
+	}
+	
+	
+	public Sprite getEquipmentBoxSprite(){
+		return this.mEquipmentBoxSprite;
 	}
 	//################################################################################################
 	//################################################################################################	
