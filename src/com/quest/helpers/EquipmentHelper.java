@@ -2,8 +2,7 @@ package com.quest.helpers;
 
 import org.andengine.entity.sprite.Sprite;
 
-import com.quest.game.Game;
-import com.quest.scenes.GameMenuScene;
+import com.quest.entities.objects.Item;
 
 public class EquipmentHelper {
 	// ===========================================================
@@ -23,17 +22,13 @@ public class EquipmentHelper {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	
-	private int mAlpha;//por ahora uso estas cosas, despues
-	private int mType;//las cambio por lo que corresponde
-	
-	private Sprite mEquiped;
-	private Sprite mEquipedHelm;
-	private Sprite mEquipedPlate;
-	private Sprite mEquipedLegs;
-	private Sprite mEquipedExtra;
-	private Sprite mEquipedOffhand;
-	private Sprite mEquipedWeapon;
+	private Item mEquiped;
+	private Item mEquipedHelm;
+	private Item mEquipedPlate;
+	private Item mEquipedLegs;
+	private Item mEquipedExtra;
+	private Item mEquipedOffhand;
+	private Item mEquipedWeapon;
 	
 	// ===========================================================
 	// Constructors
@@ -43,41 +38,46 @@ public class EquipmentHelper {
 		//vacio para crearlo, ni idea. cargarlo en otro lugar asi queda guardado todo el equipment?
 	}
 	
-	public boolean EquipmentFunction(Sprite pSprite){//Cambiar el Sprite por un "item"
-		if(this.IsEquiped(pSprite,this.SortEquip(pSprite)) == false){//me fijo si es igual a lo que ya esta ocupado para saber si estan switcheando items o sacando
-		this.UnequipItem(pSprite,this.SortEquip(pSprite));
-		this.EquipItem(pSprite,this.SortEquip(pSprite));
+	public boolean EquipmentFunction(Item pItem){//Cambiar el Sprite por un "item"
+		int tType = pItem.getType();
+		if(this.IsEquiped(pItem,tType) == false){//me fijo si es igual a lo que ya esta ocupado para saber si estan switcheando items o sacando
+		this.UnequipItem(pItem,tType);
+		this.EquipItem(pItem,tType);
 		return true;
 		} else {
-			this.UnequipItem(pSprite,this.SortEquip(pSprite));
+			this.UnequipItem(pItem,tType);
 		return false;
 		}
 		//hacer una variable para sortEquip asi no lo llamo tantas veces y optimizo?
 	}
 	
 		
-	public boolean IsEquiped(Sprite pSprite, int pType){//Usar IsEquiped o hacer el GetEquiped y comparar? || Cambiar el Sprite por un "item" || pasarle que tipo es
-		if(pSprite == this.getEquiped(pType)){//Checkear por id por si tiene el mismo item?(se desequiparia) 
+	public boolean IsEquiped(Item pItem, int pType){//Usar IsEquiped o hacer el GetEquiped y comparar? || Cambiar el Sprite por un "item" || pasarle que tipo es
+		if(this.getEquiped(pType) != null){		
+			if(pItem.getID() == this.getEquiped(pType).getID()){//Checkear por id por si tiene el mismo item?(se desequiparia). tengo que ahcer que se loadee el mEquiped al principio, si no tiene nada que hago?...
 			return true;
-		} else{
+			} else{
+			return false;
+			}
+		} else {
 			return false;
 		}
 	}
 	
 	
-	public void EquipItem(Sprite pSprite, int pType){//Cambiar el Sprite por un "item" || pasarle que tipo es
-		this.setEquiped(pType, pSprite);
+	public void EquipItem(Item pItem, int pType){//Cambiar el Sprite por un "item" || pasarle que tipo es
+		//this.setEquiped(pType, pSprite);
 		//setear los bonuses
 	}
 	
 	
 	
-	public void UnequipItem(Sprite pSprite, int pType){
+	public void UnequipItem(Item pItem, int pType){
 		//Lo muevo a donde corresponde
 		//*****************************
 		this.getEquiped(pType);
 		if(this.mEquiped != null){
-		this.mEquiped.setPosition(this.mEquiped.getInitialX(), this.mEquiped.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
+		this.mEquiped.getSprite().setPosition(this.mEquiped.getInitialX(), this.mEquiped.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
 		}
 		//*****************************
 		
@@ -88,41 +88,11 @@ public class EquipmentHelper {
 		//***********************************
 	}
 	
-	
-	public int SortEquip(Sprite pSprite){//Cambiar el Sprite por un "item"
-		//checkear que es el item a equipar (escudo, arma, etc)
-		//(cambiar el void) devolver que es
-		
-		//por ahora lo hago por Alpha
-		this.mAlpha = (int)(pSprite.getAlpha() * 100);
-		switch(this.mAlpha){
-		case 95:
-			this.mType = 0; //Helm
-			break;
-		case 96:
-			this.mType = 1; //Plate
-			break;
-		case 97:
-			this.mType = 2; //Legs
-			break;
-		case 98:
-			this.mType = 3; //Extra
-			break;
-		case 99:
-			this.mType = 4; //Offhand
-			break;
-		case 100:
-			this.mType = 5; //Weapon
-			break;	
-		}
-		return mType;
-	}
+	//TENGO QUE HACER QUE LOS EQUIPED SE CARGUEN CON LOS VALORES DE LA TABLA DE EQUIPAMIENTO QUE TENGO QUE CREAR
 	
 	
-	
-	
-	public void setEquiped(int pType,Sprite pSprite){
-		this.mEquiped = pSprite;
+	public void setEquiped(int pType,Item pItem){
+		this.mEquiped = pItem;
 		switch(pType){//segun el tipo saco el coso
 		case 0:
 			this.mEquipedHelm = this.mEquiped;
@@ -147,7 +117,7 @@ public class EquipmentHelper {
 	
 	
 	
-	public Sprite getEquiped(int pType){//Cambiar Sprite por "item" || pasarle que tipo es
+	public Item getEquiped(int pType){//Cambiar Sprite por "item" || pasarle que tipo es
 		//########## Asignar asi "this.mEquiped = this.mEquipedHelm" y hacer return a "this.mEquiped"
 		//########## O hacer el return en el case!????  (no se si se aplican las cosas de la primer manera)		
 		//########## Consultar con escoba si no es mejor el codigo comentadod e abajo

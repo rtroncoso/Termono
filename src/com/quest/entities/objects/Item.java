@@ -25,9 +25,10 @@ public class Item extends Entity{
 	// ===========================================================
 	private Sprite mItemSprite;	
 	private String mImagePath;
+	private int mID;
 	private int mPrice;
+	private int mType;
 	private ITextureRegion mITextureRegion;
-	private GameMenuScene mGameMenuScene;
 	private int mFunction;
 	private String mName;
 	// ===========================================================
@@ -35,11 +36,13 @@ public class Item extends Entity{
 	// ===========================================================
 	
 	public Item(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pSpriteX,int pSpriteY,Entity pEntity,Scene pScene,int pID, int pFunction) {
-		this.setUserData(pID);
+		this.mID = pID;
+		//this.setUserData(pID);
 		mName = pDataHandler.getItemName(pID);
 		mImagePath = pDataHandler.getItemImagePath(mName);		
 		this.mFunction = pFunction;
 		this.mPrice = pDataHandler.getItemPrice(mName);
+		this.mType = pDataHandler.getItemType(mName);
 		
 		this.mITextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pTextureAtlas, Game.getInstance().getApplicationContext(), mImagePath, pAtlasX, AtlasY);
 		this.mItemSprite = new Sprite(pSpriteX, pSpriteY, mITextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
@@ -51,7 +54,7 @@ public class Item extends Entity{
 				this.setScale(3.0f);
 				mGrabbed = true;
 				if(Item.this.mFunction == 0){
-					Game.getSceneManager().getGameMenuScene().EquipItem(this, true, false);
+					Game.getSceneManager().getGameMenuScene().EquipItem(Item.this, true, false);
 					}
 				break;
 			case TouchEvent.ACTION_MOVE:
@@ -64,7 +67,7 @@ public class Item extends Entity{
 					mGrabbed = false;	 
 					this.setScale(2.0f);
 					if(Item.this.mFunction == 0){
-						Game.getSceneManager().getGameMenuScene().EquipItem(this, false,this.collidesWith(Game.getSceneManager().getGameMenuScene().getEquipmentBoxSprite()));
+						Game.getSceneManager().getGameMenuScene().EquipItem(Item.this, false,this.collidesWith(Game.getSceneManager().getGameMenuScene().getEquipmentBoxSprite()));
 						}
 				}
 				break;
@@ -94,7 +97,10 @@ public class Item extends Entity{
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-
+	public int getType() {
+		return mType;
+	}
+	
 	public ITextureRegion getTextureRegion(){
 		return this.mITextureRegion;
 	}
@@ -102,8 +108,14 @@ public class Item extends Entity{
 	public Sprite getSprite() {
 		return mItemSprite;
 	}
-
 	
+	public int getPrice(){
+		return mPrice;
+	}
+
+	public int getID(){
+		return mID;
+	}
 
 	// ===========================================================
 	// Methods

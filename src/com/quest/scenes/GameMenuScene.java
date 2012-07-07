@@ -441,7 +441,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				if(this.mGrabbed) {
 					this.mGrabbed = false;					
 					GameMenuScene.this.mEquipmentItemsSprite.setAlpha(0.5f);
-		//			GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 50,GameMenuScene.this.mEquipmentSwordItemTextureRegion, 1.0f);
+		/*			GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 50,GameMenuScene.this.mEquipmentSwordItemTextureRegion, 1.0f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 100,GameMenuScene.this.mEquipmentShieldItemTextureRegion,0.99f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 150,GameMenuScene.this.mEquipmentPlate1ItemTextureRegion,0.96f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 100,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 150,GameMenuScene.this.mEquipmentPlate2ItemTextureRegion,0.96f);
@@ -450,7 +450,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 250,GameMenuScene.this.mEquipmentHelm1ItemTextureRegion,0.95f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 100,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 250,GameMenuScene.this.mEquipmentHelm2ItemTextureRegion,0.95f);
 					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 50,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 300,GameMenuScene.this.mEquipmentRingItemTextureRegion,0.98f);
-					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 100,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 300,GameMenuScene.this.mEquipmentNecklaceItemTextureRegion,0.98f);
+					GameMenuScene.this.addItem(GameMenuScene.this.mEquipmentBox2Sprite.getX() + 100,GameMenuScene.this.mEquipmentBox2Sprite.getY() + 300,GameMenuScene.this.mEquipmentNecklaceItemTextureRegion,0.98f);*/
 				}
 				break;
 			}
@@ -461,7 +461,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.registerTouchArea(mEquipmentItemsSprite);
 		
 		//Attributes Tab
-		this.mEquipmentAttributesSprite = new Sprite(665, 75,this.mEquipmentAttributesTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mEquipmentAttributesSprite = new Sprite(615, 75,this.mEquipmentAttributesTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
@@ -471,7 +471,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_UP:
 				GameMenuScene.this.mEquipmentAttributesSprite.setAlpha(0.5f);
-				final Item sword = new Item(mDataHandler, mEquipmentTextureAtlas, 400, 0, 600, 250, mEquipmentEntity, GameMenuScene.this, 0,0);
+				for(int i=0;i<GameMenuScene.this.mDataHandler.getInventoryCount();i++){
+					final Item pItem = new Item(mDataHandler,mEquipmentTextureAtlas,0+64*i,500,500+64*i,250,mEquipmentEntity,GameMenuScene.this,i,0);
+				}
+				
 				
 				break;
 			}
@@ -479,7 +482,6 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			}					
 		};
 		this.mEquipmentEntity.attachChild(mEquipmentAttributesSprite);
-		
 		//##########################BODY###################################
 		
 		//Helm Sprite
@@ -572,32 +574,32 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	//################################################################################################
 	//								FUNCIONES DE EQUIPMENT ENTITY
 	//################################################################################################
-	public void EquipItem(Sprite pSprite, Boolean pColorChange,Boolean pCollides){
-		final Sprite tempSprite = pSprite;//es final, me cambia algo?
-		switch(this.mEquipmentManager.SortEquip(pSprite)){//iguala pSprite al container que corresponde
+	public void EquipItem(Item pItem, Boolean pColorChange,Boolean pCollides){
+		Sprite tempSprite = null;//le doy null porque sino rompe las bolas
+		switch(pItem.getType()){//iguala pSprite al container que corresponde
 		case 0:
-			pSprite = this.mEquipmentHelmSprite;		
+			tempSprite = this.mEquipmentHelmSprite;		
 			break;
 		case 1:
-			pSprite = this.mEquipmentPlateSprite;
+			tempSprite = this.mEquipmentPlateSprite;
 			break;
 		case 2:
-			pSprite = this.mEquipmentLegsSprite;
+			tempSprite = this.mEquipmentLegsSprite;
 			break;
 		case 3:
-			pSprite = this.mEquipmentExtraSprite;
+			tempSprite = this.mEquipmentExtraSprite;
 			break;
 		case 4:
-			pSprite = this.mEquipmentOffhandSprite;
+			tempSprite = this.mEquipmentOffhandSprite;
 			break;
 		case 5:
-			pSprite = this.mEquipmentWeaponSprite;
+			tempSprite = this.mEquipmentWeaponSprite;
 			break;
 		}
-		this.ColorSprite(pSprite, pColorChange);//cambia el color
+		this.ColorSprite(tempSprite, pColorChange);//cambia el color
 		
 		if(pColorChange == false){//si ColorChange = false (osea que es en el Action_UP)
-			this.MoveItem(pSprite, tempSprite,pCollides);//Ejecuta el equipamiento
+			this.MoveItem(tempSprite, pItem,pCollides);//Ejecuta el equipamiento
 		}
 		
 	}
@@ -616,20 +618,20 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		}
 	
 	
-	public void MoveItem(Sprite pSprite, Sprite pItemSprite,Boolean pCollides){//Funcion para iniciar equipamiento grafico + helper
+	public void MoveItem(Sprite pSprite, Item pItem,Boolean pCollides){//Funcion para iniciar equipamiento grafico + helper
 		if(pCollides == true){//Si colisiona
-			if(this.mEquipmentManager.EquipmentFunction(pItemSprite) == true){//Si se equipo				
-				pItemSprite.setPosition(pSprite.getX() + pSprite.getWidth() / 2 - pItemSprite.getWidth() / 2,pSprite.getY() + pSprite.getHeight() / 2 - pItemSprite.getHeight() / 2);//lo pone donde corresponde
+			if(this.mEquipmentManager.EquipmentFunction(pItem) == true){//Si se equipo				
+				pItem.getSprite().setPosition(pSprite.getX() + pSprite.getWidth() / 2 - pItem.getSprite().getWidth() / 2,pSprite.getY() + pSprite.getHeight() / 2 - pItem.getSprite().getHeight() / 2);//lo pone donde corresponde
 				pSprite.setAlpha(0.5f);
 			} else {//Si se desequipo(porque ya estaba equipado) lo devuelve al final				
 				pSprite.setAlpha(1.0f);
 			}
 		} else{//Si no colisiona
-			if(this.mEquipmentManager.IsEquiped(pItemSprite,this.mEquipmentManager.SortEquip(pItemSprite)) == true){//se fija si estaba equipado
-			this.mEquipmentManager.UnequipItem(pItemSprite,this.mEquipmentManager.SortEquip(pItemSprite));//si lo estaba lo desequipa
-			pItemSprite.setPosition(pItemSprite.getInitialX(),pItemSprite.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
+			if(this.mEquipmentManager.IsEquiped(pItem,pItem.getType()) == true){//se fija si estaba equipado
+				this.mEquipmentManager.UnequipItem(pItem,pItem.getType());//si lo estaba lo desequipa
+				pItem.getSprite().setPosition(pItem.getSprite().getInitialX(),pItem.getSprite().getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
 			} else{//Si no estaba equipado
-				pItemSprite.setPosition(pItemSprite.getInitialX(),pItemSprite.getInitialY());//despues hacer la funcion que se fije donde quedaria(tiene que volver a donde estaba, no al final)
+				pItem.getSprite().setPosition(pItem.getSprite().getInitialX(),pItem.getSprite().getInitialY());//despues hacer la funcion que se fije donde quedaria(tiene que volver a donde estaba, no al final)
 			}
 		}
 	}
@@ -646,9 +648,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				
 		//return el tipo de item
 	}
+	/*
 	
 	//#####FALTA HACER LA CARGA DE TEXTURES DINAMICA
-	private void addItem(float pX, float pY,ITextureRegion pTextureRegion,float pAlpha/*TIPO de ITEM*/){
+	private void addItem(float pX, float pY,ITextureRegion pTextureRegion,float pAlpha){
 		//si es equipment
 			//new sprite
 		final Sprite tempSprite = new Sprite(pX,pY, pTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
@@ -682,6 +685,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.mEquipmentEntity.attachChild(tempSprite);
 		this.registerTouchArea(tempSprite);
 	}
+	*/
 	
 	
 	public Sprite getEquipmentBoxSprite(){
