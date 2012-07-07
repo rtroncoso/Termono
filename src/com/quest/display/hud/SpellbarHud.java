@@ -66,10 +66,15 @@ public class SpellbarHud extends HUD{
 					case TouchEvent.ACTION_UP:
 						if(this.mGrabbed == true){
 								Log.d("Logd", "consultar");
-								Log.d("Logd", SpellbarHud.this.mDataHandler.getType("Sword"));
-								Log.d("Logd", SpellbarHud.this.mDataHandler.getImagePath("Sword"));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemName(0));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemType("Sword")));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemImagePath("Sword"));
 								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemPrice("Sword")));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemDescription("Sword"));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemClass("Sword")));
+
 								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getInventoryCount()));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemAmount(0)));
 								this.setScale(2.0f);
 								this.mGrabbed= false;
 						}

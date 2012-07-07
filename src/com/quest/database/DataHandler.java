@@ -40,28 +40,41 @@ public class DataHandler {
     
     */
     
-	public String getType(String Name){
+	public int getItemType(String pName){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getType(Name);
+        int myReturn = myDB.getItemType(pName);
         myDB.close();
         return myReturn;
     }
 	
 	
-	public String getImagePath(String pName){
+	public String getItemImagePath(String pName){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getImagePath(pName);
+        String myReturn = myDB.getItemImagePath(pName);
         myDB.close();
         return myReturn;
     }
 	
 	public int getItemPrice(String pName){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getPrice(pName);
+        int myReturn = myDB.getItemPrice(pName);
         myDB.close();
         return myReturn;
     }
 	
+	public String getItemDescription(String pName){
+        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+        String myReturn = myDB.getItemDescription(pName);
+        myDB.close();
+        return myReturn;
+    }
+	
+	public int getItemClass(String pName){
+        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+        int myReturn = myDB.getItemClass(pName);
+        myDB.close();
+        return myReturn;
+    }
 	
 	public int getInventoryCount(){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
@@ -69,6 +82,20 @@ public class DataHandler {
         myDB.close();
         return myReturn;
     }
+	
+	public String getItemName(int pID){
+        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+        String myReturn = myDB.getItemName(pID);
+        myDB.close();
+        return myReturn;
+    }
+	
+	public int getItemAmount(int pID){
+		 myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+	        int myReturn = myDB.getItemAmount(pID);
+	        myDB.close();
+	        return myReturn;
+	}
 	
 	//HACER LOG.D para checkear todo
 }

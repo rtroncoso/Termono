@@ -29,15 +29,17 @@ public class Item extends Entity{
 	private ITextureRegion mITextureRegion;
 	private GameMenuScene mGameMenuScene;
 	private int mFunction;
+	private String mName;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	
-	public Item(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pSpriteX,int pSpriteY,Entity pEntity,Scene pScene,String pName, int pFunction) {
-		
-		mImagePath = pDataHandler.getImagePath(pName);		
+	public Item(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pSpriteX,int pSpriteY,Entity pEntity,Scene pScene,int pID, int pFunction) {
+		this.setUserData(pID);
+		mName = pDataHandler.getItemName(pID);
+		mImagePath = pDataHandler.getItemImagePath(mName);		
 		this.mFunction = pFunction;
-		this.mPrice = pDataHandler.getItemPrice(pName);
+		this.mPrice = pDataHandler.getItemPrice(mName);
 		
 		this.mITextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pTextureAtlas, Game.getInstance().getApplicationContext(), mImagePath, pAtlasX, AtlasY);
 		this.mItemSprite = new Sprite(pSpriteX, pSpriteY, mITextureRegion,Game.getInstance().getVertexBufferObjectManager()) {

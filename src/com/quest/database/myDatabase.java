@@ -1,5 +1,7 @@
 package com.quest.database;
 
+import com.quest.game.Game;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class myDatabase extends SQLiteOpenHelper {
  
         static final String dbName = "myDB";
-       
+       //fItemAmount+" INTEGER , "+
         static final String tItem = "Item"; 
         static final String fItemID = "ItemID";
         static final String fItemName = "Name";
@@ -18,10 +20,11 @@ public class myDatabase extends SQLiteOpenHelper {
         static final String fItemDescription = "Description";
         static final String fItemPrice = "Price";
         static final String fItemModifiersID = "ModifiersID";
+        static final String fItemClassID = "ItemClassID";
         
         static final String tInventory = "Inventory";
         static final String fInventoryItemID = "ItemID";
-        static final String fInventoryItemName = "ItemName";
+        static final String fInventoryItemAmount = "Amount";
         static final String fInventoryPlayerID = "PlayerID";
         
         static final String tPlayer = "Player";
@@ -34,7 +37,7 @@ public class myDatabase extends SQLiteOpenHelper {
 // THE VALUE OF 1 ON THE NEXT LINE REPRESENTS THE VERSION NUMBER OF THE DATABASE
 // IN THE FUTURE IF YOU MAKE CHANGES TO THE DATABASE, YOU NEED TO INCREMENT THIS NUMBER
 // DOING SO WILL CAUSE THE METHOD onUpgrade() TO AUTOMATICALLY GET TRIGGERED
-                super(context, dbName, null, 4);
+                super(context, dbName, null, 8);
         }
  
         @Override
@@ -46,20 +49,20 @@ public class myDatabase extends SQLiteOpenHelper {
                         fItemTexture+" TEXT , "+
                         fItemType+" INTEGER , "+
                         fItemDescription+" TEXT , "+
-                        fItemPrice+" INTEGER , "+
+                        fItemPrice+" INTEGER , "+ 
+                        fItemClassID+" INTEGER, "+
                         fItemModifiersID+" INTEGER)"
                         );
                 //hacer que no sea auto increasing?
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
                 		fInventoryItemID+" INTEGER PRIMARY KEY , "+
-                        fInventoryItemName+" TEXT , "+
+                        fInventoryItemAmount+" INTEGER , "+
                         fInventoryPlayerID+" INTEGER)"
                         );
                 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
-                		fPlayerInventoryID+" INTEGER PRIMARY KEY , "+
-                        fPlayerName+" TEXT , "+
-                        fPlayerInventoryID+" INTEGER)"
+                		fPlayerID+" INTEGER PRIMARY KEY , "+
+                        fPlayerName+" TEXT)"
                         );
                 
        
@@ -71,25 +74,27 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemType, 5);
 		                cv.put(fItemDescription, "Espada, para azotar a los monstruos pervertidos");
 		                cv.put(fItemPrice, 200);
+		                cv.put(fItemClassID,0);
 		                cv.put(fItemModifiersID,0);
 		                		db.insert(tItem, null, cv);
-		                //cv.put(fItemID, 1);
+		                cv.put(fItemID, 1);
 				        cv.put(fItemName, "Shield");
 				        cv.put(fItemTexture, "Shield.png");
 				        cv.put(fItemType, 4);
 				        cv.put(fItemDescription, "Escudo, para que no te azoten");
 				        cv.put(fItemPrice, 300);
+				        cv.put(fItemClassID,1);
 				        cv.put(fItemModifiersID,1);
 				        		db.insert(tItem, null, cv);                                       
 		                		cv.clear(); //Hace falta hacerle clear?
 		                		
 		                		
 		                cv.put(fInventoryItemID,0);//tiene que ser igual a fItemID
-		                cv.put(fInventoryItemName, "Sword");//tiene que ser igual a fItemName
+		                cv.put(fInventoryItemAmount, 1);//tiene que ser igual a fItemName
 		                cv.put(fInventoryPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
 		                		db.insert(tInventory, null, cv);
 		                cv.put(fInventoryItemID,1);//tiene que ser igual a fItemID
-		 		        cv.put(fInventoryItemName, "Shield");//tiene que ser igual a fItemName
+		 		        cv.put(fInventoryItemAmount, 2);//tiene que ser igual a fItemName
 		 		        cv.put(fInventoryPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
 		 		                db.insert(tInventory, null, cv);
 		                		cv.clear();
@@ -97,7 +102,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                		
 		                cv.put(fPlayerID, 0);
 		                cv.put(fPlayerName, "Joaquin");
-		                cv.put(fPlayerInventoryID, 0);//Uso esto o relaciono con fPlayerID directamente?
+		                	db.insert(tPlayer, null, cv);
 		                
 
 		                
@@ -130,6 +135,9 @@ public class myDatabase extends SQLiteOpenHelper {
 // THIS SERVES TO ESSENTIALLY RESET THE DATABASE
 // INSTEAD YOU COULD MODIFY THE EXISTING TABLES BY ADDING/REMOVING COLUMNS/ROWS/VALUES THEN NO EXISTING DATA WOULD BE LOST
                 db.execSQL("DROP TABLE IF EXISTS "+tItem);
+                db.execSQL("DROP TABLE IF EXISTS Levels");
+                db.execSQL("DROP TABLE IF EXISTS "+tInventory);
+                db.execSQL("DROP TABLE IF EXISTS "+tPlayer);
                 onCreate(db);
         }
         
@@ -181,18 +189,29 @@ public class myDatabase extends SQLiteOpenHelper {
         	         }
          */
          
-         public String getType(String pName){
+         public int getItemType(String pName){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
              String[] mySearch = new String[]{pName};//{String.valueOf(Name)};
              Cursor myCursor = myDB.rawQuery("SELECT "+ fItemType +" FROM "+ tItem +" WHERE "+ fItemName +"=?",mySearch);
              myCursor.moveToFirst();
              int index = myCursor.getColumnIndex(fItemType);
-             String myAnswer = myCursor.getString(index);
+             int myAnswer = myCursor.getInt(index);
              myCursor.close();
              return myAnswer;
          }
          
-         public String getImagePath(String pName){
+         public String getItemName(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};//no se que pasarle para que quede bien, por ahora convierto a string
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemName +" FROM "+ tItem +" WHERE "+ fItemID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fItemName);
+             String myAnswer = myCursor.getString(index);
+             myCursor.close();
+             return myAnswer;
+         }         
+         
+         public String getItemImagePath(String pName){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
              String[] mySearch = new String[]{pName};
              Cursor myCursor = myDB.rawQuery("SELECT "+ fItemTexture +" FROM "+ tItem +" WHERE "+ fItemName +"=?",mySearch);
@@ -203,22 +222,54 @@ public class myDatabase extends SQLiteOpenHelper {
              return myAnswer;
          }         
          
-         public int getPrice(String pName){
+         public int getItemPrice(String pName){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
         	 String[] mySearch = new String[]{pName};
         	 Cursor myCursor = myDB.rawQuery("SELECT "+fItemPrice+" FROM "+tItem+" WHERE "+fItemName+"=?",mySearch);
         	 myCursor.moveToFirst();
         	 int index = myCursor.getColumnIndex(fItemPrice);
-        	 String myAnswer = myCursor.getString(index);
+        	 int myAnswer = myCursor.getInt(index);
         	 myCursor.close();
-        	 return Integer.parseInt(myAnswer);
+        	 return myAnswer;
          }
         
+         public String getItemDescription(String pName){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{pName};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemDescription +" FROM "+ tItem +" WHERE "+ fItemName +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fItemDescription);
+             String myAnswer = myCursor.getString(index);
+             myCursor.close();
+             return myAnswer;
+         }      
          
+         public int getItemClass(String pName){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{pName};//{String.valueOf(Name)};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemClassID +" FROM "+ tItem +" WHERE "+ fItemName +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fItemClassID);
+             int myAnswer = myCursor.getInt(index);
+             myCursor.close();
+             return myAnswer;
+         }
+         
+         
+         public int getItemAmount(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fInventoryItemAmount +" FROM "+ tInventory +" WHERE "+ fInventoryItemID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fInventoryItemAmount);
+             int myAnswer = myCursor.getInt(index);
+             myCursor.close();
+             return myAnswer;
+         }
          
          int getInventoryCount(){
                 SQLiteDatabase db=this.getWritableDatabase();
-                Cursor cur= db.rawQuery("Select * from "+tInventory, null);
+                Cursor cur= db.rawQuery("SELECT * FROM "+tInventory, null);
                 int x= cur.getCount();
                 cur.close();
                 return x;

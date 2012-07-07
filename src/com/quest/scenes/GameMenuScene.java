@@ -471,7 +471,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_UP:
 				GameMenuScene.this.mEquipmentAttributesSprite.setAlpha(0.5f);
-				final Item sword = new Item(mDataHandler, mEquipmentTextureAtlas, 400, 0, 600, 250, mEquipmentEntity, GameMenuScene.this, "Sword",0);
+				final Item sword = new Item(mDataHandler, mEquipmentTextureAtlas, 400, 0, 600, 250, mEquipmentEntity, GameMenuScene.this, 0,0);
 				
 				break;
 			}
