@@ -40,38 +40,45 @@ public class DataHandler {
     
     */
     
-	public int getItemType(String pName){
+	public int getItemType(int pID){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getItemType(pName);
+        int myReturn = myDB.getItemType(pID);
         myDB.close();
         return myReturn;
     }
 	
 	
-	public String getItemImagePath(String pName){
+	public String getItemImagePath(int pID){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getItemImagePath(pName);
+        String myReturn = myDB.getItemImagePath(pID);
         myDB.close();
         return myReturn;
     }
 	
-	public int getItemPrice(String pName){
+	public int getItemBuyPrice(int pID){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getItemPrice(pName);
+        int myReturn = myDB.getItemBuyPrice(pID);
+        myDB.close();
+        return myReturn;
+    }
+
+	public int getItemSellPrice(int pID){
+        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+        int myReturn = myDB.getItemSellPrice(pID);
         myDB.close();
         return myReturn;
     }
 	
-	public String getItemDescription(String pName){
+	public String getItemDescription(int pID){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getItemDescription(pName);
+        String myReturn = myDB.getItemDescription(pID);
         myDB.close();
         return myReturn;
     }
 	
-	public int getItemClass(String pName){
+	public int getItemClass(int pID){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getItemClass(pName);
+        int myReturn = myDB.getItemClass(pID);
         myDB.close();
         return myReturn;
     }
@@ -79,6 +86,13 @@ public class DataHandler {
 	public int getInventoryCount(){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
         int myReturn = myDB.getInventoryCount();
+        myDB.close();
+        return myReturn;
+    }
+	
+	public int getInventoryItemID(int pIndex){
+        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+        int myReturn = myDB.getInventoryItemID(pIndex);
         myDB.close();
         return myReturn;
     }
@@ -97,5 +111,30 @@ public class DataHandler {
 	        return myReturn;
 	}
 	
-	//HACER LOG.D para checkear todo
+	
+	public int[] getEquipedIDs(int pEstado){
+		 myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+	        int[] myReturn = myDB.getEquipedIDs(pEstado);
+	        myDB.close();
+	        return myReturn;
+	}
+	
+	public boolean isItemEquiped(int pID){
+		myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+		int temp = myDB.isItemEquiped(pID);
+		myDB.close();
+		if(temp == 0){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	public void EquipItem(int pID, int pEquiped){
+		myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+		myDB.EquipItem(pID, pEquiped);
+		myDB.close();
+	}
+	
+	
 }

@@ -1,41 +1,36 @@
 package com.quest.helpers;
 
-import org.andengine.entity.sprite.Sprite;
-
+import com.quest.database.DataHandler;
 import com.quest.entities.objects.Item;
+import com.quest.scenes.GameMenuScene;
 
 public class EquipmentHelper {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	//HACER UNA FUNCION PARA IDENTIFICAR PARTE DE ARMADURA/ARMA?  *****D*O*N*E******
-	//HACER FUNCION PARA DETECTAR DONDE VA A TERMINAR EL COSO DESEQUIPADO
-	//Meter la funcion de mType dentro de getEquiped y setEquiped?
-	//Eliminar el mType y mandar directo el mEquiped/mEquipedXXXXX? ###########
-	//Hacer que detecte armas complejas tipo arco (weapon + offhand)
-	//Debuggear para ver si los mEquipedXXXX se cargan bien
-	//limpiar el mEquiped? - checkear si esta bien
-	
-	//hacer codigo para que distinga a donde ir
-	//cambiarle el rgb al containerspriet segun que item es
+	//funcion para calcular posicion
+	//carga de cosas no equipadas
+	//hacer bien la carga de objetos (para que no se creen devuelta con cada tab click)
+	//hacer el switcheo de entidades entre equiped y unequiped
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
 	private Item mEquiped;
-	private Item mEquipedHelm;
-	private Item mEquipedPlate;
+	private Item mEquipedHead;
+	private Item mEquipedBody;
 	private Item mEquipedLegs;
 	private Item mEquipedExtra;
 	private Item mEquipedOffhand;
 	private Item mEquipedWeapon;
+	private DataHandler mDataHandler;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
-	public EquipmentHelper(){
-		//vacio para crearlo, ni idea. cargarlo en otro lugar asi queda guardado todo el equipment?
+	public EquipmentHelper(DataHandler pDataHandler){
+		this.mDataHandler = pDataHandler;
 	}
 	
 	public boolean EquipmentFunction(Item pItem){//Cambiar el Sprite por un "item"
@@ -65,27 +60,25 @@ public class EquipmentHelper {
 	}
 	
 	
-	public void EquipItem(Item pItem, int pType){//Cambiar el Sprite por un "item" || pasarle que tipo es
-		//this.setEquiped(pType, pSprite);
+	public void EquipItem(Item pItem, int pType){
+		this.setEquiped(pType, pItem);
+		this.mDataHandler.EquipItem(pItem.getID(), 1);
 		//setear los bonuses
 	}
 	
 	
 	
 	public void UnequipItem(Item pItem, int pType){
-		//Lo muevo a donde corresponde
-		//*****************************
 		this.getEquiped(pType);
 		if(this.mEquiped != null){
-		this.mEquiped.getSprite().setPosition(this.mEquiped.getInitialX(), this.mEquiped.getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
-		}
-		//*****************************
-		
+		this.mDataHandler.EquipItem(this.mEquiped.getID(), 0);
+		this.mEquiped.getIcon().setPosition(this.mEquiped.getIcon().getInitialX(), this.mEquiped.getIcon().getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
 		//Lo saco de equipado y saco bonuses
-		//***********************************
-		this.setEquiped(pType,null);
-		//sacar los bonuses y eso###########
-		//***********************************
+				//***********************************
+				this.setEquiped(pType,null);
+				//sacar los bonuses y eso###########
+				//***********************************
+		}
 	}
 	
 	//TENGO QUE HACER QUE LOS EQUIPED SE CARGUEN CON LOS VALORES DE LA TABLA DE EQUIPAMIENTO QUE TENGO QUE CREAR
@@ -95,10 +88,10 @@ public class EquipmentHelper {
 		this.mEquiped = pItem;
 		switch(pType){//segun el tipo saco el coso
 		case 0:
-			this.mEquipedHelm = this.mEquiped;
+			this.mEquipedHead = this.mEquiped;
 			break;
 		case 1:
-			this.mEquipedPlate = this.mEquiped;
+			this.mEquipedBody = this.mEquiped;
 			break;
 		case 2:
 			this.mEquipedLegs = this.mEquiped;
@@ -115,18 +108,14 @@ public class EquipmentHelper {
 		}
 	}
 	
-	
-	
-	public Item getEquiped(int pType){//Cambiar Sprite por "item" || pasarle que tipo es
-		//########## Asignar asi "this.mEquiped = this.mEquipedHelm" y hacer return a "this.mEquiped"
-		//########## O hacer el return en el case!????  (no se si se aplican las cosas de la primer manera)		
-		//########## Consultar con escoba si no es mejor el codigo comentadod e abajo
-		switch(pType){//segun el tipo saco el coso
+		
+	public Item getEquiped(int pType){
+		switch(pType){
 		case 0:
-			this.mEquiped = this.mEquipedHelm;
+			this.mEquiped = this.mEquipedHead;
 			break;
 		case 1:
-			this.mEquiped = this.mEquipedPlate;
+			this.mEquiped = this.mEquipedBody;
 			break;
 		case 2:
 			this.mEquiped = this.mEquipedLegs;
@@ -144,6 +133,30 @@ public class EquipmentHelper {
 		return this.mEquiped;
 	}
 	
+	
+	
+	public void LoadEquipedItem(Item pItem){
+		switch(pItem.getType()){
+		case 0:
+			this.mEquipedHead = pItem;
+			break;
+		case 1:
+			this.mEquipedBody = pItem;
+			break;
+		case 2:
+			this.mEquipedLegs = pItem;
+			break;
+		case 3:
+			this.mEquipedExtra = pItem;
+			break;
+		case 4:
+			this.mEquipedOffhand = pItem;
+			break;
+		case 5:
+			this.mEquipedWeapon = pItem;
+			break;
+		}
+	}
 	
 	
 	// ===========================================================
@@ -165,68 +178,3 @@ public class EquipmentHelper {
 	// Inner and Anonymous Classes
 	// ===========================================================
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-case 0:
-	this.mEquipedHelm.setPosition(this.mEquipedHelm.getInitialX(), this.mEquipedHelm.getInitialY());
-	this.mEquipedHelm = null;
-	break;
-case 1:
-	this.mEquipedPlate.setPosition(this.mEquipedPlate.getInitialX(), this.mEquipedPlate.getInitialY());
-	this.mEquipedPlate = null;
-	break;
-case 2:
-	this.mEquipedLegs.setPosition(this.mEquipedLegs.getInitialX(), this.mEquipedLegs.getInitialY());
-	this.mEquipedLegs = null;
-	break;
-case 3:
-	this.mEquipedExtra.setPosition(this.mEquipedExtra.getInitialX(), this.mEquipedExtra.getInitialY());
-	this.mEquipedExtra = null;
-	break;
-case 4:
-	this.mEquipedOffhand.setPosition(this.mEquipedOffhand.getInitialX(), this.mEquipedOffhand.getInitialY());
-	this.mEquipedOffhand = null;
-	break;
-case 5:
-	this.mEquipedWeapon.setPosition(this.mEquipedWeapon.getInitialX(), this.mEquipedWeapon.getInitialY());
-	this.mEquipedWeapon = null;
-	break;
-	*/
-
-
-
-
-
-
-
-/*switch(pType){//segun el tipo saco el coso
-		case 0:
-			return this.mEquipedHelm;//returnear esto o igualar mEquiped a estoy y returnear mEquiped?
-		case 1:
-			return this.mEquipedPlate;
-		case 2:
-			return this.mEquipedLegs;
-		case 3:
-			return this.mEquipedExtra;
-		case 4:
-			return this.mEquipedOffhand;
-		case 5:
-			return this.mEquipedWeapon;
-		}
-		//Cambiar la funcion a void // me suena que esto es re negrada*/

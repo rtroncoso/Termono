@@ -23,10 +23,12 @@ public class Item extends Entity{
 	// ===========================================================
 	// Fields
 	// ===========================================================
+	private Sprite mItemIcon;
 	private Sprite mItemSprite;	
 	private String mImagePath;
 	private int mID;
-	private int mPrice;
+	private int mBuyPrice;
+	private int mSellPrice;
 	private int mType;
 	private ITextureRegion mITextureRegion;
 	private int mFunction;
@@ -35,17 +37,18 @@ public class Item extends Entity{
 	// Constructors
 	// ===========================================================
 	
-	public Item(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pSpriteX,int pSpriteY,Entity pEntity,Scene pScene,int pID, int pFunction) {
+	public Item(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pIconX,int pIconY,Entity pEntity,Scene pScene,int pID, int pFunction) {
 		this.mID = pID;
 		//this.setUserData(pID);
 		mName = pDataHandler.getItemName(pID);
-		mImagePath = pDataHandler.getItemImagePath(mName);		
+		mImagePath = pDataHandler.getItemImagePath(mID);		
 		this.mFunction = pFunction;
-		this.mPrice = pDataHandler.getItemPrice(mName);
-		this.mType = pDataHandler.getItemType(mName);
+		this.mBuyPrice = pDataHandler.getItemBuyPrice(mID);
+		this.mSellPrice = pDataHandler.getItemSellPrice(mID);
+		this.mType = pDataHandler.getItemType(mID);
 		
 		this.mITextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pTextureAtlas, Game.getInstance().getApplicationContext(), mImagePath, pAtlasX, AtlasY);
-		this.mItemSprite = new Sprite(pSpriteX, pSpriteY, mITextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mItemIcon = new Sprite(pIconX, pIconY, mITextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -59,7 +62,7 @@ public class Item extends Entity{
 				break;
 			case TouchEvent.ACTION_MOVE:
 				if(this.mGrabbed) {
-					this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+					Item.this.mItemIcon.setPosition(pSceneTouchEvent.getX() - Item.this.mItemIcon.getWidth() / 2, pSceneTouchEvent.getY() - Item.this.mItemIcon.getHeight() / 2);
 				}
 				break;
 			case TouchEvent.ACTION_UP:
@@ -75,10 +78,9 @@ public class Item extends Entity{
 			return true;
 			}					
 		};
-		this.mItemSprite.setAlpha(1.0f);
-		this.mItemSprite.setScale(2.0f);
-		pEntity.attachChild(this.mItemSprite);
-		pScene.registerTouchArea(this.mItemSprite);
+		this.mItemIcon.setScale(2.0f);
+		pEntity.attachChild(this.mItemIcon);
+		pScene.registerTouchArea(this.mItemIcon);
 		
 	
 	
@@ -105,12 +107,20 @@ public class Item extends Entity{
 		return this.mITextureRegion;
 	}
 	
+	public Sprite getIcon() {
+		return mItemIcon;
+	}
+	
 	public Sprite getSprite() {
 		return mItemSprite;
 	}
 	
-	public int getPrice(){
-		return mPrice;
+	public int getBuyPrice(){
+		return mBuyPrice;
+	}
+	
+	public int getSellPrice(){
+		return mSellPrice;
 	}
 
 	public int getID(){

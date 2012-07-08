@@ -15,6 +15,7 @@ import android.util.Log;
 import com.quest.database.DataHandler;
 import com.quest.database.myDatabase;
 import com.quest.game.Game;
+import com.quest.scenes.GameMenuScene;
 
 public class SpellbarHud extends HUD{
 
@@ -66,17 +67,26 @@ public class SpellbarHud extends HUD{
 					case TouchEvent.ACTION_UP:
 						if(this.mGrabbed == true){
 								Log.d("Logd", "consultar");
-								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemName(0));
-								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemType("Sword")));
-								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemImagePath("Sword"));
-								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemPrice("Sword")));
-								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemDescription("Sword"));
-								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemClass("Sword")));
-
-								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getInventoryCount()));
-								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemAmount(0)));
+								int[] temp = SpellbarHud.this.mDataHandler.getEquipedIDs(0);
+								for(int i=0;i<temp.length;i++){
+								Log.d("Logd", String.valueOf(temp[i]));
+								}
+								/*for(int i=0;i<SpellbarHud.this.mDataHandler.getInventoryCount();i++){
+									Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getInventoryCount()));
+									Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemAmount(i)));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getInventoryItemID(i)));	
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemName(SpellbarHud.this.mDataHandler.getInventoryItemID(i)));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemImagePath(SpellbarHud.this.mDataHandler.getInventoryItemID(i)));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemType(SpellbarHud.this.mDataHandler.getInventoryItemID(i))));
+								Log.d("Logd", SpellbarHud.this.mDataHandler.getItemDescription(SpellbarHud.this.mDataHandler.getInventoryItemID(i)));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemBuyPrice(SpellbarHud.this.mDataHandler.getInventoryItemID(i))));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemSellPrice(SpellbarHud.this.mDataHandler.getInventoryItemID(i))));
+								Log.d("Logd", String.valueOf(SpellbarHud.this.mDataHandler.getItemClass(SpellbarHud.this.mDataHandler.getInventoryItemID(i))));
+								}
+								*/
 								this.setScale(2.0f);
 								this.mGrabbed= false;
+								
 						}
 					}
 					return true;
