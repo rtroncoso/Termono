@@ -38,11 +38,11 @@ public class EquipmentHelper {
 	public boolean EquipmentFunction(Item pItem){//Cambiar el Sprite por un "item"
 		int tType = pItem.getType();
 		if(this.IsEquipped(pItem,tType) == false){//me fijo si es igual a lo que ya esta ocupado para saber si estan switcheando items o sacando
-		this.UnequipItem(tType);
+		this.UnequipItem(tType,pItem.getCount());
 		this.EquipItem(pItem,tType);
 		return true;
 		} else {
-			this.UnequipItem(tType);
+			this.UnequipItem(tType,pItem.getCount());
 		return false;
 		}
 		//hacer una variable para sortEquip asi no lo llamo tantas veces y optimizo?
@@ -68,19 +68,21 @@ public class EquipmentHelper {
 		this.mGameMenuScene.getEquipmentUnEquippedItemsEntity().detachChild(pItem.getIcon());//lo saco de la entidad de los desequipados
 		this.mGameMenuScene.getEquipmentEntity().attachChild(pItem.getIcon());//lo cambio a la entidad de los equipados
 		pItem.setEntity(this.mGameMenuScene.getEquipmentEntity());//le paso la entidad para que se reste cuando lo mueva
+		pItem.setCount(-1);//no tiene count
 		this.mGameMenuScene.setUnEquippedCount(this.mGameMenuScene.getUnEquippedCount()-1);
 		//setear los bonuses
 	}
 	
 	
 	
-	public void UnequipItem(int pType){
+	public void UnequipItem(int pType, int pCount){
 		this.getEquipped(pType);
 		if(this.mEquipped != null){
 		this.mDataHandler.EquipItem(this.mEquipped.getID(), 0);//lo des equipo
 		this.mGameMenuScene.getEquipmentEntity().detachChild(this.mEquipped.getIcon());//lo saco de la entidad de los equipados
 		this.mGameMenuScene.getEquipmentUnEquippedItemsEntity().attachChild(this.mEquipped.getIcon());//lo cambio a la entidad de los desequipados
 		this.mEquipped.setEntity(this.mGameMenuScene.getEquipmentUnEquippedItemsEntity());//le paso la entidad para que se reste cuando lo mueva
+		this.mEquipped.setCount(pCount);
 		this.mGameMenuScene.PlaceEquipmentItem(this.mEquipped);
 		this.setEquipped(pType,null);
 		//sacar los bonuses y eso###########

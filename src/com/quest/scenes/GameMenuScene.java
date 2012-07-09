@@ -1,5 +1,7 @@
 package com.quest.scenes;
 
+import java.util.ArrayList;
+
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
@@ -8,8 +10,6 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
-
-import android.util.Log;
 
 import com.quest.database.DataHandler;
 import com.quest.entities.objects.Item;
@@ -108,8 +108,9 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private DataHandler mDataHandler;
 	
 	private int mUnEquippedCount = 0; 
-	private Item[] mItemsArray;
-	private int[] mCountArray;
+	private ArrayList<Item> mItemsList = new ArrayList<Item>();
+	private ArrayList<Integer> mCountList = new ArrayList<Integer>();
+	
 	//FALTA HACER BIEN LA CARGA DE ENTIDADES
 	//FALTA HACER LA CARGA DE TEXTURAS DINAMICAS
 	
@@ -609,7 +610,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			}
 		} else{//Si no colisiona
 			if(this.mEquipmentManager.IsEquipped(pItem,pItem.getType()) == true){//se fija si estaba equipado
-				this.mEquipmentManager.UnequipItem(pItem.getType());//si lo estaba lo desequipa				
+				this.mEquipmentManager.UnequipItem(pItem.getType(),this.mUnEquippedCount);//si lo estaba lo desequipa				
 			} else{//Si no estaba equipado
 				this.mUnEquippedCount-=1;
 				this.PlaceEquipmentItem(pItem);
@@ -672,13 +673,12 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	
 	public void PlaceEquipmentItem(Item pItem){
-		//this.mItemsArray[this.mUnEquippedCount] = pItem;
-		//this.mCountArray[this.mUnEquippedCount] = this.mUnEquippedCount;
+		if(pItem.getCount() == -1){//uso -1 como null, re negro
+			pItem.setCount(this.mUnEquippedCount);
+		}
 		int row = (int)(this.mEquipmentBox2Sprite.getWidth())/ 36;//cuantos items hay por fila
-		//int tY = (this.mCountArray[this.mUnEquippedCount] / row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y 
-		int tY = (this.mUnEquippedCount / row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y
-		//int tX = (this.mCountArray[this.mUnEquippedCount] % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
-		int tX = (this.mUnEquippedCount % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
+		int tY = (pItem.getCount() / row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y
+		int tX = (pItem.getCount() % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
 		pItem.getIcon().setPosition(tX, tY);
 		this.mUnEquippedCount += 1;
 	}
