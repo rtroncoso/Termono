@@ -67,7 +67,7 @@ public class SpellbarHud extends HUD{
 					case TouchEvent.ACTION_UP:
 						if(this.mGrabbed == true){
 								Log.d("Logd", "consultar");
-								int[] temp = SpellbarHud.this.mDataHandler.getEquipedIDs(0);
+								int[] temp = SpellbarHud.this.mDataHandler.getEquippedIDs(0);
 								for(int i=0;i<temp.length;i++){
 								Log.d("Logd", String.valueOf(temp[i]));
 								}

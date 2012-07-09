@@ -9,6 +9,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.util.Log;
+
 import com.quest.database.DataHandler;
 import com.quest.entities.objects.Item;
 import com.quest.game.Game;
@@ -31,6 +33,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private Entity mGameMenuEntity;
 	private Entity mInventoryEntity;
 	private Entity mEquipmentEntity;
+		private Entity mEquipmentUnEquippedItemsEntity;
 	private Entity mSkillsEntity;
 	private Entity mAttributesEntity;
 	private Entity mInfoEntity;
@@ -42,8 +45,8 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private BitmapTextureAtlas mSceneTextureAtlas;
 	private BitmapTextureAtlas mInventoryTextureAtlas;
 	private BitmapTextureAtlas mEquipmentTextureAtlas;
-		private BitmapTextureAtlas mEquipmentEquipedItemsTextureAtlas;
-		private BitmapTextureAtlas mEquipmentUnEquipedItemsTextureAtlas;
+		private BitmapTextureAtlas mEquipmentEquippedItemsTextureAtlas;
+		private BitmapTextureAtlas mEquipmentUnEquippedItemsTextureAtlas;
 	private BitmapTextureAtlas mSkillsTextureAtlas;
 	private BitmapTextureAtlas mAttributesTextureAtlas;
 	private BitmapTextureAtlas mInfoTextureAtlas;
@@ -103,8 +106,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	private EquipmentHelper mEquipmentManager;
 	private DataHandler mDataHandler;
-	private Item mItem;
 	
+	private int mUnEquippedCount = 0; 
+	private Item[] mItemsArray;
+	private int[] mCountArray;
 	//FALTA HACER BIEN LA CARGA DE ENTIDADES
 	//FALTA HACER LA CARGA DE TEXTURAS DINAMICAS
 	
@@ -122,7 +127,8 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.mInfoEntity = new Entity(0,0);
 		this.mSettingsEntity = new Entity(0,0);
 		
-		this.mEquipmentManager = new EquipmentHelper(this.mDataHandler);
+		
+		this.mEquipmentManager = new EquipmentHelper(this.mDataHandler,GameMenuScene.this);
 		
 		//###################COMIENZO DE ENTIDAD PRINCIPAL############################
 		
@@ -198,21 +204,24 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		//Equipment Tab
 		this.mEquipmentTabSprite = new Sprite(147, 0,this.mEquipmentTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
 			case TouchEvent.ACTION_DOWN:
+				this.mGrabbed = true;
+				break;
 			case TouchEvent.ACTION_UP:
+				if(this.mGrabbed){
 				GameMenuScene.this.mEquipmentTabSprite.setAlpha(0.5f);
 				GameMenuScene.this.clearTouchAreas();
 				UnloadEntity(mCurrentEntity);
 				mCurrentEntity = LoadEquipmentEntity();
 				GameMenuScene.this.attachChild(mCurrentEntity);
 				GameMenuScene.this.loadTabTouchAreas();
+				this.mGrabbed=false;
 				break;
+				}
 			}
 			return true;
 			}					
@@ -368,7 +377,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 									GameMenuScene.this.mItemSprite.setPosition(GameMenuScene.this.mItemSprite.getInitialX(),GameMenuScene.this.mItemSprite.getInitialY());
 								//	}
 								}else{
-								//	if(GameMenuScene.this.mEquipmentManager.IsEquiped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
+								//	if(GameMenuScene.this.mEquipmentManager.IsEquipped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
 								//		GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
 								//	}
 								//	GameMenuScene.this.mItemSprite.setPosition(GameMenuScene.this.mItemSprite.getInitialX(),GameMenuScene.this.mItemSprite.getInitialY());
@@ -390,13 +399,16 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 	
 	
+	
+	
+	
 	//#################EQUIPMENT ENTITY######################
 	public Entity LoadEquipmentEntity(){
 		//HACER FUNCION PARA CARGAR EL EQUIPMENT VIEJO, NECESITO EL SQL
 		
 		this.mEquipmentEntity.detachChildren();//La limpio, necesario?
+		this.mEquipmentUnEquippedItemsEntity = new Entity(0,0);
 		
-			
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/");
 		this.mEquipmentTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mEquipmentBoxTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "InGameMenu/Equipment/Box.png", 0, 0);
@@ -414,10 +426,13 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		//Cajas de contenidos
 		this.mEquipmentBoxSprite = new Sprite(20, 70,this.mEquipmentBoxTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {	};
 		this.mEquipmentEntity.attachChild(mEquipmentBoxSprite);
-		
+		//############HACER QUE LAS POSICIONES SEAN RELATIVAS###################
 		this.mEquipmentBox2Sprite = new Sprite(415, 70,this.mEquipmentBoxTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {	};
-		this.mEquipmentEntity.attachChild(mEquipmentBox2Sprite);	
+		this.mEquipmentEntity.attachChild(mEquipmentBox2Sprite);
+			
+		this.mEquipmentUnEquippedItemsEntity.setPosition(this.mEquipmentBox2Sprite.getX()+10,this.mEquipmentBox2Sprite.getY()+45);
 		
+				
 		//Items Tab
 		this.mEquipmentItemsSprite = new Sprite(420, 75,this.mEquipmentItemsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -431,7 +446,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				if(this.mGrabbed) {
 					this.mGrabbed = false;					
 					GameMenuScene.this.mEquipmentItemsSprite.setAlpha(0.5f);
-				//	GameMenuScene.this.loadEquipedItems();
+				//	GameMenuScene.this.loadEquippedItems();
 				}
 				break;
 			}
@@ -527,9 +542,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 
 		//########################FIN DEL BODY#############################
 		
-		this.loadEquipedItems();
-		this.loadUnEquipedItems();
-			
+		this.loadEquippedItems();
+		this.mUnEquippedCount = 0;
+		this.loadUnEquippedItems();
+		this.mEquipmentEntity.attachChild(mEquipmentUnEquippedItemsEntity);
 		return this.mEquipmentEntity;
 	}
 	
@@ -584,45 +600,48 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	public void MoveItem(Sprite pSprite, Item pItem,Boolean pCollides){//Funcion para iniciar equipamiento grafico + helper
 		if(pCollides == true){//Si colisiona
-			if(this.mEquipmentManager.EquipmentFunction(pItem) == true){//Si se equipo				
-				pItem.getIcon().setPosition(pSprite.getX() + pSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,pSprite.getY() + pSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2);//lo pone donde corresponde
+			if(this.mEquipmentManager.EquipmentFunction(pItem) == true){//Si se equipo			
+				pItem.getIcon().setPosition(pSprite.getX() + pSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,pSprite.getY() + pSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2);//lo pone donde corresponde			
 				pSprite.setAlpha(0.5f);
-			} else {//Si se desequipo(porque ya estaba equipado) lo devuelve al final				
+			} else {//Si se desequipo(porque ya estaba equipado) lo devuelve el Unequip				
 				pSprite.setAlpha(1.0f);
+				
 			}
 		} else{//Si no colisiona
-			if(this.mEquipmentManager.IsEquiped(pItem,pItem.getType()) == true){//se fija si estaba equipado
-				this.mEquipmentManager.UnequipItem(pItem,pItem.getType());//si lo estaba lo desequipa
-				pItem.getIcon().setPosition(pItem.getIcon().getInitialX(),pItem.getIcon().getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
+			if(this.mEquipmentManager.IsEquipped(pItem,pItem.getType()) == true){//se fija si estaba equipado
+				this.mEquipmentManager.UnequipItem(pItem.getType());//si lo estaba lo desequipa				
 			} else{//Si no estaba equipado
-				pItem.getIcon().setPosition(pItem.getIcon().getInitialX(),pItem.getIcon().getInitialY());//despues hacer la funcion que se fije donde quedaria(tiene que volver a donde estaba, no al final)
+				this.mUnEquippedCount-=1;
+				this.PlaceEquipmentItem(pItem);
 			}
 		}
 	}
 	
 	
-	private void loadUnEquipedItems(){
+	private void loadUnEquippedItems(){
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Items/");
-		this.mEquipmentUnEquipedItemsTextureAtlas= new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,24, TextureOptions.BILINEAR);
-		
-		int tempArray[] = mDataHandler.getEquipedIDs(0);
+		this.mEquipmentUnEquippedItemsTextureAtlas= new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,24, TextureOptions.BILINEAR);
+		int tempArray[] = mDataHandler.getEquippedIDs(0);
 		for(int i=0;i<tempArray.length;i++){	
-			final Item pItem = new Item(mDataHandler,mEquipmentUnEquipedItemsTextureAtlas,0+24*i,0,450 + 60 * i,200,mEquipmentEntity,GameMenuScene.this,tempArray[i],0);
-			this.mEquipmentUnEquipedItemsTextureAtlas.load();
+			if(this.mDataHandler.getItemClass(tempArray[i]) == this.mDataHandler.getPlayerClass(0)){//checkeo que los items sean de la clase del player
+			//	this.mUnEquippedCount+=1;//le sumo uno al unEquipped count para saber cuantos items hay sin equipar  \\ no le sumo, ya lo hace la funcion
+			final Item pItem = new Item(mDataHandler,mEquipmentUnEquippedItemsTextureAtlas,0+24*i,0,450 + 60 * i,200,mEquipmentUnEquippedItemsEntity,GameMenuScene.this,tempArray[i],0);
+			this.PlaceEquipmentItem(pItem);
+			}//si no son no los cargo wepa
 		}
+		this.mEquipmentUnEquippedItemsTextureAtlas.load();
 	}
 	
 	
-	private void loadEquipedItems(){
+	private void loadEquippedItems(){
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Items/");
-		this.mEquipmentEquipedItemsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 144,24, TextureOptions.BILINEAR);
+		this.mEquipmentEquippedItemsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 144,24, TextureOptions.BILINEAR);
 		
-		int tempArray[] = mDataHandler.getEquipedIDs(1);//consegui las ID de todo lo que esta equipado
+		int tempArray[] = mDataHandler.getEquippedIDs(1);//consegui las ID de todo lo que esta equipado
 		for(int i=0;i<tempArray.length;i++){					
+			final Item pItem = new Item(mDataHandler,mEquipmentEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentEntity,GameMenuScene.this,tempArray[i],0);
 			
-			final Item pItem = new Item(mDataHandler,mEquipmentEquipedItemsTextureAtlas,0+24*i,0,450 + 60 * i,400,mEquipmentEntity,GameMenuScene.this,tempArray[i],0);
-			
-			mEquipmentManager.LoadEquipedItem(pItem);
+			mEquipmentManager.LoadEquippedItem(pItem);
 			
 			Sprite tempSprite = null;
 			switch(pItem.getType()){
@@ -648,12 +667,41 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			pItem.getIcon().setPosition(tempSprite.getX() + tempSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,tempSprite.getY() + tempSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2);//lo pone donde corresponde
 			tempSprite.setAlpha(0.5f);
 		}
-		this.mEquipmentEquipedItemsTextureAtlas.load();
+		this.mEquipmentEquippedItemsTextureAtlas.load();
 	}
 	
 	
-	public Sprite getEquipmentBoxSprite(){
+	public void PlaceEquipmentItem(Item pItem){
+		//this.mItemsArray[this.mUnEquippedCount] = pItem;
+		//this.mCountArray[this.mUnEquippedCount] = this.mUnEquippedCount;
+		int row = (int)(this.mEquipmentBox2Sprite.getWidth())/ 36;//cuantos items hay por fila
+		//int tY = (this.mCountArray[this.mUnEquippedCount] / row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y 
+		int tY = (this.mUnEquippedCount / row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y
+		//int tX = (this.mCountArray[this.mUnEquippedCount] % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
+		int tX = (this.mUnEquippedCount % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
+		pItem.getIcon().setPosition(tX, tY);
+		this.mUnEquippedCount += 1;
+	}
+	
+	
+	public int getUnEquippedCount(){
+		return this.mUnEquippedCount;
+	}
+	
+	public void setUnEquippedCount(int pUnEquippedCount){
+		this.mUnEquippedCount = pUnEquippedCount;
+	}
+	
+	public Sprite getEquipmentBoxSprite(){//para los collides
 		return this.mEquipmentBoxSprite;
+	}
+	
+	public Entity getEquipmentEntity(){
+		return this.mEquipmentEntity;
+	}
+	
+	public Entity getEquipmentUnEquippedItemsEntity(){
+		return this.mEquipmentUnEquippedItemsEntity;
 	}
 	//################################################################################################
 	//################################################################################################	

@@ -8,48 +8,50 @@ public class EquipmentHelper {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	//funcion para calcular posicion
-	//carga de cosas no equipadas
+	//hacer que se ordenen cuando saco uno
+	//hacer que switcheen los items equipados
 	//hacer bien la carga de objetos (para que no se creen devuelta con cada tab click)
-	//hacer el switcheo de entidades entre equiped y unequiped
+	//hacer el switcheo de entidades entre Equipped y unEquipped
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Item mEquiped;
-	private Item mEquipedHead;
-	private Item mEquipedBody;
-	private Item mEquipedLegs;
-	private Item mEquipedExtra;
-	private Item mEquipedOffhand;
-	private Item mEquipedWeapon;
+	private Item mEquipped;
+	private Item mEquippedHead;
+	private Item mEquippedBody;
+	private Item mEquippedLegs;
+	private Item mEquippedExtra;
+	private Item mEquippedOffhand;
+	private Item mEquippedWeapon;
 	private DataHandler mDataHandler;
+	private GameMenuScene mGameMenuScene;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
-	public EquipmentHelper(DataHandler pDataHandler){
+	public EquipmentHelper(DataHandler pDataHandler, GameMenuScene pGameMenuScene){
 		this.mDataHandler = pDataHandler;
+		this.mGameMenuScene = pGameMenuScene;
 	}
 	
 	public boolean EquipmentFunction(Item pItem){//Cambiar el Sprite por un "item"
 		int tType = pItem.getType();
-		if(this.IsEquiped(pItem,tType) == false){//me fijo si es igual a lo que ya esta ocupado para saber si estan switcheando items o sacando
-		this.UnequipItem(pItem,tType);
+		if(this.IsEquipped(pItem,tType) == false){//me fijo si es igual a lo que ya esta ocupado para saber si estan switcheando items o sacando
+		this.UnequipItem(tType);
 		this.EquipItem(pItem,tType);
 		return true;
 		} else {
-			this.UnequipItem(pItem,tType);
+			this.UnequipItem(tType);
 		return false;
 		}
 		//hacer una variable para sortEquip asi no lo llamo tantas veces y optimizo?
 	}
 	
 		
-	public boolean IsEquiped(Item pItem, int pType){//Usar IsEquiped o hacer el GetEquiped y comparar? || Cambiar el Sprite por un "item" || pasarle que tipo es
-		if(this.getEquiped(pType) != null){		
-			if(pItem.getID() == this.getEquiped(pType).getID()){//Checkear por id por si tiene el mismo item?(se desequiparia). tengo que ahcer que se loadee el mEquiped al principio, si no tiene nada que hago?...
+	public boolean IsEquipped(Item pItem, int pType){//Usar IsEquipped o hacer el GetEquipped y comparar? || Cambiar el Sprite por un "item" || pasarle que tipo es
+		if(this.getEquipped(pType) != null){		
+			if(pItem.getID() == this.getEquipped(pType).getID()){//Checkear por id por si tiene el mismo item?(se desequiparia). tengo que ahcer que se loadee el mEquipped al principio, si no tiene nada que hago?...
 			return true;
 			} else{
 			return false;
@@ -61,99 +63,104 @@ public class EquipmentHelper {
 	
 	
 	public void EquipItem(Item pItem, int pType){
-		this.setEquiped(pType, pItem);
+		this.setEquipped(pType, pItem);
 		this.mDataHandler.EquipItem(pItem.getID(), 1);
+		this.mGameMenuScene.getEquipmentUnEquippedItemsEntity().detachChild(pItem.getIcon());//lo saco de la entidad de los desequipados
+		this.mGameMenuScene.getEquipmentEntity().attachChild(pItem.getIcon());//lo cambio a la entidad de los equipados
+		pItem.setEntity(this.mGameMenuScene.getEquipmentEntity());//le paso la entidad para que se reste cuando lo mueva
+		this.mGameMenuScene.setUnEquippedCount(this.mGameMenuScene.getUnEquippedCount()-1);
 		//setear los bonuses
 	}
 	
 	
 	
-	public void UnequipItem(Item pItem, int pType){
-		this.getEquiped(pType);
-		if(this.mEquiped != null){
-		this.mDataHandler.EquipItem(this.mEquiped.getID(), 0);
-		this.mEquiped.getIcon().setPosition(this.mEquiped.getIcon().getInitialX(), this.mEquiped.getIcon().getInitialY());//despues hacer la funcion que se fije donde quedaria(lo devuelve al final)
-		//Lo saco de equipado y saco bonuses
-				//***********************************
-				this.setEquiped(pType,null);
-				//sacar los bonuses y eso###########
-				//***********************************
+	public void UnequipItem(int pType){
+		this.getEquipped(pType);
+		if(this.mEquipped != null){
+		this.mDataHandler.EquipItem(this.mEquipped.getID(), 0);//lo des equipo
+		this.mGameMenuScene.getEquipmentEntity().detachChild(this.mEquipped.getIcon());//lo saco de la entidad de los equipados
+		this.mGameMenuScene.getEquipmentUnEquippedItemsEntity().attachChild(this.mEquipped.getIcon());//lo cambio a la entidad de los desequipados
+		this.mEquipped.setEntity(this.mGameMenuScene.getEquipmentUnEquippedItemsEntity());//le paso la entidad para que se reste cuando lo mueva
+		this.mGameMenuScene.PlaceEquipmentItem(this.mEquipped);
+		this.setEquipped(pType,null);
+		//sacar los bonuses y eso###########
+		//***********************************
 		}
 	}
 	
-	//TENGO QUE HACER QUE LOS EQUIPED SE CARGUEN CON LOS VALORES DE LA TABLA DE EQUIPAMIENTO QUE TENGO QUE CREAR
+	//TENGO QUE HACER QUE LOS Equipped SE CARGUEN CON LOS VALORES DE LA TABLA DE EQUIPAMIENTO QUE TENGO QUE CREAR
 	
 	
-	public void setEquiped(int pType,Item pItem){
-		this.mEquiped = pItem;
+	public void setEquipped(int pType,Item pItem){
+		this.mEquipped = pItem;
 		switch(pType){//segun el tipo saco el coso
 		case 0:
-			this.mEquipedHead = this.mEquiped;
+			this.mEquippedHead = this.mEquipped;
 			break;
 		case 1:
-			this.mEquipedBody = this.mEquiped;
+			this.mEquippedBody = this.mEquipped;
 			break;
 		case 2:
-			this.mEquipedLegs = this.mEquiped;
+			this.mEquippedLegs = this.mEquipped;
 			break;
 		case 3:
-			this.mEquipedExtra = this.mEquiped;
+			this.mEquippedExtra = this.mEquipped;
 			break;
 		case 4:
-			this.mEquipedOffhand = this.mEquiped;
+			this.mEquippedOffhand = this.mEquipped;
 			break;
 		case 5:
-			this.mEquipedWeapon = this.mEquiped;
+			this.mEquippedWeapon = this.mEquipped;
 			break;
 		}
 	}
 	
 		
-	public Item getEquiped(int pType){
+	public Item getEquipped(int pType){
 		switch(pType){
 		case 0:
-			this.mEquiped = this.mEquipedHead;
+			this.mEquipped = this.mEquippedHead;
 			break;
 		case 1:
-			this.mEquiped = this.mEquipedBody;
+			this.mEquipped = this.mEquippedBody;
 			break;
 		case 2:
-			this.mEquiped = this.mEquipedLegs;
+			this.mEquipped = this.mEquippedLegs;
 			break;
 		case 3:
-			this.mEquiped = this.mEquipedExtra;
+			this.mEquipped = this.mEquippedExtra;
 			break;
 		case 4:
-			this.mEquiped = this.mEquipedOffhand;
+			this.mEquipped = this.mEquippedOffhand;
 			break;
 		case 5:
-			this.mEquiped = this.mEquipedWeapon;
+			this.mEquipped = this.mEquippedWeapon;
 			break;
 		}
-		return this.mEquiped;
+		return this.mEquipped;
 	}
 	
 	
 	
-	public void LoadEquipedItem(Item pItem){
+	public void LoadEquippedItem(Item pItem){
 		switch(pItem.getType()){
 		case 0:
-			this.mEquipedHead = pItem;
+			this.mEquippedHead = pItem;
 			break;
 		case 1:
-			this.mEquipedBody = pItem;
+			this.mEquippedBody = pItem;
 			break;
 		case 2:
-			this.mEquipedLegs = pItem;
+			this.mEquippedLegs = pItem;
 			break;
 		case 3:
-			this.mEquipedExtra = pItem;
+			this.mEquippedExtra = pItem;
 			break;
 		case 4:
-			this.mEquipedOffhand = pItem;
+			this.mEquippedOffhand = pItem;
 			break;
 		case 5:
-			this.mEquipedWeapon = pItem;
+			this.mEquippedWeapon = pItem;
 			break;
 		}
 	}

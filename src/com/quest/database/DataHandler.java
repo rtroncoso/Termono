@@ -112,16 +112,16 @@ public class DataHandler {
 	}
 	
 	
-	public int[] getEquipedIDs(int pEstado){
+	public int[] getEquippedIDs(int pEstado){
 		 myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-	        int[] myReturn = myDB.getEquipedIDs(pEstado);
+	        int[] myReturn = myDB.getEquippedIDs(pEstado);
 	        myDB.close();
 	        return myReturn;
 	}
 	
-	public boolean isItemEquiped(int pID){
+	public boolean isItemEquipped(int pID){
 		myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-		int temp = myDB.isItemEquiped(pID);
+		int temp = myDB.isItemEquipped(pID);
 		myDB.close();
 		if(temp == 0){
 			return false;
@@ -130,11 +130,17 @@ public class DataHandler {
 		}
 	}
 	
-	public void EquipItem(int pID, int pEquiped){
+	public void EquipItem(int pID, int pEquipped){
 		myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-		myDB.EquipItem(pID, pEquiped);
+		myDB.EquipItem(pID, pEquipped);
 		myDB.close();
 	}
 	
+	public int getPlayerClass(int pID){
+        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+        int myReturn = myDB.getPlayerClass(pID);
+        myDB.close();
+        return myReturn;
+    }
 	
 }
