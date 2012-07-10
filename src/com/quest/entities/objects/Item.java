@@ -35,7 +35,6 @@ public class Item extends Entity{
 	private String mName;
 	private int mItemClass;
 	
-	private int mCount = -1;//despues pasarlo a un list en el menuscene. \\ uso -1 como null, despues cuando lo pase al list lo desnegreo
 	private Entity mEntity;//como hacer para no tener que usar esto y pasarle el pEntity al icon?
 	// ===========================================================
 	// Constructors
@@ -143,14 +142,6 @@ public class Item extends Entity{
 
 	public void setEntity(Entity pEntity){
 		this.mEntity = pEntity;
-	}
-	
-	public int getCount(){
-		return this.mCount;
-	}
-	
-	public void setCount(int pCount){
-		this.mCount = pCount;
 	}
 	// ===========================================================
 	// Methods

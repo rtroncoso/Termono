@@ -3,6 +3,7 @@ package com.quest.scenes;
 import java.util.ArrayList;
 
 import org.andengine.entity.Entity;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
@@ -108,8 +109,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private DataHandler mDataHandler;
 	
 	private int mUnEquippedCount = 0; 
-	private ArrayList<Item> mItemsList = new ArrayList<Item>();
-	private ArrayList<Integer> mCountList = new ArrayList<Integer>();
+	private ArrayList<Item> mItemsList;
 	
 	//FALTA HACER BIEN LA CARGA DE ENTIDADES
 	//FALTA HACER LA CARGA DE TEXTURAS DINAMICAS
@@ -409,6 +409,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		this.mEquipmentEntity.detachChildren();//La limpio, necesario?
 		this.mEquipmentUnEquippedItemsEntity = new Entity(0,0);
+		this.mItemsList = new ArrayList<Item>();
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/");
 		this.mEquipmentTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
@@ -467,12 +468,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				break;
 			case TouchEvent.ACTION_DOWN:
 			case TouchEvent.ACTION_UP:
-			/*	GameMenuScene.this.mEquipmentAttributesSprite.setAlpha(0.5f);
-				for(int i=0;i<GameMenuScene.this.mDataHandler.getInventoryCount();i++){					
-					final Item pItem = new Item(mDataHandler,mEquipmentTextureAtlas,0+64*i,500,500+64*i,250,mEquipmentEntity,GameMenuScene.this,GameMenuScene.this.mDataHandler.getInventoryItemID(i),0);
-				}
-				*/
-				
+		
 				break;
 			}
 			return true;
@@ -606,11 +602,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				pSprite.setAlpha(0.5f);
 			} else {//Si se desequipo(porque ya estaba equipado) lo devuelve el Unequip				
 				pSprite.setAlpha(1.0f);
-				
 			}
 		} else{//Si no colisiona
 			if(this.mEquipmentManager.IsEquipped(pItem,pItem.getType()) == true){//se fija si estaba equipado
-				this.mEquipmentManager.UnequipItem(pItem.getType(),this.mUnEquippedCount);//si lo estaba lo desequipa				
+				this.mEquipmentManager.UnequipItem(pItem.getType(),pItem);//si lo estaba lo desequipa				
 			} else{//Si no estaba equipado
 				this.mUnEquippedCount-=1;
 				this.PlaceEquipmentItem(pItem);
@@ -626,7 +621,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		for(int i=0;i<tempArray.length;i++){	
 			if(this.mDataHandler.getItemClass(tempArray[i]) == this.mDataHandler.getPlayerClass(0)){//checkeo que los items sean de la clase del player
 			//	this.mUnEquippedCount+=1;//le sumo uno al unEquipped count para saber cuantos items hay sin equipar  \\ no le sumo, ya lo hace la funcion
-			final Item pItem = new Item(mDataHandler,mEquipmentUnEquippedItemsTextureAtlas,0+24*i,0,450 + 60 * i,200,mEquipmentUnEquippedItemsEntity,GameMenuScene.this,tempArray[i],0);
+			final Item pItem = new Item(mDataHandler,mEquipmentUnEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentUnEquippedItemsEntity,GameMenuScene.this,tempArray[i],0);
 			this.PlaceEquipmentItem(pItem);
 			}//si no son no los cargo wepa
 		}
@@ -665,7 +660,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				tempSprite = this.mEquipmentWeaponSprite;
 				break;
 			}
-			pItem.getIcon().setPosition(tempSprite.getX() + tempSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,tempSprite.getY() + tempSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2);//lo pone donde corresponde
+			pItem.getIcon().registerEntityModifier(new MoveModifier(0.7f,pItem.getIcon().getX(),tempSprite.getX() + tempSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,pItem.getIcon().getY(),tempSprite.getY() + tempSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2));//lo pone donde corresponde
 			tempSprite.setAlpha(0.5f);
 		}
 		this.mEquipmentEquippedItemsTextureAtlas.load();
@@ -673,16 +668,20 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	
 	public void PlaceEquipmentItem(Item pItem){
-		if(pItem.getCount() == -1){//uso -1 como null, re negro
-			pItem.setCount(this.mUnEquippedCount);
-		}
+		if(this.mItemsList.contains(pItem)==false){//si el item no esta en la lista
+			this.mItemsList.add(this.mUnEquippedCount, pItem);//agrego el item a la lista en el indice del ultimo item
+			}
 		int row = (int)(this.mEquipmentBox2Sprite.getWidth())/ 36;//cuantos items hay por fila
-		int tY = (pItem.getCount() / row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y
-		int tX = (pItem.getCount() % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
-		pItem.getIcon().setPosition(tX, tY);
+		int tY = (this.mItemsList.indexOf(pItem)/ row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y
+		int tX = (this.mItemsList.indexOf(pItem) % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
+		pItem.getIcon().registerEntityModifier(new MoveModifier(0.7f, pItem.getIcon().getX(), tX, pItem.getIcon().getY(), tY));//, EaseBackOut.getInstance()));
 		this.mUnEquippedCount += 1;
 	}
 	
+	public void LowerItemCount(int pStart){
+		
+		
+	}
 	
 	public int getUnEquippedCount(){
 		return this.mUnEquippedCount;
@@ -698,6 +697,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	public Entity getEquipmentEntity(){
 		return this.mEquipmentEntity;
+	}
+	
+	public ArrayList getItemList(){
+		return this.mItemsList;
 	}
 	
 	public Entity getEquipmentUnEquippedItemsEntity(){
