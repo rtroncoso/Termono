@@ -2,12 +2,13 @@ package com.quest.entities;
 
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
+import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 
 import com.quest.game.Game;
 
 
-public class Player extends BaseEntity implements IOnScreenControlListener {
+public class Player extends BaseEntity implements IOnScreenControlListener, ITouchArea {
 
 
 	// ===========================================================
@@ -49,6 +50,11 @@ public class Player extends BaseEntity implements IOnScreenControlListener {
 				float moveToYTile = this.getY() + (TILE_SIZE * pValueY);
 
 				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+				
+				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
+				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
+
+				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
 				
 				// Moves to it if not blocked
 				if(!Game.getMapManager().collisionCheck(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);

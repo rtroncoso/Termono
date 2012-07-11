@@ -1,6 +1,8 @@
 package com.quest.scenes;
 
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.Entity;
+import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXLayer;
@@ -79,6 +81,9 @@ public class GameScene extends Scene {
 			
 			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 			Game.getSceneManager().getDisplay().doFocusCamera(this.mHero);
+
+			this.registerTouchArea(this.mEnemy.getBodySprite());
+			this.registerTouchArea(this.mMob2.getBodySprite());
 		}
 		
 		// ===========================================================

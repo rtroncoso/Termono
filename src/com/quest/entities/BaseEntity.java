@@ -5,7 +5,6 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
-import org.andengine.entity.scene.IOnAreaTouchListener;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.extension.tmx.TMXTile;
@@ -17,10 +16,11 @@ import org.andengine.util.modifier.ease.EaseLinear;
 
 import android.util.Log;
 
+import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
 import com.quest.interfaces.IMeasureConstants;
 
-public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouchListener {
+public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -34,9 +34,10 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	private Path mPath;
 	
 	protected String mEntityType;
+	protected Spell tmpSpell;
+	protected Entity mActiveSpells;
 	protected AnimatedSprite mBodySprite;
 	protected TMXTile mTMXTileAt;
-	protected boolean isWalking;
 	protected enum PlayerDirection {
 		UP,
 		DOWN,
@@ -44,6 +45,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 		LEFT,
 		DEFAULT
 	}
+	
+	protected boolean isWalking;
+	protected boolean isAnimatingSpell;
 	
 
 	// ===========================================================
@@ -63,7 +67,17 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 		this.mBitmapTextureAtlas.load();
 
 		// Create the sprite and add it to the scene.
-		this.mBodySprite = new AnimatedSprite(0, 0, this.mTiledTextureRegion, Game.getInstance().getVertexBufferObjectManager());
+		this.mBodySprite = new AnimatedSprite(0, 0, this.mTiledTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				// TODO Auto-generated method stub
+				return BaseEntity.this.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+			}
+		};
+		
+		this.tmpSpell = new Spell(0);
 		
 		this.attachChild(this.mBodySprite);
 		
@@ -73,20 +87,20 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public BaseEntity setAnimationDirection(PlayerDirection pFacingDirection, long[] frameDurations, boolean restartAnimation) {
+	public BaseEntity setAnimationDirection(PlayerDirection pFacingDirection, long[] pFrameDuration, boolean restartAnimation) {
 		if(restartAnimation && !BaseEntity.this.mBodySprite.isAnimationRunning()) return this;
 		switch(pFacingDirection) {
 		case RIGHT:
-			BaseEntity.this.mBodySprite.animate(frameDurations, 8, 11, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 8, 11, false);
 			break;
 		case LEFT:
-			BaseEntity.this.mBodySprite.animate(frameDurations, 4, 7, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 4, 7, false);
 			break;
 		case DOWN:
-			BaseEntity.this.mBodySprite.animate(frameDurations, 0, 3, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 0, 3, false);
 			break;
 		case UP:
-			BaseEntity.this.mBodySprite.animate(frameDurations, 12, 15, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 12, 15, false);
 			break;		
 		}
 		return this;
@@ -125,11 +139,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 			public void onPathStarted(PathModifier pPathModifier,
 					IEntity pEntity) {
 				// TODO Auto-generated method stub
-				
-				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
-				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
-
-				BaseEntity.this.setAnimationDirection(BaseEntity.this.getFacingDirectionToTile(pTileTo), frameDurations, false);
 				BaseEntity.this.isWalking = true;
 			}
 
@@ -205,26 +214,23 @@ public class BaseEntity extends Entity implements IMeasureConstants, IOnAreaTouc
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
-	@Override
-	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
-			ITouchArea pTouchArea, float pTouchAreaLocalX,
-			float pTouchAreaLocalY) {
-		// TODO Auto-generated method stub
-		Log.d("TOUCH", "En entidad");
-		return false;
-	}
-	
-	@Override
-	public void setPosition(float pX, float pY) {
-		// TODO Auto-generated method stub
-		super.setPosition(pX, pY);
-		
-		//this.mTMXTileAt = Game.getSceneManager().getGameScene().getMapManager().getTMXTileAt((int) pX, (int) pY);
-		
-	}
 
 	public void onEntityMoved(TMXTile pNewTile) {
+		this.mTMXTileAt = pNewTile;
 		return;
+	}
+
+	@Override
+	public boolean contains(float pX, float pY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+			float pTouchAreaLocalX, float pTouchAreaLocalY) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	// ===========================================================
