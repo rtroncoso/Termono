@@ -59,11 +59,14 @@ public class Item extends Entity{
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
-				this.setScale(2.5f);
-				mGrabbed = true;
-				if(Item.this.mFunction == 0){
-					Game.getSceneManager().getGameMenuScene().EquipItem(Item.this, true, false);
+				if(Game.getSceneManager().getGameMenuScene().getUsed() == false){
+					Game.getSceneManager().getGameMenuScene().setUsed(true);
+					this.setScale(3.5f);
+					mGrabbed = true;
+					if(Item.this.mFunction == 0){
+						Game.getSceneManager().getGameMenuScene().EquipItem(Item.this, true, false);
 					}
+				}
 				break;
 			case TouchEvent.ACTION_MOVE:
 				if(this.mGrabbed) {
@@ -73,7 +76,7 @@ public class Item extends Entity{
 			case TouchEvent.ACTION_UP:
 				if(mGrabbed) {
 					mGrabbed = false;	 
-					this.setScale(1.5f);
+					this.setScale(2.5f);
 					if(Item.this.mFunction == 0){
 						Game.getSceneManager().getGameMenuScene().EquipItem(Item.this, false,this.collidesWith(Game.getSceneManager().getGameMenuScene().getEquipmentBoxSprite()));
 						}
@@ -83,7 +86,7 @@ public class Item extends Entity{
 			return true;
 			}					
 		};
-		this.mItemIcon.setScale(1.5f);
+		this.mItemIcon.setScale(2.5f);
 		pEntity.attachChild(this.mItemIcon);
 		pScene.registerTouchArea(this.mItemIcon);
 		

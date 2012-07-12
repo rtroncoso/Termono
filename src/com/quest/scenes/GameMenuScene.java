@@ -12,6 +12,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.util.Log;
+
 import com.quest.database.DataHandler;
 import com.quest.entities.objects.Item;
 import com.quest.game.Game;
@@ -37,7 +39,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private Entity mEquipmentUnEquippedItemsEntity;
 	private Entity mSkillsEntity;
 	private Entity mAttributesEntity;
-	private Entity mInfoEntity;
+	private Entity mOtherEntity;
 	private Entity mSettingsEntity;
 	private Entity mCurrentEntity;
 	private Entity mSkillTreeEntity; // (FACU)
@@ -50,7 +52,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private BitmapTextureAtlas mEquipmentUnEquippedItemsTextureAtlas;
 	private BitmapTextureAtlas mSkillsTextureAtlas;
 	private BitmapTextureAtlas mAttributesTextureAtlas;
-	private BitmapTextureAtlas mInfoTextureAtlas;
+	private BitmapTextureAtlas mOtherTextureAtlas;
 	private BitmapTextureAtlas mSkillTreeAtlas; // (FACU)
 		
 	//Texture regions
@@ -71,7 +73,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private ITextureRegion mEquipmentExtraTextureRegion;
 	private ITextureRegion mSkillsTabTextureRegion;
 	private ITextureRegion mAttributesTabTextureRegion;
-	private ITextureRegion mInfoTabTextureRegion;
+	private ITextureRegion mOtherTabTextureRegion;
 	private ITextureRegion mSettingsTextureRegion;
 	private ITextureRegion mBackgroundTextureRegion;
 		
@@ -100,7 +102,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	private Sprite mSkillsTabSprite;
 	private Sprite mAttributesTabSprite;
-	private Sprite mInfoTabSprite;
+	private Sprite mOtherTabSprite;
 	private Sprite mSettingsSprite;
 	private Sprite mBackgroundSprite;
 	
@@ -110,6 +112,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	private int mUnEquippedCount = 0; 
 	private ArrayList<Item> mItemsList;
+	private boolean mUsed = false;
 	
 	//FALTA HACER BIEN LA CARGA DE ENTIDADES
 	//FALTA HACER LA CARGA DE TEXTURAS DINAMICAS
@@ -125,7 +128,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.mEquipmentEntity = new Entity(0,0);
 		this.mSkillsEntity = new Entity(0,0);
 		this.mAttributesEntity = new Entity(0,0);
-		this.mInfoEntity = new Entity(0,0);
+		this.mOtherEntity = new Entity(0,0);
 		this.mSettingsEntity = new Entity(0,0);
 		
 		
@@ -137,12 +140,12 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);
-		this.mSettingsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Settings.png", 800, 0);
-		this.mInventoryTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Inventory.png", 800, 64);
-		this.mEquipmentTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Equipment.png", 800, 114);
-		this.mSkillsTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Skills.png", 800, 164);
-		this.mAttributesTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Attributes.png", 800, 214);
-		this.mInfoTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Info.png", 800, 264);
+		this.mSettingsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Settings.png", 800, 750);
+		this.mInventoryTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Inventory.png", 800, 0);
+		this.mEquipmentTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Equipment.png", 800, 150);
+		this.mSkillsTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Skills.png", 800, 300);
+		this.mAttributesTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Attributes.png", 800, 450);
+		this.mOtherTabTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Other.png", 800, 600);
 		this.mSceneTextureAtlas.load();
 		//Cargar los otros atlas ahora?
 	
@@ -151,23 +154,25 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.mGameMenuEntity.attachChild(mBackgroundSprite);		
 		
 		//Settings
-		this.mSettingsSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 64, 20,this.mSettingsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
+		this.mSettingsSprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 64, 5,this.mSettingsTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {					
 			boolean mGrabbed = false;
-				@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					switch(pSceneTouchEvent.getAction()) {
-					case TouchEvent.ACTION_DOWN:
-						this.mGrabbed = true;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					if(GameMenuScene.this.mUsed == false){
+						this.mGrabbed = true;					
+						}
 						break;
 					case TouchEvent.ACTION_UP:	
 						if(this.mGrabbed) {
 							this.mGrabbed = false;	
-						GameMenuScene.this.mInventoryTabSprite.setAlpha(0.5f);
-						GameMenuScene.this.clearTouchAreas();
-						UnloadEntity(mCurrentEntity);
-						mCurrentEntity = LoadSettingsEntity();
-						GameMenuScene.this.attachChild(mCurrentEntity);
-						GameMenuScene.this.loadTabTouchAreas();
+							GameMenuScene.this.mInventoryTabSprite.setAlpha(0.5f);
+							GameMenuScene.this.clearTouchAreas();
+							UnloadEntity(mCurrentEntity);
+							mCurrentEntity = LoadSettingsEntity();
+							GameMenuScene.this.attachChild(mCurrentEntity);
+							GameMenuScene.this.loadTabTouchAreas();
 						}
 						break;
 					}
@@ -180,23 +185,27 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		//Inventory Tab
 		this.mInventoryTabSprite = new Sprite(0, 0,this.mInventoryTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				//cargar datos?
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:				
-				GameMenuScene.this.mInventoryTabSprite.setAlpha(0.5f);
-				GameMenuScene.this.clearTouchAreas();
-				UnloadEntity(mCurrentEntity);
-				mCurrentEntity = LoadInventoryEntity();
-				GameMenuScene.this.attachChild(mCurrentEntity);
-				GameMenuScene.this.loadTabTouchAreas();
-				break;
-			}
+				case TouchEvent.ACTION_DOWN:
+					if(GameMenuScene.this.mUsed == false){
+						this.mGrabbed = true;					
+					}
+					break;
+				case TouchEvent.ACTION_UP:	
+					if(this.mGrabbed) {
+						this.mGrabbed = false;			
+						GameMenuScene.this.mInventoryTabSprite.setAlpha(0.5f);
+						GameMenuScene.this.clearTouchAreas();
+						UnloadEntity(mCurrentEntity);
+						mCurrentEntity = LoadInventoryEntity();
+						GameMenuScene.this.attachChild(mCurrentEntity);
+						GameMenuScene.this.loadTabTouchAreas();
+					}
+					break;
+				}
 			return true;
 			}					
 		};
@@ -204,26 +213,28 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		
 		//Equipment Tab
-		this.mEquipmentTabSprite = new Sprite(147, 0,this.mEquipmentTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mEquipmentTabSprite = new Sprite(150, 0,this.mEquipmentTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_DOWN:
-				this.mGrabbed = true;
-				break;
-			case TouchEvent.ACTION_UP:
-				if(this.mGrabbed){
-				GameMenuScene.this.mEquipmentTabSprite.setAlpha(0.5f);
-				GameMenuScene.this.clearTouchAreas();
-				UnloadEntity(mCurrentEntity);
-				mCurrentEntity = LoadEquipmentEntity();
-				GameMenuScene.this.attachChild(mCurrentEntity);
-				GameMenuScene.this.loadTabTouchAreas();
-				this.mGrabbed=false;
-				break;
+				case TouchEvent.ACTION_DOWN:
+					if(GameMenuScene.this.mUsed == false){
+						this.mGrabbed = true;					
+					}
+					break;
+				case TouchEvent.ACTION_UP:	
+					if(this.mGrabbed) {
+						this.mGrabbed = false;	
+						GameMenuScene.this.mEquipmentTabSprite.setAlpha(0.5f);
+						GameMenuScene.this.clearTouchAreas();
+						UnloadEntity(mCurrentEntity);
+						mCurrentEntity = LoadEquipmentEntity();
+						GameMenuScene.this.attachChild(mCurrentEntity);
+						GameMenuScene.this.loadTabTouchAreas();
+					}
+					break;
 				}
-			}
 			return true;
 			}					
 		};
@@ -231,70 +242,89 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		
 		//Skills Tab
-		this.mSkillsTabSprite = new Sprite(311, 0,this.mSkillsTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mSkillsTabSprite = new Sprite(300, 0,this.mSkillsTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_UP:
-			GameMenuScene.this.mSkillsTabSprite.setAlpha(0.5f);
-			GameMenuScene.this.clearTouchAreas();
-			UnloadEntity(mCurrentEntity);
-			mCurrentEntity = LoadSkillsEntity();
-			GameMenuScene.this.attachChild(mCurrentEntity);
-			GameMenuScene.this.loadTabTouchAreas();
-				break;
-			}
-			return true;
-			}					
+				case TouchEvent.ACTION_DOWN:
+					if(GameMenuScene.this.mUsed == false){
+						this.mGrabbed = true;
+					}
+					break;
+				case TouchEvent.ACTION_UP:	
+					if(this.mGrabbed) {
+						this.mGrabbed = false;	
+						GameMenuScene.this.mSkillsTabSprite.setAlpha(0.5f);
+						GameMenuScene.this.clearTouchAreas();
+						UnloadEntity(mCurrentEntity);
+						mCurrentEntity = LoadSkillsEntity();
+						GameMenuScene.this.attachChild(mCurrentEntity);
+						GameMenuScene.this.loadTabTouchAreas();
+					}
+					break;
+				}
+				return true;
+				}					
 		};
 		this.mGameMenuEntity.attachChild(mSkillsTabSprite);
 		
 		//Attributes Tab
-		this.mAttributesTabSprite = new Sprite(482, 0,this.mAttributesTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mAttributesTabSprite = new Sprite(450, 0,this.mAttributesTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
+				case TouchEvent.ACTION_DOWN:
+					if(GameMenuScene.this.mUsed == false){
+						this.mGrabbed = true;	
+					}
+					break;
+				case TouchEvent.ACTION_UP:	
+					if(this.mGrabbed) {
+						this.mGrabbed = false;	
+						GameMenuScene.this.mAttributesTabSprite.setAlpha(0.5f);
+						GameMenuScene.this.clearTouchAreas();
+						UnloadEntity(mCurrentEntity);
+						mCurrentEntity = LoadAttributesEntity();
+						GameMenuScene.this.attachChild(mCurrentEntity);
+						GameMenuScene.this.loadTabTouchAreas();
+					}
 				break;
-			case TouchEvent.ACTION_DOWN:
-				GameMenuScene.this.mAttributesTabSprite.setAlpha(0.5f);
-				UnloadEntity(mCurrentEntity);
-				mCurrentEntity = LoadAttributesEntity();
-				GameMenuScene.this.attachChild(mCurrentEntity);
-				GameMenuScene.this.loadTabTouchAreas();
-				break;
-			}
+				}
 			return true;
 			}					
 		};
 		this.mGameMenuEntity.attachChild(mAttributesTabSprite);
 		
 
-		//Info Tab
-		this.mInfoTabSprite = new Sprite(623, 0,this.mInfoTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		//Other Tab
+		this.mOtherTabSprite = new Sprite(600, 0,this.mOtherTabTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_OUTSIDE:
-			case TouchEvent.ACTION_CANCEL:
-				break;
-			case TouchEvent.ACTION_DOWN:
-				GameMenuScene.this.mInfoTabSprite.setAlpha(0.5f);
-				UnloadEntity(mCurrentEntity);
-				mCurrentEntity = LoadInfoEntity();
-				GameMenuScene.this.attachChild(mCurrentEntity);
-				GameMenuScene.this.loadTabTouchAreas();
+				case TouchEvent.ACTION_DOWN:
+					if(GameMenuScene.this.mUsed == false){
+						this.mGrabbed = true;
+					}
+					break;
+				case TouchEvent.ACTION_UP:	
+					if(this.mGrabbed) {
+						this.mGrabbed = false;	
+						GameMenuScene.this.mOtherTabSprite.setAlpha(0.5f);
+					UnloadEntity(mCurrentEntity);
+					GameMenuScene.this.clearTouchAreas();
+					mCurrentEntity = LoadOtherEntity();
+					GameMenuScene.this.attachChild(mCurrentEntity);
+					GameMenuScene.this.loadTabTouchAreas();
+					}
 				break;
 			}
 			return true;
 			}					
 		};
-		this.mGameMenuEntity.attachChild(mInfoTabSprite);
+		this.mGameMenuEntity.attachChild(mOtherTabSprite);
 		
 			
 		
@@ -317,7 +347,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.registerTouchArea(this.mEquipmentTabSprite);
 		this.registerTouchArea(this.mSkillsTabSprite);
 		this.registerTouchArea(this.mAttributesTabSprite);
-		this.registerTouchArea(this.mInfoTabSprite);
+		this.registerTouchArea(this.mOtherTabSprite);
 	}
 	
 	
@@ -411,6 +441,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.mEquipmentUnEquippedItemsEntity = new Entity(0,0);
 		this.mItemsList = new ArrayList<Item>();
 		
+		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/");
 		this.mEquipmentTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mEquipmentBoxTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mEquipmentTextureAtlas, Game.getInstance().getApplicationContext(), "InGameMenu/Equipment/Box.png", 0, 0);
@@ -428,7 +459,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		//Cajas de contenidos
 		this.mEquipmentBoxSprite = new Sprite(20, 70,this.mEquipmentBoxTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {	};
 		this.mEquipmentEntity.attachChild(mEquipmentBoxSprite);
-		//############HACER QUE LAS POSICIONES SEAN RELATIVAS###################
+	
 		this.mEquipmentBox2Sprite = new Sprite(415, 70,this.mEquipmentBoxTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {	};
 		this.mEquipmentEntity.attachChild(mEquipmentBox2Sprite);
 			
@@ -611,6 +642,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				this.PlaceEquipmentItem(pItem);
 			}
 		}
+		this.mUsed = false;
 	}
 	
 	
@@ -660,7 +692,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				tempSprite = this.mEquipmentWeaponSprite;
 				break;
 			}
-			pItem.getIcon().registerEntityModifier(new MoveModifier(0.7f,pItem.getIcon().getX(),tempSprite.getX() + tempSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,pItem.getIcon().getY(),tempSprite.getY() + tempSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2));//lo pone donde corresponde
+			pItem.getIcon().setPosition(tempSprite.getX() + tempSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,tempSprite.getY() + tempSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2);
 			tempSprite.setAlpha(0.5f);
 		}
 		this.mEquipmentEquippedItemsTextureAtlas.load();
@@ -669,12 +701,12 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	public void PlaceEquipmentItem(Item pItem){
 		if(this.mItemsList.contains(pItem)==false){//si el item no esta en la lista
-			this.mItemsList.add(this.mUnEquippedCount, pItem);//agrego el item a la lista en el indice del ultimo item
+			this.mItemsList.add(this.mUnEquippedCount, pItem);//agrego el item a la lista en el indice del ultimo item			
 			}
-		int row = (int)(this.mEquipmentBox2Sprite.getWidth())/ 36;//cuantos items hay por fila
-		int tY = (this.mItemsList.indexOf(pItem)/ row) * 36;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y
-		int tX = (this.mItemsList.indexOf(pItem) % row) * 36;//me devuelve el resto, se cuantos sobran en una fila
-		pItem.getIcon().registerEntityModifier(new MoveModifier(0.7f, pItem.getIcon().getX(), tX, pItem.getIcon().getY(), tY));//, EaseBackOut.getInstance()));
+		int row = (int)(this.mEquipmentBox2Sprite.getWidth())/ 60;//cuantos items hay por fila
+		int tY = (this.mItemsList.indexOf(pItem)/ row) * 60;//divido los items por la cantidad de items por fila, me dice cuantas filas hay.multiplico por 36 (item =24, scale = 1.5 asi que tamaño = 36) y consigo el Y
+		int tX = (this.mItemsList.indexOf(pItem) % row) * 60;//me devuelve el resto, se cuantos sobran en una fila
+		pItem.getIcon().registerEntityModifier(new MoveModifier(0.25f, pItem.getIcon().getX(), tX, pItem.getIcon().getY(), tY));//, EaseBackOut.getInstance()));
 		this.mUnEquippedCount += 1;
 	}
 	
@@ -705,6 +737,14 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	public Entity getEquipmentUnEquippedItemsEntity(){
 		return this.mEquipmentUnEquippedItemsEntity;
+	}
+	
+	public void setUsed(Boolean pBool){
+		this.mUsed = pBool;
+	}
+	
+	public boolean getUsed(){
+		return this.mUsed;
 	}
 	//################################################################################################
 	//################################################################################################	
@@ -775,12 +815,12 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	
 	
-	//#################INFO ENTITY######################
-	public Entity LoadInfoEntity(){
-		this.mInfoEntity.detachChildren();//La limpio, necesario?
+	//#################Other ENTITY######################
+	public Entity LoadOtherEntity(){
+		this.mOtherEntity.detachChildren();//La limpio, necesario?
 
 
-		return this.mInfoEntity;
+		return this.mOtherEntity;
 	}
 	
 	
