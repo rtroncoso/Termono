@@ -21,18 +21,35 @@ public class myDatabase extends SQLiteOpenHelper {
         static final String fItemBuyPrice = "BuyPrice";
         static final String fItemSellPrice = "SellPrice";
         static final String fItemClass = "ItemClassID";
-        static final String fItemModifiersID = "ModifiersID";
+        
+        static final String fModifierID = "Modifier";
         
         static final String tInventory = "Inventory";
         static final String fInventoryItemID = "ItemID";
         static final String fInventoryItemAmount = "Amount";
         static final String fInventoryIsItemEquipped = "IsEquipped";
-        static final String fInventoryPlayerID = "PlayerID";
+        
         
         static final String tPlayer = "Player";
         static final String fPlayerID = "PlayerID";
         static final String fPlayerName = "PlayerName";
         static final String fPlayerClass = "PlayerClass";
+        
+        
+        static final String tModifiers = "Modifiers";
+        static final String fMHitPoint = "HP";
+        static final String fMEndurance = "Endurance";
+        static final String fMManaPoints = "ManaPoints";
+        static final String fMIntelligence = "Intelligence";
+        static final String fMPower = "Power";
+        static final String fMDefense = "Defense";
+        
+        //atributos
+        static final String tAttributes = "Attributes";
+        static final String fPEndurance = "Endurance";
+        static final String fPIntelligence = "Intelligence";
+        static final String fPPower = "Power";
+        static final String fPDefense = "Defense";
         
         
         public myDatabase(Context context) {
@@ -54,14 +71,14 @@ public class myDatabase extends SQLiteOpenHelper {
                         fItemBuyPrice+" INTEGER , "+
                         fItemSellPrice+" INTEGER , "+
                         fItemClass+" INTEGER, "+
-                        fItemModifiersID+" INTEGER)"
+                        fModifierID+" INTEGER)"
                         );
                 //hacer que no sea auto increasing?
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
                 		fInventoryItemID+" INTEGER PRIMARY KEY , "+
                         fInventoryItemAmount+" INTEGER , "+
                         fInventoryIsItemEquipped+" INTEGER , "+//SQLite no tiene booleans, uso 1 y 0
-                        fInventoryPlayerID+" INTEGER)"
+                        fPlayerID+" INTEGER)"
                         );
                 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
@@ -70,10 +87,32 @@ public class myDatabase extends SQLiteOpenHelper {
                 		fPlayerClass+" INTEGER)"
                         );
                 
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tModifiers+" ("+
+                		fModifierID+" INTEGER PRIMARY KEY , "+
+                		fMHitPoint+" INTEGER ,"+
+                		fMEndurance+" INTEGER ,"+
+                		fMManaPoints+" INTEGER ,"+
+                		fMIntelligence+" INTEGER ,"+
+                		fMPower+" INTEGER ,"+
+                		fMDefense+" INTEGER)"
+                        );
+                
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttributes+" ("+
+                		fPlayerID+" INTEGER PRIMARY KEY , "+//es necesario?
+                		fPEndurance+" INTEGER ,"+
+                		fPIntelligence+" INTEGER ,"+
+                		fPPower+" INTEGER ,"+
+                		fPDefense+" INTEGER)"
+                        );
+                
+                
+
+            
+                
        
 // OPTIONALLY PREPOPULATE THE TABLE WITH SOME VALUES   
                  ContentValues cv = new ContentValues();
-                 		//@=====//##############> - Swords 
+                 		//@=====//::::::::::::::> - Swords 
                  		cv.put(fItemID, 0);//-------Cypress Stick-----------
 		                cv.put(fItemName, "Cypress Stick");
 		                cv.put(fItemTexture, "Paladin/Swords/CypressStick.png");
@@ -82,7 +121,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 15);
 		                cv.put(fItemSellPrice, 8);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,0);
 		                db.insert(tItem, null, cv);
 		                cv.put(fItemID, 1);//-------Bronze Sword-----------
 				        cv.put(fItemName, "Bronze Sword");
@@ -92,7 +131,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 60);
 		                cv.put(fItemSellPrice, 32);
 				        cv.put(fItemClass,1);
-				        cv.put(fItemModifiersID,0);
+				        cv.put(fModifierID,1);
 				        db.insert(tItem, null, cv);
 				        cv.put(fItemID, 2);//--------Iron Sword----------
 				        cv.put(fItemName, "Iron Sword");
@@ -102,7 +141,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 180);
 		                cv.put(fItemSellPrice, 105);
 				        cv.put(fItemClass,1);
-						cv.put(fItemModifiersID,0);
+						cv.put(fModifierID,2);
 						db.insert(tItem, null, cv);
 						cv.put(fItemID, 3);//-------Steel Sword-----------
 				        cv.put(fItemName, "Steel Sword");
@@ -112,7 +151,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 430);
 		                cv.put(fItemSellPrice, 255);
 				        cv.put(fItemClass,1);
-						cv.put(fItemModifiersID,0);
+						cv.put(fModifierID,3);
 						db.insert(tItem, null, cv);
 						cv.put(fItemID, 4);//-------Knights Sword1-----------
 				        cv.put(fItemName, "Knights Sword");
@@ -122,7 +161,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 800);
 				        cv.put(fItemClass,1);
-						cv.put(fItemModifiersID,0);
+						cv.put(fModifierID,4);
 						db.insert(tItem, null, cv);
 						cv.put(fItemID, 5);//-------Knights Sword2-----------
 				        cv.put(fItemName, "Knights Sword");
@@ -132,7 +171,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 800);
 				        cv.put(fItemClass,1);
-						cv.put(fItemModifiersID,0);
+						cv.put(fModifierID,5);
 						db.insert(tItem, null, cv);
 						cv.put(fItemID, 6);//-------Mythril Sword-----------
 				        cv.put(fItemName, "Mythril Sword");
@@ -142,7 +181,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 4600);
 		                cv.put(fItemSellPrice, 2700);
 				        cv.put(fItemClass,1);
-						cv.put(fItemModifiersID,0);
+						cv.put(fModifierID,6);
 						db.insert(tItem, null, cv);
 						
 						//@=====//##############> - PlateBodies 
@@ -154,7 +193,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 110);
 		                cv.put(fItemSellPrice, 70);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,7);
 		                db.insert(tItem, null, cv);
 		                cv.put(fItemID, 8);//-------Iron Platebody-----------
 		                cv.put(fItemName, "Iron Platebody");
@@ -164,7 +203,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 420);
 		                cv.put(fItemSellPrice, 360);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,8);
 		                db.insert(tItem, null, cv);
 		                cv.put(fItemID, 9);//-------Steel Platebody-----------
 		                cv.put(fItemName, "Steel Platebody");
@@ -174,7 +213,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 860);
 		                cv.put(fItemSellPrice, 620);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,9);
 		                db.insert(tItem, null, cv);
 		                cv.put(fItemID, 10);//-------Knights Platebody1-----------
 		                cv.put(fItemName, "Knights Platebody");
@@ -184,7 +223,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 1420);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,10);
 		                db.insert(tItem, null, cv);
 		                cv.put(fItemID, 11);//-------Knights Platebody2-----------
 		                cv.put(fItemName, "Knights Platebody");
@@ -194,7 +233,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 1420);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,11);
 		                db.insert(tItem, null, cv);
 		                cv.put(fItemID, 12);//-------Mythril Chain-----------
 		                cv.put(fItemName, "Mythril Chainmail");
@@ -204,7 +243,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 7200);
 		                cv.put(fItemSellPrice, 3500);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,12);
 		                db.insert(tItem, null, cv);
 						
 		              //@=====//##############> - Shields 
@@ -216,7 +255,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 14);
 		                cv.put(fItemSellPrice, 7);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,13);
 		                db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 14);//-------Bronze Shield-----------
 		                cv.put(fItemName, "Bronze Shield");
@@ -226,7 +265,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 55);
 		                cv.put(fItemSellPrice, 27);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,14);
 		                db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 15);//-------Iron Shield-----------
 		                cv.put(fItemName, "Iron Shield");
@@ -236,7 +275,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 160);
 		                cv.put(fItemSellPrice, 95);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,15);
 		                db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 16);//-------Steel Shield-----------
 		                cv.put(fItemName, "Steel Shield");
@@ -246,7 +285,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 390);
 		                cv.put(fItemSellPrice, 260);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,16);
 		                db.insert(tItem, null, cv);
                  		cv.put(fItemID, 17);//-------Knights Shield1-----------
 		                cv.put(fItemName, "Knights Shield");
@@ -256,7 +295,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 700);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,17);
 		                db.insert(tItem, null, cv);
                  		cv.put(fItemID, 18);//-------Knights Shield2-----------
 		                cv.put(fItemName, "Knights Shield");
@@ -266,7 +305,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 700);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,18);
 		                db.insert(tItem, null, cv);
 		                
 		                //@=====//##############> - Helm 
@@ -278,7 +317,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 40);
 		                cv.put(fItemSellPrice, 30);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,19);
 		                db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 20);//-------Iron Helm-----------
 		                cv.put(fItemName, "Iron Helm");
@@ -288,7 +327,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 120);
 		                cv.put(fItemSellPrice, 80);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,20);
 		                db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 21);//-------Steel Helm-----------
 		                cv.put(fItemName, "Steel Helm");
@@ -298,7 +337,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 300);
 		                cv.put(fItemSellPrice, 200);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,21);
 		                db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 22);//-------Knights Helm1-----------
 		                cv.put(fItemName, "Knights Helm");
@@ -308,7 +347,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 500);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,22);
 		                db.insert(tItem, null, cv); 
 		                cv.put(fItemID, 23);//-------Knights Helm2-----------
 		                cv.put(fItemName, "Knights Helm");
@@ -318,8 +357,191 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 500);
 		                cv.put(fItemClass,1);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,23);
 		                db.insert(tItem, null, cv); 
+		                
+		                
+		                
+		                //MODIFIERS
+		                //----------Cypress stick-------
+		                cv.put(fModifierID,0);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,2);
+		                cv.put(fMDefense,0);
+		                db.insert(tModifiers, null, cv);
+		                //--------bronze sword------
+		                cv.put(fModifierID,1);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,7);
+		                cv.put(fMDefense,0);
+		                db.insert(tModifiers, null, cv);
+		              //--------iron sword--------
+		                cv.put(fModifierID,2);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,15);
+		                cv.put(fMDefense,0);
+		                db.insert(tModifiers, null, cv);
+		              //----------steel sword-----
+		                cv.put(fModifierID,3);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,25);
+		                cv.put(fMDefense,0);
+		                db.insert(tModifiers, null, cv);
+		              //---------kngihts sword1--
+		                cv.put(fModifierID,4);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,35);
+		                cv.put(fMDefense,0);
+		                db.insert(tModifiers, null, cv);
+		              //--------knights sword2----
+		                cv.put(fModifierID,5);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,35);
+		                cv.put(fMDefense,0);
+		                db.insert(tModifiers, null, cv);
+		              //--------mythril sword-----
+		                cv.put(fModifierID,6);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,5);
+		                cv.put(fMPower,45);
+		                cv.put(fMDefense,0);
+		                db.insert(tModifiers, null, cv);
+		                
+		              //@=====//##############> - PlateBodies 
+		              //--------bronze palte------
+		                cv.put(fModifierID,7);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,0);
+		                cv.put(fMDefense,5);
+		                db.insert(tModifiers, null, cv);
+		              //--------iron plate--------
+		                cv.put(fModifierID,8);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,0);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,0);
+		                cv.put(fMDefense,10);
+		                db.insert(tModifiers, null, cv);
+		              //--------steel plate-------
+		                cv.put(fModifierID,9);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,5);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,0);
+		                cv.put(fMDefense,15);
+		                db.insert(tModifiers, null, cv);
+		              //-------knights plate1---
+		                cv.put(fModifierID,10);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,10);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,0);
+		                cv.put(fMDefense,23);
+		                db.insert(tModifiers, null, cv);
+		              //--------knights plate2----
+		                cv.put(fModifierID,11);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,10);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,0);
+		                cv.put(fMDefense,23);
+		                db.insert(tModifiers, null, cv);
+		              //--------mythril chain-----
+		                cv.put(fModifierID,12);
+		                cv.put(fMHitPoint,0);
+		                cv.put(fMEndurance,15);
+		                cv.put(fMManaPoints,0);
+		                cv.put(fMIntelligence,0);
+		                cv.put(fMPower,0);
+		                cv.put(fMDefense,35);
+		                db.insert(tModifiers, null, cv);
+		                /*
+		              //@=====//##############> - Shields 
+		              //--------wooden shield-----
+		                cv.put(fModifierID,13);
+		                cv.put(fMHitPoint, );
+		                cv.put(fMEndurance, );
+		                cv.put(fMManaPoints, );
+		                cv.put(fMIntelligence, );
+		                cv.put(fMPower, );
+		                cv.put(fMDefense, );
+		                db.insert(tModifiers, null, cv);
+		              //--------bronze shield-----
+		                cv.put(fModifierID,14);
+		                cv.put(fMHitPoint, );
+		                cv.put(fMEndurance, );
+		                cv.put(fMManaPoints, );
+		                cv.put(fMIntelligence, );
+		                cv.put(fMPower, );
+		                cv.put(fMDefense, );
+		                db.insert(tModifiers, null, cv);
+		              //------iron shield---------
+		                cv.put(fModifierID,15);
+		                cv.put(fMHitPoint, );
+		                cv.put(fMEndurance, );
+		                cv.put(fMManaPoints, );
+		                cv.put(fMIntelligence, );
+		                cv.put(fMPower, );
+		                cv.put(fMDefense, );
+		                db.insert(tModifiers, null, cv);
+		              //--------steel shield-------
+		                cv.put(fModifierID,16);
+		                cv.put(fMHitPoint, );
+		                cv.put(fMEndurance, );
+		                cv.put(fMManaPoints, );
+		                cv.put(fMIntelligence, );
+		                cv.put(fMPower, );
+		                cv.put(fMDefense, );
+		                db.insert(tModifiers, null, cv);
+		              //--------knights shield1---
+		                cv.put(fModifierID,17);
+		                cv.put(fMHitPoint, );
+		                cv.put(fMEndurance, );
+		                cv.put(fMManaPoints, );
+		                cv.put(fMIntelligence, );
+		                cv.put(fMPower, );
+		                cv.put(fMDefense, );
+		                db.insert(tModifiers, null, cv);
+		                //------knights shield2-----
+		                cv.put(fModifierID,18);
+		                cv.put(fMHitPoint, );
+		                cv.put(fMEndurance, );
+		                cv.put(fMManaPoints, );
+		                cv.put(fMIntelligence, );
+		                cv.put(fMPower, );
+		                cv.put(fMDefense, );
+		                db.insert(tModifiers, null, cv);
+		                
+		                */
+		                		                
+		                
 		                
 		                
 		                ///TEST ITEMS
@@ -331,7 +553,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 500);
 		                cv.put(fItemClass,2);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,40);
 		                db.insert(tItem, null, cv); 
 		                cv.put(fItemID, 41);
 		                cv.put(fItemName, "TESTITEM");
@@ -341,7 +563,7 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 500);
 		                cv.put(fItemClass,0);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,41);
 		                db.insert(tItem, null, cv); 
 		                cv.put(fItemID, 42);
 		                cv.put(fItemName, "TESTITEM");
@@ -351,123 +573,153 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemBuyPrice, 0);
 		                cv.put(fItemSellPrice, 500);
 		                cv.put(fItemClass,3);
-		                cv.put(fItemModifiersID,0);
+		                cv.put(fModifierID,42);
 		                db.insert(tItem, null, cv); 
 		                
 						cv.clear(); //Hace falta hacerle clear?
 		                
 						
-		                		
+		                //INVENTORY	
 		                cv.put(fInventoryItemID,0);//tiene que ser igual a fItemID
 		                cv.put(fInventoryItemAmount, 1);//tiene que ser igual a fItemName
 		                cv.put(fInventoryIsItemEquipped, 0);
-		                cv.put(fInventoryPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
+		                cv.put(fPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
 		                db.insert(tInventory, null, cv);
 		                cv.put(fInventoryItemID,2);
 		 		        cv.put(fInventoryItemAmount, 1);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
 		                cv.put(fInventoryItemID,5);//tiene que ser igual a fItemID
 		 		        cv.put(fInventoryItemAmount, 2);//tiene que ser igual a fItemName
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
+		 		        cv.put(fPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
 		 		        db.insert(tInventory, null, cv);
 		 			    cv.put(fInventoryItemID,7);
 		 		        cv.put(fInventoryItemAmount, 1);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
 		 		        cv.put(fInventoryItemID,11);
 		 		        cv.put(fInventoryItemAmount, 1);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
 		 		        cv.put(fInventoryItemID,14);
 		 		        cv.put(fInventoryItemAmount, 1);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
 		 		        cv.put(fInventoryItemID,18);
 		 		        cv.put(fInventoryItemAmount, 2);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
 		 		        cv.put(fInventoryItemID,20);
 		 		        cv.put(fInventoryItemAmount, 1);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
 		 		    	cv.put(fInventoryItemID,23);
 		 		        cv.put(fInventoryItemAmount, 5);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);	
-		 		       
 		 		        //item de prueba
 		 		        cv.put(fInventoryItemID,40);
 		 		   		cv.put(fInventoryItemAmount, 1);
 	 		        	cv.put(fInventoryIsItemEquipped, 0);
-	 		        	cv.put(fInventoryPlayerID, 0);
-	 		        	db.insert(tInventory, null, cv);
-		                
-		                		
-		                
+	 		        	cv.put(fPlayerID, 0);
+	 		        	db.insert(tInventory, null, cv);	  
 		                //mas items
 		                cv.put(fInventoryItemID,9);
 		 		        cv.put(fInventoryItemAmount, 5);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
 		 		    	cv.put(fInventoryItemID,16);
 		 		        cv.put(fInventoryItemAmount, 5);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);
-		 		        
-		 		        
-		 		       //item de prueba
+		 		       //items de prueba
 		 		        cv.put(fInventoryItemID,41);
 		 		   		cv.put(fInventoryItemAmount, 1);
 	 		        	cv.put(fInventoryIsItemEquipped, 0);
-	 		        	cv.put(fInventoryPlayerID, 0);
+	 		        	cv.put(fPlayerID, 0);
 	 		        	db.insert(tInventory, null, cv);
-	 		        	
-	 		        	//mas items
 		 		    	cv.put(fInventoryItemID,21);
 		 		        cv.put(fInventoryItemAmount, 5);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);	
-		 		        
-		 		       //item de prueba
 		 		        cv.put(fInventoryItemID,42);
 		 		   		cv.put(fInventoryItemAmount, 1);
 	 		        	cv.put(fInventoryIsItemEquipped, 0);
-	 		        	cv.put(fInventoryPlayerID, 0);
+	 		        	cv.put(fPlayerID, 0);
 	 		        	db.insert(tInventory, null, cv);
-		                
-	 			       	//mas items
 	 		        	cv.put(fInventoryItemID,10);
 		 		        cv.put(fInventoryItemAmount, 5);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);	
 		 		        cv.put(fInventoryItemID,19);
 		 		        cv.put(fInventoryItemAmount, 5);
 		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fInventoryPlayerID, 0);
+		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);	
+		 		        
+		 		        //SPELLS
+		 		        cv.put(fSpellID, 0);
+		                cv.put(fSpellName, "Firework");
+		                cv.put(fSpellTexture, "/Spells/Firework.png");
+		                cv.put(fSpellLoopCount,1);
+		                cv.put(fSpellRows,2);
+		                cv.put(fSpellCols,5);
+		                db.insert(tSpells, null, cv);
+		                
+		 		        cv.put(fSpellID, 1);
+		                cv.put(fSpellName, "Faso");
+		                cv.put(fSpellTexture, "/Spells/Faso.png");
+		                cv.put(fSpellLoopCount,1);
+		                cv.put(fSpellRows,3);
+		                cv.put(fSpellCols,5);
+		                db.insert(tSpells, null, cv);
+		                
+		 		        cv.put(fSpellID, 2);
+		                cv.put(fSpellName, "Trueno");
+		                cv.put(fSpellTexture, "/Spells/Truenito1.png");
+		                cv.put(fSpellLoopCount,1);
+		                cv.put(fSpellRows,3);
+		                cv.put(fSpellCols,5);
+		                db.insert(tSpells, null, cv);
+		                
+		 		        cv.put(fSpellID, 3);
+		                cv.put(fSpellName, "Cagadera");
+		                cv.put(fSpellTexture, "/Spells/Cagadera.png");
+		                cv.put(fSpellLoopCount,1);
+		                cv.put(fSpellRows,1);
+		                cv.put(fSpellCols,5);
+		                db.insert(tSpells, null, cv);
 		 		       
 		 		       
-		 		      cv.clear();
+		 		        
+		 		    //  cv.clear();
 		                		//clases 0 multi; 1 pala; 2 arquero; 3 mago; 4 orco;
 		                cv.put(fPlayerID, 0);
 		                cv.put(fPlayerName, "Joaquin");
 		                cv.put(fPlayerClass, 1);
-		                	db.insert(tPlayer, null, cv);
+	                	db.insert(tPlayer, null, cv);
 		                
-
+	                	
+	                	//atributos
+	                    cv.put(fPlayerID, 0);
+	                    cv.put(fPEndurance,1);
+	                    cv.put(fPIntelligence,1);
+	            		cv.put(fPPower,1);
+	    				cv.put(fPDefense,1);
+	                    db.insert(tAttributes, null, cv);
+	                    
 		                
 /*             
  * MORE ADVANCED EXAMPLES OF USAGE
@@ -501,6 +753,7 @@ public class myDatabase extends SQLiteOpenHelper {
                 db.execSQL("DROP TABLE IF EXISTS Levels");
                 db.execSQL("DROP TABLE IF EXISTS "+tInventory);
                 db.execSQL("DROP TABLE IF EXISTS "+tPlayer);
+                db.execSQL("DROP TABLE IF EXISTS "+tSpells);
                 onCreate(db);
         }
         
@@ -700,14 +953,26 @@ public class myDatabase extends SQLiteOpenHelper {
          public int getPlayerClass(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
              String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fPlayerClass +" FROM "+ tPlayer +" WHERE "+ fPlayerID +"=?",mySearch);
+           //  Cursor myCursor = myDB.rawQuery("SELECT "+ fPlayerClass +" FROM "+ tPlayer +" WHERE "+ fPlayerID +"=?",mySearch);
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fPlayerClass +" FROM "+ tPlayer,null);
              myCursor.moveToFirst();
              int index = myCursor.getColumnIndex(fPlayerClass);
              int myAnswer = myCursor.getInt(index);
              myCursor.close();
              return myAnswer;
          }
-         
+         /*
+         public int getPlayerAttributes(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fModifierID +" FROM "+ tPlayer +" WHERE "+ fPlayerID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fPlayerClass);
+             int myAnswer = myCursor.getInt(index);
+             myCursor.close();
+             return myAnswer;
+         }
+         */
          
 /*       
  * MORE ADVANCED EXAMPLES OF USAGE

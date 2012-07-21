@@ -1,5 +1,8 @@
 package com.quest.entities;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
@@ -7,14 +10,13 @@ import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.sprite.AnimatedSprite;
+import org.andengine.entity.sprite.AnimatedSprite.IAnimationListener;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.modifier.ease.EaseLinear;
-
-import android.util.Log;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
@@ -35,9 +37,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea 
 	
 	protected String mEntityType;
 	protected Spell tmpSpell;
-	protected Entity mActiveSpells;
 	protected AnimatedSprite mBodySprite;
 	protected TMXTile mTMXTileAt;
+	protected ArrayList<Spell> mSpellsLayer;
+	protected boolean isWalking;
+	
 	protected enum PlayerDirection {
 		UP,
 		DOWN,
@@ -46,10 +50,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea 
 		DEFAULT
 	}
 	
-	protected boolean isWalking;
-	protected boolean isAnimatingSpell;
-	
-
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -77,9 +77,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea 
 			}
 		};
 		
-		this.tmpSpell = new Spell(0);
-		
 		this.attachChild(this.mBodySprite);
+
+		this.mSpellsLayer = new ArrayList<Spell>();
 		
 		this.setTileAt(pInitialPosX, pInitialPosY);
 	}
@@ -232,7 +232,50 @@ public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea 
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	  
+	@Override
+	protected void onManagedUpdate(float pSecondsElapsed) {
+		// TODO Auto-generated method stub
+		
+		Iterator<Spell> it = this.mSpellsLayer.iterator();
+		while(it.hasNext()) {
+			final Spell mSpellToDraw = it.next();
+			if(!mSpellToDraw.getSpellAnimation().isAnimationRunning()) this.attachChild(mSpellToDraw.getSpellAnimation());
+			
+			mSpellToDraw.getSpellAnimation().animate(100, false, new IAnimationListener() {
+				
+				@Override
+				public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
+						int pInitialLoopCount) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
+						int pRemainingLoopCount, int pInitialLoopCount) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
+						int pOldFrameIndex, int pNewFrameIndex) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+					// TODO Auto-generated method stub
+					BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
+				}
+			});
+		}
+		
+		super.onManagedUpdate(pSecondsElapsed);
+	}
+	
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

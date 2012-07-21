@@ -6,16 +6,10 @@ package com.quest.entities;
 import java.util.Random;
 
 import org.andengine.entity.scene.ITouchArea;
-import org.andengine.entity.sprite.AnimatedSprite;
-import org.andengine.entity.sprite.AnimatedSprite.IAnimationListener;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
 
-import android.util.Log;
-
+import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
 
 /**
@@ -129,41 +123,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 			float pTouchAreaLocalX, float pTouchAreaLocalY) {
 		// TODO Auto-generated method stub
-		if(this.isAnimatingSpell) return false;
-		
-		this.attachChild(this.tmpSpell.getSpellAnimation());
-		this.tmpSpell.getSpellAnimation().animate(100, false, new IAnimationListener() {
-			
-			@Override
-			public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
-					int pInitialLoopCount) {
-				// TODO Auto-generated method stub
-				
-				Mob.this.isAnimatingSpell = true;
-				
-			}
-			
-			@Override
-			public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
-					int pRemainingLoopCount, int pInitialLoopCount) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
-					int pOldFrameIndex, int pNewFrameIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
-				// TODO Auto-generated method stub
-				Mob.this.tmpSpell.getSpellAnimation().detachSelf();
-				Mob.this.isAnimatingSpell = false;
-			}
-		});
+		this.mSpellsLayer.add(new Spell(0));
 		
 		return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX,
 				pTouchAreaLocalY);
