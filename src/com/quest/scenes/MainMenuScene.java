@@ -61,7 +61,8 @@ public class MainMenuScene extends Scene {
 				break;
 			case TouchEvent.ACTION_UP:
 				MainMenuScene.this.mPlaySprite.setScale(1.0f);
-				Game.getSceneManager().setGameScene();
+				//Game.getSceneManager().setGameScene();
+				Game.getSceneManager().setMatchScene();
 				break;
 			}
 			return true;

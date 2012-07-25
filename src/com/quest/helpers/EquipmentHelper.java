@@ -3,7 +3,7 @@ package com.quest.helpers;
 import android.util.Log;
 
 import com.quest.database.DataHandler;
-import com.quest.entities.objects.Item;
+import com.quest.entities.objects.ItemIcon;
 import com.quest.scenes.GameMenuScene;
 
 public class EquipmentHelper {
@@ -18,12 +18,12 @@ public class EquipmentHelper {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-private Item mEquippedHead;
-	private Item mEquippedBody;
-	private Item mEquippedLegs;
-	private Item mEquippedExtra;
-	private Item mEquippedOffhand;
-	private Item mEquippedWeapon;
+private ItemIcon mEquippedHead;
+	private ItemIcon mEquippedBody;
+	private ItemIcon mEquippedLegs;
+	private ItemIcon mEquippedExtra;
+	private ItemIcon mEquippedOffhand;
+	private ItemIcon mEquippedWeapon;
 	private DataHandler mDataHandler;
 	private GameMenuScene mGameMenuScene;
 	
@@ -36,7 +36,7 @@ private Item mEquippedHead;
 		this.mGameMenuScene = pGameMenuScene;
 	}
 	
-	public boolean EquipmentFunction(Item pItem){//Cambiar el Sprite por un "item"
+	public boolean EquipmentFunction(ItemIcon pItem){//Cambiar el Sprite por un "item"
 		int tType = pItem.getType();
 		if(this.IsEquipped(pItem,tType) == false){//me fijo si es igual a lo que ya esta ocupado para saber si estan switcheando items o sacando
 			this.UnequipItem(tType,pItem);
@@ -50,7 +50,7 @@ private Item mEquippedHead;
 	}
 	
 		
-	public boolean IsEquipped(Item pItem, int pType){//Usar IsEquipped o hacer el GetEquipped y comparar? || Cambiar el Sprite por un "item" || pasarle que tipo es
+	public boolean IsEquipped(ItemIcon pItem, int pType){//Usar IsEquipped o hacer el GetEquipped y comparar? || Cambiar el Sprite por un "item" || pasarle que tipo es
 		if(this.getEquipped(pType) != null){		
 			if(pItem.getID() == this.getEquipped(pType).getID()){//Checkear por id por si tiene el mismo item?(se desequiparia). tengo que ahcer que se loadee el mEquipped al principio, si no tiene nada que hago?...
 			return true;
@@ -63,7 +63,7 @@ private Item mEquippedHead;
 	}
 	
 	
-	public void EquipItem(Item pItem, int pType){
+	public void EquipItem(ItemIcon pItem, int pType){
 		this.setEquipped(pType, pItem);
 		this.mDataHandler.EquipItem(pItem.getID(), 1);
 		this.mGameMenuScene.getEquipmentUnEquippedItemsEntity().detachChild(pItem.getIcon());//lo saco de la entidad de los desequipados
@@ -75,8 +75,8 @@ private Item mEquippedHead;
 	
 	
 	
-	public void UnequipItem(int pType,Item pItem){
-		Item pEquipped = this.getEquipped(pType);
+	public void UnequipItem(int pType,ItemIcon pItem){
+		ItemIcon pEquipped = this.getEquipped(pType);
 		if(pEquipped != null){
 		if(this.mGameMenuScene.getItemList().contains(pItem)){//si existe pItem(osea que se esta switcheando un item)
 			this.mGameMenuScene.getItemList().set(this.mGameMenuScene.getItemList().indexOf(pItem),pEquipped);//cambia la id del equipado por la del nuevo
@@ -98,7 +98,7 @@ private Item mEquippedHead;
 				if(pStart+i != this.mGameMenuScene.getItemList().size()-1){
 					this.mGameMenuScene.getItemList().set(pStart+i, this.mGameMenuScene.getItemList().get(pStart+i+1));
 					this.mGameMenuScene.setUnEquippedCount(this.mGameMenuScene.getUnEquippedCount()-1);//lo cambie de lugar - cambia?
-					this.mGameMenuScene.PlaceEquipmentItem((Item) this.mGameMenuScene.getItemList().get(pStart+i));
+					this.mGameMenuScene.PlaceEquipmentItem((ItemIcon) this.mGameMenuScene.getItemList().get(pStart+i));
 					
 				}else{
 					this.mGameMenuScene.getItemList().remove(pStart +i);
@@ -109,8 +109,8 @@ private Item mEquippedHead;
 	
 	
 	
-	public void setEquipped(int pType,Item pItem){
-		Item mEquipped = pItem;
+	public void setEquipped(int pType,ItemIcon pItem){
+		ItemIcon mEquipped = pItem;
 		switch(pType){//segun el tipo saco el coso
 		case 0:
 			this.mEquippedHead = mEquipped;
@@ -134,8 +134,8 @@ private Item mEquippedHead;
 	}
 	
 		
-	public Item getEquipped(int pType){
-		Item sEquipped = null;
+	public ItemIcon getEquipped(int pType){
+		ItemIcon sEquipped = null;
 		switch(pType){
 		case 0:
 			sEquipped = this.mEquippedHead;
@@ -161,7 +161,7 @@ private Item mEquippedHead;
 	
 	
 	
-	public void LoadEquippedItem(Item pItem){
+	public void LoadEquippedItem(ItemIcon pItem){
 		switch(pItem.getType()){
 		case 0:
 			this.mEquippedHead = pItem;

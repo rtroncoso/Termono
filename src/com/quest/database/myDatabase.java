@@ -25,6 +25,7 @@ public class myDatabase extends SQLiteOpenHelper {
         static final String fModifierID = "Modifier";
         
         static final String tInventory = "Inventory";
+        static final String fInventoryPlayerID = "PlayerID";
         static final String fInventoryItemID = "ItemID";
         static final String fInventoryItemAmount = "Amount";
         static final String fInventoryIsItemEquipped = "IsEquipped";
@@ -51,12 +52,38 @@ public class myDatabase extends SQLiteOpenHelper {
         static final String fPPower = "Power";
         static final String fPDefense = "Defense";
         
+        //spells -estaticos, hacer tabla spellbook
+        static final String tSpells = "Spells";
+        static final String fSpellID = "SpellID";
+        static final String fSpellName = "Name";
+        static final String fSpellTexture = "Texture";
+        static final String fSpellType = "Type";
+        static final String fSpellDescription = "Description";
+    //    static final String fSpellLevels = "Levels";		por ahora todos tienen la misma cantidad
+        static final String fSpellClass = "Class";
+        static final String fSpellEffectID = "EffectID";
+        
+        //spellbook - los que tiene el player
+        static final String tSpellBook = "SpellBook";
+        static final String fSpellBookPlayerID = "PlayerID";
+        static final String fSpellBookSpellID = "SpellID";
+        static final String fSpellBookSpellLevel = "Level";
+        
+        
+        //SpellEffect table
+        static final String tSpellEffect = "SpellEffect";
+        static final String fEffectSpellID = "SpellID";
+        static final String fEffectSpellLevel0 = "0";
+        static final String fEffectSpellLevel1 = "1";
+        static final String fEffectSpellLevel2 = "2";
+        static final String fEffectSpellLevel3 = "3";
+        
         
         public myDatabase(Context context) {
 // THE VALUE OF 1 ON THE NEXT LINE REPRESENTS THE VERSION NUMBER OF THE DATABASE
 // IN THE FUTURE IF YOU MAKE CHANGES TO THE DATABASE, YOU NEED TO INCREMENT THIS NUMBER
 // DOING SO WILL CAUSE THE METHOD onUpgrade() TO AUTOMATICALLY GET TRIGGERED
-                super(context, dbName, null, 17);
+                super(context, dbName, null, 18);
         }
  
         @Override
@@ -75,10 +102,10 @@ public class myDatabase extends SQLiteOpenHelper {
                         );
                 //hacer que no sea auto increasing?
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
-                		fInventoryItemID+" INTEGER PRIMARY KEY , "+
+                		fInventoryPlayerID+" INTEGER PRIMARY KEY , "+
+                		fInventoryItemID+" INTEGER, "+
                         fInventoryItemAmount+" INTEGER , "+
-                        fInventoryIsItemEquipped+" INTEGER , "+//SQLite no tiene booleans, uso 1 y 0
-                        fPlayerID+" INTEGER)"
+                        fInventoryIsItemEquipped+" INTEGER)"
                         );
                 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
@@ -105,9 +132,31 @@ public class myDatabase extends SQLiteOpenHelper {
                 		fPDefense+" INTEGER)"
                         );
                 
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpells+" ("+
+                        fSpellID+" INTEGER PRIMARY KEY , "+
+                        fSpellName+" TEXT , "+
+                        fSpellTexture+" TEXT , "+
+                        fSpellType+" INTEGER , "+//no se ni para que por ahora
+                        fSpellDescription+" TEXT , "+
+                        fSpellClass+" INTEGER, "+
+                        fSpellEffectID+" INTEGER)"
+                        );
                 
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBook+" ("+
+                		fSpellBookPlayerID+" INTEGER PRIMARY KEY , "+
+                		fSpellBookSpellID+" INTEGER , "+//Hacer un "Unlocked" o pasarle solo los que tiene?
+                		fSpellBookSpellLevel+" INTEGER)"
+                        );
 
-            
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellEffect+" ("+
+                		fEffectSpellID+" INTEGER PRIMARY KEY , "+
+                		fEffectSpellLevel0+" TEXT ,"+//Como defino los datos aca adentro? los encapsulo en un string por ahora
+                		fEffectSpellLevel1+" TEXT ,"+
+                		fEffectSpellLevel2+" TEXT ,"+
+                		fEffectSpellLevel3+" TEXT)"
+                        );                
+                
+                
                 
        
 // OPTIONALLY PREPOPULATE THE TABLE WITH SOME VALUES   
@@ -687,6 +736,51 @@ public class myDatabase extends SQLiteOpenHelper {
 	    				cv.put(fPDefense,1);
 	                    db.insert(tAttributes, null, cv);
 	                    
+	                    
+	                    
+	                    //spells
+	                    cv.put(fSpellID, 0);
+	                    cv.put(fSpellName, "Energy blast");
+	                    cv.put(fSpellTexture, "Spells/Icons/EnergyBlast.png");
+	                    cv.put(fSpellType, 0);
+	                    cv.put(fSpellDescription, "A basic missile of energy.");
+	                    cv.put(fSpellClass, 0);
+	                    cv.put(fSpellEffectID, 0);
+	                    db.insert(tSpells, null, cv);
+	                    cv.put(fSpellID, 1);
+	                    cv.put(fSpellName, "Fire Ball");
+	                    cv.put(fSpellTexture, "Spells/Icons/FireBall.png");
+	                    cv.put(fSpellType, 1);
+	                    cv.put(fSpellDescription, "A small ball of fire.");
+	                    cv.put(fSpellClass, 0);
+	                    cv.put(fSpellEffectID, 1);
+	                    db.insert(tSpells, null, cv);
+	                    
+	                    //spell effect
+	                    cv.put(fEffectSpellID, 0);
+	                    cv.put(fEffectSpellLevel0, ";5;0;");
+	                    cv.put(fEffectSpellLevel1, ";10;0;");
+	                    cv.put(fEffectSpellLevel2, ";20;1;");//1 = dmg to mana
+	                    cv.put(fEffectSpellLevel3, ";35;1;");
+	                    db.insert(tSpellEffect, null, cv);
+	                    cv.put(fEffectSpellID, 1);
+	                    cv.put(fEffectSpellLevel0, ";15;0;"); //2 = burn
+	                    cv.put(fEffectSpellLevel1, ";20;0;");
+	                    cv.put(fEffectSpellLevel2, ";40;2;");
+	                    cv.put(fEffectSpellLevel3, ";65;2;");
+	                    db.insert(tSpellEffect, null, cv);
+	                    
+	                    //spellbook
+	                    cv.put(fSpellBookPlayerID, 0); //hacer el inner join
+	                    cv.put(fSpellBookSpellID, 0);
+	                    cv.put(fSpellBookSpellLevel, 0);
+	                    db.insert(tSpellBook, null, cv);
+	                    cv.put(fSpellBookPlayerID, 0); //hacer el inner join
+	                    cv.put(fSpellBookSpellID, 1);
+	                    cv.put(fSpellBookSpellLevel, 2);
+	                    db.insert(tSpellBook, null, cv);
+        
+	                    
 		                
 /*             
  * MORE ADVANCED EXAMPLES OF USAGE
@@ -720,6 +814,11 @@ public class myDatabase extends SQLiteOpenHelper {
                 db.execSQL("DROP TABLE IF EXISTS Levels");
                 db.execSQL("DROP TABLE IF EXISTS "+tInventory);
                 db.execSQL("DROP TABLE IF EXISTS "+tPlayer);
+                db.execSQL("DROP TABLE IF EXISTS "+tAttributes);
+                db.execSQL("DROP TABLE IF EXISTS "+tSpellBook);
+                db.execSQL("DROP TABLE IF EXISTS "+tSpellEffect);
+                db.execSQL("DROP TABLE IF EXISTS "+tSpells);
+                db.execSQL("DROP TABLE IF EXISTS "+tModifiers);
                 onCreate(db);
         }
         
@@ -772,7 +871,7 @@ public class myDatabase extends SQLiteOpenHelper {
          */
         
          //Item table
-        
+        /*
          public int getInventoryItemID(int pIndex){
        	  SQLiteDatabase myDB = this.getReadableDatabase();
              Cursor myCursor = myDB.rawQuery("SELECT "+ fInventoryItemID +" FROM "+ tInventory,null);
@@ -782,7 +881,7 @@ public class myDatabase extends SQLiteOpenHelper {
              myCursor.close();
              return myAnswer;
          }
-        
+        */
          public String getItemName(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
              String[] mySearch = new String[]{String.valueOf(pID)};//no se que pasarle para que quede bien, por ahora convierto a string
@@ -862,7 +961,6 @@ public class myDatabase extends SQLiteOpenHelper {
          
          
          //Inventory table
-
          public int getInventoryCount(){
                 SQLiteDatabase db=this.getWritableDatabase();
                 Cursor cur= db.rawQuery("SELECT * FROM "+tInventory, null);
@@ -940,6 +1038,104 @@ public class myDatabase extends SQLiteOpenHelper {
          }
          */
          
+         
+         //Spell table
+         public String getSpellName(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};//no se que pasarle para que quede bien, por ahora convierto a string
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellName +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fSpellName);
+             String myAnswer = myCursor.getString(index);
+             myCursor.close();
+             return myAnswer;
+         }         
+         
+         public String getSpellImagePath(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellTexture +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fSpellTexture);
+             String myAnswer = myCursor.getString(index);
+             myCursor.close();
+             return myAnswer;
+         }         
+         
+         public int getSpellType(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellType +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fSpellType);
+             int myAnswer = myCursor.getInt(index);
+             myCursor.close();
+             return myAnswer;
+         }
+         
+        
+         public String getSpellDescription(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellDescription +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fSpellDescription);
+             String myAnswer = myCursor.getString(index);
+             myCursor.close();
+             return myAnswer;
+         }      
+         
+         public int getSpellClass(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellClass +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fSpellClass);
+             int myAnswer = myCursor.getInt(index);
+             myCursor.close();
+             return myAnswer;
+         }
+         
+         //Spell Effect
+         public String getSpellEffect(int pID,int pLevel){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+        	 String[] mySearch = new String[]{String.valueOf(pID)};
+        	 Cursor myCursor = myDB.rawQuery("SELECT "+String.valueOf(pLevel)+" FROM "+tSpellEffect+" WHERE "+fEffectSpellID+"=?",mySearch);
+        	 myCursor.moveToFirst();
+        	 int index = myCursor.getColumnIndex(String.valueOf(pLevel));
+        	 String myAnswer = myCursor.getString(index);
+        	 myCursor.close();
+        	 return myAnswer;
+         }
+         
+         //SpellBook
+         public int getSpellBookCount(){
+             SQLiteDatabase db=this.getWritableDatabase();
+             Cursor cur= db.rawQuery("SELECT * FROM "+tSpellBook, null);
+             int x= cur.getCount();
+             cur.close();
+             return x;
+         }
+      
+	      public int getSpellLevel(int pID){
+	     	 SQLiteDatabase myDB = this.getReadableDatabase();
+	          String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
+	          Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellBookSpellLevel +" FROM "+ tSpellBook +" WHERE "+ fSpellBookSpellID +"=?",mySearch);
+	          myCursor.moveToFirst();
+	          int index = myCursor.getColumnIndex(fSpellBookSpellLevel);
+	          int myAnswer = myCursor.getInt(index);
+	          myCursor.close();
+	          return myAnswer;
+	      }
+	               
+	      public void SpellLevelUp(int ID, int pLevel){//hacer los inner join para que de alguna manera solo agarre lo del playerID
+	              SQLiteDatabase myDB = this.getWritableDatabase();
+	              ContentValues cv = new ContentValues();
+	              cv.put(fSpellBookSpellLevel,pLevel+1);   
+	              myDB.update(tSpellBook, cv, fSpellBookSpellID+"=?", new String []{String.valueOf(ID)});
+	      }
+	               
+                 
 /*       
  * MORE ADVANCED EXAMPLES OF USAGE
  *

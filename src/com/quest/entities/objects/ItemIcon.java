@@ -13,7 +13,7 @@ import com.quest.game.Game;
 import com.quest.scenes.GameMenuScene;
 
 
-public class Item extends Entity{
+public class ItemIcon extends Entity{
 	
 	// ===========================================================
 	// Constants
@@ -34,21 +34,21 @@ public class Item extends Entity{
 	private int mFunction;
 	private String mName;
 	private int mItemClass;
-	
+	private String mItemDescription;
 	private Entity mEntity;//como hacer para no tener que usar esto y pasarle el pEntity al icon?
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	
-	public Item(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pIconX,int pIconY,Entity pEntity,Scene pScene,int pID, int pFunction) {
+	public ItemIcon(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pIconX,int pIconY,Entity pEntity,Scene pScene,int pID, int pFunction) {
 		this.mID = pID;
-		//this.setUserData(pID);
 		this.mName = pDataHandler.getItemName(pID);
 		this.mImagePath = pDataHandler.getItemImagePath(mID);		
 		this.mFunction = pFunction;
 		this.mBuyPrice = pDataHandler.getItemBuyPrice(mID);
 		this.mSellPrice = pDataHandler.getItemSellPrice(mID);
 		this.mType = pDataHandler.getItemType(mID);
+		this.mItemDescription = pDataHandler.getItemDescription(mID);
 		this.mItemClass = pDataHandler.getItemClass(mID);
 		this.mEntity = pEntity;
 		
@@ -63,22 +63,22 @@ public class Item extends Entity{
 					Game.getSceneManager().getGameMenuScene().setUsed(true);
 					this.setScale(3.5f);
 					mGrabbed = true;
-					if(Item.this.mFunction == 0){
-						Game.getSceneManager().getGameMenuScene().EquipItem(Item.this, true, false);
+					if(ItemIcon.this.mFunction == 0){
+						Game.getSceneManager().getGameMenuScene().EquipItem(ItemIcon.this, true, false);
 					}
 				}
 				break;
 			case TouchEvent.ACTION_MOVE:
 				if(this.mGrabbed) {
-					Item.this.mItemIcon.setPosition(pSceneTouchEvent.getX() - Item.this.mEntity.getX() - Item.this.mItemIcon.getWidth() / 2, pSceneTouchEvent.getY() - Item.this.mEntity.getY() - Item.this.mItemIcon.getHeight() / 2);
+					ItemIcon.this.mItemIcon.setPosition(pSceneTouchEvent.getX() - ItemIcon.this.mEntity.getX() - ItemIcon.this.mItemIcon.getWidth() / 2, pSceneTouchEvent.getY() - ItemIcon.this.mEntity.getY() - ItemIcon.this.mItemIcon.getHeight() / 2);
 				}
 				break;
 			case TouchEvent.ACTION_UP:
 				if(mGrabbed) {
 					mGrabbed = false;	 
 					this.setScale(2.5f);
-					if(Item.this.mFunction == 0){
-						Game.getSceneManager().getGameMenuScene().EquipItem(Item.this, false,this.collidesWith(Game.getSceneManager().getGameMenuScene().getEquipmentBoxSprite()));
+					if(ItemIcon.this.mFunction == 0){
+						Game.getSceneManager().getGameMenuScene().EquipItem(ItemIcon.this, false,this.collidesWith(Game.getSceneManager().getGameMenuScene().getEquipmentBoxSprite()));
 						}
 				}
 				break;
@@ -143,6 +143,10 @@ public class Item extends Entity{
 		return mID;
 	}
 
+	public String getItemDescription(){
+		return mItemDescription;
+	}
+	
 	public void setEntity(Entity pEntity){
 		this.mEntity = pEntity;
 	}

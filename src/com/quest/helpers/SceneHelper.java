@@ -5,10 +5,10 @@ import org.andengine.entity.scene.Scene;
 import com.quest.display.Display;
 import com.quest.game.Game;
 import com.quest.interfaces.IMeasureConstants;
-import com.quest.scenes.ConectionScene;
 import com.quest.scenes.GameMenuScene;
 import com.quest.scenes.GameScene;
 import com.quest.scenes.MainMenuScene;
+import com.quest.scenes.MatchScene;
 import com.quest.scenes.OptionsScene;
 import com.quest.scenes.PauseMenuScene;
 
@@ -72,9 +72,9 @@ public class SceneHelper implements IMeasureConstants {
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
     
-    public void setConectionScene(){
+    public void setMatchScene(){
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
-    	this.mScene = new ConectionScene();
+    	this.mScene = new MatchScene();
         Game.getInstance().getEngine().setScene(this.mScene);
     }
     

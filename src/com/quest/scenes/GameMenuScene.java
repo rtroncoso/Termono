@@ -13,9 +13,10 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.quest.database.DataHandler;
-import com.quest.entities.objects.Item;
+import com.quest.entities.objects.ItemIcon;
 import com.quest.game.Game;
 import com.quest.helpers.EquipmentHelper;
 
@@ -111,8 +112,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private DataHandler mDataHandler;
 	
 	private int mUnEquippedCount = 0; 
-	private ArrayList<Item> mItemsList;
+	private ArrayList<ItemIcon> mItemsList;
 	private boolean mUsed = false;
+	
+	
 	
 	//FALTA HACER BIEN LA CARGA DE ENTIDADES
 	//FALTA HACER LA CARGA DE TEXTURAS DINAMICAS
@@ -439,7 +442,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		this.mEquipmentEntity.detachChildren();//La limpio, necesario?
 		this.mEquipmentUnEquippedItemsEntity = new Entity(0,0);
-		this.mItemsList = new ArrayList<Item>();
+		this.mItemsList = new ArrayList<ItemIcon>();
 		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/");
@@ -582,7 +585,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	//################################################################################################
 	//								FUNCIONES DE EQUIPMENT ENTITY
 	//################################################################################################
-	public void EquipItem(Item pItem, Boolean pColorChange,Boolean pCollides){
+	public void EquipItem(ItemIcon pItem, Boolean pColorChange,Boolean pCollides){
 		Sprite tempSprite = null;//le doy null porque sino rompe las bolas
 		switch(pItem.getType()){//iguala pSprite al container que corresponde
 		case 0:
@@ -626,7 +629,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		}
 	
 	
-	public void MoveItem(Sprite pSprite, Item pItem,Boolean pCollides){//Funcion para iniciar equipamiento grafico + helper
+	public void MoveItem(Sprite pSprite, ItemIcon pItem,Boolean pCollides){//Funcion para iniciar equipamiento grafico + helper
 		if(pCollides == true){//Si colisiona
 			if(this.mEquipmentManager.EquipmentFunction(pItem) == true){//Si se equipo			
 				pItem.getIcon().setPosition(pSprite.getX() + pSprite.getWidth() / 2 - pItem.getIcon().getWidth() / 2,pSprite.getY() + pSprite.getHeight() / 2 - pItem.getIcon().getHeight() / 2);//lo pone donde corresponde			
@@ -647,13 +650,14 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	
 	private void loadUnEquippedItems(){
+		//pedir los items que necesito
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Items/");
 		this.mEquipmentUnEquippedItemsTextureAtlas= new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,24, TextureOptions.BILINEAR);
 		int tempArray[] = mDataHandler.getEquippedIDs(0);
 		for(int i=0;i<tempArray.length;i++){	
 			if(this.mDataHandler.getItemClass(tempArray[i]) == this.mDataHandler.getPlayerClass(0)){//checkeo que los items sean de la clase del player
 			//	this.mUnEquippedCount+=1;//le sumo uno al unEquipped count para saber cuantos items hay sin equipar  \\ no le sumo, ya lo hace la funcion
-			final Item pItem = new Item(mDataHandler,mEquipmentUnEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentUnEquippedItemsEntity,GameMenuScene.this,tempArray[i],0);
+			final ItemIcon pItem = new ItemIcon(mDataHandler,mEquipmentUnEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentUnEquippedItemsEntity,GameMenuScene.this,tempArray[i],0);
 			this.PlaceEquipmentItem(pItem);
 			}//si no son no los cargo wepa
 		}
@@ -667,7 +671,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		int tempArray[] = mDataHandler.getEquippedIDs(1);//consegui las ID de todo lo que esta equipado
 		for(int i=0;i<tempArray.length;i++){					
-			final Item pItem = new Item(mDataHandler,mEquipmentEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentEntity,GameMenuScene.this,tempArray[i],0);
+			final ItemIcon pItem = new ItemIcon(mDataHandler,mEquipmentEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentEntity,GameMenuScene.this,tempArray[i],0);
 			
 			mEquipmentManager.LoadEquippedItem(pItem);
 			
@@ -699,7 +703,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	}
 	
 	
-	public void PlaceEquipmentItem(Item pItem){
+	public void PlaceEquipmentItem(ItemIcon pItem){
 		if(this.mItemsList.contains(pItem)==false){//si el item no esta en la lista
 			this.mItemsList.add(this.mUnEquippedCount, pItem);//agrego el item a la lista en el indice del ultimo item			
 			}
@@ -755,38 +759,13 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	//#################SKILLS ENTITY######################	
 	public Entity LoadSkillsEntity(){
 		this.mSkillsEntity.detachChildren();//La limpio, necesario?
-
+		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Skills/");
 		this.mSkillsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mSkillTreeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSkillsTextureAtlas, Game.getInstance().getApplicationContext(), "fondo.png", 0, 0);
 		this.mSkillsTextureAtlas.load();
 		
-		this.mSkillTreeBackgroundSprite = new Sprite(165, 85,this.mSkillTreeTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			boolean mGrabbed = false;
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_DOWN:	
-				this.mGrabbed = true;
-				
-				break;
-			case TouchEvent.ACTION_MOVE:
-				if(this.mGrabbed) {				
-					GameMenuScene.this.mSkillTreeBackgroundSprite.setX(pSceneTouchEvent.getX() - GameMenuScene.this.mSkillTreeBackgroundSprite.getWidth() / 2);
-				}
-				break;
-			case TouchEvent.ACTION_UP:
-				if(this.mGrabbed) {
-					this.mGrabbed = false;
-					
-				}
-				break;
-			}
-			return true;
-			}					
-		};
-		this.mSkillTreeBackgroundSprite.setAlpha(0.5f);
-		this.mSkillsEntity.attachChild(mSkillTreeBackgroundSprite);
+		
 		this.registerTouchArea(mSkillTreeBackgroundSprite);
 		
 		return this.mSkillsEntity;
@@ -838,12 +817,17 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		this.detachChild(pEntity);
 		}
 	
-	
-
-
-
-	
+	/*
+	//key back
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	        Log.d("Logd", "back button pressed");
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 		
+	*/
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
