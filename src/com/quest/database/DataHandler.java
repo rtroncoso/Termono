@@ -181,6 +181,14 @@ public class DataHandler {
         return myReturn;
     }
 	
+	
+	public int[] getClassSpells(int pClass){
+		 myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+	        int[] myReturn = myDB.getClassSpells(pClass);
+	        myDB.close();
+	        return myReturn;
+	}
+	
 	//spellbook
 	public int getSpellBookCount(){
         myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());

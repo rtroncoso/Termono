@@ -1,6 +1,8 @@
 package com.quest.scenes;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.modifier.MoveModifier;
@@ -17,8 +19,10 @@ import android.view.KeyEvent;
 
 import com.quest.database.DataHandler;
 import com.quest.entities.objects.ItemIcon;
+import com.quest.entities.objects.SpellIcon;
 import com.quest.game.Game;
 import com.quest.helpers.EquipmentHelper;
+import com.quest.methods.Point;
 
 
 public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
@@ -39,6 +43,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private Entity mEquipmentEntity;
 		private Entity mEquipmentUnEquippedItemsEntity;
 	private Entity mSkillsEntity;
+		private Entity mTempSkillEntity;
 	private Entity mAttributesEntity;
 	private Entity mOtherEntity;
 	private Entity mSettingsEntity;
@@ -52,9 +57,9 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private BitmapTextureAtlas mEquipmentEquippedItemsTextureAtlas;
 		private BitmapTextureAtlas mEquipmentUnEquippedItemsTextureAtlas;
 	private BitmapTextureAtlas mSkillsTextureAtlas;
+		private BitmapTextureAtlas mSkillTreeAtlas;
 	private BitmapTextureAtlas mAttributesTextureAtlas;
 	private BitmapTextureAtlas mOtherTextureAtlas;
-	private BitmapTextureAtlas mSkillTreeAtlas; // (FACU)
 		
 	//Texture regions
 	private ITextureRegion mInventoryTabTextureRegion;
@@ -114,6 +119,8 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private int mUnEquippedCount = 0; 
 	private ArrayList<ItemIcon> mItemsList;
 	private boolean mUsed = false;
+	
+	private ArrayList<Point> mSpellIconPosition;  
 	
 	
 	
@@ -654,7 +661,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Items/");
 		this.mEquipmentUnEquippedItemsTextureAtlas= new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,24, TextureOptions.BILINEAR);
 		int tempArray[] = mDataHandler.getEquippedIDs(0);
-		for(int i=0;i<tempArray.length;i++){	
+		for(int i=0;i<tempArray.length;i++){	//checkear si esta bien restarle 1 al length
 			if(this.mDataHandler.getItemClass(tempArray[i]) == this.mDataHandler.getPlayerClass(0)){//checkeo que los items sean de la clase del player
 			//	this.mUnEquippedCount+=1;//le sumo uno al unEquipped count para saber cuantos items hay sin equipar  \\ no le sumo, ya lo hace la funcion
 			final ItemIcon pItem = new ItemIcon(mDataHandler,mEquipmentUnEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentUnEquippedItemsEntity,GameMenuScene.this,tempArray[i],0);
@@ -759,26 +766,52 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	//#################SKILLS ENTITY######################	
 	public Entity LoadSkillsEntity(){
 		this.mSkillsEntity.detachChildren();//La limpio, necesario?
+		this.mTempSkillEntity = new Entity(0,90);
+		this.mSpellIconPosition = new ArrayList<Point>(){};
+		this.mSpellIconPosition.add(0,new Point(20, 75));
+		this.mSpellIconPosition.add(1,new Point(120, 75));
+		this.mSpellIconPosition.add(2,new Point(220, 75));
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Skills/");
 		this.mSkillsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mSkillTreeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSkillsTextureAtlas, Game.getInstance().getApplicationContext(), "fondo.png", 0, 0);
 		this.mSkillsTextureAtlas.load();
-		
-		
-		this.registerTouchArea(mSkillTreeBackgroundSprite);
-		
+		this.LoadSkillsTree();
+		this.LoadUserSpells();
+		this.attachChild(mTempSkillEntity);
 		return this.mSkillsEntity;
 	}
-	
+
 	//################################################################################################
 	//								FUNCIONES DE SKILLS ENTITY
-	//################################################################################################
-	
+	//################################################################################################	
 	public void LoadSkillsTree(){
+		Log.d("Logd", "loadskilltree");
+		//hacer query a la base de datos con la clase del player y que me devuelva un array con todos los hechizos de esa clase
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+		this.mSkillTreeAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,512, TextureOptions.BILINEAR);
+		int tempArray[] = this.mDataHandler.getClassSpells(this.mDataHandler.getPlayerClass(1));//Le paso la class del player, despues definirla en la entidad
+		//recorrer el array creando sprites dandoles de X y de Y lo que esta en el arraylist en la posicion ID
 		
+		for(int i=0;i<tempArray.length;i++){
+			
+			Log.d("Logd", "i: "+String.valueOf(i));
+			Log.d("Logd", "length: "+String.valueOf(tempArray.length));
+			final SpellIcon pIcon = new SpellIcon(mDataHandler,this.mSkillTreeAtlas,i*34,0,0,0,this.mTempSkillEntity,GameMenuScene.this,tempArray[i]);
+			this.placeSpellIcon(pIcon);
+		}
+		this.mSkillTreeAtlas.load();
 	}
 	
+	public void placeSpellIcon(SpellIcon pIcon){
+		pIcon.getIcon().setPosition(this.mSpellIconPosition.get(pIcon.getID()).getX(),this.mSpellIconPosition.get(pIcon.getID()).getY());
+		Log.d("Logd", "icono x: " + String.valueOf(this.mSpellIconPosition.get(pIcon.getID()).getX()));
+		Log.d("Logd", "icono y: "+ String.valueOf(this.mSpellIconPosition.get(pIcon.getID()).getY()));
+	}
+	
+	public void LoadUserSpells(){
+		
+	}
 	//################################################################################################
 	//################################################################################################	
 	

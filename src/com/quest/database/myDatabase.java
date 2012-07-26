@@ -1,10 +1,7 @@
 package com.quest.database;
 
-import com.quest.game.Game;
-
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -73,17 +70,17 @@ public class myDatabase extends SQLiteOpenHelper {
         //SpellEffect table
         static final String tSpellEffect = "SpellEffect";
         static final String fEffectSpellID = "SpellID";
-        static final String fEffectSpellLevel0 = "0";
-        static final String fEffectSpellLevel1 = "1";
-        static final String fEffectSpellLevel2 = "2";
-        static final String fEffectSpellLevel3 = "3";
+        static final String fEffectSpellLevel0 = "cero";
+        static final String fEffectSpellLevel1 = "uno";
+        static final String fEffectSpellLevel2 = "dos";
+        static final String fEffectSpellLevel3 = "tres";
         
         
         public myDatabase(Context context) {
 // THE VALUE OF 1 ON THE NEXT LINE REPRESENTS THE VERSION NUMBER OF THE DATABASE
 // IN THE FUTURE IF YOU MAKE CHANGES TO THE DATABASE, YOU NEED TO INCREMENT THIS NUMBER
 // DOING SO WILL CAUSE THE METHOD onUpgrade() TO AUTOMATICALLY GET TRIGGERED
-                super(context, dbName, null, 18);
+                super(context, dbName, null, 25);
         }
  
         @Override
@@ -102,8 +99,8 @@ public class myDatabase extends SQLiteOpenHelper {
                         );
                 //hacer que no sea auto increasing?
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
-                		fInventoryPlayerID+" INTEGER PRIMARY KEY , "+
-                		fInventoryItemID+" INTEGER, "+
+                		fInventoryItemID+" INTEGER PRIMARY KEY , "+
+                		fInventoryPlayerID+" INTEGER, "+
                         fInventoryItemAmount+" INTEGER , "+
                         fInventoryIsItemEquipped+" INTEGER)"
                         );
@@ -143,8 +140,8 @@ public class myDatabase extends SQLiteOpenHelper {
                         );
                 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBook+" ("+
-                		fSpellBookPlayerID+" INTEGER PRIMARY KEY , "+
-                		fSpellBookSpellID+" INTEGER , "+//Hacer un "Unlocked" o pasarle solo los que tiene?
+                		fSpellBookSpellID+" INTEGER PRIMARY KEY , "+
+                		fSpellBookPlayerID+" INTEGER , "+//Hacer un "Unlocked" o pasarle solo los que tiene?
                 		fSpellBookSpellLevel+" INTEGER)"
                         );
 
@@ -163,374 +160,128 @@ public class myDatabase extends SQLiteOpenHelper {
                  ContentValues cv = new ContentValues();
                  		//@=====//::::::::::::::> - Swords 
                  		cv.put(fItemID, 0);//-------Cypress Stick-----------
-		                cv.put(fItemName, "Cypress Stick");
-		                cv.put(fItemTexture, "Paladin/Swords/CypressStick.png");
-		                cv.put(fItemType, 5);
-		                cv.put(fItemDescription, "A reliable wooden stick");
-		                cv.put(fItemBuyPrice, 15);
-		                cv.put(fItemSellPrice, 8);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,0);
-		                db.insert(tItem, null, cv);
+                 		cv.put(fItemName, "Cypress Stick");cv.put(fItemTexture, "Paladin/Swords/CypressStick.png");cv.put(fItemType, 5);cv.put(fItemDescription, "A reliable wooden stick");cv.put(fItemBuyPrice, 15);cv.put(fItemSellPrice, 8);cv.put(fItemClass,1);cv.put(fModifierID,0);db.insert(tItem, null, cv);
 		                cv.put(fItemID, 1);//-------Bronze Sword-----------
-				        cv.put(fItemName, "Bronze Sword");
-				        cv.put(fItemTexture, "Paladin/Swords/BronzeSword.png");
-				        cv.put(fItemType, 5);
-				        cv.put(fItemDescription, "A plain bronze sword");
-		                cv.put(fItemBuyPrice, 60);
-		                cv.put(fItemSellPrice, 32);
-				        cv.put(fItemClass,1);
-				        cv.put(fModifierID,1);
-				        db.insert(tItem, null, cv);
+				        cv.put(fItemName, "Bronze Sword");cv.put(fItemTexture, "Paladin/Swords/BronzeSword.png");cv.put(fItemType, 5);cv.put(fItemDescription, "A plain bronze sword");cv.put(fItemBuyPrice, 60);cv.put(fItemSellPrice, 32);cv.put(fItemClass,1);cv.put(fModifierID,1);db.insert(tItem, null, cv);
 				        cv.put(fItemID, 2);//--------Iron Sword----------
-				        cv.put(fItemName, "Iron Sword");
-				        cv.put(fItemTexture, "Paladin/Swords/IronSword.png");
-				        cv.put(fItemType, 5);
-				        cv.put(fItemDescription, "A good iron sword");
-		                cv.put(fItemBuyPrice, 180);
-		                cv.put(fItemSellPrice, 105);
-				        cv.put(fItemClass,1);
-						cv.put(fModifierID,2);
-						db.insert(tItem, null, cv);
+				        cv.put(fItemName, "Iron Sword");cv.put(fItemTexture, "Paladin/Swords/IronSword.png");cv.put(fItemType, 5);cv.put(fItemDescription, "A good iron sword");cv.put(fItemBuyPrice, 180);cv.put(fItemSellPrice, 105);cv.put(fItemClass,1);cv.put(fModifierID,2);db.insert(tItem, null, cv);
 						cv.put(fItemID, 3);//-------Steel Sword-----------
-				        cv.put(fItemName, "Steel Sword");
-				        cv.put(fItemTexture, "Paladin/Swords/SteelSword.png");
-				        cv.put(fItemType, 5);
-				        cv.put(fItemDescription, "A strong steel sword");
-		                cv.put(fItemBuyPrice, 430);
-		                cv.put(fItemSellPrice, 255);
-				        cv.put(fItemClass,1);
-						cv.put(fModifierID,3);
-						db.insert(tItem, null, cv);
+				        cv.put(fItemName, "Steel Sword");cv.put(fItemTexture, "Paladin/Swords/SteelSword.png");cv.put(fItemType, 5);cv.put(fItemDescription, "A strong steel sword");cv.put(fItemBuyPrice, 430);cv.put(fItemSellPrice, 255);cv.put(fItemClass,1);cv.put(fModifierID,3);db.insert(tItem, null, cv);
 						cv.put(fItemID, 4);//-------Knights Sword1-----------
-				        cv.put(fItemName, "Knights Sword");
-				        cv.put(fItemTexture, "Paladin/Swords/KnightsSword1.png");
-				        cv.put(fItemType, 5);
-				        cv.put(fItemDescription, "A sword given to the knights of the city");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 800);
-				        cv.put(fItemClass,1);
-						cv.put(fModifierID,4);
-						db.insert(tItem, null, cv);
+				        cv.put(fItemName, "Knights Sword");cv.put(fItemTexture, "Paladin/Swords/KnightsSword1.png");cv.put(fItemType, 5);cv.put(fItemDescription, "A sword given to the knights of the city");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 800);cv.put(fItemClass,1);cv.put(fModifierID,4);db.insert(tItem, null, cv);
 						cv.put(fItemID, 5);//-------Knights Sword2-----------
-				        cv.put(fItemName, "Knights Sword");
-				        cv.put(fItemTexture, "Paladin/Swords/KnightsSword2.png");
-				        cv.put(fItemType, 5);
-				        cv.put(fItemDescription, "A sword given to the knights of the city");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 800);
-				        cv.put(fItemClass,1);
-						cv.put(fModifierID,5);
-						db.insert(tItem, null, cv);
+				        cv.put(fItemName, "Knights Sword");cv.put(fItemTexture, "Paladin/Swords/KnightsSword2.png");cv.put(fItemType, 5);cv.put(fItemDescription, "A sword given to the knights of the city");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 800);cv.put(fItemClass,1);cv.put(fModifierID,5);db.insert(tItem, null, cv);
 						cv.put(fItemID, 6);//-------Mythril Sword-----------
-				        cv.put(fItemName, "Mythril Sword");
-				        cv.put(fItemTexture, "Paladin/Swords/MythrilSword.png");
-				        cv.put(fItemType, 5);
-				        cv.put(fItemDescription, "The sword of a champion");
-		                cv.put(fItemBuyPrice, 4600);
-		                cv.put(fItemSellPrice, 2700);
-				        cv.put(fItemClass,1);
-						cv.put(fModifierID,6);
-						db.insert(tItem, null, cv);
+				        cv.put(fItemName, "Mythril Sword");cv.put(fItemTexture, "Paladin/Swords/MythrilSword.png");cv.put(fItemType, 5);cv.put(fItemDescription, "The sword of a champion");cv.put(fItemBuyPrice, 4600);cv.put(fItemSellPrice, 2700);cv.put(fItemClass,1);cv.put(fModifierID,6);db.insert(tItem, null, cv);
 						
 						//@=====//##############> - PlateBodies 
                  		cv.put(fItemID, 7);//-------Bronze Platebody-----------
-		                cv.put(fItemName, "Bronze Platebody");
-		                cv.put(fItemTexture, "Paladin/PlateBodies/BronzePlate.png");
-		                cv.put(fItemType, 1);
-		                cv.put(fItemDescription, "A plain bronze platebody");
-		                cv.put(fItemBuyPrice, 110);
-		                cv.put(fItemSellPrice, 70);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,7);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Bronze Platebody");cv.put(fItemTexture, "Paladin/PlateBodies/BronzePlate.png");cv.put(fItemType, 1);cv.put(fItemDescription, "A plain bronze platebody");cv.put(fItemBuyPrice, 110);cv.put(fItemSellPrice, 70);cv.put(fItemClass,1);cv.put(fModifierID,7);db.insert(tItem, null, cv);
 		                cv.put(fItemID, 8);//-------Iron Platebody-----------
-		                cv.put(fItemName, "Iron Platebody");
-		                cv.put(fItemTexture, "Paladin/PlateBodies/IronPlate.png");
-		                cv.put(fItemType, 1);
-		                cv.put(fItemDescription, "A good iron platebody");
-		                cv.put(fItemBuyPrice, 420);
-		                cv.put(fItemSellPrice, 360);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,8);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Iron Platebody");cv.put(fItemTexture, "Paladin/PlateBodies/IronPlate.png");cv.put(fItemType, 1);cv.put(fItemDescription, "A good iron platebody");cv.put(fItemBuyPrice, 420);cv.put(fItemSellPrice, 360);cv.put(fItemClass,1);cv.put(fModifierID,8);db.insert(tItem, null, cv);
 		                cv.put(fItemID, 9);//-------Steel Platebody-----------
-		                cv.put(fItemName, "Steel Platebody");
-		                cv.put(fItemTexture, "Paladin/PlateBodies/SteelPlate.png");
-		                cv.put(fItemType, 1);
-		                cv.put(fItemDescription, "A solid steel platebody");
-		                cv.put(fItemBuyPrice, 860);
-		                cv.put(fItemSellPrice, 620);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,9);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Steel Platebody");cv.put(fItemTexture, "Paladin/PlateBodies/SteelPlate.png");cv.put(fItemType, 1);cv.put(fItemDescription, "A solid steel platebody");cv.put(fItemBuyPrice, 860);cv.put(fItemSellPrice, 620);cv.put(fItemClass,1);cv.put(fModifierID,9);db.insert(tItem, null, cv);
 		                cv.put(fItemID, 10);//-------Knights Platebody1-----------
-		                cv.put(fItemName, "Knights Platebody");
-		                cv.put(fItemTexture, "Paladin/PlateBodies/KnightsPlate1.png");
-		                cv.put(fItemType, 1);
-		                cv.put(fItemDescription, "An armour worn by the city knights");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 1420);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,10);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Knights Platebody");cv.put(fItemTexture, "Paladin/PlateBodies/KnightsPlate1.png");cv.put(fItemType, 1);cv.put(fItemDescription, "An armour worn by the city knights");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 1420);cv.put(fItemClass,1);cv.put(fModifierID,10);db.insert(tItem, null, cv);
 		                cv.put(fItemID, 11);//-------Knights Platebody2-----------
-		                cv.put(fItemName, "Knights Platebody");
-		                cv.put(fItemTexture, "Paladin/PlateBodies/KnightsPlate2.png");
-		                cv.put(fItemType, 1);
-		                cv.put(fItemDescription, "An armor worn by the city knights");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 1420);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,11);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Knights Platebody");cv.put(fItemTexture, "Paladin/PlateBodies/KnightsPlate2.png");cv.put(fItemType, 1);cv.put(fItemDescription, "An armor worn by the city knights");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 1420);cv.put(fItemClass,1);cv.put(fModifierID,11);db.insert(tItem, null, cv);
 		                cv.put(fItemID, 12);//-------Mythril Chain-----------
-		                cv.put(fItemName, "Mythril Chainmail");
-		                cv.put(fItemTexture, "Paladin/PlateBodies/MythrilChain.png");
-		                cv.put(fItemType, 1);
-		                cv.put(fItemDescription, "The armor of a champion");
-		                cv.put(fItemBuyPrice, 7200);
-		                cv.put(fItemSellPrice, 3500);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,12);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Mythril Chainmail");cv.put(fItemTexture, "Paladin/PlateBodies/MythrilChain.png");cv.put(fItemType, 1);cv.put(fItemDescription, "The armor of a champion");cv.put(fItemBuyPrice, 7200);cv.put(fItemSellPrice, 3500);cv.put(fItemClass,1);cv.put(fModifierID,12);db.insert(tItem, null, cv);
 						
 		              //@=====//##############> - Shields 
                  		cv.put(fItemID, 13);//-------Wooden Shield-----------
-		                cv.put(fItemName, "Wooden Shield");
-		                cv.put(fItemTexture, "Paladin/Shields/WoodenShield.png");
-		                cv.put(fItemType, 4);
-		                cv.put(fItemDescription, "A wooden shield");
-		                cv.put(fItemBuyPrice, 14);
-		                cv.put(fItemSellPrice, 7);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,13);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Wooden Shield");cv.put(fItemTexture, "Paladin/Shields/WoodenShield.png");cv.put(fItemType, 4);cv.put(fItemDescription, "A wooden shield");cv.put(fItemBuyPrice, 14);cv.put(fItemSellPrice, 7);cv.put(fItemClass,1);cv.put(fModifierID,13);db.insert(tItem, null, cv);
                  		cv.put(fItemID, 14);//-------Bronze Shield-----------
-		                cv.put(fItemName, "Bronze Shield");
-		                cv.put(fItemTexture, "Paladin/Shields/BronzeShield.png");
-		                cv.put(fItemType, 4);
-		                cv.put(fItemDescription, "A simple bronze shield");
-		                cv.put(fItemBuyPrice, 55);
-		                cv.put(fItemSellPrice, 27);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,14);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Bronze Shield");cv.put(fItemTexture, "Paladin/Shields/BronzeShield.png");cv.put(fItemType, 4);cv.put(fItemDescription, "A simple bronze shield");cv.put(fItemBuyPrice, 55);cv.put(fItemSellPrice, 27);cv.put(fItemClass,1);cv.put(fModifierID,14);db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 15);//-------Iron Shield-----------
-		                cv.put(fItemName, "Iron Shield");
-		                cv.put(fItemTexture, "Paladin/Shields/IronShield.png");
-		                cv.put(fItemType, 4);
-		                cv.put(fItemDescription, "A good iron shield");
-		                cv.put(fItemBuyPrice, 160);
-		                cv.put(fItemSellPrice, 95);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,15);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Iron Shield");cv.put(fItemTexture, "Paladin/Shields/IronShield.png");cv.put(fItemType, 4);cv.put(fItemDescription, "A good iron shield");cv.put(fItemBuyPrice, 160);cv.put(fItemSellPrice, 95);cv.put(fItemClass,1);cv.put(fModifierID,15);db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 16);//-------Steel Shield-----------
-		                cv.put(fItemName, "Steel Shield");
-		                cv.put(fItemTexture, "Paladin/Shields/SteelShield.png");
-		                cv.put(fItemType, 4);
-		                cv.put(fItemDescription, "A solid steel shield");
-		                cv.put(fItemBuyPrice, 390);
-		                cv.put(fItemSellPrice, 260);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,16);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Steel Shield");cv.put(fItemTexture, "Paladin/Shields/SteelShield.png");cv.put(fItemType, 4);cv.put(fItemDescription, "A solid steel shield");cv.put(fItemBuyPrice, 390);cv.put(fItemSellPrice, 260);cv.put(fItemClass,1);cv.put(fModifierID,16);db.insert(tItem, null, cv);
                  		cv.put(fItemID, 17);//-------Knights Shield1-----------
-		                cv.put(fItemName, "Knights Shield");
-		                cv.put(fItemTexture, "Paladin/Shields/KnightsShield1.png");
-		                cv.put(fItemType, 4);
-		                cv.put(fItemDescription, "A shield worn by the knights of the city");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 700);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,17);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Knights Shield");cv.put(fItemTexture, "Paladin/Shields/KnightsShield1.png");cv.put(fItemType, 4);cv.put(fItemDescription, "A shield worn by the knights of the city");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 700);cv.put(fItemClass,1);cv.put(fModifierID,17);db.insert(tItem, null, cv);
                  		cv.put(fItemID, 18);//-------Knights Shield2-----------
-		                cv.put(fItemName, "Knights Shield");
-		                cv.put(fItemTexture, "Paladin/Shields/KnightsShield2.png");
-		                cv.put(fItemType, 4);
-		                cv.put(fItemDescription, "A shield worn by the knights of the city");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 700);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,18);
-		                db.insert(tItem, null, cv);
+		                cv.put(fItemName, "Knights Shield");cv.put(fItemTexture, "Paladin/Shields/KnightsShield2.png");cv.put(fItemType, 4);cv.put(fItemDescription, "A shield worn by the knights of the city");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 700);cv.put(fItemClass,1);cv.put(fModifierID,18);db.insert(tItem, null, cv);
 		                
 		                //@=====//##############> - Helm 
                  		cv.put(fItemID, 19);//-------Bronze Helm-----------
-		                cv.put(fItemName, "Bronze Helm");
-		                cv.put(fItemTexture, "Paladin/Helms/BronzeHelm.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A common bronze helm");
-		                cv.put(fItemBuyPrice, 40);
-		                cv.put(fItemSellPrice, 30);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,19);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Bronze Helm");cv.put(fItemTexture, "Paladin/Helms/BronzeHelm.png");cv.put(fItemType, 0);cv.put(fItemDescription, "A common bronze helm");cv.put(fItemBuyPrice, 40);cv.put(fItemSellPrice, 30);cv.put(fItemClass,1);cv.put(fModifierID,19);db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 20);//-------Iron Helm-----------
-		                cv.put(fItemName, "Iron Helm");
-		                cv.put(fItemTexture, "Paladin/Helms/IronHelm.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A good iron helm");
-		                cv.put(fItemBuyPrice, 120);
-		                cv.put(fItemSellPrice, 80);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,20);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Iron Helm");cv.put(fItemTexture, "Paladin/Helms/IronHelm.png");cv.put(fItemType, 0);cv.put(fItemDescription, "A good iron helm");cv.put(fItemBuyPrice, 120);cv.put(fItemSellPrice, 80);cv.put(fItemClass,1);cv.put(fModifierID,20);db.insert(tItem, null, cv); 
                  		cv.put(fItemID, 21);//-------Steel Helm-----------
-		                cv.put(fItemName, "Steel Helm");
-		                cv.put(fItemTexture, "Paladin/Helms/SteelHelm.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A fine steel helm");
-		                cv.put(fItemBuyPrice, 300);
-		                cv.put(fItemSellPrice, 200);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,21);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Steel Helm");cv.put(fItemTexture, "Paladin/Helms/SteelHelm.png");cv.put(fItemType, 0);cv.put(fItemDescription, "A fine steel helm");cv.put(fItemBuyPrice, 300);cv.put(fItemSellPrice, 200);cv.put(fItemClass,1);cv.put(fModifierID,21);db.insert(tItem, null, cv);
                  		cv.put(fItemID, 22);//-------Knights Helm1-----------
-		                cv.put(fItemName, "Knights Helm");
-		                cv.put(fItemTexture, "Paladin/Helms/KnightsHelm1.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A helm worn by the knights of the city");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 500);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,22);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Knights Helm");cv.put(fItemTexture, "Paladin/Helms/KnightsHelm1.png");cv.put(fItemType, 0);cv.put(fItemDescription, "A helm worn by the knights of the city");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 500);cv.put(fItemClass,1);cv.put(fModifierID,22);db.insert(tItem, null, cv); 
 		                cv.put(fItemID, 23);//-------Knights Helm2-----------
-		                cv.put(fItemName, "Knights Helm");
-		                cv.put(fItemTexture, "Paladin/Helms/KnightsHelm2.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A helm worn by the knights of the city");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 500);
-		                cv.put(fItemClass,1);
-		                cv.put(fModifierID,23);
-		                db.insert(tItem, null, cv); 
+		                cv.put(fItemName, "Knights Helm");cv.put(fItemTexture, "Paladin/Helms/KnightsHelm2.png");cv.put(fItemType, 0);cv.put(fItemDescription, "A helm worn by the knights of the city");cv.put(fItemBuyPrice, 0);cv.put(fItemSellPrice, 500);cv.put(fItemClass,1);cv.put(fModifierID,23);db.insert(tItem, null, cv); 
 		                
-		                
+		                cv.clear();
 		                
 		                //MODIFIERS
 		                //----------Cypress stick-------
-		                cv.put(fModifierID,0);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,2);
-		                cv.put(fMDefense,0);
-		                db.insert(tModifiers, null, cv);
+		                cv.put(fModifierID,0);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,2);cv.put(fMDefense,0);db.insert(tModifiers, null, cv);
 		                //--------bronze sword------
-		                cv.put(fModifierID,1);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,7);
-		                cv.put(fMDefense,0);
-		                db.insert(tModifiers, null, cv);
-		              //--------iron sword--------
-		                cv.put(fModifierID,2);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,15);
-		                cv.put(fMDefense,0);
-		                db.insert(tModifiers, null, cv);
-		              //----------steel sword-----
-		                cv.put(fModifierID,3);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,25);
-		                cv.put(fMDefense,0);
-		                db.insert(tModifiers, null, cv);
-		              //---------kngihts sword1--
-		                cv.put(fModifierID,4);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,35);
-		                cv.put(fMDefense,0);
-		                db.insert(tModifiers, null, cv);
-		              //--------knights sword2----
-		                cv.put(fModifierID,5);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,35);
-		                cv.put(fMDefense,0);
-		                db.insert(tModifiers, null, cv);
-		              //--------mythril sword-----
-		                cv.put(fModifierID,6);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,5);
-		                cv.put(fMPower,45);
-		                cv.put(fMDefense,0);
-		                db.insert(tModifiers, null, cv);
+		                cv.put(fModifierID,1);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,7);cv.put(fMDefense,0);db.insert(tModifiers, null, cv);
+		                //--------iron sword--------
+		                cv.put(fModifierID,2);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,15);cv.put(fMDefense,0);db.insert(tModifiers, null, cv);
+		                //----------steel sword-----
+		                cv.put(fModifierID,3);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,25);cv.put(fMDefense,0);db.insert(tModifiers, null, cv);
+		                //---------knights sword1--
+		                cv.put(fModifierID,4);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,35);cv.put(fMDefense,0);db.insert(tModifiers, null, cv);
+		                //--------knights sword2----
+		                cv.put(fModifierID,5);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,35);cv.put(fMDefense,0);db.insert(tModifiers, null, cv);
+		                //--------mythril sword-----
+		                cv.put(fModifierID,6);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,5);cv.put(fMPower,45);cv.put(fMDefense,0);db.insert(tModifiers, null, cv);		                
+
+		                //@=====//##############> - PlateBodies 
+		                //--------bronze palte------
+		                cv.put(fModifierID,7);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,5);db.insert(tModifiers, null, cv);
+		                //--------iron plate--------
+		                cv.put(fModifierID,8);cv.put(fMHitPoint,0);cv.put(fMEndurance,0);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,10);db.insert(tModifiers, null, cv);
+			            //--------steel plate-------
+		                cv.put(fModifierID,9);cv.put(fMHitPoint,0);cv.put(fMEndurance,5);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,15);db.insert(tModifiers, null, cv);
+		                //-------knights plate1---
+		                cv.put(fModifierID,10);cv.put(fMHitPoint,0);cv.put(fMEndurance,10);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,23);db.insert(tModifiers, null, cv);
+		        	      //--------knights plate2----
+		                cv.put(fModifierID,11);cv.put(fMHitPoint,0);cv.put(fMEndurance,10);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,23);db.insert(tModifiers, null, cv);
+		                //--------mythril chain-----
+		                cv.put(fModifierID,12);cv.put(fMHitPoint,0);cv.put(fMEndurance,15);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,35);db.insert(tModifiers, null, cv);
+		          
+		                cv.clear();
 		                
-		              //@=====//##############> - PlateBodies 
-		              //--------bronze palte------
-		                cv.put(fModifierID,7);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,0);
-		                cv.put(fMDefense,5);
-		                db.insert(tModifiers, null, cv);
-		              //--------iron plate--------
-		                cv.put(fModifierID,8);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,0);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,0);
-		                cv.put(fMDefense,10);
-		                db.insert(tModifiers, null, cv);
-		              //--------steel plate-------
-		                cv.put(fModifierID,9);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,5);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,0);
-		                cv.put(fMDefense,15);
-		                db.insert(tModifiers, null, cv);
-		              //-------knights plate1---
-		                cv.put(fModifierID,10);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,10);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,0);
-		                cv.put(fMDefense,23);
-		                db.insert(tModifiers, null, cv);
-		              //--------knights plate2----
-		                cv.put(fModifierID,11);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,10);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,0);
-		                cv.put(fMDefense,23);
-		                db.insert(tModifiers, null, cv);
-		              //--------mythril chain-----
-		                cv.put(fModifierID,12);
-		                cv.put(fMHitPoint,0);
-		                cv.put(fMEndurance,15);
-		                cv.put(fMManaPoints,0);
-		                cv.put(fMIntelligence,0);
-		                cv.put(fMPower,0);
-		                cv.put(fMDefense,35);
-		                db.insert(tModifiers, null, cv);
+		                //Spells
+		                //Energy blast
+	                    cv.put(fSpellID, 0);cv.put(fSpellName, "Energy blast");cv.put(fSpellTexture, "Spells/Icons/EnergyBlast.png");cv.put(fSpellType, 0);cv.put(fSpellDescription, "A basic missile of energy.");cv.put(fSpellClass, 3);cv.put(fSpellEffectID, 0);db.insert(tSpells, null, cv);
+	                    //Fire Ball
+	                    cv.put(fSpellID, 1);cv.put(fSpellName, "Fire Ball");cv.put(fSpellTexture, "Spells/Icons/FireBall.png");cv.put(fSpellType, 1);cv.put(fSpellDescription, "A small ball of fire.");cv.put(fSpellClass, 3);cv.put(fSpellEffectID, 1);db.insert(tSpells, null, cv);
+	                    
+	                    //Sword Bash
+	                    cv.put(fSpellID, 2);cv.put(fSpellName, "Sword Bash");cv.put(fSpellTexture, "Spells/Icons/SwordBash.png");cv.put(fSpellType, 6);cv.put(fSpellDescription, "Hits the enemy with a powerfull bash");cv.put(fSpellClass, 1);cv.put(fSpellEffectID, 2);db.insert(tSpells, null, cv);
+	                    
+	                    cv.clear();
+	                    
+	                    //spell effect
+	                    //Energy blast
+	                    cv.put(fEffectSpellID, 0);
+	                    cv.put(fEffectSpellLevel0, ",5,0,");
+	                    cv.put(fEffectSpellLevel1, ",10,0,");
+	                    cv.put(fEffectSpellLevel2, ",20,1,");//1 = dmg to mana
+	                    cv.put(fEffectSpellLevel3, ",35,1,");
+	                    db.insert(tSpellEffect, null, cv);
+	                    //Fire Ball
+	                    cv.put(fEffectSpellID, 1);
+	                    cv.put(fEffectSpellLevel0, ",15,0,"); //2 = burn
+	                    cv.put(fEffectSpellLevel1, ",20,0,");
+	                    cv.put(fEffectSpellLevel2, ",40,2,");
+	                    cv.put(fEffectSpellLevel3, ",65,2,");
+	                    db.insert(tSpellEffect, null, cv);
+	                    //Sword Bash
+	                    cv.put(fEffectSpellID, 2);
+	                    cv.put(fEffectSpellLevel0, ",15,0,"); //hacer que el daño sea un porcentaje?
+	                    cv.put(fEffectSpellLevel1, ",20,0,");
+	                    cv.put(fEffectSpellLevel2, ",40,2,");
+	                    cv.put(fEffectSpellLevel3, ",65,2,");
+	                    db.insert(tSpellEffect, null, cv);
+	                    cv.clear();
 		                /*
 		              //@=====//##############> - Shields 
 		              //--------wooden shield-----
@@ -624,9 +375,8 @@ public class myDatabase extends SQLiteOpenHelper {
 		                cv.put(fItemClass,3);
 		                cv.put(fModifierID,42);
 		                db.insert(tItem, null, cv); 
-		                
-						cv.clear(); //Hace falta hacerle clear?
-		                
+						//cv.clear(); //Hace falta hacerle clear?
+		                cv.clear();
 						
 		                //INVENTORY	
 		                cv.put(fInventoryItemID,0);//tiene que ser igual a fItemID
@@ -717,69 +467,45 @@ public class myDatabase extends SQLiteOpenHelper {
 		 		        cv.put(fInventoryIsItemEquipped, 0);
 		 		        cv.put(fPlayerID, 0);
 		 		        db.insert(tInventory, null, cv);	
-		 		       
+		 		       cv.clear();
 		 		       
 		 		        
-		 		    //  cv.clear();
-		                		//clases 0 multi; 1 pala; 2 arquero; 3 mago; 4 orco;
-		                cv.put(fPlayerID, 0);
+		 		        //clases 0 multi; 1 pala; 2 arquero; 3 mago; 4 orco;
+		 		        cv.put(fPlayerID, 0);
 		                cv.put(fPlayerName, "Joaquin");
 		                cv.put(fPlayerClass, 1);
 	                	db.insert(tPlayer, null, cv);
-		                
 	                	
+	                	cv.put(fPlayerID, 1);
+			            cv.put(fPlayerName, "Ramiro");
+			            cv.put(fPlayerClass, 3);
+		                db.insert(tPlayer, null, cv);
+	                	
+	                	cv.clear();
+	                	 
 	                	//atributos
 	                    cv.put(fPlayerID, 0);
 	                    cv.put(fPEndurance,1);
 	                    cv.put(fPIntelligence,1);
 	            		cv.put(fPPower,1);
 	    				cv.put(fPDefense,1);
-	                    db.insert(tAttributes, null, cv);
-	                    
-	                    
-	                    
-	                    //spells
-	                    cv.put(fSpellID, 0);
-	                    cv.put(fSpellName, "Energy blast");
-	                    cv.put(fSpellTexture, "Spells/Icons/EnergyBlast.png");
-	                    cv.put(fSpellType, 0);
-	                    cv.put(fSpellDescription, "A basic missile of energy.");
-	                    cv.put(fSpellClass, 0);
-	                    cv.put(fSpellEffectID, 0);
-	                    db.insert(tSpells, null, cv);
-	                    cv.put(fSpellID, 1);
-	                    cv.put(fSpellName, "Fire Ball");
-	                    cv.put(fSpellTexture, "Spells/Icons/FireBall.png");
-	                    cv.put(fSpellType, 1);
-	                    cv.put(fSpellDescription, "A small ball of fire.");
-	                    cv.put(fSpellClass, 0);
-	                    cv.put(fSpellEffectID, 1);
-	                    db.insert(tSpells, null, cv);
-	                    
-	                    //spell effect
-	                    cv.put(fEffectSpellID, 0);
-	                    cv.put(fEffectSpellLevel0, ";5;0;");
-	                    cv.put(fEffectSpellLevel1, ";10;0;");
-	                    cv.put(fEffectSpellLevel2, ";20;1;");//1 = dmg to mana
-	                    cv.put(fEffectSpellLevel3, ";35;1;");
-	                    db.insert(tSpellEffect, null, cv);
-	                    cv.put(fEffectSpellID, 1);
-	                    cv.put(fEffectSpellLevel0, ";15;0;"); //2 = burn
-	                    cv.put(fEffectSpellLevel1, ";20;0;");
-	                    cv.put(fEffectSpellLevel2, ";40;2;");
-	                    cv.put(fEffectSpellLevel3, ";65;2;");
-	                    db.insert(tSpellEffect, null, cv);
-	                    
+	                    db.insert(tAttributes, null, cv);	                    
+	                    cv.clear();
+	                  
 	                    //spellbook
-	                    cv.put(fSpellBookPlayerID, 0); //hacer el inner join
-	                    cv.put(fSpellBookSpellID, 0);
+	                    cv.put(fSpellBookSpellID, 2);
+	                    cv.put(fSpellBookPlayerID, 0); //le cargo 1 a joaquin
 	                    cv.put(fSpellBookSpellLevel, 0);
 	                    db.insert(tSpellBook, null, cv);
-	                    cv.put(fSpellBookPlayerID, 0); //hacer el inner join
+	                    cv.put(fSpellBookSpellID, 0);
+	                    cv.put(fSpellBookPlayerID, 1); //hacer el inner join
+	                    cv.put(fSpellBookSpellLevel, 0);
+	                    db.insert(tSpellBook, null, cv);
 	                    cv.put(fSpellBookSpellID, 1);
+	                    cv.put(fSpellBookPlayerID, 1); //hacer el inner join
 	                    cv.put(fSpellBookSpellLevel, 2);
 	                    db.insert(tSpellBook, null, cv);
-        
+	                    cv.clear();
 	                    
 		                
 /*             
@@ -1017,8 +743,7 @@ public class myDatabase extends SQLiteOpenHelper {
          public int getPlayerClass(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
              String[] mySearch = new String[]{String.valueOf(pID)};
-           //  Cursor myCursor = myDB.rawQuery("SELECT "+ fPlayerClass +" FROM "+ tPlayer +" WHERE "+ fPlayerID +"=?",mySearch);
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fPlayerClass +" FROM "+ tPlayer,null);
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fPlayerClass +" FROM "+ tPlayer +" WHERE "+ fPlayerID +"=?",mySearch);
              myCursor.moveToFirst();
              int index = myCursor.getColumnIndex(fPlayerClass);
              int myAnswer = myCursor.getInt(index);
@@ -1096,13 +821,45 @@ public class myDatabase extends SQLiteOpenHelper {
              return myAnswer;
          }
          
+          
+         public int[] getClassSpells(int pClass){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+        	 String[] mySearch = new String[]{String.valueOf(pClass)};
+        	 Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellID +" FROM "+ tSpells +" WHERE "+ fSpellClass +"=?",mySearch);
+        	 int index = myCursor.getColumnIndex(fSpellID);
+        	 int myAnswer[] = new int[myCursor.getCount()];
+        	 for(int i = 0; i < myCursor.getCount(); i++){
+        		myCursor.moveToPosition(i);
+        		myAnswer[i] = myCursor.getInt(index);
+        	 }
+             myCursor.close();
+             return myAnswer;
+         }
+         
+         
          //Spell Effect
          public String getSpellEffect(int pID,int pLevel){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
         	 String[] mySearch = new String[]{String.valueOf(pID)};
-        	 Cursor myCursor = myDB.rawQuery("SELECT "+String.valueOf(pLevel)+" FROM "+tSpellEffect+" WHERE "+fEffectSpellID+"=?",mySearch);
+        	 String pepe = "cero";
+        	 switch(pLevel){
+        	 case 0:
+        		 pepe = "cero";
+        		 break;
+        	 case 1:
+        		 pepe = "uno";
+        		 break;
+        	 case 2:
+        		 pepe = "dos";
+        		 break;
+        	 case 3:
+        		 pepe = "tres";
+        		 break;
+        	 }
+        	 Cursor myCursor = myDB.rawQuery("SELECT "+pepe+" FROM "+tSpellEffect+" WHERE "+fEffectSpellID+"=?",mySearch);
+        	//Cursor myCursor = myDB.rawQuery("SELECT "+String.valueOf(pLevel)+" FROM "+tSpellEffect+" WHERE "+fEffectSpellID+"=?",mySearch);
         	 myCursor.moveToFirst();
-        	 int index = myCursor.getColumnIndex(String.valueOf(pLevel));
+        	 int index = myCursor.getColumnIndex(String.valueOf(pepe));
         	 String myAnswer = myCursor.getString(index);
         	 myCursor.close();
         	 return myAnswer;
@@ -1118,7 +875,7 @@ public class myDatabase extends SQLiteOpenHelper {
          }
       
 	      public int getSpellLevel(int pID){
-	     	 SQLiteDatabase myDB = this.getReadableDatabase();
+	    	  SQLiteDatabase myDB = this.getReadableDatabase();
 	          String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
 	          Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellBookSpellLevel +" FROM "+ tSpellBook +" WHERE "+ fSpellBookSpellID +"=?",mySearch);
 	          myCursor.moveToFirst();
