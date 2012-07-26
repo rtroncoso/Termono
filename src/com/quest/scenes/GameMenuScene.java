@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.scene.Scene;
@@ -13,6 +15,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.util.modifier.ease.EaseBackOut;
 
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,16 +46,17 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	private Entity mEquipmentEntity;
 		private Entity mEquipmentUnEquippedItemsEntity;
 	private Entity mSkillsEntity;
-		private Entity mTempSkillEntity;
+		private Entity mSkillTreeEntity;
 	private Entity mAttributesEntity;
 	private Entity mOtherEntity;
 	private Entity mSettingsEntity;
 	private Entity mCurrentEntity;
-	private Entity mSkillTreeEntity; // (FACU)
+	
 
 	//Textures Atlas
 	private BitmapTextureAtlas mSceneTextureAtlas;
 	private BitmapTextureAtlas mInventoryTextureAtlas;
+		private BitmapTextureAtlas mInventoryItemsTextureAtlas;
 	private BitmapTextureAtlas mEquipmentTextureAtlas;
 		private BitmapTextureAtlas mEquipmentEquippedItemsTextureAtlas;
 		private BitmapTextureAtlas mEquipmentUnEquippedItemsTextureAtlas;
@@ -66,7 +70,8 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private ITextureRegion mInventoryUseTextureRegion;
 		private ITextureRegion mInventoryTossTextureRegion;
 		private ITextureRegion mInventoryMoneyTextureRegion;
-		private ITextureRegion mItemTextureRegion;
+		private ITextureRegion mInventoryItemsBackgroundTextureRegion;
+		private ITextureRegion mInventoryDescriptionTextureRegion;
 	private ITextureRegion mEquipmentTabTextureRegion;
 		private ITextureRegion mEquipmentBoxTextureRegion;
 		private ITextureRegion mEquipmentAttributesTextureRegion;
@@ -78,12 +83,13 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private ITextureRegion mEquipmentOffhandTextureRegion;
 		private ITextureRegion mEquipmentExtraTextureRegion;
 	private ITextureRegion mSkillsTabTextureRegion;
+		private ITextureRegion mSkillTreeBackgroundTextureRegion;
+		private ITextureRegion mSkillBarTextureRegion;
 	private ITextureRegion mAttributesTabTextureRegion;
 	private ITextureRegion mOtherTabTextureRegion;
 	private ITextureRegion mSettingsTextureRegion;
 	private ITextureRegion mBackgroundTextureRegion;
 		
-		private ITextureRegion mSkillTreeTextureRegion; // (FACU)
 	
 	
 	//Sprites
@@ -91,6 +97,8 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private Sprite mInventoryUseSprite;
 		private Sprite mInventoryTossSprite;
 		private Sprite mInventoryMoneySprite;
+		private Sprite mInventoryItemsBackgroundSprite;
+		private Sprite mInventoryDescriptionSprite;
 		private Sprite mItemSprite;
 	private Sprite mEquipmentTabSprite;
 		private Sprite mEquipmentBoxSprite;
@@ -103,30 +111,29 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		private Sprite mEquipmentWeaponSprite;
 		private Sprite mEquipmentOffhandSprite;
 		private Sprite mEquipmentExtraSprite;
-		
-	private Sprite mSkillTreeBackgroundSprite; // (FACU)
-	
 	private Sprite mSkillsTabSprite;
+		private Sprite mSkillTreeBackgroundSprite; 
+		private Sprite mSkillBarSprite;
 	private Sprite mAttributesTabSprite;
 	private Sprite mOtherTabSprite;
 	private Sprite mSettingsSprite;
 	private Sprite mBackgroundSprite;
 	
 	
+	//Handlers, Helpers y Managers
 	private EquipmentHelper mEquipmentManager;
 	private DataHandler mDataHandler;
 	
-	private int mUnEquippedCount = 0; 
+	
+	//Lists y arrays
 	private ArrayList<ItemIcon> mItemsList;
+	private ArrayList<Point> mSpellIconPosition;
+	
+	//Otros
+	private int mUnEquippedCount = 0; 
 	private boolean mUsed = false;
 	
-	private ArrayList<Point> mSpellIconPosition;  
-	
-	
-	
-	//FALTA HACER BIEN LA CARGA DE ENTIDADES
-	//FALTA HACER LA CARGA DE TEXTURAS DINAMICAS
-	
+	  	
 	
 	// ===========================================================
 	// Constructors
@@ -363,14 +370,36 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	
 	//#################INVENTORY ENTITY######################
+	//COSAS DE FACU A ORDENAR
+	private float mInventoryItemsInitialX = 0;
+	private float mInventoryItemsFinalX = 0;
+	private float mInventoryItemsInitialY = 0; // hacer
+	private float mInventoryItemsFinalY = 0; // hacer
+	
+	private boolean mInventoryItemsTimerActivo = false;
+	private boolean mInventoryItemsEstado = true; // True = items, false = equipo,
+	//private float mInventoryItemsDefaultItems = 0; // Posición por defecto de los items.
+	//private float mInventoryItemsDefaultEquipment = 0; // Posición por defecto del equipment.
+	//private float mInventoryItemsDefaultPosition = 0; // Posición actual del texture.
+	private float mInventoryItemsVerticalScrollInitialX = 0;
+	private float mInventoryItemsVerticalScrollInitialY = 0;
+	private float mInventoryItemsVerticalScrollFinalX = 0;
+	private float mInventoryItemsVerticalScrollFinalY = 0;
+	
+	
 	public Entity LoadInventoryEntity(){
 				this.mInventoryEntity.detachChildren();//La limpio, necesario?
+			
+				//COSAS DE FACU A ORDENAR
+				float Ancho = Game.getSceneManager().getDisplay().getDisplayWidth();
+				float Alto = Game.getSceneManager().getDisplay().getDisplayHeight();
 		
 				BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Inventory/");
 				this.mInventoryTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 				this.mInventoryUseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "UseEquip.png", 0, 0);
 				this.mInventoryTossTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Toss.png", 192, 0);
-				this.mInventoryMoneyTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Money.png", 0, 290);
+				this.mInventoryDescriptionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Description.png", 0, 290);
+				this.mInventoryMoneyTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Money.png", 0, 365);
 				this.mInventoryTextureAtlas.load();
 				
 				//Use Sprite
@@ -384,59 +413,108 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				
 				
 				//Money Sprite
-				this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, 125,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
+				this.mInventoryMoneySprite = new Sprite(Game.getSceneManager().getDisplay().getDisplayWidth() - 110, Game.getSceneManager().getDisplay().getDisplayHeight()-50,this.mInventoryMoneyTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 				this.mInventoryEntity.attachChild(mInventoryMoneySprite);
-
+				
+				//Descripción
+				this.mInventoryDescriptionSprite = new Sprite(0, Game.getSceneManager().getDisplay().getDisplayHeight() - 75, this.mInventoryDescriptionTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
+				this.mInventoryEntity.attachChild(mInventoryDescriptionSprite);
+			
+				
+				
+				this.mInventoryItemsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2048, 1024, TextureOptions.BILINEAR);
+				this.mInventoryItemsBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryItemsTextureAtlas, Game.getInstance().getApplicationContext(), "Inventory.png", 0, 0);
+				this.mInventoryItemsTextureAtlas.load();
+				
+				float ItemsX = (float)Ancho*((float)2f/(float)100f);
+				float ItemsY = (float)Alto*((float)12f/(float)100f);
+				
+				this.mInventoryItemsBackgroundSprite = new Sprite(0, ItemsY,this.mInventoryItemsBackgroundTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 					
-				//ITEM
-				//load a los objetos(funcion?)####### Texture atlas distinto para items??###############################################################
-					this.mInventoryTextureAtlas.unload();
-					this.mItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mInventoryTextureAtlas, Game.getInstance().getApplicationContext(), "Item.png", 190, 290);
-					this.mInventoryTextureAtlas.load();
-					
-					this.mItemSprite = new Sprite(50, 100,this.mItemTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-						boolean mGrabbed = false;
-						@Override
-						public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						switch(pSceneTouchEvent.getAction()) {
-						case TouchEvent.ACTION_DOWN:
-							GameMenuScene.this.mItemSprite.setScale(3.0f);
-							this.mGrabbed = true;
-							break;
-						case TouchEvent.ACTION_MOVE:
-							if(this.mGrabbed) {
-								GameMenuScene.this.mItemSprite.setPosition(pSceneTouchEvent.getX() - GameMenuScene.this.mItemSprite.getWidth() / 2, pSceneTouchEvent.getY() - GameMenuScene.this.mItemSprite.getHeight() / 2);
-							}
-							break;
-						case TouchEvent.ACTION_UP:
-							if(this.mGrabbed) {
-								this.mGrabbed = false;
-								if(GameMenuScene.this.mItemSprite.collidesWith(mInventoryUseSprite)){
-								//	if(GameMenuScene.this.mEquipmentManager.EquipmentFunction(mEquipmentSwordItemSprite)== true){
-									//borrarlo, se usa
-								//	}else {
-									GameMenuScene.this.mItemSprite.setPosition(GameMenuScene.this.mItemSprite.getInitialX(),GameMenuScene.this.mItemSprite.getInitialY());
-								//	}
-								}else{
-								//	if(GameMenuScene.this.mEquipmentManager.IsEquipped(this,GameMenuScene.this.mEquipmentManager.SortEquip(this)) == true){
-								//		GameMenuScene.this.mEquipmentManager.UnequipItem(this,GameMenuScene.this.mEquipmentManager.SortEquip(this));
-								//	}
-								//	GameMenuScene.this.mItemSprite.setPosition(GameMenuScene.this.mItemSprite.getInitialX(),GameMenuScene.this.mItemSprite.getInitialY());
-									}
-								GameMenuScene.this.mItemSprite.setScale(2.0f);
-							}
-							break;
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:	
+						mInventoryItemsInitialX = pSceneTouchEvent.getX();
+						break;
+					case TouchEvent.ACTION_UP:
+	            		mInventoryItemsFinalX = pSceneTouchEvent.getX();
+						break;
+					case TouchEvent.ACTION_MOVE:
+						mInventoryItemsFinalX = pSceneTouchEvent.getX();
+						mInventoryItemsFinalY = pSceneTouchEvent.getY();
+						
+						mInventoryItemsVerticalScrollFinalX = pSceneTouchEvent.getX();//
+						mInventoryItemsVerticalScrollFinalY = pSceneTouchEvent.getY();//
+						
+						if(mInventoryItemsTimerActivo == false){
+							mInventoryItemsTimerActivo = true;
+							createSpriteSpawnTimeHandler();	
 						}
-						return true;
-						}					
-					};
-					GameMenuScene.this.mItemSprite.setScale(2.0f);
-					this.mInventoryEntity.attachChild(mItemSprite);
-					this.registerTouchArea(mItemSprite);
+						
+						float ScrollX = mInventoryItemsVerticalScrollFinalX - mInventoryItemsVerticalScrollInitialX;
+						float ScrollY = mInventoryItemsVerticalScrollFinalY - mInventoryItemsVerticalScrollInitialY;
+						
+						if(ScrollX < 4 && ScrollX > (-4)){
+							mInventoryItemsBackgroundSprite.setPosition(mInventoryItemsBackgroundSprite.getX(), mInventoryItemsBackgroundSprite.getY() + ScrollY);
+						}
+						
+						mInventoryItemsVerticalScrollInitialX = mInventoryItemsVerticalScrollFinalX;
+						mInventoryItemsVerticalScrollInitialY = mInventoryItemsVerticalScrollFinalY;
+						break;
+					}
+					return true;
+					}							
+				};
+				
+				
+				this.mInventoryEntity.attachChild(mInventoryItemsBackgroundSprite);
+				this.registerTouchArea(mInventoryItemsBackgroundSprite);
+				
+				
 					
-					return this.mInventoryEntity;
+		return this.mInventoryEntity;
 	}	
 	
+	
+	public void createSpriteSpawnTimeHandler()
+	{
+			TimerHandler InventoryScrollTimerHandler;
+	       
+	        Game.getInstance().getEngine().registerUpdateHandler(InventoryScrollTimerHandler = new TimerHandler(0.1f, true,new ITimerCallback()
+	        {                      
+	            @Override
+	            public void onTimePassed(final TimerHandler pTimerHandler)
+	            {
+	            	float Resultado = (float)mInventoryItemsFinalX - (float)mInventoryItemsInitialX;
+	            		
+	            	//Log.d("logd", "___________________________________");
+	            	//Log.d("logd", "Inicial: " + mInventoryItemsInitialX);
+	            	//Log.d("logd", "Final: " + mInventoryItemsFinalX);
+	            		
+	            	if(Resultado < -80 && mInventoryItemsEstado == true){ // izquierda
+	            		GameMenuScene.this.mInventoryItemsBackgroundSprite.registerEntityModifier(new MoveModifier(0.5f, mInventoryItemsBackgroundSprite.getX(), -690, mInventoryItemsBackgroundSprite.getY(), mInventoryItemsBackgroundSprite.getY(), EaseBackOut.getInstance()));
+	            		mInventoryItemsEstado = false;
+	            		
+	            		//Log.d("logd", "izquierda con " + Resultado);
+	            			
+	            	}else if(Resultado > 80 && mInventoryItemsEstado == false){ // derecha		
+            			GameMenuScene.this.mInventoryItemsBackgroundSprite.registerEntityModifier(new MoveModifier(0.5f, mInventoryItemsBackgroundSprite.getX(), 0, mInventoryItemsBackgroundSprite.getY(), mInventoryItemsBackgroundSprite.getY(), EaseBackOut.getInstance()));
+            			mInventoryItemsEstado = true;
+            				
+            			//Log.d("logd", "derecha con " + Resultado);
+	            	}
+	            	
+	            	
+	            	
+	            	mInventoryItemsInitialX = 0f;
+	            	mInventoryItemsFinalX = 0f;
+	            	mInventoryItemsTimerActivo = false;
+	            	
+	            	Game.getInstance().getEngine().unregisterUpdateHandler(pTimerHandler);
+	            }
+	        }));
+	}	
 		
 	
 	
@@ -761,24 +839,129 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	//################################################################################################	
 	
 	
+	//COSAS DE FACU A ORDENAR
+	private float mSkillScrollLastX = 0; // La vieja posición del dedo haciendo scroll.
+	private float mSkillScrollNewX = 0; // La nueva posición del dedo haciendo scroll.
+	private float mSkillScrollDiferencia = 0; // La diferencia entre LastX y NewX.
+	private int mSkillScrollImageWidth = 1024; // El ancho de la imagen que se va a scrol,lear. Obligatorio para que funcione bien.
+	private short mSkillScrollLastAction = 0; // Si movió a la derecha (1), izquierda (2), o ningún lado (0).
 	
 	
 	//#################SKILLS ENTITY######################	
 	public Entity LoadSkillsEntity(){
 		this.mSkillsEntity.detachChildren();//La limpio, necesario?
-		this.mTempSkillEntity = new Entity(0,90);
+		this.mSkillTreeEntity = new Entity(0,90);
 		this.mSpellIconPosition = new ArrayList<Point>(){};
 		this.mSpellIconPosition.add(0,new Point(20, 75));
 		this.mSpellIconPosition.add(1,new Point(120, 75));
 		this.mSpellIconPosition.add(2,new Point(220, 75));
 		
+		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Skills/");
 		this.mSkillsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
-		this.mSkillTreeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSkillsTextureAtlas, Game.getInstance().getApplicationContext(), "fondo.png", 0, 0);
+		this.mSkillTreeBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSkillsTextureAtlas, Game.getInstance().getApplicationContext(), "fondo.png", 0, 0);
+		this.mSkillBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSkillsTextureAtlas, Game.getInstance().getApplicationContext(), "SkillBar.png", 0, 350);
 		this.mSkillsTextureAtlas.load();
+		
+		//COSAS DE FACU A ORDENAR
+		this.mSkillTreeBackgroundSprite = new Sprite(0, 0,this.mSkillTreeBackgroundTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+				mSkillScrollLastX = pSceneTouchEvent.getX();
+				mSkillScrollLastAction = 0;
+				this.mGrabbed = true;
+				break;
+			case TouchEvent.ACTION_MOVE:
+				//################################ SCROLL HORIZONTAL DE LOS SKILLS ################################//
+				if(this.mGrabbed) {
+					mSkillScrollNewX = pSceneTouchEvent.getX();					
+					mSkillScrollDiferencia = mSkillScrollLastX - mSkillScrollNewX;
+					
+					if(mSkillScrollDiferencia == (-mSkillScrollNewX)) mSkillScrollDiferencia = 0;
+					
+					float mTreeX = GameMenuScene.this.mSkillTreeEntity.getX();
+					
+					// Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100) ===> Cuenta que centra la imagen en la mitad de la
+					// pantalla. En resolución width 800, hay 21 pixeles que separan la imagen de los bordes horizontales.
+					
+					if(mSkillScrollDiferencia > 0){
+						// MUEVE EL DEDO HACIA LA IZQUIERDA (SKILL TREE HACIA LA IZQUIERDA)
+						mSkillScrollLastAction = 2;
+						
+						if(mTreeX > Game.getSceneManager().getDisplay().getDisplayWidth() - mSkillScrollImageWidth - (Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100))){
+							GameMenuScene.this.mSkillTreeEntity.setX(mTreeX - mSkillScrollDiferencia);
+						}
+					}else{
+						// MUEVE EL DEDO HACIA LA DERECHA (SKILL TREE HACIA LA DERECHA)
+						mSkillScrollLastAction = 1;
+						
+						if(mTreeX < Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100)){
+							GameMenuScene.this.mSkillTreeEntity.setX(mTreeX - mSkillScrollDiferencia);
+						}
+					}
+					
+					mSkillScrollLastX = mSkillScrollNewX;
+				}
+				break;
+			case TouchEvent.ACTION_UP:
+				if(this.mGrabbed) {
+					this.mGrabbed = false;
+					
+					//################################ REBOTE EN EL SCROLL HORIZONTAL DE LOS SKILLS ################################//
+					float mTreeX = GameMenuScene.this.mSkillTreeEntity.getX();
+					float mTreeY = GameMenuScene.this.mSkillTreeEntity.getY();
+					
+					float mLimiteIzquierda = (float)(Game.getSceneManager().getDisplay().getDisplayWidth() - mSkillScrollImageWidth - (Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100)));
+					float mLimiteDerecha = (float)(Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100));
+					
+					if(mTreeX > mLimiteDerecha + 5 && mSkillScrollLastAction == 1){
+						GameMenuScene.this.mSkillTreeEntity.registerEntityModifier(new MoveModifier(0.4f, mTreeX, mLimiteDerecha - 1, mTreeY, mTreeY, EaseBackOut.getInstance()));
+					
+					}else if(mTreeX < mLimiteIzquierda - 5 && mSkillScrollLastAction == 2){
+						GameMenuScene.this.mSkillTreeEntity.registerEntityModifier(new MoveModifier(0.4f, mTreeX, mLimiteIzquierda + 1, mTreeY, mTreeY, EaseBackOut.getInstance()));
+					}
+				}
+				break;
+			}
+			return true;
+			}					
+		};
+		this.mSkillTreeBackgroundSprite.setAlpha(0.9f);
+		this.registerTouchArea(mSkillTreeBackgroundSprite);
+
+
+		// ########################## SHORTCUTS ############################
+	
+			this.mSkillBarSprite = new Sprite(284, 74,this.mSkillBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+				Log.d("logd", "down");
+				break;
+			case TouchEvent.ACTION_MOVE:
+				Log.d("logd", "move");
+				break;
+			case TouchEvent.ACTION_UP:
+				Log.d("logd", "up");
+				break;
+			}
+			return true;
+			}					
+		};
+		this.mSkillBarSprite.setAlpha(1f);
+		this.registerTouchArea(mSkillBarSprite);
+		
+		this.mSkillTreeEntity.attachChild(mSkillTreeBackgroundSprite);
+		this.mSkillTreeEntity.attachChild(mSkillBarSprite);
+		
+		
 		this.LoadSkillsTree();
 		this.LoadUserSpells();
-		this.attachChild(mTempSkillEntity);
+		this.mSkillsEntity.attachChild(mSkillTreeEntity);
 		return this.mSkillsEntity;
 	}
 
@@ -797,7 +980,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			
 			Log.d("Logd", "i: "+String.valueOf(i));
 			Log.d("Logd", "length: "+String.valueOf(tempArray.length));
-			final SpellIcon pIcon = new SpellIcon(mDataHandler,this.mSkillTreeAtlas,i*34,0,0,0,this.mTempSkillEntity,GameMenuScene.this,tempArray[i]);
+			final SpellIcon pIcon = new SpellIcon(mDataHandler,this.mSkillTreeAtlas,i*34,0,0,0,this.mSkillTreeEntity,GameMenuScene.this,tempArray[i]);
 			this.placeSpellIcon(pIcon);
 		}
 		this.mSkillTreeAtlas.load();
