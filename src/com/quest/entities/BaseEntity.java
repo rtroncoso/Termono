@@ -20,7 +20,7 @@ import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
-import com.quest.interfaces.IMeasureConstants;
+import com.quest.util.constants.IMeasureConstants;
 
 public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea {
 	// ===========================================================

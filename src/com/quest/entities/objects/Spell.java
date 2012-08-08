@@ -6,7 +6,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import com.quest.game.Game;
-import com.quest.interfaces.IMeasureConstants;
+import com.quest.util.constants.IMeasureConstants;
 
 public class Spell implements IMeasureConstants {
 	

@@ -13,7 +13,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.util.debug.Debug;
 
 import com.quest.game.Game;
-import com.quest.interfaces.IMeasureConstants;
+import com.quest.util.constants.IMeasureConstants;
 
 public class MapHelper implements IMeasureConstants {
 

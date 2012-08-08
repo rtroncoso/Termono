@@ -4,13 +4,13 @@ import org.andengine.entity.scene.Scene;
 
 import com.quest.display.Display;
 import com.quest.game.Game;
-import com.quest.interfaces.IMeasureConstants;
 import com.quest.scenes.GameMenuScene;
 import com.quest.scenes.GameScene;
 import com.quest.scenes.MainMenuScene;
 import com.quest.scenes.MatchScene;
 import com.quest.scenes.OptionsScene;
 import com.quest.scenes.PauseMenuScene;
+import com.quest.util.constants.IMeasureConstants;
 
 public class SceneHelper implements IMeasureConstants {
 	// ===========================================================

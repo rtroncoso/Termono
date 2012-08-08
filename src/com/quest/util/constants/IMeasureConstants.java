@@ -1,4 +1,4 @@
-package com.quest.interfaces;
+package com.quest.util.constants;
 
 public interface IMeasureConstants {
 

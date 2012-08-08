@@ -1,4 +1,4 @@
-package com.quest.network.client;
+package com.quest.network;
 
 public class Client {
 
