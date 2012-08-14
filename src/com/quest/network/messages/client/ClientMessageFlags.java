@@ -1,4 +1,12 @@
 package com.quest.network.messages.client;
+
+/**
+ * (c) 2010 Nicolas Gramlich 
+ * (c) 2011 Zynga Inc.
+ * 
+ * @author Nicolas Gramlich
+ * @since 12:00:00 - 21.05.2011
+ */
 public interface ClientMessageFlags {
 	// ===========================================================
 	// Final Fields
