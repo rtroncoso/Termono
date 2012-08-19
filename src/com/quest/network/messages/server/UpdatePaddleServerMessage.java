@@ -4,8 +4,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.andengine.examples.game.pong.util.constants.PongConstants;
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
+
+import com.quest.util.constants.PongConstants;
 
 /**
  * (c) 2010 Nicolas Gramlich 

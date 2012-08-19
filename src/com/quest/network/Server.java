@@ -28,7 +28,10 @@ import com.quest.network.messages.server.ConnectionEstablishedServerMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ConnectionRejectedProtocolMissmatchServerMessage;
 import com.quest.network.messages.server.ServerMessageFlags;
+import com.quest.network.messages.server.SetPaddleIDServerMessage;
+import com.quest.network.messages.server.UpdateScoreServerMessage;
 import com.quest.util.constants.INetworkConstants;
+import com.quest.util.constants.MessageConstants;
 
 public class Server extends SocketServer<SocketConnectionClientConnector> implements IUpdateHandler, INetworkConstants, ContactListener, ClientMessageFlags, ServerMessageFlags {
 
@@ -127,22 +130,22 @@ public class Server extends SocketServer<SocketConnectionClientConnector> implem
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ConnectionEstablishClientMessage connectionEstablishClientMessage = (ConnectionEstablishClientMessage) pClientMessage;
 				if(connectionEstablishClientMessage.getProtocolVersion() == MessageConstants.PROTOCOL_VERSION) {
-					final ConnectionEstablishedServerMessage connectionEstablishedServerMessage = (ConnectionEstablishedServerMessage) PongServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED);
+					final ConnectionEstablishedServerMessage connectionEstablishedServerMessage = (ConnectionEstablishedServerMessage) Server.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED);
 					try {
 						pClientConnector.sendServerMessage(connectionEstablishedServerMessage);
 					} catch (IOException e) {
 						Debug.e(e);
 					}
-					PongServer.this.mMessagePool.recycleMessage(connectionEstablishedServerMessage);
+					Server.this.mMessagePool.recycleMessage(connectionEstablishedServerMessage);
 				} else {
-					final ConnectionRejectedProtocolMissmatchServerMessage connectionRejectedProtocolMissmatchServerMessage = (ConnectionRejectedProtocolMissmatchServerMessage) PongServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_REJECTED_PROTOCOL_MISSMATCH);
+					final ConnectionRejectedProtocolMissmatchServerMessage connectionRejectedProtocolMissmatchServerMessage = (ConnectionRejectedProtocolMissmatchServerMessage) Server.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_REJECTED_PROTOCOL_MISSMATCH);
 					connectionRejectedProtocolMissmatchServerMessage.setProtocolVersion(MessageConstants.PROTOCOL_VERSION);
 					try {
 						pClientConnector.sendServerMessage(connectionRejectedProtocolMissmatchServerMessage);
 					} catch (IOException e) {
 						Debug.e(e);
 					}
-					PongServer.this.mMessagePool.recycleMessage(connectionRejectedProtocolMissmatchServerMessage);
+					Server.this.mMessagePool.recycleMessage(connectionRejectedProtocolMissmatchServerMessage);
 				}
 			}
 		});
@@ -150,13 +153,13 @@ public class Server extends SocketServer<SocketConnectionClientConnector> implem
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
-				final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) PongServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG);
+				final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) Server.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG);
 				try {
 					pClientConnector.sendServerMessage(connectionPongServerMessage);
 				} catch (IOException e) {
 					Debug.e(e);
 				}
-				PongServer.this.mMessagePool.recycleMessage(connectionPongServerMessage);
+				Server.this.mMessagePool.recycleMessage(connectionPongServerMessage);
 			}
 		});
 
