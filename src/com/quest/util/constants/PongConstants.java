@@ -1,6 +1,6 @@
 package com.quest.util.constants;
 
-import org.andengine.examples.game.pong.adt.PaddleUserData;
+import com.quest.network.PaddleUserData;
 
 /**
  * (c) 2010 Nicolas Gramlich 
