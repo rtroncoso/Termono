@@ -21,7 +21,7 @@ public class ConnectionEstablishedServerMessage extends ServerMessage implements
 	// ===========================================================
 	// Fields
 	// ===========================================================
-
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -29,6 +29,7 @@ public class ConnectionEstablishedServerMessage extends ServerMessage implements
 	public ConnectionEstablishedServerMessage() {
 
 	}
+	
 
 	// ===========================================================
 	// Getter & Setter
@@ -45,12 +46,12 @@ public class ConnectionEstablishedServerMessage extends ServerMessage implements
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
-		/* Nothing to read. */
+				
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		/* Nothing to write. */
+		
 	}
 
 	// ===========================================================

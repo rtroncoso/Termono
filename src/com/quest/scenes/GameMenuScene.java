@@ -378,9 +378,6 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	
 	private boolean mInventoryItemsTimerActivo = false;
 	private boolean mInventoryItemsEstado = true; // True = items, false = equipo,
-	//private float mInventoryItemsDefaultItems = 0; // Posición por defecto de los items.
-	//private float mInventoryItemsDefaultEquipment = 0; // Posición por defecto del equipment.
-	//private float mInventoryItemsDefaultPosition = 0; // Posición actual del texture.
 	private float mInventoryItemsVerticalScrollInitialX = 0;
 	private float mInventoryItemsVerticalScrollInitialY = 0;
 	private float mInventoryItemsVerticalScrollFinalX = 0;
@@ -418,7 +415,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				
 				//Descripción
 				this.mInventoryDescriptionSprite = new Sprite(0, Game.getSceneManager().getDisplay().getDisplayHeight() - 75, this.mInventoryDescriptionTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
-				this.mInventoryEntity.attachChild(mInventoryDescriptionSprite);
+				
 			
 				
 				
@@ -441,26 +438,10 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	            		mInventoryItemsFinalX = pSceneTouchEvent.getX();
 						break;
 					case TouchEvent.ACTION_MOVE:
-						mInventoryItemsFinalX = pSceneTouchEvent.getX();
-						mInventoryItemsFinalY = pSceneTouchEvent.getY();
-						
-						mInventoryItemsVerticalScrollFinalX = pSceneTouchEvent.getX();//
-						mInventoryItemsVerticalScrollFinalY = pSceneTouchEvent.getY();//
-						
 						if(mInventoryItemsTimerActivo == false){
 							mInventoryItemsTimerActivo = true;
 							createSpriteSpawnTimeHandler();	
 						}
-						
-						float ScrollX = mInventoryItemsVerticalScrollFinalX - mInventoryItemsVerticalScrollInitialX;
-						float ScrollY = mInventoryItemsVerticalScrollFinalY - mInventoryItemsVerticalScrollInitialY;
-						
-						if(ScrollX < 4 && ScrollX > (-4)){
-							mInventoryItemsBackgroundSprite.setPosition(mInventoryItemsBackgroundSprite.getX(), mInventoryItemsBackgroundSprite.getY() + ScrollY);
-						}
-						
-						mInventoryItemsVerticalScrollInitialX = mInventoryItemsVerticalScrollFinalX;
-						mInventoryItemsVerticalScrollInitialY = mInventoryItemsVerticalScrollFinalY;
 						break;
 					}
 					return true;
@@ -471,7 +452,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 				this.mInventoryEntity.attachChild(mInventoryItemsBackgroundSprite);
 				this.registerTouchArea(mInventoryItemsBackgroundSprite);
 				
-				
+				this.mInventoryEntity.attachChild(mInventoryDescriptionSprite);
 					
 		return this.mInventoryEntity;
 	}	
@@ -487,21 +468,13 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	            public void onTimePassed(final TimerHandler pTimerHandler)
 	            {
 	            	float Resultado = (float)mInventoryItemsFinalX - (float)mInventoryItemsInitialX;
-	            		
-	            	//Log.d("logd", "___________________________________");
-	            	//Log.d("logd", "Inicial: " + mInventoryItemsInitialX);
-	            	//Log.d("logd", "Final: " + mInventoryItemsFinalX);
-	            		
-	            	if(Resultado < -80 && mInventoryItemsEstado == true){ // izquierda
-	            		GameMenuScene.this.mInventoryItemsBackgroundSprite.registerEntityModifier(new MoveModifier(0.5f, mInventoryItemsBackgroundSprite.getX(), -690, mInventoryItemsBackgroundSprite.getY(), mInventoryItemsBackgroundSprite.getY(), EaseBackOut.getInstance()));
+	            		if(Resultado < -80 && mInventoryItemsEstado == true){ // izquierda
+	            		GameMenuScene.this.mInventoryItemsBackgroundSprite.registerEntityModifier(new MoveModifier(0.5f, mInventoryItemsBackgroundSprite.getX(), -690, mInventoryItemsBackgroundSprite.getY(), mInventoryItemsBackgroundSprite.getY()));
 	            		mInventoryItemsEstado = false;
-	            		
 	            		//Log.d("logd", "izquierda con " + Resultado);
-	            			
-	            	}else if(Resultado > 80 && mInventoryItemsEstado == false){ // derecha		
-            			GameMenuScene.this.mInventoryItemsBackgroundSprite.registerEntityModifier(new MoveModifier(0.5f, mInventoryItemsBackgroundSprite.getX(), 0, mInventoryItemsBackgroundSprite.getY(), mInventoryItemsBackgroundSprite.getY(), EaseBackOut.getInstance()));
+	            		}else if(Resultado > 80 && mInventoryItemsEstado == false){ // derecha		
+            			GameMenuScene.this.mInventoryItemsBackgroundSprite.registerEntityModifier(new MoveModifier(0.5f, mInventoryItemsBackgroundSprite.getX(), 0, mInventoryItemsBackgroundSprite.getY(), mInventoryItemsBackgroundSprite.getY()));
             			mInventoryItemsEstado = true;
-            				
             			//Log.d("logd", "derecha con " + Resultado);
 	            	}
 	            	
@@ -850,7 +823,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 	//#################SKILLS ENTITY######################	
 	public Entity LoadSkillsEntity(){
 		this.mSkillsEntity.detachChildren();//La limpio, necesario?
-		this.mSkillTreeEntity = new Entity(0,90);
+		this.mSkillTreeEntity = new Entity(0,120);
 		this.mSpellIconPosition = new ArrayList<Point>(){};
 		this.mSpellIconPosition.add(0,new Point(20, 75));
 		this.mSpellIconPosition.add(1,new Point(120, 75));
@@ -858,7 +831,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Skills/");
-		this.mSkillsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
+		this.mSkillsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2048,2048, TextureOptions.BILINEAR);
 		this.mSkillTreeBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSkillsTextureAtlas, Game.getInstance().getApplicationContext(), "fondo.png", 0, 0);
 		this.mSkillBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSkillsTextureAtlas, Game.getInstance().getApplicationContext(), "SkillBar.png", 0, 350);
 		this.mSkillsTextureAtlas.load();

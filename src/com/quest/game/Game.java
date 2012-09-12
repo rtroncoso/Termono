@@ -80,9 +80,9 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mMapManager = new MapHelper();
 		
 		//###################################################
-		//	this.mSceneManager.setGameScene();
+		//this.mSceneManager.setGameScene();
 		//this.mSceneManager.setInventoryScene();
-		Game.mSceneManager.setMainMenuScene();
+			Game.mSceneManager.setMainMenuScene();
 		//this.mSceneManager.setPauseMenuScene();
 		//###################################################
 
