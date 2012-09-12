@@ -1,7 +1,5 @@
 package com.quest.scenes;
 
-import java.io.IOException;
-
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
@@ -22,7 +20,6 @@ import android.util.Log;
 import com.quest.game.Game;
 import com.quest.network.QClient;
 import com.quest.network.QServer;
-import com.quest.network.messages.client.ConnectionPingClientMessage;
 
 public class MatchScene extends Scene {
 
@@ -33,67 +30,95 @@ public class MatchScene extends Scene {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private BitmapTextureAtlas mSceneTextureAtlas;
-	private ITextureRegion mScrollBackTextureRegion;
-	private ITextureRegion mUpperBarTextureRegion;
-	private ITextureRegion mLowerBarTextureRegion;
-	private ITextureRegion mNewGameTextureRegion;
-	private ITextureRegion mRefreshTextureRegion;
-	private ITextureRegion mDirectConnectTextureRegion;
-	private ITextureRegion mLoadedGamesTextureRegion;
-	private ITextureRegion mDownloadedGamesTextureRegion;
-	private ITextureRegion mLoadGameTextureRegion;
-	private ITextureRegion mDeleteGameTextureRegion;
-	private ITextureRegion mGameBackTextureRegion;
-	private ITextureRegion mScrollBarTextureRegion;
 	
-	private Sprite mScrollBackSprite;
-	private Sprite mUpperBarSprite;
-	private Sprite mLowerBarSprite;
-	private Sprite mNewGameSprite;
-	private Sprite mRefreshSprite;
-	private Sprite mDirectConnectSprite;
-	private Sprite mLoadedGamesSprite;
-	private Sprite mDownloadedGamesSprite;
-	private Sprite mLoadGameSprite;
-	private Sprite mDeleteGameSprite;
-	private Sprite mGameBackSprite;
-	private Sprite mScrollBarSprite;
+
 	
+	//Scene
 	private Entity mScrollEntity;
-	
-	private float mScale;
-	
+	private Entity mCurrentEntity;
+		private BitmapTextureAtlas mSceneTextureAtlas;
+		private ITextureRegion mScrollBackTextureRegion;
+		private ITextureRegion mUpperBarTextureRegion;
+		private ITextureRegion mLowerBarTextureRegion;
+		private Sprite mScrollBackSprite;
+		private Sprite mUpperBarSprite;
+		private Sprite mLowerBarSprite;
 	private QServer mServer;
 	private QClient mClient;
+	//comunes
+	private ITextureRegion mNewGameTextureRegion;
+	private ITextureRegion mBackTextureRegion;
+	private ITextureRegion mOkTextureRegion;
+	private ITextureRegion mCancelTextureRegion;
+	private ITextureRegion mMatchBackgroundTextureRegion;
+	private Sprite mBackSprite;
+	private Sprite mNewGameSprite;
+	private Sprite mOkSprite;
+	private Sprite mCancelSprite;
+	
+	private int LastUI;//Donde estuvo, own matches = 0, matches = 1  
+	//Matches
+	private Entity mMatchesEntity;
+	private BitmapTextureAtlas mMatchesTextureAtlas;
+		private ITextureRegion mRefreshTextureRegion;
+		private ITextureRegion mDirectConnectTextureRegion;
+		private ITextureRegion mOwnMatchesTextureRegion;
+				
+		private Sprite mRefreshSprite;
+		private Sprite mDirectConnectSprite;
+		private Sprite mOwnMatchesSprite;
+		
+	
+	//Own Matches
+	private Entity mOwnMatchesEntity;
+	private BitmapTextureAtlas mOwnMatchesTextureAtlas;
+		
+		
+	//New Match	
+	private Entity mNewMatchEntity;
+	private BitmapTextureAtlas mNewMatchTextureAtlas;
+	
+	//Direct Connect
+	private Entity mDirectEntity;
+	private BitmapTextureAtlas mDirectConnectTextureAtlas;
+	
+	//Lobby
+	private Entity mLobbyEntity;	
+	private BitmapTextureAtlas mLobbyTextureAtlas;
+		private Sprite mKickSprite;
+		private Sprite mMessageSprite;
+	
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public MatchScene(){
 		this.mScrollEntity = new Entity(0,0);
+		this.mMatchesEntity = new Entity(0,0);
+		this.mOwnMatchesEntity = new Entity(0,0);
+		this.mNewMatchEntity = new Entity(0,0);
+		this.mLobbyEntity = new Entity(0,0);
+		this.mDirectEntity = new Entity(0,0);
 		
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/temp/");
+		
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2036,2036, TextureOptions.BILINEAR);
 		this.mScrollBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "scroll.png", 0, 0);
 		this.mUpperBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "upperbar.png", 0, 768);
 		this.mLowerBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lowerbar.png", 0, 880);
 		this.mNewGameTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "new.png", 0, 985);
-		this.mRefreshTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "refresh.png", 100, 985);
-		this.mDirectConnectTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "IP.png", 200, 985);
-		this.mLoadedGamesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "loaded.png", 300, 985);
-		this.mDownloadedGamesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "download.png", 400, 985);
-		this.mLoadGameTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "load.png", 500, 985);
-		this.mDeleteGameTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "delete.png", 600, 985);
-		this.mGameBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 0, 1057);
-		this.mScrollBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "scrollbar.png", 968, 1057);
+		this.mBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Back.png", 65, 985);
+		this.mOkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Ok.png", 130, 985);
+		this.mCancelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Cancel.png", 195, 985);
+		this.mDirectConnectTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "DC.png", 260, 985);
+		this.mRefreshTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "refresh.png", 325, 985);
+		this.mOwnMatchesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "OwnMatches.png", 390, 985);
+		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 455, 985);
 		this.mSceneTextureAtlas.load();
 		
+		//Background
 		this.mScrollBackSprite = new Sprite(0, 0, mScrollBackTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mScrollBackSprite);
-		//this.mScale = this.mScrollBackSprite.getHeightScaled() / this.mScrollBackSprite.getHeight();//consigo el scale
-		//this.mScrollBackSprite.getHeightScaled()-(105*this.mScale) aca pongo bien el Y
-		//Log.d("Logd","Height: " + String.valueOf(this.mScrollBackSprite.getHeight()) + "  Scaled Height: "+String.valueOf(this.mScrollBackSprite.getHeightScaled())+"  Scale: "+String.valueOf(this.mScale));
-		//Log.d("Logd", "Height Scaled: " + String.valueOf(this.mLowerBarSprite.getHeightScaled()) + "  Position: "+ String.valueOf(this.mLowerBarSprite.getY()));
 		
 		this.mUpperBarSprite = new Sprite(0, 0, mUpperBarTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mUpperBarSprite);
@@ -101,7 +126,27 @@ public class MatchScene extends Scene {
 		this.mLowerBarSprite = new Sprite(0,this.mScrollBackSprite.getHeight()- 66,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mLowerBarSprite);
 		
-		this.mLoadedGamesSprite = new Sprite(16,12,this.mLoadedGamesTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		
+		
+		
+		
+
+		mCurrentEntity = LoadMatchesEntity();
+		MatchScene.this.attachChild(mCurrentEntity);
+		this.setTouchAreaBindingOnActionDownEnabled(true);
+		//***********************************************************************************
+		//                           FIN DEL MAIN
+		//***********************************************************************************
+	}
+	
+	
+	
+	//Matches entity
+	public Entity LoadMatchesEntity(){
+		this.mMatchesEntity.detachChildren();//fijarme si siguen existiendo los sprites despues de cambiar de entidades, arreglarlo(hacer que se eliminen)
+		this.LastUI=1;
+
+		this.mOwnMatchesSprite = new Sprite(16,12,this.mOwnMatchesTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -112,22 +157,26 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-						try {
-							final ConnectionPingClientMessage connectionPingClientMessage = new ConnectionPingClientMessage(); // TODO Pooling
+						MatchScene.this.clearTouchAreas();
+						SwitchEntity(LoadOwnMatchesEntity());//fijarse como funca
+						/*
+						  try {
+						 	final ConnectionPingClientMessage connectionPingClientMessage = new ConnectionPingClientMessage(); // TODO Pooling
 							connectionPingClientMessage.setTimestamp(System.currentTimeMillis());
 							MatchScene.this.mClient.sendClientMessage(connectionPingClientMessage);
 							Log.d("Logd","Ping");
 						} catch (final IOException e) {
 							Debug.e(e);
 						}
+						*/
 					}
 					break;
 				}
 			return true;	
 			}
 		};
-		this.attachChild(this.mLoadedGamesSprite);
-		this.registerTouchArea(mLoadedGamesSprite);
+		this.mMatchesEntity.attachChild(this.mOwnMatchesSprite);
+		this.registerTouchArea(mOwnMatchesSprite);
 		
 		this.mNewGameSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -140,14 +189,17 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-						MatchScene.this.initServer();
+						MatchScene.this.clearTouchAreas();
+						MatchScene.this.SwitchEntity(LoadLobbyEntity());
+						//Set scene create new match
+						//MatchScene.this.initServer();
 					}
 					break;
 				}
 			return true;	
 			}
 		};
-		this.attachChild(this.mNewGameSprite);
+		this.mMatchesEntity.attachChild(this.mNewGameSprite);
 		this.registerTouchArea(this.mNewGameSprite);
 		
 		this.mRefreshSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mRefreshTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
@@ -161,13 +213,19 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
+					//Mandar otro discovery
+						/*	try {
+							MatchScene.this.mClient.sendClientMessage(new ConnectionPingClientMessage());
+						} catch (final IOException e) {
+							Debug.e(e);
+						}*/
 					}
 					break;
 				}
 				return true;	
 			}
 		};
-		this.attachChild(this.mRefreshSprite);
+		this.mMatchesEntity.attachChild(this.mRefreshSprite);
 		this.registerTouchArea(this.mRefreshSprite);
 		
 		this.mDirectConnectSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mDirectConnectTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
@@ -181,18 +239,232 @@ public class MatchScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
-							MatchScene.this.initClient();
+							//Direct Connect entity
+							//MatchScene.this.initClient();
 						}
 						break;
 					}
 				return true;	
 				}
 		};
-		this.attachChild(this.mDirectConnectSprite);
+		this.mMatchesEntity.attachChild(this.mDirectConnectSprite);
 		this.registerTouchArea(this.mDirectConnectSprite);
+
+		return this.mMatchesEntity;
 	}
 	
 	
+	//Own Matches entity
+	public Entity LoadOwnMatchesEntity(){
+		this.mOwnMatchesEntity.detachChildren();
+		this.LastUI=0;
+		
+		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						MatchScene.this.clearTouchAreas();
+						MatchScene.this.SwitchEntity(LoadMatchesEntity());
+					}
+					break;
+				}
+			return true;	
+			}
+		};
+		this.mOwnMatchesEntity.attachChild(this.mBackSprite);
+		this.registerTouchArea(mBackSprite);
+		
+		this.mNewGameSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						//Set scene create new match
+					}
+					break;
+				}
+			return true;	
+			}
+		};
+		this.mOwnMatchesEntity.attachChild(this.mNewGameSprite);
+		this.registerTouchArea(this.mNewGameSprite);
+		
+		//Delete match
+		this.mCancelSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+					//borrar la entity de la partida seleccionada
+					}
+					break;
+				}
+				return true;	
+			}
+		};
+		this.mOwnMatchesEntity.attachChild(this.mCancelSprite);
+		this.registerTouchArea(this.mCancelSprite);
+		
+		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
+						break;
+					case TouchEvent.ACTION_UP:
+						if(mGrabbed) {
+							mGrabbed = false;
+							MatchScene.this.clearTouchAreas();
+							MatchScene.this.SwitchEntity(LoadLobbyEntity());
+						}
+						break;
+					}
+				return true;	
+				}
+		};
+		this.mOwnMatchesEntity.attachChild(this.mOkSprite);
+		this.registerTouchArea(this.mOkSprite);
+		
+		return this.mOwnMatchesEntity;
+	}
+	
+	
+	
+	//Loby entity
+	public Entity LoadLobbyEntity(){//pedir datos de partida
+		this.mLobbyEntity.detachChildren();
+		//fijarse si es host o no, si no es esconder la barra
+		ShowLowerBar(false);
+		
+		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						ShowLowerBar(true);
+						if(LastUI==0){
+							MatchScene.this.clearTouchAreas();
+							MatchScene.this.SwitchEntity(LoadOwnMatchesEntity());
+						}else{
+							MatchScene.this.clearTouchAreas();
+							MatchScene.this.SwitchEntity(LoadMatchesEntity());
+						}
+					}
+					break;
+				}
+			return true;	
+			}
+		};
+		this.mLobbyEntity.attachChild(this.mBackSprite);
+		this.registerTouchArea(mBackSprite);
+		
+		//Start Match
+		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						//Iniciar la partida
+					}
+					break;
+				}
+			return true;	
+			}
+		};
+		this.mLobbyEntity.attachChild(this.mOkSprite);
+		this.registerTouchArea(this.mOkSprite);
+		
+		//Kick player
+		this.mCancelSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+					//rechazar conexiones del player seleccionado
+					}
+					break;
+				}
+				return true;	
+			}
+		};
+		this.mLobbyEntity.attachChild(this.mCancelSprite);
+		this.registerTouchArea(this.mCancelSprite);
+		
+		/* chat?
+		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
+						break;
+					case TouchEvent.ACTION_UP:
+						if(mGrabbed) {
+							mGrabbed = false;
+							//chat?
+						}
+						break;
+					}
+				return true;	
+				}
+		};
+		this.attachChild(this.mOkSprite);
+		this.registerTouchArea(this.mOkSprite);
+		*/
+		
+		return this.mLobbyEntity;
+	}
+	
+	private void ShowLowerBar(Boolean pBool){
+		this.mLowerBarSprite.setVisible(pBool);
+	}
+	
+	
+	public void SwitchEntity(Entity pEntity){
+		this.detachChild(this.mCurrentEntity);
+		this.mCurrentEntity = pEntity;//algun dispose para borrar lo viejo?
+		this.attachChild(this.mCurrentEntity);
+	}
 	
 	private void initServer() {
 		this.mServer = new QServer(new ExampleClientConnectorListener());
@@ -205,7 +477,7 @@ public class MatchScene extends Scene {
 	
 	private void initClient() {
 		try {
-			this.mClient = new QClient("127.0.0.1", new ExampleServerConnectorListener());
+			this.mClient = new QClient("192.168.1.5", new ExampleServerConnectorListener());
 			this.mClient.getConnection().start();
 		} catch (final Throwable t) {
 			Debug.e(t);
