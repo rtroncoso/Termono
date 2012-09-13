@@ -42,9 +42,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // Fields
 // ===========================================================
 	private final MessagePool<IMessage> mMessagePool = new MessagePool<IMessage>();
-	//private final ArrayList<UpdatePaddleServerMessage> mUpdatePaddleServerMessages = new ArrayList<UpdatePaddleServerMessage>();
-	private int mPrueba = 0;
-
+	
 // ===========================================================
 // Constructors
 // ===========================================================
@@ -65,42 +63,11 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // ===========================================================
 // Methods for/from SuperClass/Interfaces
 // ===========================================================
-	/*
-	public void TestMsg(int pInt, boolean pEnabled) {
-		if(pEnabled) {
-			mPrueba = pInt;
-			final TestServerMessage TestServerMessage = (TestServerMessage)this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_TEST);
-			TestServerMessage.set(pInt);
-
-			final SmartList<SocketConnectionClientConnector> clientConnectors = this.mClientConnectors;
-			for(int i = 0; i < clientConnectors.size(); i++) {
-				try {
-					final ClientConnector<SocketConnection> clientConnector = clientConnectors.get(i);
-					clientConnector.sendServerMessage(TestServerMessage);
-				} catch (final IOException e) {
-					Debug.e(e);
-				}
-			}
-			this.mMessagePool.recycleMessage(TestServerMessage);
-		}
-	}
-*/
-
+	
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
-	/*	final TestServerMessage TestServerMessage = (TestServerMessage)this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_TEST);
-		TestServerMessage.set(this.mPrueba);
-
-		final SmartList<SocketConnectionClientConnector> clientConnectors = this.mClientConnectors;
-		for(int i = 0; i < clientConnectors.size(); i++) {
-			try {
-				final ClientConnector<SocketConnection> clientConnector = clientConnectors.get(i);
-				clientConnector.sendServerMessage(TestServerMessage);
-			} catch (final IOException e) {
-				Debug.e(e);
-			}
-		}
-		this.mMessagePool.recycleMessage(TestServerMessage);*/
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -173,9 +140,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // ===========================================================
 // Getter & Setter
 // ===========================================================
-	public void setmPrueba(int pInt){
-		mPrueba = pInt;
-	}
 	
 // ===========================================================
 // Methods
@@ -188,147 +152,3 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 
 
 }
-
-
-/*
-public class Server extends SocketServer<SocketConnectionClientConnector> implements IUpdateHandler, INetworkConstants, ContactListener, ClientMessageFlags, ServerMessageFlags {
-
-	// ===========================================================
-	// Constants
-	// ===========================================================
-	private final MessagePool<IMessage> mMessagePool = new MessagePool<IMessage>();
-	
-	
-	// ===========================================================
-	// Fields
-	// ===========================================================
-	private SocketServer<SocketConnectionClientConnector> mSocketServer;
-	private ServerConnector<SocketConnection> mServerConnector;
-
-	
-	// ===========================================================
-	// Constructors
-	// ===========================================================
-
-	public Server(final ISocketConnectionClientConnectorListener pSocketConnectionClientConnectorListener) {
-		super(SERVER_PORT, pSocketConnectionClientConnectorListener, new DefaultSocketServerListener<SocketConnectionClientConnector>());
-
-		this.initMessagePool();
-	}
-	
-	// ===========================================================
-	// Methods for/from SuperClass/Interfaces
-	// ===========================================================
-	
-
-	// ===========================================================
-	// Getter & Setter
-	// ===========================================================
-	
-
-	// ===========================================================
-	// Methods
-	// ===========================================================
-	
-	private void initMessagePool() {
-		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED, UpdateScoreServerMessage.class);
-		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, UpdateScoreServerMessage.class);
-		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_CLOSE, UpdateScoreServerMessage.class);
-	}
-
-	@Override
-	public void beginContact(Contact contact) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void endContact(Contact contact) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onUpdate(float pSecondsElapsed) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	protected SocketConnectionClientConnector newClientConnector(final SocketConnection pSocketConnection) throws IOException {
-		final SocketConnectionClientConnector clientConnector = new SocketConnectionClientConnector(pSocketConnection);
-
-
-		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_CLOSE, ConnectionCloseClientMessage.class, new IClientMessageHandler<SocketConnection>() {
-			@Override
-			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
-				pClientConnector.terminate();
-			}
-		});
-
-		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_ESTABLISH, ConnectionEstablishClientMessage.class, new IClientMessageHandler<SocketConnection>() {
-			@Override
-			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
-				final ConnectionEstablishClientMessage connectionEstablishClientMessage = (ConnectionEstablishClientMessage) pClientMessage;
-				if(connectionEstablishClientMessage.getProtocolVersion() == MessageConstants.PROTOCOL_VERSION) {
-					final ConnectionEstablishedServerMessage connectionEstablishedServerMessage = (ConnectionEstablishedServerMessage) Server.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED);
-					try {
-						pClientConnector.sendServerMessage(connectionEstablishedServerMessage);
-					} catch (IOException e) {
-						Debug.e(e);
-					}
-					Server.this.mMessagePool.recycleMessage(connectionEstablishedServerMessage);
-				} else {
-					final ConnectionRejectedProtocolMissmatchServerMessage connectionRejectedProtocolMissmatchServerMessage = (ConnectionRejectedProtocolMissmatchServerMessage) Server.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_REJECTED_PROTOCOL_MISSMATCH);
-					connectionRejectedProtocolMissmatchServerMessage.setProtocolVersion(MessageConstants.PROTOCOL_VERSION);
-					try {
-						pClientConnector.sendServerMessage(connectionRejectedProtocolMissmatchServerMessage);
-					} catch (IOException e) {
-						Debug.e(e);
-					}
-					Server.this.mMessagePool.recycleMessage(connectionRejectedProtocolMissmatchServerMessage);
-				}
-			}
-		});
-
-		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class, new IClientMessageHandler<SocketConnection>() {
-			@Override
-			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
-				final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) Server.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG);
-				try {
-					pClientConnector.sendServerMessage(connectionPongServerMessage);
-				} catch (IOException e) {
-					Debug.e(e);
-				}
-				Server.this.mMessagePool.recycleMessage(connectionPongServerMessage);
-			}
-		});
-
-		clientConnector.sendServerMessage(new SetPaddleIDServerMessage(this.mClientConnectors.size())); // TODO should not be size(), as it only works properly for first two connections!
-		return clientConnector;
-	}
-
-	// ===========================================================
-	// Inner and Anonymous Classes
-	// ===========================================================
-
-
-}
-*/
