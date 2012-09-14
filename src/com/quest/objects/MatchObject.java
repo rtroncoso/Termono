@@ -28,8 +28,7 @@ public class MatchObject extends Entity{
 	private String mName;
 	private int mItemClass;
 	private String IPAdress;
-	private Entity mEntity;//como hacer para no tener que usar esto y pasarle el pEntity al icon?
-	
+	private Entity mEntity;
 	
 	// ===========================================================
 	// Constructors
@@ -71,7 +70,9 @@ public class MatchObject extends Entity{
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	
+	public String getIP(){
+		return this.mIP;
+	}
 
 	// ===========================================================
 	// Methods

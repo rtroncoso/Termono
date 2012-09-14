@@ -32,6 +32,7 @@ import android.util.Log;
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
 import com.quest.network.QClient;
+import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
 import com.quest.objects.MatchObject;
 
@@ -110,8 +111,8 @@ public class MatchScene extends Scene {
 		private Sprite mMessageSprite;
 	
 	
-	private SocketServerDiscoveryServer<DefaultDiscoveryData> mSocketServerDiscoveryServer;
-	private SocketServerDiscoveryClient<DefaultDiscoveryData> mSocketServerDiscoveryClient;
+	private SocketServerDiscoveryServer<MatchesDiscoveryData> mSocketServerDiscoveryServer;
+	private SocketServerDiscoveryClient<MatchesDiscoveryData> mSocketServerDiscoveryClient;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -214,10 +215,10 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						try {
-							MatchScene.this.mSocketServerDiscoveryServer = new SocketServerDiscoveryServer<DefaultDiscoveryData>(DISCOVERY_PORT, new ExampleSocketServerDiscoveryServerListener()) {
+							MatchScene.this.mSocketServerDiscoveryServer = new SocketServerDiscoveryServer<MatchesDiscoveryData>(DISCOVERY_PORT, new ExampleSocketServerDiscoveryServerListener()) {
 								@Override
-								protected DefaultDiscoveryData onCreateDiscoveryResponse() {
-									return new DefaultDiscoveryData(wifiIPv4Address, SERVER_PORT);
+								protected MatchesDiscoveryData onCreateDiscoveryResponse() {
+									return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,"Match1");
 								}
 							};
 							MatchScene.this.mSocketServerDiscoveryServer.start();
@@ -275,6 +276,7 @@ public class MatchScene extends Scene {
 							mGrabbed = false;
 							//Direct Connect entity
 							//MatchScene.this.initClient();
+							MatchScene.this.initServerDiscovery();
 						}
 						break;
 					}
@@ -284,33 +286,33 @@ public class MatchScene extends Scene {
 		this.mMatchesEntity.attachChild(this.mDirectConnectSprite);
 		this.registerTouchArea(this.mDirectConnectSprite);
 
-		MatchScene.this.initServerDiscovery();
+		//MatchScene.this.initServerDiscovery();
 		return this.mMatchesEntity;
 	}
 	
 	
 	private void initServerDiscovery() {
 		try {
-			this.mSocketServerDiscoveryClient = new SocketServerDiscoveryClient<DefaultDiscoveryData>(WifiUtils.getBroadcastIPAddressRaw(Game.getInstance()),DISCOVERY_PORT, SERVER_PORT, DefaultDiscoveryData.class, new ISocketServerDiscoveryClientListener<DefaultDiscoveryData>() {
+			this.mSocketServerDiscoveryClient = new SocketServerDiscoveryClient<MatchesDiscoveryData>(WifiUtils.getBroadcastIPAddressRaw(Game.getInstance()),DISCOVERY_PORT, SERVER_PORT, MatchesDiscoveryData.class, new ISocketServerDiscoveryClientListener<MatchesDiscoveryData>() {
 				@Override
-				public void onDiscovery(final SocketServerDiscoveryClient<DefaultDiscoveryData> pSocketServerDiscoveryClient, final DefaultDiscoveryData pDiscoveryData) {
+				public void onDiscovery(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final MatchesDiscoveryData pDiscoveryData) {
 					try {
 						final String ipAddressAsString = IPUtils.ipAddressToString(pDiscoveryData.getServerIP());
-						Log.d("Logd","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort());
-						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mBackTextureRegion,50, MatchScene.this.mMatchList.size()*143 + 20, MatchScene.this, ipAddressAsString));
+						Log.d("Logd","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" --- "+pDiscoveryData.getTest().trim());
+						//MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mBackTextureRegion,50, MatchScene.this.mMatchList.size()*143 + 20, MatchScene.this, ipAddressAsString));
 					} catch (final UnknownHostException e) {
 						Log.d("Logd","DiscoveryClient: IPException: " + e);
 					}
 				}
 
 				@Override
-				public void onTimeout(final SocketServerDiscoveryClient<DefaultDiscoveryData> pSocketServerDiscoveryClient, final SocketTimeoutException pSocketTimeoutException) {
+				public void onTimeout(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final SocketTimeoutException pSocketTimeoutException) {
 					Debug.e(pSocketTimeoutException);
 					Log.d("Logd","DiscoveryClient: Timeout: " + pSocketTimeoutException);
 				}
 
 				@Override
-				public void onException(final SocketServerDiscoveryClient<DefaultDiscoveryData> pSocketServerDiscoveryClient, final Throwable pThrowable) {
+				public void onException(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final Throwable pThrowable) {
 					Debug.e(pThrowable);
 					Log.d("Logd","DiscoveryClient: Exception: " + pThrowable);
 				}
@@ -600,25 +602,25 @@ public class MatchScene extends Scene {
 	}
 
 //Discovery
-	public class ExampleSocketServerDiscoveryServerListener implements ISocketServerDiscoveryServerListener<DefaultDiscoveryData> {
+	public class ExampleSocketServerDiscoveryServerListener implements ISocketServerDiscoveryServerListener<MatchesDiscoveryData> {
 		@Override
-		public void onStarted(final SocketServerDiscoveryServer<DefaultDiscoveryData> pSocketServerDiscoveryServer) {
+		public void onStarted(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer) {
 			Log.d("Logd","DiscoveryServer: Started.");
 		}
 
 		@Override
-		public void onTerminated(final SocketServerDiscoveryServer<DefaultDiscoveryData> pSocketServerDiscoveryServer) {
+		public void onTerminated(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer) {
 			Log.d("Logd","DiscoveryServer: Terminated.");
 		}
 
 		@Override
-		public void onException(final SocketServerDiscoveryServer<DefaultDiscoveryData> pSocketServerDiscoveryServer, final Throwable pThrowable) {
+		public void onException(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer, final Throwable pThrowable) {
 			Debug.e(pThrowable);
 			Log.d("Logd","DiscoveryServer: Exception: " + pThrowable);
 		}
 
 		@Override
-		public void onDiscovered(final SocketServerDiscoveryServer<DefaultDiscoveryData> pSocketServerDiscoveryServer, final InetAddress pInetAddress, final int pPort) {
+		public void onDiscovered(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer, final InetAddress pInetAddress, final int pPort) {
 			Log.d("Logd","DiscoveryServer: Discovered by: " + pInetAddress.getHostAddress() + ":" + pPort);
 		}
 	}
