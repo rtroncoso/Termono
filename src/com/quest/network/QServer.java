@@ -125,7 +125,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG);
 				try {
 					pClientConnector.sendServerMessage(connectionPongServerMessage);
-					Log.d("Logd","Pong");
 				} catch (IOException e) {
 					Debug.e(e);
 				}

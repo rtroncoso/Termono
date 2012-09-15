@@ -1,5 +1,6 @@
 package com.quest.scenes;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -16,7 +17,6 @@ import org.andengine.extension.multiplayer.protocol.server.SocketServerDiscovery
 import org.andengine.extension.multiplayer.protocol.server.SocketServerDiscoveryServer.ISocketServerDiscoveryServerListener;
 import org.andengine.extension.multiplayer.protocol.server.connector.ClientConnector;
 import org.andengine.extension.multiplayer.protocol.server.connector.SocketConnectionClientConnector.ISocketConnectionClientConnectorListener;
-import org.andengine.extension.multiplayer.protocol.shared.IDiscoveryData.DefaultDiscoveryData;
 import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.IPUtils;
 import org.andengine.extension.multiplayer.protocol.util.WifiUtils;
@@ -34,6 +34,7 @@ import com.quest.game.Game;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
+import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.objects.MatchObject;
 
 public class MatchScene extends Scene {
@@ -47,7 +48,7 @@ public class MatchScene extends Scene {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	
+	//acordarme de hacer que no se pueda tocar una partida tapada por las bars
 
 	
 	//Scene
@@ -72,8 +73,7 @@ public class MatchScene extends Scene {
 	private Sprite mNewGameSprite;
 	private Sprite mOkSprite;
 	private Sprite mCancelSprite;
-	private Entity mDiscoveredMatchEntity;
-	private Entity mTempMatchEntity;
+	public Entity mDiscoveredMatchEntity;//------------------
 	
 	private DataHandler mDataHandler;	
 	private ArrayList<MatchObject> mMatchList;
@@ -123,6 +123,7 @@ public class MatchScene extends Scene {
 		this.mNewMatchEntity = new Entity(0,0);
 		this.mLobbyEntity = new Entity(0,0);
 		this.mDirectEntity = new Entity(0,0);
+		this.mDiscoveredMatchEntity = new Entity(110,61);
 		this.mDataHandler = new DataHandler();
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
@@ -170,7 +171,8 @@ public class MatchScene extends Scene {
 		this.mMatchesEntity.detachChildren();//fijarme si siguen existiendo los sprites despues de cambiar de entidades, arreglarlo(hacer que se eliminen)
 		this.LastUI=1;
 		this.mMatchList = new ArrayList<MatchObject>();
-
+		this.mDiscoveredMatchEntity.detachChildren();//cambiar a dispose o algo
+		
 		this.mOwnMatchesSprite = new Sprite(16,12,this.mOwnMatchesTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
@@ -183,17 +185,7 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						MatchScene.this.clearTouchAreas();
-						SwitchEntity(LoadOwnMatchesEntity());//fijarse como funca
-						/*
-						  try {
-						 	final ConnectionPingClientMessage connectionPingClientMessage = new ConnectionPingClientMessage(); // TODO Pooling
-							connectionPingClientMessage.setTimestamp(System.currentTimeMillis());
-							MatchScene.this.mClient.sendClientMessage(connectionPingClientMessage);
-							Log.d("Logd","Ping");
-						} catch (final IOException e) {
-							Debug.e(e);
-						}
-						*/
+						SwitchEntity(LoadOwnMatchesEntity());//fijarse como funca					
 					}
 					break;
 				}
@@ -214,20 +206,8 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-						try {
-							MatchScene.this.mSocketServerDiscoveryServer = new SocketServerDiscoveryServer<MatchesDiscoveryData>(DISCOVERY_PORT, new ExampleSocketServerDiscoveryServerListener()) {
-								@Override
-								protected MatchesDiscoveryData onCreateDiscoveryResponse() {
-									return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,"Match1");
-								}
-							};
-							MatchScene.this.mSocketServerDiscoveryServer.start();
-						} catch (final Throwable t) {
-							Debug.e(t);
-						}
-						Log.d("Logd","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
-						//Set scene create new match
-						//MatchScene.this.initServer();
+						MatchScene.this.clearTouchAreas();
+						SwitchEntity(LoadLobbyEntity(false, "Roberto's"));
 					}
 					break;
 				}
@@ -248,12 +228,9 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
+						MatchScene.this.mMatchList.clear();
+						MatchScene.this.mDiscoveredMatchEntity.detachChildren();//hacer que haga dispose o algo
 						MatchScene.this.mSocketServerDiscoveryClient.discoverAsync();
-						/*	try {
-							MatchScene.this.mClient.sendClientMessage(new ConnectionPingClientMessage());
-						} catch (final IOException e) {
-							Debug.e(e);
-						}*/
 					}
 					break;
 				}
@@ -275,8 +252,6 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							//Direct Connect entity
-							//MatchScene.this.initClient();
-							MatchScene.this.initServerDiscovery();
 						}
 						break;
 					}
@@ -286,43 +261,13 @@ public class MatchScene extends Scene {
 		this.mMatchesEntity.attachChild(this.mDirectConnectSprite);
 		this.registerTouchArea(this.mDirectConnectSprite);
 
-		//MatchScene.this.initServerDiscovery();
+		this.mMatchesEntity.attachChild(this.mDiscoveredMatchEntity);
+		
+		MatchScene.this.initServerDiscovery();
 		return this.mMatchesEntity;
 	}
 	
 	
-	private void initServerDiscovery() {
-		try {
-			this.mSocketServerDiscoveryClient = new SocketServerDiscoveryClient<MatchesDiscoveryData>(WifiUtils.getBroadcastIPAddressRaw(Game.getInstance()),DISCOVERY_PORT, SERVER_PORT, MatchesDiscoveryData.class, new ISocketServerDiscoveryClientListener<MatchesDiscoveryData>() {
-				@Override
-				public void onDiscovery(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final MatchesDiscoveryData pDiscoveryData) {
-					try {
-						final String ipAddressAsString = IPUtils.ipAddressToString(pDiscoveryData.getServerIP());
-						Log.d("Logd","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" --- "+pDiscoveryData.getTest().trim());
-						//MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mBackTextureRegion,50, MatchScene.this.mMatchList.size()*143 + 20, MatchScene.this, ipAddressAsString));
-					} catch (final UnknownHostException e) {
-						Log.d("Logd","DiscoveryClient: IPException: " + e);
-					}
-				}
-
-				@Override
-				public void onTimeout(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final SocketTimeoutException pSocketTimeoutException) {
-					Debug.e(pSocketTimeoutException);
-					Log.d("Logd","DiscoveryClient: Timeout: " + pSocketTimeoutException);
-				}
-
-				@Override
-				public void onException(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final Throwable pThrowable) {
-					Debug.e(pThrowable);
-					Log.d("Logd","DiscoveryClient: Exception: " + pThrowable);
-				}
-			});
-
-			this.mSocketServerDiscoveryClient.discoverAsync();
-		} catch (final Throwable t) {
-			Debug.e(t);
-		}
-	}
 	
 
 	
@@ -410,7 +355,7 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							MatchScene.this.clearTouchAreas();
-							MatchScene.this.SwitchEntity(LoadLobbyEntity());
+							//MatchScene.this.SwitchEntity(LoadLobbyEntity());
 						}
 						break;
 					}
@@ -426,11 +371,9 @@ public class MatchScene extends Scene {
 	
 	
 	//Loby entity
-	public Entity LoadLobbyEntity(){//pedir datos de partida
+	public Entity LoadLobbyEntity(Boolean pJoining, final String pName){//pedir datos de partida
 		this.mLobbyEntity.detachChildren();
-		//fijarse si es host o no, si no es esconder la barra
-		ShowLowerBar(false);
-		
+				
 		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
@@ -458,51 +401,7 @@ public class MatchScene extends Scene {
 		};
 		this.mLobbyEntity.attachChild(this.mBackSprite);
 		this.registerTouchArea(mBackSprite);
-		
-		//Start Match
-		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			boolean mGrabbed = false;
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case TouchEvent.ACTION_DOWN:
-					mGrabbed = true;					
-					break;
-				case TouchEvent.ACTION_UP:
-					if(mGrabbed) {
-						mGrabbed = false;
-						//Iniciar la partida
-					}
-					break;
-				}
-			return true;	
-			}
-		};
-		this.mLobbyEntity.attachChild(this.mOkSprite);
-		this.registerTouchArea(this.mOkSprite);
-		
-		//Kick player
-		this.mCancelSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-			boolean mGrabbed = false;
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case TouchEvent.ACTION_DOWN:
-					mGrabbed = true;					
-					break;
-				case TouchEvent.ACTION_UP:
-					if(mGrabbed) {
-						mGrabbed = false;
-					//rechazar conexiones del player seleccionado
-					}
-					break;
-				}
-				return true;	
-			}
-		};
-		this.mLobbyEntity.attachChild(this.mCancelSprite);
-		this.registerTouchArea(this.mCancelSprite);
-		
+		if(pJoining){
 		/* chat?
 		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
@@ -525,6 +424,72 @@ public class MatchScene extends Scene {
 		this.attachChild(this.mOkSprite);
 		this.registerTouchArea(this.mOkSprite);
 		*/
+		}else{
+			//Start Match
+			this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
+						break;
+					case TouchEvent.ACTION_UP:
+						if(mGrabbed) {
+							mGrabbed = false;
+							//Iniciar la partida
+						}
+						break;
+					}
+				return true;	
+				}
+			};
+			this.mLobbyEntity.attachChild(this.mOkSprite);
+			this.registerTouchArea(this.mOkSprite);
+			
+			//Kick player
+			this.mCancelSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
+						break;
+					case TouchEvent.ACTION_UP:
+						if(mGrabbed) {
+							mGrabbed = false;
+						//rechazar conexiones del player seleccionado
+						}
+						break;
+					}
+					return true;	
+				}
+			};
+			this.mLobbyEntity.attachChild(this.mCancelSprite);
+			this.registerTouchArea(this.mCancelSprite);
+		}
+		
+		if(pJoining){
+			ShowLowerBar(false);
+		}else{
+			//inicio el server
+			MatchScene.this.initServer();
+			
+			//inicio el discovery server
+			try {
+				MatchScene.this.mSocketServerDiscoveryServer = new SocketServerDiscoveryServer<MatchesDiscoveryData>(DISCOVERY_PORT, new ExampleSocketServerDiscoveryServerListener()) {
+					@Override
+					protected MatchesDiscoveryData onCreateDiscoveryResponse() {
+						return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,pName);
+					}
+				};
+				MatchScene.this.mSocketServerDiscoveryServer.start();
+			} catch (final Throwable t) {
+				Debug.e(t);
+			}
+			Log.d("Logd","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
+		}
 		
 		return this.mLobbyEntity;
 	}
@@ -534,10 +499,21 @@ public class MatchScene extends Scene {
 	}
 	
 	
-	public void SwitchEntity(Entity pEntity){
+	private void SwitchEntity(Entity pEntity){
 		this.detachChild(this.mCurrentEntity);
 		this.mCurrentEntity = pEntity;//algun dispose para borrar lo viejo?
 		this.attachChild(this.mCurrentEntity);
+	}
+	
+	public void EnterMatch(String pIP,String pName){
+		initClient(pIP);
+		try {
+			this.mClient.sendClientMessage(new ConnectionPingClientMessage());
+		} catch (final IOException e) {
+			Debug.e(e);
+		}
+		MatchScene.this.clearTouchAreas();
+		SwitchEntity(this.LoadLobbyEntity(true,pName));
 	}
 	
 	private void initServer() {
@@ -549,10 +525,43 @@ public class MatchScene extends Scene {
 	}
 	
 	
-	private void initClient() {
+	private void initClient(String pIP) {
 		try {
-			this.mClient = new QClient("192.168.1.5", new ExampleServerConnectorListener());
+			this.mClient = new QClient(pIP, new ExampleServerConnectorListener());
 			this.mClient.getConnection().start();
+		} catch (final Throwable t) {
+			Debug.e(t);
+		}
+	}
+	
+	private void initServerDiscovery() {
+		try {
+			this.mSocketServerDiscoveryClient = new SocketServerDiscoveryClient<MatchesDiscoveryData>(WifiUtils.getBroadcastIPAddressRaw(Game.getInstance()),DISCOVERY_PORT, SERVER_PORT, MatchesDiscoveryData.class, new ISocketServerDiscoveryClientListener<MatchesDiscoveryData>() {
+				@Override
+				public void onDiscovery(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final MatchesDiscoveryData pDiscoveryData) {
+					try {
+						final String ipAddressAsString = IPUtils.ipAddressToString(pDiscoveryData.getServerIP());
+						Log.d("Logd","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" --- "+pDiscoveryData.getTest().trim());
+						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*143+20* MatchScene.this.mMatchList.size(), MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim()));
+					} catch (final UnknownHostException e) {
+						Log.d("Logd","DiscoveryClient: IPException: " + e);
+					}
+				}
+
+				@Override
+				public void onTimeout(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final SocketTimeoutException pSocketTimeoutException) {
+					Debug.e(pSocketTimeoutException);
+					Log.d("Logd","DiscoveryClient: Timeout: " + pSocketTimeoutException);
+				}
+
+				@Override
+				public void onException(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final Throwable pThrowable) {
+					Debug.e(pThrowable);
+					Log.d("Logd","DiscoveryClient: Exception: " + pThrowable);
+				}
+			});
+
+			this.mSocketServerDiscoveryClient.discoverAsync();
 		} catch (final Throwable t) {
 			Debug.e(t);
 		}
