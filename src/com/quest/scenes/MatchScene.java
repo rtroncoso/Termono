@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.extension.multiplayer.protocol.client.SocketServerDiscoveryClient;
 import org.andengine.extension.multiplayer.protocol.client.SocketServerDiscoveryClient.ISocketServerDiscoveryClientListener;
 import org.andengine.extension.multiplayer.protocol.client.connector.ServerConnector;
@@ -100,6 +101,13 @@ public class MatchScene extends Scene {
 	//New Match	
 	private Entity mNewMatchEntity;
 	private BitmapTextureAtlas mNewMatchTextureAtlas;
+	private ITextureRegion mPreviousTextureRegion;
+	private ITextureRegion mNextTextureRegion;
+	private Sprite mPreviousSprite;
+	private Sprite mNextSprite;
+	private Sprite mLobbyNewMatchSprite;
+	private int Step;
+	private Text mStepText;
 	
 	//Direct Connect
 	private Entity mDirectEntity;
@@ -139,7 +147,9 @@ public class MatchScene extends Scene {
 		this.mDirectConnectTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "DC.png", 260, 985);
 		this.mRefreshTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "refresh.png", 325, 985);
 		this.mOwnMatchesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "OwnMatches.png", 390, 985);
-		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 455, 985);
+		this.mPreviousTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Previous.png", 455, 985);
+		this.mNextTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Next.png", 530, 985);
+		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 600, 985);
 		this.mSceneTextureAtlas.load();
 		
 		//Background
@@ -208,7 +218,7 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						MatchScene.this.clearTouchAreas();
-						SwitchEntity(LoadLobbyEntity(false, "Roberto's"));
+						MatchScene.this.SwitchEntity(LoadNewMatchEntity());
 					}
 					break;
 				}
@@ -270,8 +280,6 @@ public class MatchScene extends Scene {
 	
 	
 	
-
-	
 	
 	
 	//Own Matches entity
@@ -312,7 +320,8 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-						//Set scene create new match
+						MatchScene.this.clearTouchAreas();
+						MatchScene.this.SwitchEntity(LoadNewMatchEntity());
 					}
 					break;
 				}
@@ -495,9 +504,173 @@ public class MatchScene extends Scene {
 		return this.mLobbyEntity;
 	}
 	
+	
+	
+	
+	public Entity LoadNewMatchEntity(){
+		this.mNewMatchEntity.detachChildren();
+		Step = 0;
+		
+		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						if(LastUI==0){
+							MatchScene.this.clearTouchAreas();
+							MatchScene.this.SwitchEntity(LoadOwnMatchesEntity());
+						}else{
+							MatchScene.this.clearTouchAreas();
+							MatchScene.this.SwitchEntity(LoadMatchesEntity());
+						}
+					}
+					break;
+				}
+			return true;	
+			}
+		};
+		this.mNewMatchEntity.attachChild(this.mBackSprite);
+		this.registerTouchArea(mBackSprite);
+		
+		
+		this.mLobbyNewMatchSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					if(MatchScene.this.mLobbyNewMatchSprite.isVisible()){
+						mGrabbed = true;				
+					}
+					break;
+				case TouchEvent.ACTION_UP:
+					if(MatchScene.this.mLobbyNewMatchSprite.isVisible()){
+						if(mGrabbed) {
+							mGrabbed = false;
+							MatchScene.this.clearTouchAreas();
+							SwitchEntity(LoadLobbyEntity(false, "Roberto's"));
+						}
+					}
+					break;
+				}
+			return true;	
+			}
+		};
+		this.mNewMatchEntity.attachChild(this.mLobbyNewMatchSprite);
+		this.registerTouchArea(this.mLobbyNewMatchSprite);
+		
+		
+		
+		//Previous
+		this.mPreviousSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					if(MatchScene.this.mPreviousSprite.isVisible()){
+						mGrabbed = true;				
+					}
+					break;
+				case TouchEvent.ACTION_UP:
+					if(MatchScene.this.mPreviousSprite.isVisible()){
+						if(mGrabbed) {
+							mGrabbed = false;
+							Step-=1;
+							MatchScene.this.StepChange(false);
+						}
+					}
+					break;
+				}
+				return true;	
+			}
+		};
+		this.mNewMatchEntity.attachChild(this.mPreviousSprite);
+		this.registerTouchArea(this.mPreviousSprite);
+		
+		//Next
+		this.mNextSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					if(MatchScene.this.mNextSprite.isVisible()){
+						mGrabbed = true;				
+					}
+					break;
+				case TouchEvent.ACTION_UP:
+					if(MatchScene.this.mNextSprite.isVisible()){
+						if(mGrabbed) {
+							mGrabbed = false;
+							Step+=1;
+							MatchScene.this.StepChange(false);
+						}
+					}
+					break;
+				}
+				return true;	
+			}
+		};
+		this.mNewMatchEntity.attachChild(this.mNextSprite);
+		this.registerTouchArea(this.mNextSprite);
+		
+		this.StepChange(true);
+		
+		return this.mNewMatchEntity;
+	}
+	
+	
+	private void StepChange(boolean pStart){
+		if(pStart){
+			this.mStepText = this.mTextHelper.NewText(100, 150, "-------------------------------------------------------------------------", "StepText");
+			this.mNewMatchEntity.attachChild(this.mStepText);
+			this.mLobbyNewMatchSprite.setVisible(false);
+		}
+		switch (Step) {
+		case 0:
+			this.mPreviousSprite.setVisible(false);
+			this.mTextHelper.ChangeText("Follow the instructions to create a new match", "StepText", 100, 150);
+			break;
+		case 1:
+			this.mPreviousSprite.setVisible(true);
+			this.mTextHelper.ChangeText("O===//:::::::::::::::>", "StepText", 100, 150);
+			break;
+		case 2:
+			this.mNextSprite.setVisible(true);
+			this.mTextHelper.ChangeText("O===//:::::::::>", "StepText", 200, 180);
+			this.mLobbyNewMatchSprite.setVisible(false);
+			break;
+		case 3:
+			this.mNextSprite.setVisible(false);
+			this.mTextHelper.ChangeText("You're done!", "StepText", 100, 150);
+			this.mLobbyNewMatchSprite.setVisible(true);
+			break;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	private void ShowLowerBar(Boolean pBool){
 		this.mLowerBarSprite.setVisible(pBool);
 	}
+	
+	
+	
+	
+	
+	
 	
 	
 	private void SwitchEntity(Entity pEntity){

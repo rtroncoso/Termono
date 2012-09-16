@@ -87,9 +87,10 @@ public class TextHelper{
 				tempText.setX(X);
 				tempText.setY(Y);
 				//hacer que puedas cambiar el key?
-				this.mList.add(i,tempText);
 			}else{
-				Log.d("Logd","TextHelper: Change - No text matches key");
+				if(i==mList.size()-1){
+					Log.d("Logd","TextHelper: Change - No text matches key");
+				}
 			}	
 		}
 	}
