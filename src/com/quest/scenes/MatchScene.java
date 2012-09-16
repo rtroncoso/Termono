@@ -31,6 +31,7 @@ import android.util.Log;
 
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
+import com.quest.helpers.TextHelper;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
@@ -73,8 +74,8 @@ public class MatchScene extends Scene {
 	private Sprite mNewGameSprite;
 	private Sprite mOkSprite;
 	private Sprite mCancelSprite;
-	public Entity mDiscoveredMatchEntity;//------------------
-	
+	private Entity mDiscoveredMatchEntity;
+	private TextHelper mTextHelper;
 	private DataHandler mDataHandler;	
 	private ArrayList<MatchObject> mMatchList;
 	
@@ -125,7 +126,7 @@ public class MatchScene extends Scene {
 		this.mDirectEntity = new Entity(0,0);
 		this.mDiscoveredMatchEntity = new Entity(110,61);
 		this.mDataHandler = new DataHandler();
-		
+		this.mTextHelper = new TextHelper();
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2036,2036, TextureOptions.BILINEAR);
 		this.mScrollBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "scroll.png", 0, 0);
@@ -542,7 +543,7 @@ public class MatchScene extends Scene {
 					try {
 						final String ipAddressAsString = IPUtils.ipAddressToString(pDiscoveryData.getServerIP());
 						Log.d("Logd","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" --- "+pDiscoveryData.getTest().trim());
-						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*143+20* MatchScene.this.mMatchList.size(), MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim()));
+						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim(),MatchScene.this.mTextHelper,200, MatchScene.this.mMatchList.size()*163+20,pDiscoveryData.getTest().trim()+"\n"+ipAddressAsString,"titulodematch"+String.valueOf(MatchScene.this.mMatchList.size())));
 					} catch (final UnknownHostException e) {
 						Log.d("Logd","DiscoveryClient: IPException: " + e);
 					}

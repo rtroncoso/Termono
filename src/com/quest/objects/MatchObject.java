@@ -2,11 +2,13 @@ package com.quest.objects;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
+import com.quest.helpers.TextHelper;
 import com.quest.scenes.MatchScene;
 
 public class MatchObject extends Entity{
@@ -20,6 +22,7 @@ public class MatchObject extends Entity{
 	// Fields
 	// ===========================================================
 	private Sprite mMatchSprite;
+	private Entity mMatchEntity;
 	private String mIP;
 	private MatchScene mMatchScene;
 	private int mFunction;
@@ -30,11 +33,13 @@ public class MatchObject extends Entity{
 	private Boolean mJoining;
 	private float oldPos = 0;
 	private int LastAction = 0;
+	private Text mText;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	
-	public MatchObject(DataHandler pDataHandler,ITextureRegion pTextureRegion,int pIconX,int pIconY,MatchScene pScene,String pIPAdress,Entity pEntity,Boolean pJoining,String pName) {
+	public MatchObject(DataHandler pDataHandler,ITextureRegion pTextureRegion,int pIconX,int pIconY,MatchScene pScene,String pIPAdress,Entity pEntity,Boolean pJoining,String pName, TextHelper pTextHelper,float pTextX,float pTextY, String pText,String pKey) {
+		this.mMatchEntity = new Entity(0,0);
 		this.mIP = pIPAdress;
 		this.mName = pName;
 		this.mEntity = pEntity;
@@ -102,9 +107,12 @@ public class MatchObject extends Entity{
 			return true;
 			}					
 		};
-		pEntity.attachChild(this.mMatchSprite);
+		this.mMatchEntity.attachChild(this.mMatchSprite);
 		pScene.registerTouchArea(this.mMatchSprite);
-	
+		
+		this.mText = pTextHelper.NewText(pTextX, pTextY, pText, pKey);
+		this.mMatchEntity.attachChild(this.mText);
+		pEntity.attachChild(this.mMatchEntity);
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
