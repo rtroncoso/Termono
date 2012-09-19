@@ -28,9 +28,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.debug.Debug;
 
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.quest.database.DataHandler;
@@ -67,8 +64,6 @@ public class MatchScene extends Scene {
 		private Sprite mScrollBackSprite;
 		private Sprite mUpperBarSprite;
 		private Sprite mLowerBarSprite;
-	private QServer mServer;
-	private QClient mClient;
 	//comunes
 	private ITextureRegion mNewGameTextureRegion;
 	private ITextureRegion mBackTextureRegion;
@@ -455,7 +450,7 @@ public class MatchScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
-							//Iniciar la partida
+							Game.getSceneManager().setGameScene();
 						}
 						break;
 					}
@@ -509,7 +504,7 @@ public class MatchScene extends Scene {
 			Log.d("Logd","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
 		}
 		try {
-			this.mLobbyEntity.attachChild(this.mTextHelper.NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "LobbyIP"));
+			this.mLobbyEntity.attachChild(this.mTextHelper.NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "OwnIP"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -697,7 +692,7 @@ public class MatchScene extends Scene {
 	public void EnterMatch(String pIP,String pName){
 		initClient(pIP);
 		try {
-			this.mClient.sendClientMessage(new ConnectionPingClientMessage());
+			Game.getClient().sendClientMessage(new ConnectionPingClientMessage());
 		} catch (final IOException e) {
 			Debug.e(e);
 		}
@@ -706,18 +701,18 @@ public class MatchScene extends Scene {
 	}
 	
 	private void initServer() {
-		this.mServer = new QServer(new ExampleClientConnectorListener());
+		Game.setServer(new QServer(new ExampleClientConnectorListener()));
 
-		this.mServer.start();
+		Game.getServer().start();
 
-		MatchScene.this.registerUpdateHandler(this.mServer);
+		MatchScene.this.registerUpdateHandler(Game.getServer());
 	}
 	
 	
 	private void initClient(String pIP) {
 		try {
-			this.mClient = new QClient(pIP, new ExampleServerConnectorListener());
-			this.mClient.getConnection().start();
+			Game.setClient(new QClient(pIP, new ExampleServerConnectorListener()));
+			Game.getClient().getConnection().start();
 		} catch (final Throwable t) {
 			Debug.e(t);
 		}
@@ -736,6 +731,9 @@ public class MatchScene extends Scene {
 							if(MatchScene.this.mMatchList.get(i).getIP().equals(ipAddressAsString)){
 								conts=true;
 							}
+						}
+						if(MatchScene.this.mTextHelper.getText("OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funca
+							conts=true;
 						}
 						if(conts==false){
 						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim(),MatchScene.this.mTextHelper,200, MatchScene.this.mMatchList.size()*163+20,pDiscoveryData.getTest().trim()+"\n"+ipAddressAsString,"titulodematch"+String.valueOf(MatchScene.this.mMatchList.size())));
@@ -786,12 +784,12 @@ public class MatchScene extends Scene {
 	private class ExampleServerConnectorListener implements ISocketConnectionServerConnectorListener {
 		@Override
 		public void onStarted(final ServerConnector<SocketConnection> pServerConnector) {
-			Log.d("Logd", "CLIENT: Connected to server.");
+			Log.d("Logd", "Client: " + MatchScene.this.wifiIPv4Address.toString() + " Connected to server.");
 		}
 
 		@Override
 		public void onTerminated(final ServerConnector<SocketConnection> pServerConnector) {
-			Log.d("Logd","CLIENT: Disconnected from Server.");
+			Log.d("Logd","Client: " + MatchScene.this.wifiIPv4Address.toString() + " Disconnected from Server.");
 			Game.getInstance().finish();
 		}
 	}
@@ -799,12 +797,12 @@ public class MatchScene extends Scene {
 	private class ExampleClientConnectorListener implements ISocketConnectionClientConnectorListener {
 		@Override
 		public void onStarted(final ClientConnector<SocketConnection> pClientConnector) {
-			Log.d("Logd", "SERVER: Client connected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
+			Log.d("Logd", "Server: " + MatchScene.this.wifiIPv4Address.toString() + " Client connected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
 		}
 
 		@Override
 		public void onTerminated(final ClientConnector<SocketConnection> pClientConnector) {
-			Log.d("Logd", "SERVER: Client disconnected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
+			Log.d("Logd", "Server: " + MatchScene.this.wifiIPv4Address.toString() + " Client disconnected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
 		}
 	}
 
@@ -812,23 +810,23 @@ public class MatchScene extends Scene {
 	public class ExampleSocketServerDiscoveryServerListener implements ISocketServerDiscoveryServerListener<MatchesDiscoveryData> {
 		@Override
 		public void onStarted(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer) {
-			Log.d("Logd","DiscoveryServer: Started.");
+			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Started.");
 		}
 
 		@Override
 		public void onTerminated(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer) {
-			Log.d("Logd","DiscoveryServer: Terminated.");
+			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Terminated.");
 		}
 
 		@Override
 		public void onException(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer, final Throwable pThrowable) {
 			Debug.e(pThrowable);
-			Log.d("Logd","DiscoveryServer: Exception: " + pThrowable);
+			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Exception: " + pThrowable);
 		}
 
 		@Override
 		public void onDiscovered(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer, final InetAddress pInetAddress, final int pPort) {
-			Log.d("Logd","DiscoveryServer: Discovered by: " + pInetAddress.getHostAddress() + ":" + pPort);
+			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Discovered by: " + pInetAddress.getHostAddress() + ":" + pPort);
 		}
 	}
 

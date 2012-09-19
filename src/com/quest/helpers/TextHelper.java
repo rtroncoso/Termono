@@ -102,7 +102,15 @@ public class TextHelper{
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	
+	public Text getText(String pKey){
+		int a=0;
+		for(int i = 0;i<mList.size();i++){
+			if(mList.get(i).getUserData() == pKey){
+				a = i;
+			}	
+		}
+		return mList.get(a);
+	}
 
 	// ===========================================================
 	// Methods
