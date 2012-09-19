@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class UserDatabase extends SQLiteOpenHelper {
     static final String dbName = "UserDB";
     static final String tProfile = "Profile";
-    	static final String fUserKey = "Key";//key
+    	static final String fProfileKey = "Key";//key
     	static final String fUserID = "UserID";//la mac
     	static final String fJoinedMatchesT = "JoinedMatchesT";
     	static final String fCreatedMatchesT = "CreatedMatchesT";
@@ -52,6 +52,8 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    static final String fAttributesDefense = "Defense";
 	static final String tModifiers = "Modifiers";
 		static final String fModifiersPlayerID = "PlayerID"; //conectado con fPlayerModifiersID
+		static final String fModifiersHitPoints = "HitPoints";
+		static final String fModifiersManaPoints = "ManaPoints";
 	    static final String fModifiersEndurance = "Endurance";
 	    static final String fModifiersIntelligence = "Intelligence";
 	    static final String fModifiersPower = "Power";
@@ -71,20 +73,85 @@ public class UserDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-    /*	db.execSQL("CREATE TABLE IF NOT EXISTS "+tProfile+" ("+
-                +" INTEGER PRIMARY KEY , "+
-                fItemName+" TEXT , "+
-                fItemTexture+" TEXT , "+
-                fItemType+" INTEGER , "+
-                fItemDescription+" TEXT , "+
-                fItemBuyPrice+" INTEGER , "+
-                fItemSellPrice+" INTEGER , "+
-                fItemClass+" INTEGER, "+
-                fModifierID+" INTEGER)"*/
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tProfile+" ("+
+                fProfileKey+" INTEGER PRIMARY KEY , "+
+                fUserID +" TEXT , "+
+                fJoinedMatchesT +" INTEGER , "+
+                fCreatedMatchesT +" INTEGER)" 
+                );
+    	
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tJoinedMatches+" ("+
+    			fJoinedKey+" INTEGER PRIMARY KEY , "+
+    			fJoinedName +" TEXT , "+
+    			fJoinedID +" TEXT)" 
+                );  	
+    	
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tCreatedMatches+" ("+
+    			fCreatedKey+" INTEGER PRIMARY KEY , "+
+    			fCreatedName +" TEXT , "+
+    			fCreatedOptionsT +" INTEGER)" 
+                );  	
+    	
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tMatchOptions+" ("+
+    			fOptionsT+" INTEGER PRIMARY KEY , "+
+    			fOptionsPassword +" TEXT , "+
+    			fOptionsMap +" INTEGER)" 
+                );  
+
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tMatch+" ("+
+    			fMatchKey+" INTEGER PRIMARY KEY , "+
+    			fMatchPlayersT +" INTEGER , "+
+    			fMatchCurrentQuest +" TEXT)" 
+                );  
+
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayers+" ("+
+    			fPlayersKey+" INTEGER PRIMARY KEY , "+
+    			fPlayersPlayerID +" INTEGER)" 
+                );  
+    	
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
+          		fPlayerID+" INTEGER PRIMARY KEY , "+
+          		fPlayerName+" TEXT ,"+
+          		fPlayerPosition+" STRING, "+
+          		fPlayerClass+" INTEGER, "+
+          		fPlayerInventoryID+" INTEGER, "+
+          		fPlayerAttributesID+" INTEGER, "+
+          		fPlayerModifiersID+" INTEGER, "+
+          		fPlayerSpellbookID+" INTEGER, "+
+          		fPlayerPosition+" INTEGER)"
+                );
+          
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
+        		fInventoryItemID+" INTEGER PRIMARY KEY , "+
+        		fInventoryPlayerID+" INTEGER, "+
+                fInventoryItemAmount+" INTEGER , "+
+                fInventoryIsItemEquipped+" INTEGER)"
+                );     	
+	     
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttributes+" ("+
+	     		fPlayerID+" INTEGER PRIMARY KEY , "+
+	     		fAttributesDefense+" INTEGER ,"+
+	     		fAttributesEndurance+" INTEGER ,"+
+	     		fAttributesPower+" INTEGER ,"+
+	     		fAttributesIntelligence+" INTEGER)"
+	             );	     
+
+		 db.execSQL("CREATE TABLE IF NOT EXISTS "+tModifiers+" ("+
+		    	fModifiersPlayerID+" INTEGER PRIMARY KEY , "+
+		   		fModifiersHitPoints +" INTEGER ,"+
+		   		fModifiersManaPoints +" INTEGER ,"+
+		   		fModifiersEndurance+" INTEGER ,"+
+		   		fModifiersDefense+" INTEGER ,"+
+		   		fModifiersPower+" INTEGER ,"+
+		   		fModifiersIntelligence+" INTEGER)"
+		        );
+		 
+		 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBook+" ("+
+				fSpellBookPlayerID+" INTEGER PRIMARY KEY , "+
+				fSpellBookSpellID+" INTEGER , "+
+				fSpellBookSpellLevel+" INTEGER)"
+                 );
     }
-	/*static final String fUserID = "UserID";
-	static final String fJoinedMatchesT = "JoinedMatchesT";
-	static final String fCreatedMatchesT = "CreatedMatchesT";*/
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

@@ -8,6 +8,10 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.quest.helpers.MapHelper;
@@ -30,7 +34,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static Game mInstance;
 	private static QServer mServer;
 	private static QClient mClient;
-	
+	private static String mUserID;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -52,6 +56,11 @@ public class Game extends SimpleBaseGameActivity {
 		// Init Objects
 		Game.mSceneManager = new SceneHelper();
 		Game.mTextureManager = new TextureHelper();
+		//consigo la mac, por ahora lo pongo aca
+		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInf = wifiMan.getConnectionInfo();
+		Game.mUserID = wifiInf.getMacAddress();
+				
 		
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, 
 				new RatioResolutionPolicy(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth(), 
@@ -163,6 +172,10 @@ public class Game extends SimpleBaseGameActivity {
 
 	public static void setClient(QClient mClient) {
 		Game.mClient = mClient;
+	}
+	
+	public static String getUserID(){
+		return Game.mUserID;
 	}
 	
 	// ===========================================================
