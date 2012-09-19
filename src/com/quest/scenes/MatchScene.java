@@ -28,6 +28,9 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.debug.Debug;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.quest.database.DataHandler;
@@ -160,13 +163,7 @@ public class MatchScene extends Scene {
 		
 		this.mLowerBarSprite = new Sprite(0,this.mScrollBackSprite.getHeight()- 66,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mLowerBarSprite);
-		/*
-		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInf = wifiMan.getConnectionInfo();
-		String macAddr = wifiInf.getMacAddress();
-		Log.d("Logd", macAddr);		
-		
-		*/
+				
 
 		mCurrentEntity = LoadMatchesEntity();
 		MatchScene.this.attachChild(mCurrentEntity);
@@ -404,7 +401,7 @@ public class MatchScene extends Scene {
 							MatchScene.this.clearTouchAreas();
 							MatchScene.this.SwitchEntity(LoadMatchesEntity());
 						}
-						MatchScene.this.mServer.terminate();
+						Game.getServer().terminate();
 						MatchScene.this.mSocketServerDiscoveryServer.terminate();
 					}
 					break;
