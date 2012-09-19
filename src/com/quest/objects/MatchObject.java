@@ -83,7 +83,7 @@ public class MatchObject extends Entity{
 				if(mGrabbed) {
 					mGrabbed = false;
 					if(mJoining){//si me estoy uniendo o creando
-					mMatchScene.EnterMatch(mIP, mName);
+						mMatchScene.EnterMatch(mIP, mName);
 					}else{
 						//empiezo el server no el cliente
 					}

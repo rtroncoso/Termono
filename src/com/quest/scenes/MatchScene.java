@@ -247,7 +247,7 @@ public class MatchScene extends Scene {
 						mGrabbed = false;
 						MatchScene.this.mMatchList.clear();
 						MatchScene.this.mDiscoveredMatchEntity.detachChildren();//hacer que haga dispose o algo
-						MatchScene.this.mSocketServerDiscoveryClient.discoverAsync();
+						MatchScene.this.Discover();
 					}
 					break;
 				}
@@ -370,8 +370,8 @@ public class MatchScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
-							MatchScene.this.clearTouchAreas();
-							//MatchScene.this.SwitchEntity(LoadLobbyEntity());
+						//	MatchScene.this.clearTouchAreas();
+						//	MatchScene.this.SwitchEntity(LoadLobbyEntity(false,"ASD"));
 						}
 						break;
 					}
@@ -409,6 +409,8 @@ public class MatchScene extends Scene {
 							MatchScene.this.clearTouchAreas();
 							MatchScene.this.SwitchEntity(LoadMatchesEntity());
 						}
+						MatchScene.this.mServer.terminate();
+						MatchScene.this.mSocketServerDiscoveryServer.terminate();
 					}
 					break;
 				}
@@ -506,6 +508,12 @@ public class MatchScene extends Scene {
 			}
 			Log.d("Logd","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
 		}
+		try {
+			this.mLobbyEntity.attachChild(this.mTextHelper.NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "LobbyIP"));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return this.mLobbyEntity;
 	}
@@ -559,7 +567,7 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							MatchScene.this.clearTouchAreas();
-							SwitchEntity(LoadLobbyEntity(false, "Roberto's"));
+							SwitchEntity(LoadLobbyEntity(false, "Testito"));
 						}
 					}
 					break;
@@ -672,6 +680,13 @@ public class MatchScene extends Scene {
 		this.mLowerBarSprite.setVisible(pBool);
 	}
 	
+	private void Discover(){//fijarme como hacer esto bien
+		MatchScene.this.mSocketServerDiscoveryClient.discoverAsync();
+		MatchScene.this.mSocketServerDiscoveryClient.discoverAsync();
+		MatchScene.this.mSocketServerDiscoveryClient.discoverAsync();
+		MatchScene.this.mSocketServerDiscoveryClient.discoverAsync();
+		MatchScene.this.mSocketServerDiscoveryClient.discoverAsync();
+	}
 	
 	private void SwitchEntity(Entity pEntity){
 		this.detachChild(this.mCurrentEntity);
@@ -716,7 +731,15 @@ public class MatchScene extends Scene {
 					try {
 						final String ipAddressAsString = IPUtils.ipAddressToString(pDiscoveryData.getServerIP());
 						Log.d("Logd","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" --- "+pDiscoveryData.getTest().trim());
+						boolean conts = false;
+						for(int i=0;i<MatchScene.this.mMatchList.size();i++){
+							if(MatchScene.this.mMatchList.get(i).getIP().equals(ipAddressAsString)){
+								conts=true;
+							}
+						}
+						if(conts==false){
 						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim(),MatchScene.this.mTextHelper,200, MatchScene.this.mMatchList.size()*163+20,pDiscoveryData.getTest().trim()+"\n"+ipAddressAsString,"titulodematch"+String.valueOf(MatchScene.this.mMatchList.size())));
+						}
 					} catch (final UnknownHostException e) {
 						Log.d("Logd","DiscoveryClient: IPException: " + e);
 					}
@@ -735,7 +758,8 @@ public class MatchScene extends Scene {
 				}
 			});
 
-			this.mSocketServerDiscoveryClient.discoverAsync();
+			//this.mSocketServerDiscoveryClient.discoverAsync();
+			MatchScene.this.Discover();
 		} catch (final Throwable t) {
 			Debug.e(t);
 		}
