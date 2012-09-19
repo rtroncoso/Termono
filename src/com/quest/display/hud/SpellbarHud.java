@@ -13,7 +13,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import android.util.Log;
 
 import com.quest.database.DataHandler;
-import com.quest.database.myDatabase;
+import com.quest.database.StaticDatabase;
 import com.quest.game.Game;
 import com.quest.scenes.GameMenuScene;
 

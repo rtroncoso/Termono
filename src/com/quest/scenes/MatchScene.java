@@ -28,6 +28,9 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.debug.Debug;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.quest.database.DataHandler;
@@ -47,6 +50,7 @@ public class MatchScene extends Scene {
 	private static final int SERVER_PORT = 4444;
 	private static final int DISCOVERY_PORT = 4445;
 	final byte[] wifiIPv4Address = WifiUtils.getWifiIPv4AddressRaw(Game.getInstance());
+	
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -161,11 +165,13 @@ public class MatchScene extends Scene {
 		
 		this.mLowerBarSprite = new Sprite(0,this.mScrollBackSprite.getHeight()- 66,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mLowerBarSprite);
+		/*
+		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInf = wifiMan.getConnectionInfo();
+		String macAddr = wifiInf.getMacAddress();
+		Log.d("Logd", macAddr);		
 		
-		
-		
-		
-		
+		*/
 
 		mCurrentEntity = LoadMatchesEntity();
 		MatchScene.this.attachChild(mCurrentEntity);
@@ -506,7 +512,6 @@ public class MatchScene extends Scene {
 	
 	
 	
-	
 	public Entity LoadNewMatchEntity(){
 		this.mNewMatchEntity.detachChildren();
 		Step = 0;
@@ -640,11 +645,11 @@ public class MatchScene extends Scene {
 			break;
 		case 1:
 			this.mPreviousSprite.setVisible(true);
-			this.mTextHelper.ChangeText("O===//:::::::::::::::>", "StepText", 100, 150);
+			this.mTextHelper.ChangeText("Player limit - Match name", "StepText", 100, 150);
 			break;
 		case 2:
 			this.mNextSprite.setVisible(true);
-			this.mTextHelper.ChangeText("O===//:::::::::>", "StepText", 200, 180);
+			this.mTextHelper.ChangeText("Password?", "StepText", 200, 180);
 			this.mLobbyNewMatchSprite.setVisible(false);
 			break;
 		case 3:
@@ -655,22 +660,17 @@ public class MatchScene extends Scene {
 		}
 	}
 	
-	
-	
-	
-	
-	
+	private void RegisterNewMatchTouchAreas(){
+		this.registerTouchArea(mBackSprite);
+		this.registerTouchArea(this.mLobbyNewMatchSprite);
+		this.registerTouchArea(this.mPreviousSprite);
+		this.registerTouchArea(this.mNextSprite);
+	}
 	
 	
 	private void ShowLowerBar(Boolean pBool){
 		this.mLowerBarSprite.setVisible(pBool);
 	}
-	
-	
-	
-	
-	
-	
 	
 	
 	private void SwitchEntity(Entity pEntity){
