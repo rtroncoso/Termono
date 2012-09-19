@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
 
-import com.quest.util.constants.PongConstants;
+import com.quest.util.constants.IGameConstants;
 
 /**
  * (c) 2010 Nicolas Gramlich 
@@ -15,7 +15,7 @@ import com.quest.util.constants.PongConstants;
  * @author Nicolas Gramlich
  * @since 19:48:32 - 28.02.2011
  */
-public class UpdateBallServerMessage extends ServerMessage implements PongConstants {
+public class UpdateBallServerMessage extends ServerMessage implements IGameConstants {
 	// ===========================================================
 	// Constants
 	// ===========================================================

@@ -67,8 +67,6 @@ public class MatchScene extends Scene {
 		private Sprite mScrollBackSprite;
 		private Sprite mUpperBarSprite;
 		private Sprite mLowerBarSprite;
-	private QServer mServer;
-	private QClient mClient;
 	//comunes
 	private ITextureRegion mNewGameTextureRegion;
 	private ITextureRegion mBackTextureRegion;
@@ -682,7 +680,7 @@ public class MatchScene extends Scene {
 	public void EnterMatch(String pIP,String pName){
 		initClient(pIP);
 		try {
-			this.mClient.sendClientMessage(new ConnectionPingClientMessage());
+			Game.getClient().sendClientMessage(new ConnectionPingClientMessage());
 		} catch (final IOException e) {
 			Debug.e(e);
 		}
@@ -691,18 +689,18 @@ public class MatchScene extends Scene {
 	}
 	
 	private void initServer() {
-		this.mServer = new QServer(new ExampleClientConnectorListener());
+		Game.setServer(new QServer(new ExampleClientConnectorListener()));
 
-		this.mServer.start();
+		Game.getServer().start();
 
-		MatchScene.this.registerUpdateHandler(this.mServer);
+		MatchScene.this.registerUpdateHandler(Game.getServer());
 	}
 	
 	
 	private void initClient(String pIP) {
 		try {
-			this.mClient = new QClient(pIP, new ExampleServerConnectorListener());
-			this.mClient.getConnection().start();
+			Game.setClient(new QClient(pIP, new ExampleServerConnectorListener()));
+			Game.getClient().getConnection().start();
 		} catch (final Throwable t) {
 			Debug.e(t);
 		}

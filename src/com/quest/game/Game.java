@@ -13,6 +13,8 @@ import android.view.KeyEvent;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.SceneHelper;
 import com.quest.helpers.TextureHelper;
+import com.quest.network.QClient;
+import com.quest.network.QServer;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
@@ -26,6 +28,8 @@ public class Game extends SimpleBaseGameActivity {
 	private static MapHelper mMapManager;
 	private static TextureHelper mTextureManager;
 	private static Game mInstance;
+	private static QServer mServer;
+	private static QClient mClient;
 	
 	// ===========================================================
 	// Constructors
@@ -143,6 +147,22 @@ public class Game extends SimpleBaseGameActivity {
 	 */
 	public static void setInstance(Game mInstance) {
 		Game.mInstance = mInstance;
+	}
+
+	public static QServer getServer() {
+		return mServer;
+	}
+
+	public static void setServer(QServer mServer) {
+		Game.mServer = mServer;
+	}
+
+	public static QClient getClient() {
+		return mClient;
+	}
+
+	public static void setClient(QClient mClient) {
+		Game.mClient = mClient;
 	}
 	
 	// ===========================================================
