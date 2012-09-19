@@ -13,7 +13,7 @@ public interface IGameConstants {
 	// Final Fields
 	// ===========================================================
 
-	public static final int FPS = 30;
+	public static final int GAME_FPS = 60;
 
 	public static final int GAME_WIDTH = 720;
 	public static final int GAME_WIDTH_HALF = GAME_WIDTH / 2;
@@ -31,20 +31,14 @@ public interface IGameConstants {
 
 	public static final int SCORE_PADDING = 5;
 
-	
-
-	
 	public static final int SERVER_PORT = 4444;
 
-	/* Server --> Client */
-	public static final short FLAG_MESSAGE_SERVER_SET_PADDLEID = 1;
-	public static final short FLAG_MESSAGE_SERVER_UPDATE_SCORE = FLAG_MESSAGE_SERVER_SET_PADDLEID + 1;
-	public static final short FLAG_MESSAGE_SERVER_UPDATE_BALL = FLAG_MESSAGE_SERVER_UPDATE_SCORE + 1;
-	public static final short FLAG_MESSAGE_SERVER_UPDATE_PADDLE = FLAG_MESSAGE_SERVER_UPDATE_BALL + 1;
-
-	/* Client --> Server */
-	public static final short FLAG_MESSAGE_CLIENT_MOVE_PADDLE = 1;
-
+	public static final byte DIRECTION_DEFAULT = 0;
+	public static final byte DIRECTION_EAST = 1;
+	public static final byte DIRECTION_WEST = 2;
+	public static final byte DIRECTION_SOUTH = 3;
+	public static final byte DIRECTION_NORTH = 4;
+	
 	// ===========================================================
 	// Methods
 	// ===========================================================

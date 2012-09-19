@@ -1,11 +1,14 @@
 package com.quest.entities;
 
+import java.io.IOException;
+
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 
 import com.quest.game.Game;
+import com.quest.network.messages.client.ClientMessageMovePlayer;
 
 
 public class Player extends BaseEntity implements IOnScreenControlListener, ITouchArea {
@@ -58,6 +61,12 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				
 				// Moves to it if not blocked
 				if(!Game.getMapManager().collisionCheck(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);
+				try {
+					Game.getClient().sendClientMessage(new ClientMessageMovePlayer(this.getFacingDirectionToTile(tmxTileTo)));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

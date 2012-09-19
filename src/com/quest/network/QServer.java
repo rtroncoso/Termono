@@ -18,6 +18,7 @@ import org.andengine.util.debug.Debug;
 import android.util.Log;
 
 import com.quest.network.messages.client.ClientMessageFlags;
+import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ConnectionCloseClientMessage;
 import com.quest.network.messages.client.ConnectionEstablishClientMessage;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
@@ -27,17 +28,18 @@ import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ConnectionRejectedProtocolMissmatchServerMessage;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.network.messages.server.SetPaddleIDServerMessage;
+import com.quest.network.messages.server.UpdateEntityPositionServerMessage;
+import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.MessageConstants;
 
 
-public class QServer extends SocketServer<SocketConnectionClientConnector> implements IUpdateHandler, ClientMessageFlags, ServerMessageFlags {
+public class QServer extends SocketServer<SocketConnectionClientConnector> implements IUpdateHandler, ClientMessageFlags, ServerMessageFlags, IGameConstants {
 	
 	
 // ===========================================================
 // Constants
 // ===========================================================
-	static int SERVER_PORT = 4444;
-
+	
 // ===========================================================
 // Fields
 // ===========================================================
@@ -54,9 +56,9 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	
 	private void initMessagePool() {
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED, ConnectionEstablishedServerMessage.class);
-		//this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_TEST, TestServerMessage.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, ConnectionPongServerMessage.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_CLOSE, ConnectionCloseServerMessage.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class);
 	}
 
 
@@ -129,6 +131,13 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 					Debug.e(e);
 				}
 				QServer.this.mMessagePool.recycleMessage(connectionPongServerMessage);
+			}
+		});
+		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER, ClientMessageMovePlayer.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				
 			}
 		});
 
