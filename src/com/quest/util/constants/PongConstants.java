@@ -1,7 +1,5 @@
 package com.quest.util.constants;
 
-import com.quest.network.PaddleUserData;
-
 /**
  * (c) 2010 Nicolas Gramlich 
  * (c) 2011 Zynga Inc.
@@ -31,9 +29,6 @@ public interface PongConstants {
 	public static final int BALL_RADIUS = BALL_WIDTH / 2;
 
 	public static final int SCORE_PADDING = 5;
-
-	public static final PaddleUserData PADDLE_LEFT = new PaddleUserData(0, 1);
-	public static final PaddleUserData PADDLE_RIGHT = new PaddleUserData(1, 0);
 
 	
 	public static final int SERVER_PORT = 4444;

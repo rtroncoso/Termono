@@ -205,7 +205,7 @@ public class MatchScene extends Scene {
 	
 	private void initClient() {
 		try {
-			this.mClient = new QClient("127.0.0.1", new ExampleServerConnectorListener());
+			this.mClient = new QClient("192.168.1.4", new ExampleServerConnectorListener());
 			this.mClient.getConnection().start();
 		} catch (final Throwable t) {
 			Debug.e(t);
