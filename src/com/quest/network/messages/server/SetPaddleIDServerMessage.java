@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
 
-import com.quest.util.constants.PongConstants;
+import com.quest.util.constants.IGameConstants;
 
 /**
  * (c) 2010 Nicolas Gramlich 
@@ -15,7 +15,7 @@ import com.quest.util.constants.PongConstants;
  * @author Nicolas Gramlich
  * @since 19:48:32 - 28.02.2011
  */
-public class SetPaddleIDServerMessage extends ServerMessage implements PongConstants {
+public class SetPaddleIDServerMessage extends ServerMessage implements IGameConstants {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -52,7 +52,7 @@ public class SetPaddleIDServerMessage extends ServerMessage implements PongConst
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_SERVER_SET_PADDLEID;
+		return 0;
 	}
 
 	@Override

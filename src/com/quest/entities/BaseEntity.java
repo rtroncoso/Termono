@@ -16,13 +16,15 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
+import org.andengine.util.algorithm.path.Direction;
 import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
+import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
 
-public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea {
+public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -41,14 +43,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea 
 	protected TMXTile mTMXTileAt;
 	protected ArrayList<Spell> mSpellsLayer;
 	protected boolean isWalking;
-	
-	protected enum PlayerDirection {
-		UP,
-		DOWN,
-		RIGHT,
-		LEFT,
-		DEFAULT
-	}
 	
 	// ===========================================================
 	// Constructors
@@ -87,39 +81,39 @@ public class BaseEntity extends Entity implements IMeasureConstants, ITouchArea 
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public BaseEntity setAnimationDirection(PlayerDirection pFacingDirection, long[] pFrameDuration, boolean restartAnimation) {
+	public BaseEntity setAnimationDirection(byte pFacingDirection, long[] pFrameDuration, boolean restartAnimation) {
 		if(restartAnimation && !BaseEntity.this.mBodySprite.isAnimationRunning()) return this;
 		switch(pFacingDirection) {
-		case RIGHT:
+		case DIRECTION_EAST:
 			BaseEntity.this.mBodySprite.animate(pFrameDuration, 8, 11, false);
 			break;
-		case LEFT:
+		case DIRECTION_WEST:
 			BaseEntity.this.mBodySprite.animate(pFrameDuration, 4, 7, false);
 			break;
-		case DOWN:
+		case DIRECTION_SOUTH:
 			BaseEntity.this.mBodySprite.animate(pFrameDuration, 0, 3, false);
 			break;
-		case UP:
+		case DIRECTION_NORTH:
 			BaseEntity.this.mBodySprite.animate(pFrameDuration, 12, 15, false);
 			break;		
 		}
 		return this;
 	}
 	
-	public PlayerDirection getFacingDirectionToTile(final TMXTile pTileTo) {
+	public byte getFacingDirectionToTile(final TMXTile pTileTo) {
 		// RIGHT
 		if(BaseEntity.this.getX() - pTileTo.getTileX() < 0)
-			return PlayerDirection.RIGHT;
+			return DIRECTION_EAST;
 		// LEFT
 		if(BaseEntity.this.getX() - pTileTo.getTileX() > 0)
-			return PlayerDirection.LEFT;
+			return DIRECTION_WEST;
 		// DOWN
 		if(BaseEntity.this.getY() - pTileTo.getTileY() < 0)
-			return PlayerDirection.DOWN;
+			return DIRECTION_SOUTH;
 		// UP
 		if(BaseEntity.this.getY() - pTileTo.getTileY() > 0)
-			return PlayerDirection.UP;
-		return PlayerDirection.DEFAULT;
+			return DIRECTION_NORTH;
+		return 0;
 	}
 	
 	public BaseEntity moveToTile(final TMXTile pTileTo, final float pSpeed) {

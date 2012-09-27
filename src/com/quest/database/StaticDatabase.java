@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
  
-public class myDatabase extends SQLiteOpenHelper {
-        static final String dbName = "myDB";
+public class StaticDatabase extends SQLiteOpenHelper {
+        static final String dbName = "Static";
        //fItemAmount+" INTEGER , "+
         static final String tItem = "Item"; 
         static final String fItemID = "ItemID";
@@ -76,7 +76,7 @@ public class myDatabase extends SQLiteOpenHelper {
         static final String fEffectSpellLevel3 = "tres";
         
         
-        public myDatabase(Context context) {
+        public StaticDatabase(Context context) {
 // THE VALUE OF 1 ON THE NEXT LINE REPRESENTS THE VERSION NUMBER OF THE DATABASE
 // IN THE FUTURE IF YOU MAKE CHANGES TO THE DATABASE, YOU NEED TO INCREMENT THIS NUMBER
 // DOING SO WILL CAUSE THE METHOD onUpgrade() TO AUTOMATICALLY GET TRIGGERED
