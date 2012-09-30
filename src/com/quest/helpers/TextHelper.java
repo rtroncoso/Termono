@@ -3,15 +3,18 @@ package com.quest.helpers;
 import java.util.ArrayList;
 
 import org.andengine.entity.text.Text;
+import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.StrokeFont;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 
 import com.quest.game.Game;
+import com.quest.objects.InputText;
 
 public class TextHelper{
 
@@ -27,7 +30,7 @@ public class TextHelper{
 	private StrokeFont mNormalFont;
 	private Text mText;
 	private ArrayList<Text> mList;
-	private Text mDeletableText;
+	private Text mDeletableText;	
 	private enum FontUsed {
 		Normal,
 		Supa,
@@ -37,8 +40,7 @@ public class TextHelper{
 	// Constructors
 	// ===========================================================
 	public TextHelper(/*FontUsed pFontUsed*/){
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		
+			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 			this.mNormalFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256);		
 			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), this.mNormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.BLACK, 2, Color.WHITE);
 			Game.getInstance().getEngine().getTextureManager().loadTexture(this.mNormalFontTexture);
@@ -68,6 +70,7 @@ public class TextHelper{
 	}
 	
 	
+	
 	public void EraseText(String pKey){
 		for(int i = 0;i<mList.size();i++){
 			if(mList.get(i).getUserData() == pKey){
@@ -94,6 +97,12 @@ public class TextHelper{
 			}	
 		}
 	}
+	
+	
+	public InputText NewInputText(float pX,float pY,final String title, final String message, TiledTextureRegion texture,int textOffsetX, int textOffsetY, boolean isPassword){
+		return new InputText(pX, pY, title, message, texture, this.mNormalFont, textOffsetX, textOffsetY, isPassword, Game.getInstance().getVertexBufferObjectManager(), Game.getInstance());
+	}
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -112,6 +121,9 @@ public class TextHelper{
 		return mList.get(a);
 	}
 
+	public Font getFont(){
+		return this.mNormalFont;
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================

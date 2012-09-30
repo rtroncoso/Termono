@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.jar.Attributes.Name;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
@@ -22,15 +23,15 @@ import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.IPUtils;
 import org.andengine.extension.multiplayer.protocol.util.WifiUtils;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TextureRegionFactory;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.debug.Debug;
 
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.quest.database.DataHandler;
@@ -40,6 +41,7 @@ import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
+import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
 
 public class MatchScene extends Scene {
@@ -103,13 +105,12 @@ public class MatchScene extends Scene {
 	//New Match	
 	private Entity mNewMatchEntity;
 	private BitmapTextureAtlas mNewMatchTextureAtlas;
-	private ITextureRegion mPreviousTextureRegion;
-	private ITextureRegion mNextTextureRegion;
-	private Sprite mPreviousSprite;
-	private Sprite mNextSprite;
 	private Sprite mLobbyNewMatchSprite;
-	private int Step;
-	private Text mStepText;
+	private TiledTextureRegion mTiledTextureRegion;
+	private String mMatchName;
+	private String mMatchPassword;
+	private InputText mMatchNameInput;
+	private InputText mMatchPasswordInput;
 	
 	//Direct Connect
 	private Entity mDirectEntity;
@@ -123,7 +124,7 @@ public class MatchScene extends Scene {
 	
 	
 	private SocketServerDiscoveryServer<MatchesDiscoveryData> mSocketServerDiscoveryServer;
-	private SocketServerDiscoveryClient<MatchesDiscoveryData> mSocketServerDiscoveryClient;
+	private SocketServerDiscoveryClient<MatchesDiscoveryData> mSocketServerDiscoveryClient;	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -149,10 +150,11 @@ public class MatchScene extends Scene {
 		this.mDirectConnectTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "DC.png", 260, 985);
 		this.mRefreshTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "refresh.png", 325, 985);
 		this.mOwnMatchesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "OwnMatches.png", 390, 985);
-		this.mPreviousTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Previous.png", 455, 985);
-		this.mNextTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Next.png", 530, 985);
-		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 600, 985);
-		this.mSceneTextureAtlas.load();
+		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 455, 985);
+		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "ButtonSprite.png", 0, 0, 1, 1);
+		this.mSceneTextureAtlas.load();	
+		
+		
 		
 		//Background
 		this.mScrollBackSprite = new Sprite(0, 0, mScrollBackTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
@@ -514,7 +516,7 @@ public class MatchScene extends Scene {
 	
 	public Entity LoadNewMatchEntity(){
 		this.mNewMatchEntity.detachChildren();
-		Step = 0;
+		ShowLowerBar(false);
 		
 		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -528,9 +530,11 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						if(LastUI==0){
+							ShowLowerBar(true);
 							MatchScene.this.clearTouchAreas();
 							MatchScene.this.SwitchEntity(LoadOwnMatchesEntity());
 						}else{
+							ShowLowerBar(true);
 							MatchScene.this.clearTouchAreas();
 							MatchScene.this.SwitchEntity(LoadMatchesEntity());
 						}
@@ -558,8 +562,13 @@ public class MatchScene extends Scene {
 					if(MatchScene.this.mLobbyNewMatchSprite.isVisible()){
 						if(mGrabbed) {
 							mGrabbed = false;
-							MatchScene.this.clearTouchAreas();
-							SwitchEntity(LoadLobbyEntity(false, "Testito"));
+							if(MatchScene.this.mMatchNameInput.getText() == ""){
+								MatchScene.this.mNewMatchEntity.attachChild(MatchScene.this.mTextHelper.NewText(200, 350, "Please enter a valid name for the match", "Alert"));
+							}else{
+								ShowLowerBar(true);
+								MatchScene.this.clearTouchAreas();
+								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText()));
+							}
 						}
 					}
 					break;
@@ -572,100 +581,22 @@ public class MatchScene extends Scene {
 		
 		
 		
-		//Previous
-		this.mPreviousSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-			boolean mGrabbed = false;
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case TouchEvent.ACTION_DOWN:
-					if(MatchScene.this.mPreviousSprite.isVisible()){
-						mGrabbed = true;				
-					}
-					break;
-				case TouchEvent.ACTION_UP:
-					if(MatchScene.this.mPreviousSprite.isVisible()){
-						if(mGrabbed) {
-							mGrabbed = false;
-							Step-=1;
-							MatchScene.this.StepChange(false);
-						}
-					}
-					break;
-				}
-				return true;	
-			}
-		};
-		this.mNewMatchEntity.attachChild(this.mPreviousSprite);
-		this.registerTouchArea(this.mPreviousSprite);
+		//Texto
+		this.mNewMatchEntity.attachChild(mTextHelper.NewText(100, 100, "Match name:", "MatchName"));
+		this.mMatchNameInput = this.mTextHelper.NewInputText(250, 100, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
+		this.mNewMatchEntity.attachChild(mMatchNameInput);
 		
-		//Next
-		this.mNextSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-			boolean mGrabbed = false;
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case TouchEvent.ACTION_DOWN:
-					if(MatchScene.this.mNextSprite.isVisible()){
-						mGrabbed = true;				
-					}
-					break;
-				case TouchEvent.ACTION_UP:
-					if(MatchScene.this.mNextSprite.isVisible()){
-						if(mGrabbed) {
-							mGrabbed = false;
-							Step+=1;
-							MatchScene.this.StepChange(false);
-						}
-					}
-					break;
-				}
-				return true;	
-			}
-		};
-		this.mNewMatchEntity.attachChild(this.mNextSprite);
-		this.registerTouchArea(this.mNextSprite);
+		this.mNewMatchEntity.attachChild(mTextHelper.NewText(100, 150, "Match password:", "MatchPassword"));
+		this.mMatchPasswordInput = this.mTextHelper.NewInputText(310, 150, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
+		this.mNewMatchEntity.attachChild(mMatchPasswordInput);
 		
-		this.StepChange(true);
+		this.registerTouchArea(mMatchNameInput);
+		this.registerTouchArea(mMatchPasswordInput);
+		
 		
 		return this.mNewMatchEntity;
 	}
 	
-	
-	private void StepChange(boolean pStart){
-		if(pStart){
-			this.mStepText = this.mTextHelper.NewText(100, 150, "-------------------------------------------------------------------------", "StepText");
-			this.mNewMatchEntity.attachChild(this.mStepText);
-			this.mLobbyNewMatchSprite.setVisible(false);
-		}
-		switch (Step) {
-		case 0:
-			this.mPreviousSprite.setVisible(false);
-			this.mTextHelper.ChangeText("Follow the instructions to create a new match", "StepText", 100, 150);
-			break;
-		case 1:
-			this.mPreviousSprite.setVisible(true);
-			this.mTextHelper.ChangeText("Player limit - Match name", "StepText", 100, 150);
-			break;
-		case 2:
-			this.mNextSprite.setVisible(true);
-			this.mTextHelper.ChangeText("Password?", "StepText", 200, 180);
-			this.mLobbyNewMatchSprite.setVisible(false);
-			break;
-		case 3:
-			this.mNextSprite.setVisible(false);
-			this.mTextHelper.ChangeText("You're done!", "StepText", 100, 150);
-			this.mLobbyNewMatchSprite.setVisible(true);
-			break;
-		}
-	}
-	
-	private void RegisterNewMatchTouchAreas(){
-		this.registerTouchArea(mBackSprite);
-		this.registerTouchArea(this.mLobbyNewMatchSprite);
-		this.registerTouchArea(this.mPreviousSprite);
-		this.registerTouchArea(this.mNextSprite);
-	}
 	
 	
 	private void ShowLowerBar(Boolean pBool){
