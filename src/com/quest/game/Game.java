@@ -11,11 +11,12 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.util.Log;
 import android.view.KeyEvent;
 
+import com.quest.database.DataHandler;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.SceneHelper;
+import com.quest.helpers.TextHelper;
 import com.quest.network.QClient;
 import com.quest.network.QServer;
 
@@ -33,6 +34,8 @@ public class Game extends SimpleBaseGameActivity {
 	private static QServer mServer;
 	private static QClient mClient;
 	private static String mUserID;
+	private static DataHandler mDataHandler;
+	private static TextHelper mTextHelper;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -53,7 +56,9 @@ public class Game extends SimpleBaseGameActivity {
 		
 		// Init Objects
 		Game.mSceneManager = new SceneHelper();
-		//consigo la mac, por ahora lo pongo aca
+		Game.mDataHandler = new DataHandler();
+//		Game.mTextHelper = new TextHelper(); todavia no hay texture manager, lo seteo desde mainmenuscene
+		
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInf = wifiMan.getConnectionInfo();
 		Game.mUserID = wifiInf.getMacAddress();
@@ -84,16 +89,8 @@ public class Game extends SimpleBaseGameActivity {
 	
 	@Override
 	protected Scene onCreateScene() {
-
 		Game.mMapManager = new MapHelper();
-		
-		//###################################################
-		//this.mSceneManager.setGameScene();
-		//this.mSceneManager.setInventoryScene();
-			Game.mSceneManager.setMainMenuScene();
-		//this.mSceneManager.setPauseMenuScene();
-		//###################################################
-
+		Game.mSceneManager.setMainMenuScene();
 		return Game.mSceneManager.getCurrScene();
 	}
 
@@ -150,9 +147,25 @@ public class Game extends SimpleBaseGameActivity {
 	public static QClient getClient() {
 		return mClient;
 	}
-
+	
 	public static void setClient(QClient mClient) {
 		Game.mClient = mClient;
+	}
+
+	public static DataHandler getDataHandler() {
+		return mDataHandler;
+	}
+
+	public static void setDataHandler(DataHandler mDataHandler) {
+		Game.mDataHandler = mDataHandler;
+	}
+
+	public static TextHelper getTextHelper() {
+		return mTextHelper;
+	}
+
+	public static void setTextHelper(TextHelper mTextHelper) {
+		Game.mTextHelper = mTextHelper;
 	}
 	
 	public static String getUserID(){

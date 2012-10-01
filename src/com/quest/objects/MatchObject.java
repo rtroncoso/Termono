@@ -27,7 +27,6 @@ public class MatchObject extends Entity{
 	private MatchScene mMatchScene;
 	private int mFunction;
 	private String mName;
-	private int mItemClass;
 	private String IPAdress;
 	private Entity mEntity;
 	private Boolean mJoining;

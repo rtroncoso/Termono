@@ -5,12 +5,10 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.jar.Attributes.Name;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.extension.multiplayer.protocol.client.SocketServerDiscoveryClient;
 import org.andengine.extension.multiplayer.protocol.client.SocketServerDiscoveryClient.ISocketServerDiscoveryClientListener;
 import org.andengine.extension.multiplayer.protocol.client.connector.ServerConnector;
@@ -23,12 +21,10 @@ import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.IPUtils;
 import org.andengine.extension.multiplayer.protocol.util.WifiUtils;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.texture.region.TextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.debug.Debug;
 
@@ -36,7 +32,6 @@ import android.util.Log;
 
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
-import com.quest.helpers.TextHelper;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
@@ -80,7 +75,6 @@ public class MatchScene extends Scene {
 	private Sprite mOkSprite;
 	private Sprite mCancelSprite;
 	private Entity mDiscoveredMatchEntity;
-	private TextHelper mTextHelper;
 	private DataHandler mDataHandler;	
 	private ArrayList<MatchObject> mMatchList;
 	
@@ -136,8 +130,6 @@ public class MatchScene extends Scene {
 		this.mLobbyEntity = new Entity(0,0);
 		this.mDirectEntity = new Entity(0,0);
 		this.mDiscoveredMatchEntity = new Entity(110,61);
-		this.mDataHandler = new DataHandler();
-		this.mTextHelper = new TextHelper();
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2036,2036, TextureOptions.BILINEAR);
 		this.mScrollBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "scroll.png", 0, 0);
@@ -449,6 +441,7 @@ public class MatchScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
+							Game.getTextHelper().FlushText("MatchScene");
 							Game.getSceneManager().setGameScene();
 						}
 						break;
@@ -503,7 +496,7 @@ public class MatchScene extends Scene {
 			Log.d("Logd","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
 		}
 		try {
-			this.mLobbyEntity.attachChild(this.mTextHelper.NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "OwnIP"));
+			this.mLobbyEntity.attachChild(Game.getTextHelper().NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "MatchScene;OwnIP"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -563,7 +556,7 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							if(MatchScene.this.mMatchNameInput.getText() == ""){
-								MatchScene.this.mNewMatchEntity.attachChild(MatchScene.this.mTextHelper.NewText(200, 350, "Please enter a valid name for the match", "Alert"));
+								MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(250, 350, "Please enter a valid name for the match", "MatchScene;Alert"));
 							}else{
 								ShowLowerBar(true);
 								MatchScene.this.clearTouchAreas();
@@ -582,12 +575,12 @@ public class MatchScene extends Scene {
 		
 		
 		//Texto
-		this.mNewMatchEntity.attachChild(mTextHelper.NewText(100, 100, "Match name:", "MatchName"));
-		this.mMatchNameInput = this.mTextHelper.NewInputText(250, 100, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
+		this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(100, 100, "Match name:", "MatchScene;MatchName"));
+		this.mMatchNameInput = Game.getTextHelper().NewInputText(250, 100, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
 		this.mNewMatchEntity.attachChild(mMatchNameInput);
 		
-		this.mNewMatchEntity.attachChild(mTextHelper.NewText(100, 150, "Match password:", "MatchPassword"));
-		this.mMatchPasswordInput = this.mTextHelper.NewInputText(310, 150, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
+		this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "Match password:", "MatchScene;MatchPassword"));
+		this.mMatchPasswordInput = Game.getTextHelper().NewInputText(290, 150, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
 		this.mNewMatchEntity.attachChild(mMatchPasswordInput);
 		
 		this.registerTouchArea(mMatchNameInput);
@@ -660,11 +653,11 @@ public class MatchScene extends Scene {
 								conts=true;
 							}
 						}
-						if(MatchScene.this.mTextHelper.getText("OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funca
+						if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funca
 							conts=true;
 						}
 						if(conts==false){
-						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim(),MatchScene.this.mTextHelper,200, MatchScene.this.mMatchList.size()*163+20,pDiscoveryData.getTest().trim()+"\n"+ipAddressAsString,"titulodematch"+String.valueOf(MatchScene.this.mMatchList.size())));
+						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim(),Game.getTextHelper(),200, MatchScene.this.mMatchList.size()*163+20,pDiscoveryData.getTest().trim()+"\n"+ipAddressAsString,"titulodematch"+String.valueOf(MatchScene.this.mMatchList.size())));
 						}
 					} catch (final UnknownHostException e) {
 						Log.d("Logd","DiscoveryClient: IPException: " + e);

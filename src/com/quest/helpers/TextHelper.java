@@ -62,7 +62,7 @@ public class TextHelper{
 		Text tempText =  new Text(X, Y, this.mNormalFont, pText,Game.getInstance().getVertexBufferObjectManager());
 		tempText.setUserData(pKey);
 		if(mList.contains(this.mDeletableText)){
-			this.mList.add(mList.indexOf(mDeletableText),tempText);
+			this.mList.set(mList.indexOf(mDeletableText),tempText);
 		}else{
 			this.mList.add(tempText);
 		}
@@ -74,7 +74,7 @@ public class TextHelper{
 	public void EraseText(String pKey){
 		for(int i = 0;i<mList.size();i++){
 			if(mList.get(i).getUserData() == pKey){
-				this.mList.add(i,mDeletableText);
+				this.mList.set(i,mDeletableText);
 			}else{
 				Log.d("Logd","TextHelper: Erase - No text matches key");
 			}	
@@ -101,6 +101,18 @@ public class TextHelper{
 	
 	public InputText NewInputText(float pX,float pY,final String title, final String message, TiledTextureRegion texture,int textOffsetX, int textOffsetY, boolean isPassword){
 		return new InputText(pX, pY, title, message, texture, this.mNormalFont, textOffsetX, textOffsetY, isPassword, Game.getInstance().getVertexBufferObjectManager(), Game.getInstance());
+	}
+	
+	public void FlushText(String pString){
+		int a = 0;
+		for(int i = 0;i<mList.size();i++){
+			String[] temp = mList.get(i).getUserData().toString().split(";");
+			if(temp[0].equals(pString)){
+				a++;
+				this.mList.set(i,mDeletableText);
+			}
+		}
+		Log.d("Logd","TextHelper - FlushText: Flushed "+String.valueOf(a)+" items.");
 	}
 	
 	// ===========================================================

@@ -1,6 +1,5 @@
 package com.quest.scenes;
 
-import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
@@ -9,7 +8,6 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.util.modifier.ease.EaseBackOut;
 
 import com.quest.game.Game;
 import com.quest.helpers.TextHelper;
@@ -32,21 +30,22 @@ public class MainMenuScene extends Scene {
 	private Sprite mPlaySprite;
 	private Sprite mOptionsSprite;
 	private Sprite mQuitSprite;
-	private TextHelper mTextHelper;
 	private Text mPlayText;
 	private Text mOptionsText;
 	private Text mQuitText;
+	private TextHelper mTextHelper;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public MainMenuScene(){
+		this.mTextHelper = new TextHelper();
+		Game.setTextHelper(mTextHelper);
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MainMenu/");
 		this.mMainMenuTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);
 		this.mBoxTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, Game.getInstance().getApplicationContext(), "boxy.png", 0, 480);
 		this.mSignsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, Game.getInstance().getApplicationContext(), "chainwood.png", 220, 480);
 		this.mMainMenuTextureAtlas.load();
-		this.mTextHelper = new TextHelper();
 		
 		//Background
 		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager());
@@ -60,38 +59,44 @@ public class MainMenuScene extends Scene {
 		
 		//Play
 		this.mPlaySprite = new Sprite(11, 49,this.mBoxTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-			
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
-			case TouchEvent.ACTION_DOWN:
-			case TouchEvent.ACTION_CANCEL:
-			case TouchEvent.ACTION_OUTSIDE:
-				break;
-			case TouchEvent.ACTION_UP:
-				Game.getSceneManager().setMatchScene();
-				break;
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;					
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						Game.getTextHelper().FlushText("MainMenuScene");
+						Game.getSceneManager().setMatchScene();
+						break;
+					}
+				}
+				return true;
 			}
-			return true;
-			}
-			
+				
 		};
 		this.mPlaySprite.setScale(0.725f);
 	
 		
 		//Opciones
 		this.mOptionsSprite = new Sprite(13, 182,this.mBoxTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-				
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-					case TouchEvent.ACTION_DOWN:
-					case TouchEvent.ACTION_CANCEL:
-					case TouchEvent.ACTION_OUTSIDE:
+			switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
 						break;
 					case TouchEvent.ACTION_UP:
-						Game.getSceneManager().setOptionsScene();
-						break;
+						if(mGrabbed) {
+							mGrabbed = false;
+							Game.getTextHelper().FlushText("MainMenuScene");
+							Game.getSceneManager().setOptionsScene();
+							break;
+						}
 					}
 				return true;
 			}
@@ -100,16 +105,19 @@ public class MainMenuScene extends Scene {
 		
 		//Quit
 		this.mQuitSprite = new Sprite(13, 326,this.mBoxTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-					case TouchEvent.ACTION_DOWN:
-					case TouchEvent.ACTION_CANCEL:
-					case TouchEvent.ACTION_OUTSIDE:
+			switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
 						break;
 					case TouchEvent.ACTION_UP:
-						//Game.this.getInstance()
-						break;
+						if(mGrabbed) {
+							mGrabbed = false;
+							Game.getInstance().finish();
+							break;
+						}
 					}
 				return true;
 			}
@@ -127,9 +135,9 @@ public class MainMenuScene extends Scene {
 		this.registerTouchArea(this.mQuitSprite);
 
 		//texto
-		this.mPlayText = this.mTextHelper.NewText(90, 87,"Play","MainMenuPlay");
-		this.mOptionsText = this.mTextHelper.NewText(80, 217,"Options","MainMenuOptions");
-		this.mQuitText = this.mTextHelper.NewText(90, 359,"Quit","MainMenuQuit");
+		this.mPlayText = Game.getTextHelper().NewText(90, 87,"Play","MainMenuScene;Play");
+		this.mOptionsText = Game.getTextHelper().NewText(80, 217,"Options","MainMenuScene;Options");
+		this.mQuitText = Game.getTextHelper().NewText(90, 359,"Quit","MainMenuScene;Quit");
 		this.attachChild(this.mPlayText);
 		this.attachChild(this.mOptionsText);
 		this.attachChild(this.mQuitText);
