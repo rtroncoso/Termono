@@ -18,7 +18,6 @@ public class UserDatabase extends SQLiteOpenHelper {
 	
 	static final String tMatchProfile = "MatchProfile";
 		static final String fMatchProfileID = "MatchProfileID";
-		static final String fCreator = "Creator";
 		//ProfileID
 		//MatchID
 		
@@ -104,7 +103,6 @@ public class UserDatabase extends SQLiteOpenHelper {
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tMatchProfile+" ("+
     			fMatchProfileID+" INTEGER PRIMARY KEY , "+
     			fProfileID +" INTEGER , "+
-    			fCreator +" INTEGER , "+//boolean
     			fMatchID +" INTEGER)" 
                 );  	
     	
@@ -253,11 +251,10 @@ public class UserDatabase extends SQLiteOpenHelper {
    }
     
     //ProfileMatch
-    public void addNewMatchProfile(int pProfileID,int pMatchId,boolean pCreator){
+    public void addNewMatchProfile(int pProfileID,int pMatchId){
     	  ContentValues cv = new ContentValues();
           cv.put(fProfileID,pProfileID);
           cv.put(fMatchID,pMatchId);
-          cv.put(fCreator,pCreator);
           this.getWritableDatabase().insert(tMatchProfile, null, cv);
           cv.clear();
           this.close();         

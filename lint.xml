@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
-    <issue id="NewApi">
+    <issue id="NewApi" severity="ignore">
         <ignore path="src\com\quest\helpers\InputTextHelper.java" />
         <ignore path="src\com\quest\scenes\MatchScene.java" />
     </issue>

@@ -1,16 +1,20 @@
 package com.quest.objects;
 
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.R.bool;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -40,6 +44,8 @@ public class MatchObject extends Entity{
 	private Boolean mHasPassword;
 	private Text mText;
 	private String mPassword = "";
+	private boolean mReady = false;
+	private TimerHandler tempTimer;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -65,9 +71,11 @@ public class MatchObject extends Entity{
 			case TouchEvent.ACTION_UP:
 				if(mGrabbed) {
 					mGrabbed = false;
+					mReady = false;
 					if(mJoining){//si me estoy uniendo o creando
 						if(MatchObject.this.hasPassword()){
 							showPasswordInput();
+							WaitForPassword();
 						}else{
 							mMatchScene.EnterMatch(mIP, mMatchName,mUserID,mPassword);
 						}
@@ -136,17 +144,17 @@ public class MatchObject extends Entity{
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
 						mPassword = editText.getText().toString();
-						mMatchScene.EnterMatch(mIP, mMatchName,mUserID,mPassword);
+						mReady = true;
 					}
 				});
 				alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
-
+						mReady = true;
 					}
 				});
 				final AlertDialog dialog = alert.create();
-				dialog.setOnShowListener(new OnShowListener() {
+				dialog.setOnShowListener(new OnShowListener() {//puede tirar error de api, necesita el 8
 					@Override
 					public void onShow(DialogInterface dialog) {
 						editText.requestFocus();
@@ -158,6 +166,26 @@ public class MatchObject extends Entity{
 			}
 		});
 	}
+
+	
+	public void WaitForPassword(){
+		this.mMatchScene.registerUpdateHandler(tempTimer = new TimerHandler(0.5f, true, new ITimerCallback() {
+			@Override
+	        public void onTimePassed(final TimerHandler pTimerHandler) {
+				Log.d("Logd",MatchObject.this.mPassword+" "+String.valueOf(mReady));
+				if(mReady==true){
+	        		if(mPassword.equals(null)||mPassword.equals("")){
+	        			mMatchScene.unregisterUpdateHandler(tempTimer);
+	        		}else{
+	        			
+	        			mMatchScene.unregisterUpdateHandler(tempTimer);
+	        			mMatchScene.EnterMatch(mIP, mMatchName,mUserID,mPassword);
+	        		}
+	        	}
+	        }
+	    }));
+	}
+
 
 	// ===========================================================
 	// Inner and Anonymous Classes

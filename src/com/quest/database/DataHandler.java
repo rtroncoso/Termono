@@ -39,18 +39,16 @@ public class DataHandler {
 	public void CheckAndAddProfile(String pUserID, String pUsername) {
 		if(this.mUserDB.checkifProfileExists(pUserID)){
 			this.mUserDB.setUsername(this.mUserDB.getProfileID(pUserID), pUsername);//Lo updateo por si cambio el username
-			Log.d("Quest!","User: "+pUserID+" Updateado a "+pUsername);
 		}else{
 			this.mUserDB.addNewProfile(pUserID,pUsername);//lo agrego
-			Log.d("Quest!","User: "+pUserID+" agregado como "+pUsername);
 		}
 		
 	}
 	
 	//MatchProfile
-	public void AddNewMatch(int pProfileID,boolean pCreator,String pName,String pPassword){
+	public void AddNewMatch(int pProfileID,String pName,String pPassword){
 		if(pPassword.equals(null)||pPassword.equals(""))pPassword="**nopass**";
-		this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword), pCreator);
+		this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword));
 	}
 	
 	

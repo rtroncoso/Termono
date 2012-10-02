@@ -557,7 +557,7 @@ public class MatchScene extends Scene {
 								if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText())){
 									ShowLowerBar(true);
 									MatchScene.this.clearTouchAreas();
-									Game.getDataHandler().AddNewMatch(1,true,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
+									Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
 									SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),"00:00:00:00:00:00"));//Game.getUserID()));
 								}else{
 									MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(200, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
