@@ -50,7 +50,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // ===========================================================
 	public QServer(final ISocketConnectionClientConnectorListener pSocketConnectionClientConnectorListener) {
 		super(SERVER_PORT, pSocketConnectionClientConnectorListener, new DefaultSocketServerListener<SocketConnectionClientConnector>());
-		Log.d("Logd","Server started");
+		Log.d("Quest!","Server started");
 		this.initMessagePool();
 	}
 	
@@ -90,7 +90,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				pClientConnector.terminate();
-				Log.d("Logd","Terminated");
+				Log.d("Quest!","Terminated");
 			}
 		});
 
@@ -102,7 +102,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 					final ConnectionEstablishedServerMessage connectionEstablishedServerMessage = (ConnectionEstablishedServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED);
 					try {
 						pClientConnector.sendServerMessage(connectionEstablishedServerMessage);
-						Log.d("Logd","Established sent");
+						Log.d("Quest!","Established sent");
 					} catch (IOException e) {
 						Debug.e(e);
 					}
@@ -112,7 +112,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 					connectionRejectedProtocolMissmatchServerMessage.setProtocolVersion(MessageConstants.PROTOCOL_VERSION);
 					try {
 						pClientConnector.sendServerMessage(connectionRejectedProtocolMissmatchServerMessage);
-						Log.d("Logd","Rejected sent");
+						Log.d("Quest!","Rejected sent");
 					} catch (IOException e) {
 						Debug.e(e);
 					}

@@ -28,7 +28,14 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.debug.Debug;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnShowListener;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
@@ -77,15 +84,16 @@ public class MatchScene extends Scene {
 	private Entity mDiscoveredMatchEntity;
 	private DataHandler mDataHandler;	
 	private ArrayList<MatchObject> mMatchList;
+	private int LastUI;//Donde estuvo, own matches = 0, matches = 1
+	private boolean HasMatches;
 	
-	private int LastUI;//Donde estuvo, own matches = 0, matches = 1  
 	//Matches
 	private Entity mMatchesEntity;
 	private BitmapTextureAtlas mMatchesTextureAtlas;
 		private ITextureRegion mRefreshTextureRegion;
 		private ITextureRegion mDirectConnectTextureRegion;
 		private ITextureRegion mOwnMatchesTextureRegion;
-				
+		private ITextureRegion mLockTextureRegion;
 		private Sprite mRefreshSprite;
 		private Sprite mDirectConnectSprite;
 		private Sprite mOwnMatchesSprite;
@@ -94,7 +102,7 @@ public class MatchScene extends Scene {
 	//Own Matches
 	private Entity mOwnMatchesEntity;
 	private BitmapTextureAtlas mOwnMatchesTextureAtlas;
-		
+	private String mSelectedMatchName = "";
 		
 	//New Match	
 	private Entity mNewMatchEntity;
@@ -142,7 +150,8 @@ public class MatchScene extends Scene {
 		this.mDirectConnectTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "DC.png", 260, 985);
 		this.mRefreshTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "refresh.png", 325, 985);
 		this.mOwnMatchesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "OwnMatches.png", 390, 985);
-		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 455, 985);
+		this.mLockTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lock.png", 455, 985);
+		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 490, 985);
 		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "ButtonSprite.png", 0, 0, 1, 1);
 		this.mSceneTextureAtlas.load();	
 		
@@ -157,8 +166,9 @@ public class MatchScene extends Scene {
 		
 		this.mLowerBarSprite = new Sprite(0,this.mScrollBackSprite.getHeight()- 66,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mLowerBarSprite);
-				
-
+		
+		CheckIfFirstTime();
+		HasMatches = Game.getDataHandler().hasMatches();
 		mCurrentEntity = LoadMatchesEntity();
 		MatchScene.this.attachChild(mCurrentEntity);
 		this.setTouchAreaBindingOnActionDownEnabled(true);
@@ -167,7 +177,12 @@ public class MatchScene extends Scene {
 		//***********************************************************************************
 	}
 	
-	
+	private void CheckIfFirstTime(){
+		if(!Game.getDataHandler().CheckUsername(1)){
+			showUsernameInput();
+		}
+		
+	}
 	
 	//Matches entity
 	public Entity LoadMatchesEntity(){
@@ -278,7 +293,7 @@ public class MatchScene extends Scene {
 	public Entity LoadOwnMatchesEntity(){
 		this.mOwnMatchesEntity.detachChildren();
 		this.LastUI=0;
-		
+		Log.d("Quest!",Game.getDataHandler().getUsername(1));
 		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
@@ -356,8 +371,11 @@ public class MatchScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
-						//	MatchScene.this.clearTouchAreas();
-						//	MatchScene.this.SwitchEntity(LoadLobbyEntity(false,"ASD"));
+							if(MatchScene.this.mSelectedMatchName!=""){
+								ShowLowerBar(true);
+								MatchScene.this.clearTouchAreas();
+								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,"00:00:00:00:00:00"));//Game.getUserID()));							
+							}
 						}
 						break;
 					}
@@ -373,9 +391,9 @@ public class MatchScene extends Scene {
 	
 	
 	//Loby entity
-	public Entity LoadLobbyEntity(Boolean pJoining, final String pName){//pedir datos de partida
+	public Entity LoadLobbyEntity(Boolean pJoining, final String pMatchName,final String pUserID){//pedir datos de partida
 		this.mLobbyEntity.detachChildren();
-				
+		
 		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
@@ -406,28 +424,7 @@ public class MatchScene extends Scene {
 		this.mLobbyEntity.attachChild(this.mBackSprite);
 		this.registerTouchArea(mBackSprite);
 		if(pJoining){
-		/* chat?
-		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-				boolean mGrabbed = false;
-				@Override
-				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					switch(pSceneTouchEvent.getAction()) {
-					case TouchEvent.ACTION_DOWN:
-						mGrabbed = true;					
-						break;
-					case TouchEvent.ACTION_UP:
-						if(mGrabbed) {
-							mGrabbed = false;
-							//chat?
-						}
-						break;
-					}
-				return true;	
-				}
-		};
-		this.attachChild(this.mOkSprite);
-		this.registerTouchArea(this.mOkSprite);
-		*/
+			ShowLowerBar(false);
 		}else{
 			//Start Match
 			this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
@@ -465,6 +462,7 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 						//rechazar conexiones del player seleccionado
+							MatchScene.this.initServerDiscovery();
 						}
 						break;
 					}
@@ -473,11 +471,9 @@ public class MatchScene extends Scene {
 			};
 			this.mLobbyEntity.attachChild(this.mCancelSprite);
 			this.registerTouchArea(this.mCancelSprite);
-		}
 		
-		if(pJoining){
-			ShowLowerBar(false);
-		}else{
+			
+			
 			//inicio el server
 			MatchScene.this.initServer();
 			
@@ -486,14 +482,14 @@ public class MatchScene extends Scene {
 				MatchScene.this.mSocketServerDiscoveryServer = new SocketServerDiscoveryServer<MatchesDiscoveryData>(DISCOVERY_PORT, new ExampleSocketServerDiscoveryServerListener()) {
 					@Override
 					protected MatchesDiscoveryData onCreateDiscoveryResponse() {
-						return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,pName);
+						return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,";"+pUserID+";"+Game.getDataHandler().getUsername(1)+";"+pMatchName+";"+String.valueOf(Game.getDataHandler().hasPassword(Game.getDataHandler().getMatchID(pMatchName, pUserID)))+";");
 					}
 				};
 				MatchScene.this.mSocketServerDiscoveryServer.start();
 			} catch (final Throwable t) {
 				Debug.e(t);
 			}
-			Log.d("Logd","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
+			Log.d("Quest!","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
 		}
 		try {
 			this.mLobbyEntity.attachChild(Game.getTextHelper().NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "MatchScene;OwnIP"));
@@ -558,9 +554,14 @@ public class MatchScene extends Scene {
 							if(MatchScene.this.mMatchNameInput.getText() == ""){
 								MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(250, 350, "Please enter a valid name for the match", "MatchScene;Alert"));
 							}else{
-								ShowLowerBar(true);
-								MatchScene.this.clearTouchAreas();
-								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText()));
+								if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText())){
+									ShowLowerBar(true);
+									MatchScene.this.clearTouchAreas();
+									Game.getDataHandler().AddNewMatch(1,true,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
+									SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),"00:00:00:00:00:00"));//Game.getUserID()));
+								}else{
+									MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(200, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
+								}
 							}
 						}
 					}
@@ -610,7 +611,7 @@ public class MatchScene extends Scene {
 		this.attachChild(this.mCurrentEntity);
 	}
 	
-	public void EnterMatch(String pIP,String pName){
+	public void EnterMatch(String pIP,String pName,String pUserID,String pPassword){
 		initClient(pIP);
 		try {
 			Game.getClient().sendClientMessage(new ConnectionPingClientMessage());
@@ -618,7 +619,7 @@ public class MatchScene extends Scene {
 			Debug.e(e);
 		}
 		MatchScene.this.clearTouchAreas();
-		SwitchEntity(this.LoadLobbyEntity(true,pName));
+		SwitchEntity(this.LoadLobbyEntity(true,pName,pUserID));
 	}
 	
 	private void initServer() {
@@ -646,34 +647,34 @@ public class MatchScene extends Scene {
 				public void onDiscovery(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final MatchesDiscoveryData pDiscoveryData) {
 					try {
 						final String ipAddressAsString = IPUtils.ipAddressToString(pDiscoveryData.getServerIP());
-						Log.d("Logd","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" --- "+pDiscoveryData.getTest().trim());
+						Log.d("Quest!","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" Message: "+pDiscoveryData.getUserID()+" * "+pDiscoveryData.getUsername()+" - "+pDiscoveryData.getMatchName()+" - "+String.valueOf(pDiscoveryData.hasPassword()));
 						boolean conts = false;
 						for(int i=0;i<MatchScene.this.mMatchList.size();i++){
 							if(MatchScene.this.mMatchList.get(i).getIP().equals(ipAddressAsString)){
 								conts=true;
 							}
 						}
-						if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funca
+						if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
 							conts=true;
 						}
 						if(conts==false){
-						MatchScene.this.mMatchList.add(new MatchObject(mDataHandler, MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getTest().trim(),Game.getTextHelper(),200, MatchScene.this.mMatchList.size()*163+20,pDiscoveryData.getTest().trim()+"\n"+ipAddressAsString,"titulodematch"+String.valueOf(MatchScene.this.mMatchList.size())));
+						MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),200,MatchScene.this.mMatchList.size()*163+20,"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
 						}
 					} catch (final UnknownHostException e) {
-						Log.d("Logd","DiscoveryClient: IPException: " + e);
+						Log.d("Quest!","DiscoveryClient: IPException: " + e);
 					}
 				}
 
 				@Override
 				public void onTimeout(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final SocketTimeoutException pSocketTimeoutException) {
 					Debug.e(pSocketTimeoutException);
-					Log.d("Logd","DiscoveryClient: Timeout: " + pSocketTimeoutException);
+					Log.d("Quest!","DiscoveryClient: Timeout: " + pSocketTimeoutException);
 				}
 
 				@Override
 				public void onException(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final Throwable pThrowable) {
 					Debug.e(pThrowable);
-					Log.d("Logd","DiscoveryClient: Exception: " + pThrowable);
+					Log.d("Quest!","DiscoveryClient: Exception: " + pThrowable);
 				}
 			});
 
@@ -692,12 +693,49 @@ public class MatchScene extends Scene {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	
+	public ITextureRegion getLockTexture(){
+		return this.mLockTextureRegion;
+	}
 
+	public void setSelectedMatch(String pSelectedMatchName){
+		this.mSelectedMatchName = pSelectedMatchName;
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	
+	public void showUsernameInput() {
+		Game.getInstance().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				final AlertDialog.Builder alert = new AlertDialog.Builder(Game.getInstance());
+
+				alert.setTitle("Enter a username");
+				alert.setMessage("Welcome to Quest! please enter the name that will be displayed to other players");
+				final EditText editText = new EditText(Game.getInstance());
+				editText.setTextSize(15f);
+				editText.setText("");
+				editText.setGravity(Gravity.CENTER_HORIZONTAL);
+				alert.setView(editText);
+				alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+						Game.getDataHandler().setUsername(1,editText.getText().toString());
+					}
+				});
+				alert.setCancelable(false);
+				final AlertDialog dialog = alert.create();
+				dialog.setOnShowListener(new OnShowListener() {
+					@Override
+					public void onShow(DialogInterface dialog) {
+						editText.requestFocus();
+						final InputMethodManager imm = (InputMethodManager) Game.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+					}
+				});
+				dialog.show();
+			}
+		});
+	}
 
 	// ===========================================================
 	// Inner and Anonymous Classes
@@ -705,12 +743,12 @@ public class MatchScene extends Scene {
 	private class ExampleServerConnectorListener implements ISocketConnectionServerConnectorListener {
 		@Override
 		public void onStarted(final ServerConnector<SocketConnection> pServerConnector) {
-			Log.d("Logd", "Client: " + MatchScene.this.wifiIPv4Address.toString() + " Connected to server.");
+			Log.d("Quest!", "Client: " + MatchScene.this.wifiIPv4Address.toString() + " Connected to server.");
 		}
 
 		@Override
 		public void onTerminated(final ServerConnector<SocketConnection> pServerConnector) {
-			Log.d("Logd","Client: " + MatchScene.this.wifiIPv4Address.toString() + " Disconnected from Server.");
+			Log.d("Quest!","Client: " + MatchScene.this.wifiIPv4Address.toString() + " Disconnected from Server.");
 			Game.getInstance().finish();
 		}
 	}
@@ -718,12 +756,12 @@ public class MatchScene extends Scene {
 	private class ExampleClientConnectorListener implements ISocketConnectionClientConnectorListener {
 		@Override
 		public void onStarted(final ClientConnector<SocketConnection> pClientConnector) {
-			Log.d("Logd", "Server: " + MatchScene.this.wifiIPv4Address.toString() + " Client connected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
+			Log.d("Quest!", "Server: " + MatchScene.this.wifiIPv4Address.toString() + " Client connected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
 		}
 
 		@Override
 		public void onTerminated(final ClientConnector<SocketConnection> pClientConnector) {
-			Log.d("Logd", "Server: " + MatchScene.this.wifiIPv4Address.toString() + " Client disconnected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
+			Log.d("Quest!", "Server: " + MatchScene.this.wifiIPv4Address.toString() + " Client disconnected: " + pClientConnector.getConnection().getSocket().getInetAddress().getHostAddress());
 		}
 	}
 
@@ -731,23 +769,23 @@ public class MatchScene extends Scene {
 	public class ExampleSocketServerDiscoveryServerListener implements ISocketServerDiscoveryServerListener<MatchesDiscoveryData> {
 		@Override
 		public void onStarted(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer) {
-			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Started.");
+			Log.d("Quest!","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Started.");
 		}
 
 		@Override
 		public void onTerminated(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer) {
-			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Terminated.");
+			Log.d("Quest!","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Terminated.");
 		}
 
 		@Override
 		public void onException(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer, final Throwable pThrowable) {
 			Debug.e(pThrowable);
-			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Exception: " + pThrowable);
+			Log.d("Quest!","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Exception: " + pThrowable);
 		}
 
 		@Override
 		public void onDiscovered(final SocketServerDiscoveryServer<MatchesDiscoveryData> pSocketServerDiscoveryServer, final InetAddress pInetAddress, final int pPort) {
-			Log.d("Logd","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Discovered by: " + pInetAddress.getHostAddress() + ":" + pPort);
+			Log.d("Quest!","DiscoveryServer: " + MatchScene.this.wifiIPv4Address.toString() + " Discovered by: " + pInetAddress.getHostAddress() + ":" + pPort);
 		}
 	}
 

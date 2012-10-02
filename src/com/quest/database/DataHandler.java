@@ -3,11 +3,65 @@ package com.quest.database;
 import com.quest.game.Game;
 
 public class DataHandler {
-
+	private StaticDatabase mStaticDB;
+	private UserDatabase mUserDB;
 	
 	public DataHandler(){
-		
+		this.mStaticDB = new StaticDatabase(Game.getInstance().getApplicationContext());
+		this.mUserDB = new UserDatabase(Game.getInstance().getApplicationContext());
 	}
+	
+//UserDatabase
+	
+	//Profile
+	public boolean CheckUsername(int pProfileID){
+		if(this.mUserDB.getUsername(pProfileID).equals("Player")){
+			return false;//no tiene user
+		}else{
+			return true;//tiene user
+		}
+	}
+	
+	public String getUsername(int pProfileID){
+		return this.mUserDB.getUsername(pProfileID);
+	}
+	
+	public void setUsername(int pProfileID,String pUsername){
+		this.mUserDB.setUsername(pProfileID,pUsername);
+	}	
+	
+	public int getProfileID(String pUserID){
+		return this.mUserDB.getProfileID(pUserID);
+	}
+	
+	//MatchProfile
+	public void AddNewMatch(int pProfileID,boolean pCreator,String pName,String pPassword){
+		if(pPassword == "")pPassword="**nopass**";
+		this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword), pCreator);
+	}
+	
+	
+	//Match
+	public int getMatchID(String pName, String pUserID){
+		return this.mUserDB.getMatchID(pName, this.mUserDB.getProfileID(pUserID));		
+	}
+	
+	public boolean MatchExists(String pName){
+		return this.mUserDB.MatchExists(pName);
+	}
+	
+	public boolean hasPassword(int pMatchID){
+		if(this.mUserDB.getMatchPassword(pMatchID)=="**nopass**"){
+			return false;//no password
+		}else{
+			return true;//pass protected
+		}
+	}
+	
+	public boolean hasMatches(){
+		return this.mUserDB.hasMatches();
+	}
+	
 	/*
 	
 	public String isLevelUnLocked(int levelNum){

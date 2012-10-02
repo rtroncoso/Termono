@@ -40,7 +40,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_CLOSE, ConnectionCloseServerMessage.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					Log.d("Logd","(QClient)CLIENT: Connection terminated.");
+					Log.d("Quest!","(QClient)CLIENT: Connection terminated.");
 					Game.getInstance().finish();				
 				}
 			});
@@ -48,7 +48,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED, ConnectionEstablishedServerMessage.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					Log.d("Logd","(QClient)CLIENT: Connection established.");
+					Log.d("Quest!","(QClient)CLIENT: Connection established.");
 				}
 			});
 	
@@ -61,7 +61,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					} else if(connectionRejectedProtocolMissmatchServerMessage.getProtocolVersion() < MessageConstants.PROTOCOL_VERSION) {
 						//						Toast.makeText(context, text, duration).show();
 					}
-					Log.d("Logd","(QClient)CLIENT: Connection rejected.");
+					Log.d("Quest!","(QClient)CLIENT: Connection rejected.");
 					Game.getInstance().finish();				
 				}
 			});
@@ -71,7 +71,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) pServerMessage;
 					final long roundtripMilliseconds = System.currentTimeMillis() - connectionPongServerMessage.getTimestamp();
-					Log.d("Logd","Ping: " + roundtripMilliseconds / 2 + "ms");
+					Log.d("Quest!","Ping: " + roundtripMilliseconds / 2 + "ms");
 				}
 			});
 			
@@ -81,7 +81,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					final UpdateEntityPositionServerMessage updateEntityPosition = (UpdateEntityPositionServerMessage) pServerMessage;
 					// mandarle nueva posicion a todos
 					/* final long roundtripMilliseconds = System.currentTimeMillis() - connectionPongServerMessage.getTimestamp();
-					Log.d("Logd","Ping: " + roundtripMilliseconds / 2 + "ms"); */
+					Log.d("Quest!","Ping: " + roundtripMilliseconds / 2 + "ms"); */
 				}
 			});
 		}

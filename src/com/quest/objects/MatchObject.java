@@ -6,9 +6,16 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import com.quest.database.DataHandler;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnShowListener;
+import android.text.InputType;
+import android.view.Gravity;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+
 import com.quest.game.Game;
-import com.quest.helpers.TextHelper;
 import com.quest.scenes.MatchScene;
 
 public class MatchObject extends Entity{
@@ -25,92 +32,64 @@ public class MatchObject extends Entity{
 	private Entity mMatchEntity;
 	private String mIP;
 	private MatchScene mMatchScene;
-	private int mFunction;
-	private String mName;
+	private String mMatchName;
+	private String mUserID;
 	private String IPAdress;
 	private Entity mEntity;
 	private Boolean mJoining;
-	private float oldPos = 0;
-	private int LastAction = 0;
+	private Boolean mHasPassword;
 	private Text mText;
+	private String mPassword = "";
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	
-	public MatchObject(DataHandler pDataHandler,ITextureRegion pTextureRegion,int pIconX,int pIconY,MatchScene pScene,String pIPAdress,Entity pEntity,Boolean pJoining,String pName, TextHelper pTextHelper,float pTextX,float pTextY, String pText,String pKey) {
+	public MatchObject(ITextureRegion pTextureRegion,int pSpriteX,int pSpriteY,MatchScene pScene,String pIPAdress,Entity pEntity,Boolean pJoining,String pMatchName,String pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) {
 		this.mMatchEntity = new Entity(0,0);
 		this.mIP = pIPAdress;
-		this.mName = pName;
+		this.mMatchName = pMatchName;
 		this.mEntity = pEntity;
 		this.mMatchScene = pScene;
 		this.mJoining = pJoining;
+		this.mUserID = pUserID;
+		this.mHasPassword = pHasPassword;
 		
-		this.mMatchSprite = new Sprite(pIconX, pIconY, pTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mMatchSprite = new Sprite(pSpriteX, pSpriteY, pTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
-					oldPos = pSceneTouchEvent.getX();
-					LastAction = 0;
 					mGrabbed = true;
-				break;
-			case TouchEvent.ACTION_MOVE:
-				/*if(this.mGrabbed) {
-					float newPos = pSceneTouchEvent.getX();					
-					float difference = oldPos - newPos;
-					
-					if(difference == (-newPos)) difference = 0;
-					
-					float entityPos = MatchObject.this.mEntity.getX();//fijarse si se actualiza con la otra
-										
-					if(difference > 0){
-						LastAction = 2;						
-						if(entityPos > Game.getSceneManager().getDisplay().getDisplayWidth() - 143 - (Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100))){
-							MatchObject.this.mEntity.setX(entityPos - difference);
-						}
-					}else{
-						LastAction = 1;
-						if(entityPos < Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100)){
-							MatchObject.this.mEntity.setX(entityPos - difference);
-						}
-					}
-					oldPos = newPos;
-				}*/
 				break;
 			case TouchEvent.ACTION_UP:
 				if(mGrabbed) {
 					mGrabbed = false;
 					if(mJoining){//si me estoy uniendo o creando
-						mMatchScene.EnterMatch(mIP, mName);
+						if(MatchObject.this.hasPassword()){
+							showPasswordInput();
+						}else{
+							mMatchScene.EnterMatch(mIP, mMatchName,mUserID,mPassword);
+						}
 					}else{
-						//empiezo el server no el cliente
+						mMatchScene.setSelectedMatch(mMatchName);
 					}
-				}
-					/*
-					float entityX = MatchObject.this.mEntity.getX();
-					float entityY = MatchObject.this.mEntity.getY();
-					
-					float mLimiteIzquierda = (float)(Game.getSceneManager().getDisplay().getDisplayWidth() - 143 - (Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100)));
-					float mLimiteDerecha = (float)(Game.getSceneManager().getDisplay().getDisplayWidth() * (2.625/100));
-					
-					if(entityX > mLimiteDerecha + 5 && LastAction == 1){
-						MatchObject.this.mEntity.registerEntityModifier(new MoveModifier(0.4f, entityX, mLimiteDerecha - 1, entityY, entityY, EaseBackOut.getInstance()));
-					
-					}else if(entityX < mLimiteIzquierda - 5 && LastAction == 2){
-						MatchObject.this.mEntity.registerEntityModifier(new MoveModifier(0.4f, entityX, mLimiteIzquierda + 1, entityY, entityY, EaseBackOut.getInstance()));
-					}*/
-				
+				}				
 				break;
 			}
 			return true;
 			}					
 		};
 		this.mMatchEntity.attachChild(this.mMatchSprite);
-		pScene.registerTouchArea(this.mMatchSprite);
 		
-		this.mText = pTextHelper.NewText(pTextX, pTextY, pText, pKey);
+		if(hasPassword()){
+			this.mMatchEntity.attachChild(new Sprite(530, 50, this.mMatchScene.getLockTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
+		}
+		
+		this.mText = Game.getTextHelper().NewText(pTextX, pTextY, "Match name:"+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(Game.getDataHandler().getProfileID(this.mUserID)), pKey);
 		this.mMatchEntity.attachChild(this.mText);
+		
+		pScene.registerTouchArea(this.mMatchSprite);
 		pEntity.attachChild(this.mMatchEntity);
 	}
 	// ===========================================================
@@ -125,13 +104,60 @@ public class MatchObject extends Entity{
 		return this.mIP;
 	}
 
-	public String getName(){
-		return this.mName;
+	public String getMatchName(){
+		return this.mMatchName;
+	}
+	
+	public String getUserID(){
+		return this.mUserID;
+	}
+	
+	public boolean hasPassword(){
+		return this.mHasPassword;
 	}
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	
+	public void showPasswordInput() {
+		Game.getInstance().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				final AlertDialog.Builder alert = new AlertDialog.Builder(Game.getInstance());
+
+				alert.setTitle("Enter password");
+				alert.setMessage("This match is password protected, please enter the password to join.");
+				final EditText editText = new EditText(Game.getInstance());
+				editText.setTextSize(15f);
+				editText.setText("");
+				editText.setGravity(Gravity.CENTER_HORIZONTAL);
+				editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				alert.setView(editText);
+				alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+						mPassword = editText.getText().toString();
+						mMatchScene.EnterMatch(mIP, mMatchName,mUserID,mPassword);
+					}
+				});
+				alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+
+					}
+				});
+				final AlertDialog dialog = alert.create();
+				dialog.setOnShowListener(new OnShowListener() {
+					@Override
+					public void onShow(DialogInterface dialog) {
+						editText.requestFocus();
+						final InputMethodManager imm = (InputMethodManager) Game.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+					}
+				});
+				dialog.show();
+			}
+		});
+	}
 
 	// ===========================================================
 	// Inner and Anonymous Classes

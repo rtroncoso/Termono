@@ -2,5 +2,6 @@
 <lint>
     <issue id="NewApi">
         <ignore path="src\com\quest\helpers\InputTextHelper.java" />
+        <ignore path="src\com\quest\scenes\MatchScene.java" />
     </issue>
 </lint>

@@ -76,7 +76,7 @@ public class TextHelper{
 			if(mList.get(i).getUserData() == pKey){
 				this.mList.set(i,mDeletableText);
 			}else{
-				Log.d("Logd","TextHelper: Erase - No text matches key");
+				Log.d("Quest!","TextHelper: Erase - No text matches key");
 			}	
 		}
 	}
@@ -92,7 +92,7 @@ public class TextHelper{
 				//hacer que puedas cambiar el key?
 			}else{
 				if(i==mList.size()-1){
-					Log.d("Logd","TextHelper: Change - No text matches key");
+					Log.d("Quest!","TextHelper: Change - No text matches key");
 				}
 			}	
 		}
@@ -112,7 +112,7 @@ public class TextHelper{
 				this.mList.set(i,mDeletableText);
 			}
 		}
-		Log.d("Logd","TextHelper - FlushText: Flushed "+String.valueOf(a)+" items.");
+		Log.d("Quest!","TextHelper - FlushText: Flushed "+String.valueOf(a)+" items.");
 	}
 	
 	// ===========================================================

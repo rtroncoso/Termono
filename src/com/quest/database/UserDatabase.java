@@ -2,8 +2,10 @@ package com.quest.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.quest.game.Game;
 
@@ -84,8 +86,11 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    static final String fSpellID = "SpellID"; //conectado a la estatica
     
     
+	    
+	    
+	    
     public UserDatabase(Context context) {
-            super(context, dbName, null, 0);
+            super(context, dbName, null, 2);
     }
 
     @Override
@@ -111,7 +116,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fMatchCurrentQuest +" TEXT , "+
     			fMatchPassword +" TEXT , "+
     			fMatchMap +" INTEGER , "+
-    			fMatchPlayers +"INTEGER)" 
+    			fMatchPlayers +" INTEGER)" 
                 );  
     	
     	
@@ -181,8 +186,10 @@ public class UserDatabase extends SQLiteOpenHelper {
 				 
 		 
 		 ContentValues cv = new ContentValues();
-		 cv.put(fUserID,Game.getUserID());
-         db.insert(tProfile, null, cv);	                    
+		 //cv.put(fUserID,Game.getUserID());
+		 cv.put(fUserID,"00:00:00:00:00:00");
+		 cv.put(fUsername, "Player");
+		 db.insert(tProfile, null, cv);	                    
          cv.clear();
          
     }
@@ -197,7 +204,105 @@ public class UserDatabase extends SQLiteOpenHelper {
     
     
     //QUERIES
-
+    //Profile
+    public String getUsername(int pProfileID) {
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ fUsername +" FROM "+ tProfile +" WHERE "+ fProfileID +"=?",new String[]{String.valueOf(pProfileID)});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fUsername);
+	    String myAnswer = myCursor.getString(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+   	}
     
+    public void setUsername(int pProfileID,String pUsername) {
+        ContentValues cv = new ContentValues();
+        cv.put(fUsername,pUsername);
+        this.getWritableDatabase().update(tProfile, cv, fProfileID+"=?", new String []{String.valueOf(pProfileID)});
+        cv.clear();
+        this.close();
+   }
+    
+   public int getProfileID(String pUserID){
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ fProfileID +" FROM "+ tProfile +" WHERE "+ fUserID +"=?",new String[]{String.valueOf(pUserID)});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fProfileID);
+	    int myAnswer = myCursor.getInt(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+   }
+    
+    
+    
+    //ProfileMatch
+    public void addNewMatchProfile(int pProfileID,int pMatchId,boolean pCreator){
+    	  ContentValues cv = new ContentValues();
+          cv.put(fProfileID,pProfileID);
+          cv.put(fMatchID,pMatchId);
+          cv.put(fCreator,pCreator);
+          this.getWritableDatabase().insert(tMatchProfile, null, cv);
+          cv.clear();
+          this.close();         
+    }
+    
+    
+    //Match
+    public int CreateNewMatch(String pName,String pPassword){
+	  	  ContentValues cv = new ContentValues();
+	      cv.put(fMatchName,pName);
+	      cv.put(fMatchPassword,pPassword);
+	      this.getWritableDatabase().insert(tMatch, fMatchID, cv);
+	      Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMatchID+" from "+tMatch+" order by "+fMatchID+" desc limit 1", null);
+		  myCursor.moveToFirst();
+		  int index = myCursor.getColumnIndex(fMatchID);
+		  int myAnswer = myCursor.getInt(index);
+		  myCursor.close();
+	      this.close();
+	      return myAnswer;//devuelve el ID del match recien creado
+    }
+    
+    public boolean hasMatches(){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select * from "+tMatch, null);
+    	int x= myCursor.getCount();
+        myCursor.close();
+        this.close();
+        if(x>0){
+        	return true;
+        }else{
+        	return false;
+        }
+    }
 
+    public int getMatchID(String pName, int pOwnerID){
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ tMatch+"."+fMatchID +" FROM "+ tMatch+","+tMatchProfile+","+tProfile +" ON " + tMatchProfile+"."+fProfileID+" = "+tProfile+"."+fProfileID+" and "+tMatch+"."+fMatchID+" = "+tMatchProfile+"."+fMatchID+" and "+tProfile+"."+fProfileID+" = "+String.valueOf(pOwnerID)+" and "+tMatch+"."+fMatchName+" =?",new String[]{pName});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fMatchID);
+	    int myAnswer = myCursor.getInt(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+    }
+    
+    public boolean MatchExists(String pName){
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT * FROM "+ tMatch+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = 1 and "+tMatch+"."+fMatchID+" = "+tMatchProfile+"."+fMatchID+" and "+tMatch+"."+fMatchName+" =?",new String[]{pName});
+	    int count = myCursor.getCount();
+	    myCursor.close();
+	    this.close();
+	    if(count>0){
+	    	return true;//Existe la partida
+	    }else{
+	    	return false;//No existe la partida
+	    }
+    }
+    
+    public String getMatchPassword(int pMatchID){
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ fMatchPassword +" FROM "+ tMatch +" WHERE "+ fMatchID +"=?",new String[]{String.valueOf(pMatchID)});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fMatchPassword);
+	    String myAnswer = myCursor.getString(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+    }
 }
