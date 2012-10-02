@@ -62,7 +62,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				// Moves to it if not blocked
 				if(!Game.getMapManager().collisionCheck(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);
 				try {
-					Game.getClient().sendClientMessage(new ClientMessageMovePlayer(this.getFacingDirectionToTile(tmxTileTo)));
+					Game.getClient().sendClientMessage(new ClientMessageMovePlayer(Game.getDataHandler().getUsername(1), this.getFacingDirectionToTile(tmxTileTo)));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

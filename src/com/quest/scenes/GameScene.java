@@ -1,8 +1,6 @@
 package com.quest.scenes;
 
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.Entity;
-import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXLayer;
@@ -25,7 +23,6 @@ public class GameScene extends Scene {
 		// Fields
 		// ===========================================================
 		private Mob mMob2;
-		private Player mHero;
 		private Mob mEnemy;
 		private Timers mTimers;
 		private MenuHud mMenuHud;
@@ -43,8 +40,8 @@ public class GameScene extends Scene {
 			Game.getInstance().getEngine().registerUpdateHandler(new FPSLogger());
 			Game.getMapManager().loadMap("desert");
 			
-			// Create the Player
-			this.mHero = new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4);
+			// Create the Player and insert in helper
+			Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
 			
 			//Enemies
 			this.mEnemy = new Mob(15, 15, "Mob.png", 128, 256, 0, 0, 4, 4);
@@ -57,7 +54,7 @@ public class GameScene extends Scene {
 			this.mHud = new HUD();
 			this.mStatsHud = new StatsHud();
 			this.mSpellbarHud = new SpellbarHud(this.mHud);
-			this.mControlsHud = new ControlsHud(this.mHero);
+			this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getPlayer("Player"));
 			this.mMenuHud = new MenuHud(mHud);
 			
 			this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
@@ -69,7 +66,7 @@ public class GameScene extends Scene {
 			}
 			
 			// Players
-			this.attachChild(this.mHero);
+			this.attachChild(Game.getPlayerHelper().getPlayer("Player"));
 			this.attachChild(this.mEnemy);
 			this.attachChild(this.mMob2);
 			
@@ -80,7 +77,7 @@ public class GameScene extends Scene {
 			this.mHud.attachChild(this.mMenuHud.getMenuSprite());
 			
 			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
-			Game.getSceneManager().getDisplay().doFocusCamera(this.mHero);
+			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer("Player"));
 
 			this.registerTouchArea(this.mEnemy.getBodySprite());
 			this.registerTouchArea(this.mMob2.getBodySprite());
@@ -108,10 +105,6 @@ public class GameScene extends Scene {
 
 		public void setStatsHud(StatsHud pStatsHud) {
 			this.mStatsHud = pStatsHud;
-		}
-		
-		public Player getHero() {
-			return this.mHero;
 		}
 
 		public void unloadHUD(){

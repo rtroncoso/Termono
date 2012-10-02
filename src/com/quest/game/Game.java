@@ -14,6 +14,7 @@ import android.net.wifi.WifiManager;
 import android.view.KeyEvent;
 
 import com.quest.database.DataHandler;
+import com.quest.helpers.PlayerHelper;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.SceneHelper;
 import com.quest.helpers.TextHelper;
@@ -36,6 +37,8 @@ public class Game extends SimpleBaseGameActivity {
 	private static String mUserID;
 	private static DataHandler mDataHandler;
 	private static TextHelper mTextHelper;
+	private static PlayerHelper mPlayerHelper;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -57,6 +60,7 @@ public class Game extends SimpleBaseGameActivity {
 		// Init Objects
 		Game.mSceneManager = new SceneHelper();
 		Game.mDataHandler = new DataHandler();
+		Game.mPlayerHelper = new PlayerHelper();
 //		Game.mTextHelper = new TextHelper(); todavia no hay texture manager, lo seteo desde mainmenuscene
 		
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
@@ -170,6 +174,20 @@ public class Game extends SimpleBaseGameActivity {
 	
 	public static String getUserID(){
 		return Game.mUserID;
+	}
+
+	/**
+	 * @return the mEntityHelper
+	 */
+	public static PlayerHelper getPlayerHelper() {
+		return mPlayerHelper;
+	}
+
+	/**
+	 * @param mEntityHelper the mEntityHelper to set
+	 */
+	public static void setPlayerHelper(PlayerHelper mPlayerHelper) {
+		Game.mPlayerHelper = mPlayerHelper;
 	}
 	
 	// ===========================================================

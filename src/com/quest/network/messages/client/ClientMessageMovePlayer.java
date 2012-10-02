@@ -22,6 +22,7 @@ public class ClientMessageMovePlayer extends ClientMessage implements ClientMess
 	// ===========================================================
 	// Fields
 	// ===========================================================
+	private String mPlayerKey;
 	private byte mPlayerDirection;
 
 	// ===========================================================
@@ -29,17 +30,23 @@ public class ClientMessageMovePlayer extends ClientMessage implements ClientMess
 	// ===========================================================
 
 	public ClientMessageMovePlayer() {
+		this.mPlayerKey = "";
 		this.mPlayerDirection = 0;
 		
 	}
 	
-	public ClientMessageMovePlayer(byte pPlayerDirection) {
+	public ClientMessageMovePlayer(String pPlayerKey, byte pPlayerDirection) {
+		this.mPlayerKey = pPlayerKey;
 		this.mPlayerDirection = pPlayerDirection;
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+
+	public void setPlayerKey(String mPlayerKey) {
+		this.mPlayerKey = mPlayerKey;
+	}
 
 	public void setPlayerDirection(byte mPlayerDirection) {
 		this.mPlayerDirection = mPlayerDirection;
@@ -51,11 +58,13 @@ public class ClientMessageMovePlayer extends ClientMessage implements ClientMess
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
+		this.mPlayerKey = pDataInputStream.readUTF();
 		this.mPlayerDirection = pDataInputStream.readByte();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
+		pDataOutputStream.writeUTF(this.mPlayerKey);
 		pDataOutputStream.writeByte(this.mPlayerDirection);
 	}
 
