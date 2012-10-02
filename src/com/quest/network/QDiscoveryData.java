@@ -10,6 +10,7 @@ import org.andengine.extension.multiplayer.protocol.shared.IDiscoveryData;
 import org.andengine.util.StreamUtils;
 
 import android.R.bool;
+import android.R.integer;
 import android.util.Log;
 
 public interface QDiscoveryData extends IDiscoveryData{
@@ -126,13 +127,13 @@ public interface QDiscoveryData extends IDiscoveryData{
 			this.mUserID = temp[1];
 			this.mUsername = temp[2];
 			this.mMatchName = temp[3];
-			if(temp[4]=="true"){//no iguala ?
+			if(temp[4].equals(String.valueOf(true))){
 				this.mHasPassword = true;
 			}else{
 				this.mHasPassword = false;
 			}
 		}
-
+			
 		
 		// ===========================================================
 		// Getter & Setter

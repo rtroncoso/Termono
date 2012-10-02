@@ -1,5 +1,7 @@
 package com.quest.database;
 
+import android.util.Log;
+
 import com.quest.game.Game;
 
 public class DataHandler {
@@ -34,9 +36,20 @@ public class DataHandler {
 		return this.mUserDB.getProfileID(pUserID);
 	}
 	
+	public void CheckAndAddProfile(String pUserID, String pUsername) {
+		if(this.mUserDB.checkifProfileExists(pUserID)){
+			this.mUserDB.setUsername(this.mUserDB.getProfileID(pUserID), pUsername);//Lo updateo por si cambio el username
+			Log.d("Quest!","User: "+pUserID+" Updateado a "+pUsername);
+		}else{
+			this.mUserDB.addNewProfile(pUserID,pUsername);//lo agrego
+			Log.d("Quest!","User: "+pUserID+" agregado como "+pUsername);
+		}
+		
+	}
+	
 	//MatchProfile
 	public void AddNewMatch(int pProfileID,boolean pCreator,String pName,String pPassword){
-		if(pPassword == "")pPassword="**nopass**";
+		if(pPassword.equals(null)||pPassword.equals(""))pPassword="**nopass**";
 		this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword), pCreator);
 	}
 	
@@ -51,7 +64,7 @@ public class DataHandler {
 	}
 	
 	public boolean hasPassword(int pMatchID){
-		if(this.mUserDB.getMatchPassword(pMatchID)=="**nopass**"){
+		if(this.mUserDB.getMatchPassword(pMatchID).equals("**nopass**")){
 			return false;//no password
 		}else{
 			return true;//pass protected
@@ -271,5 +284,7 @@ public class DataHandler {
         myDB.close();
         return myReturn;
     }
+
+
 	
 }

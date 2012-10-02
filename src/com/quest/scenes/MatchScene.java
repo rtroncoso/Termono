@@ -551,7 +551,7 @@ public class MatchScene extends Scene {
 					if(MatchScene.this.mLobbyNewMatchSprite.isVisible()){
 						if(mGrabbed) {
 							mGrabbed = false;
-							if(MatchScene.this.mMatchNameInput.getText() == ""){
+							if(MatchScene.this.mMatchNameInput.getText().equals(null)||MatchScene.this.mMatchNameInput.getText().equals("")){
 								MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(250, 350, "Please enter a valid name for the match", "MatchScene;Alert"));
 							}else{
 								if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText())){
@@ -647,18 +647,19 @@ public class MatchScene extends Scene {
 				public void onDiscovery(final SocketServerDiscoveryClient<MatchesDiscoveryData> pSocketServerDiscoveryClient, final MatchesDiscoveryData pDiscoveryData) {
 					try {
 						final String ipAddressAsString = IPUtils.ipAddressToString(pDiscoveryData.getServerIP());
-						Log.d("Quest!","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" Message: "+pDiscoveryData.getUserID()+" * "+pDiscoveryData.getUsername()+" - "+pDiscoveryData.getMatchName()+" - "+String.valueOf(pDiscoveryData.hasPassword()));
+						Log.d("Quest!","DiscoveryClient: Server discovered at: " + ipAddressAsString + ":" + pDiscoveryData.getServerPort()+" Message: "+pDiscoveryData.getUserID()+" - "+pDiscoveryData.getUsername()+" - "+pDiscoveryData.getMatchName()+" - "+String.valueOf(pDiscoveryData.hasPassword()));
 						boolean conts = false;
 						for(int i=0;i<MatchScene.this.mMatchList.size();i++){
 							if(MatchScene.this.mMatchList.get(i).getIP().equals(ipAddressAsString)){
 								conts=true;
 							}
 						}
-						if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
+						/*if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
 							conts=true;
-						}
+						}*/
 						if(conts==false){
 						MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),200,MatchScene.this.mMatchList.size()*163+20,"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
+						Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
 						}
 					} catch (final UnknownHostException e) {
 						Log.d("Quest!","DiscoveryClient: IPException: " + e);

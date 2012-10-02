@@ -28,7 +28,6 @@ public class UserDatabase extends SQLiteOpenHelper {
     	static final String fMatchCurrentQuest = "CurrentQuest";
     	static final String fMatchPassword = "Password";
     	static final String fMatchMap = "Map";
-    	static final String fMatchPlayers = "MatchPlayers";
     	
     static final String tMatchPlayers = "MatchPlayers";
     	static final String fMatchPlayersID = "MatchPlayersID";
@@ -115,8 +114,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fMatchName +" TEXT , "+
     			fMatchCurrentQuest +" TEXT , "+
     			fMatchPassword +" TEXT , "+
-    			fMatchMap +" INTEGER , "+
-    			fMatchPlayers +" INTEGER)" 
+    			fMatchMap +" INTEGER)" 
                 );  
     	
     	
@@ -233,7 +231,26 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    return myAnswer;
    }
     
+   public boolean checkifProfileExists(String pUserID){
+   	Cursor myCursor = this.getReadableDatabase().rawQuery("Select * from "+tProfile+" where "+fUserID+"=?", new String[]{String.valueOf(pUserID)});
+   	int x= myCursor.getCount();
+       myCursor.close();
+       this.close();
+       if(x>0){
+       	return true;
+       }else{
+       	return false;
+       }
+   }
     
+   public void addNewProfile(String pUserID,String pUsername){
+ 	  ContentValues cv = new ContentValues();
+      cv.put(fUserID,pUserID);
+      cv.put(fUsername,pUsername);
+      this.getWritableDatabase().insert(tProfile, null, cv);
+      cv.clear();
+      this.close();     
+   }
     
     //ProfileMatch
     public void addNewMatchProfile(int pProfileID,int pMatchId,boolean pCreator){
