@@ -17,6 +17,7 @@ import org.andengine.util.debug.Debug;
 
 import android.util.Log;
 
+import com.quest.helpers.PlayerHelper;
 import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ConnectionCloseClientMessage;
@@ -44,6 +45,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // Fields
 // ===========================================================
 	private final MessagePool<IMessage> mMessagePool = new MessagePool<IMessage>();
+	private PlayerHelper mPlayerList;
 	
 // ===========================================================
 // Constructors
@@ -51,6 +53,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	public QServer(final ISocketConnectionClientConnectorListener pSocketConnectionClientConnectorListener) {
 		super(SERVER_PORT, pSocketConnectionClientConnectorListener, new DefaultSocketServerListener<SocketConnectionClientConnector>());
 		Log.d("Quest!","Server started");
+		this.mPlayerList = new PlayerHelper();
 		this.initMessagePool();
 	}
 	
@@ -77,9 +80,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		// TODO Auto-generated method stub
 		
 	}
-
-	
-	
 	
 	
 	@Override
@@ -102,6 +102,9 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 					final ConnectionEstablishedServerMessage connectionEstablishedServerMessage = (ConnectionEstablishedServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED);
 					try {
 						pClientConnector.sendServerMessage(connectionEstablishedServerMessage);
+						// TODO: Cada vez que se conecte un nuevo cliente que guarde en el PlayerHelper el Player que tiene
+						// 		 Falta que el cliente le mande toda su info y listo
+						//QServer.this.mPlayerList.addPlayer(new Player(), pKey)
 						Log.d("Quest!","Established sent");
 					} catch (IOException e) {
 						Debug.e(e);
@@ -137,7 +140,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER, ClientMessageMovePlayer.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
-				
+				// TODO: Forwardear el mensaje de que se movio a todos los players
 			}
 		});
 

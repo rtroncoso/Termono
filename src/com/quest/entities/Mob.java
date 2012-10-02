@@ -107,7 +107,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
 				// Moves to it if not blocked
-				if(!Game.getMapManager().collisionCheck(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);
+				if(!Game.getMapManager().checkCollision(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);
 			}
 		}		
 	}

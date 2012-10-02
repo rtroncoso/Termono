@@ -12,7 +12,10 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.util.debug.Debug;
 
+import android.util.Log;
+
 import com.quest.game.Game;
+import com.quest.objects.Trigger;
 import com.quest.util.constants.IMeasureConstants;
 
 public class MapHelper implements IMeasureConstants {
@@ -27,6 +30,7 @@ public class MapHelper implements IMeasureConstants {
 	private TMXLoader mTmxLoader;
 	private TMXTiledMap mCurrentMap;
 	private List<TMXTile> mCollideTiles;
+	private List<Trigger> mTriggerTiles;
 	
 	// ===========================================================
 	// Constructors
@@ -109,15 +113,37 @@ public class MapHelper implements IMeasureConstants {
 
 				}
 			}
+			
+			if(group.getTMXObjectGroupProperties().containsTMXProperty("MapChangeTrigger", "true")) {
+
+				for (final TMXObject object : group.getTMXObjects()) {
+
+					int objectX = object.getX() + TILE_SIZE / 2;
+					int objectY = object.getY() + TILE_SIZE / 2;
+					// Gets the number of rows and columns in the
+					// object
+					int objectHeight = object.getHeight() / TILE_SIZE;
+					int objectWidth = object.getWidth() / TILE_SIZE;
+
+					// Gets the tiles the object covers and puts it
+					// into the Arraylist CollideTiles
+					for (int TileRow = 0; TileRow < objectHeight; TileRow++) {
+						for (int TileColumn = 0; TileColumn < objectWidth; TileColumn++) {
+							TMXTile tempTile = this.getTMXTileAt(objectX + TileColumn * TILE_SIZE, objectY
+									+ TileRow * TILE_SIZE);
+							Trigger tmpTrigger = new Trigger(tempTile, 0);
+							tmpTrigger.setNextMapNumber(Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
+							Log.d("Quest!", "MapHelper - Info del Trigger:");
+							Log.d("Quest!", "Proximo Mapa: " + object.getTMXObjectProperties().get(0).getValue());
+							Log.d("Quest!", "X: " + object.getTMXObjectProperties().get(1).getValue());
+							Log.d("Quest!", "Y: " + object.getTMXObjectProperties().get(2).getValue());
+							this.mTriggerTiles.add(tmpTrigger);
+						}
+					}
+				}
+			}
 
 		}
-	}
-	
-	public boolean collisionCheck(TMXTile tmxTileAt) {
-		if(this.mCollideTiles.contains(tmxTileAt))
-			return true;
-		else
-			return false;
 	}
 	
 	public void registerCollisionTile(TMXTile tmxTileAt) {
@@ -132,6 +158,36 @@ public class MapHelper implements IMeasureConstants {
 		return this.mCurrentMap.getTMXLayers().get(0).getTMXTileAt(pScreenX, pScreenY);
 	}
 
+	public Trigger checkTrigger(TMXTile tmxTileAt) {
+		for(Trigger tmpTrigger : this.mTriggerTiles) {
+			if(tmpTrigger.getTile().equals(tmxTileAt)) {
+				return tmpTrigger;
+			}
+		}
+		return null;
+	}
+	
+	public boolean checkCollision(TMXTile tmxTileAt) {
+		if(this.mCollideTiles.contains(tmxTileAt))
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * @return the mTriggerTiles
+	 */
+	public List<Trigger> getTriggerTiles() {
+		return mTriggerTiles;
+	}
+
+	/**
+	 * @param mTriggerTiles the mTriggerTiles to set
+	 */
+	public void setTriggerTiles(List<Trigger> mTriggerTiles) {
+		this.mTriggerTiles = mTriggerTiles;
+	}
+	
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
