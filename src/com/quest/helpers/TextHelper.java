@@ -72,32 +72,53 @@ public class TextHelper{
 	
 	
 	public void EraseText(String pKey){
+		boolean found = false;
 		for(int i = 0;i<mList.size();i++){
 			if(mList.get(i).getUserData() == pKey){
 				this.mList.set(i,mDeletableText);
+				found = true;
 			}else{
-				Log.d("Quest!","TextHelper: Erase - No text matches key");
+				if(i==mList.size()-1 & found == false){
+					Log.d("Quest!","TextHelper: Erase - No text matches key '"+pKey+"'");
+				}
 			}	
 		}
 	}
 	
 	
 	public void ChangeText(String pText,String pKey,float X,float Y){
+		boolean found = false;
 		for(int i = 0;i<mList.size();i++){
 			if(mList.get(i).getUserData() == pKey){
 				Text tempText = this.mList.get(i);
 				tempText.setText(pText);
 				tempText.setX(X);
 				tempText.setY(Y);
-				//hacer que puedas cambiar el key?
+				found = true;
 			}else{
-				if(i==mList.size()-1){
-					Log.d("Quest!","TextHelper: Change - No text matches key");
+				if(i==mList.size()-1 && found == false){
+					Log.d("Quest!","TextHelper: Change - No text matches key '"+pKey+"'");
 				}
 			}	
 		}
 	}
 	
+	public void ClearText(String pKey){
+		boolean found = false;
+		for(int i = 0;i<mList.size();i++){
+			if(mList.get(i).getUserData() == pKey){
+				Text tempText = this.mList.get(i);
+				tempText.setText("");
+				tempText.setX(0);
+				tempText.setY(0);
+				found = true;
+			}else{
+				if(i==mList.size()-1 && found == false){
+					Log.d("Quest!","TextHelper: Clear - No text matches key '"+pKey+"'");
+				}
+			}	
+		}
+	}
 	
 	public InputText NewInputText(float pX,float pY,final String title, final String message, TiledTextureRegion texture,int textOffsetX, int textOffsetY, boolean isPassword){
 		return new InputText(pX, pY, title, message, texture, this.mNormalFont, textOffsetX, textOffsetY, isPassword, Game.getInstance().getVertexBufferObjectManager(), Game.getInstance());
