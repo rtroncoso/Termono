@@ -1,4 +1,4 @@
-package com.quest.objects;
+package com.quest.triggers;
 
 import org.andengine.extension.tmx.TMXTile;
 
@@ -13,19 +13,14 @@ public class Trigger implements ITriggerAction {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private TMXTile tmxTile;
-	private int triggerType;
-	private int nextMapNumber;
-	private int nextMapX;
-	private int nextMapY;
+	private TMXTile mTMXTile;
 
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Trigger(TMXTile tmxTileAt, int triggerType) {
-		this.tmxTile = tmxTileAt;
-		this.triggerType = triggerType;
+	public Trigger(TMXTile tmxTileAt) {
+		this.mTMXTile = tmxTileAt;
 	}
 
 	
@@ -38,8 +33,6 @@ public class Trigger implements ITriggerAction {
 		
 	}
 
-	
-
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
@@ -47,7 +40,7 @@ public class Trigger implements ITriggerAction {
 	 * @return the tmxTile
 	 */
 	public TMXTile getTile() {
-		return tmxTile;
+		return mTMXTile;
 	}
 
 
@@ -55,39 +48,7 @@ public class Trigger implements ITriggerAction {
 	 * @param tmxTile the tmxTile to set
 	 */
 	public void setTile(TMXTile tmxTile) {
-		this.tmxTile = tmxTile;
-	}
-
-
-	/**
-	 * @return the triggerType
-	 */
-	public int getTriggerType() {
-		return triggerType;
-	}
-
-
-	/**
-	 * @param triggerType the triggerType to set
-	 */
-	public void setTriggerType(int triggerType) {
-		this.triggerType = triggerType;
-	}
-
-
-	/**
-	 * @return the nextMapNumber
-	 */
-	public int getNextMapNumber() {
-		return nextMapNumber;
-	}
-
-
-	/**
-	 * @param nextMapNumber the nextMapNumber to set
-	 */
-	public void setNextMapNumber(int nextMapNumber) {
-		this.nextMapNumber = nextMapNumber;
+		this.mTMXTile = tmxTile;
 	}
 
 	// ===========================================================

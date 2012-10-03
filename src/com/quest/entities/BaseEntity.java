@@ -16,7 +16,6 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
-import org.andengine.util.algorithm.path.Direction;
 import org.andengine.util.modifier.ease.EaseLinear;
 
 import com.quest.entities.objects.Spell;
@@ -116,9 +115,13 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return 0;
 	}
 	
+	public BaseEntity moveToTile(final TMXTile pTileTo) {
+		return this.moveToTile(pTileTo, 1.0f);
+	}
+	
 	public BaseEntity moveToTile(final TMXTile pTileTo, final float pSpeed) {
 		
-		// get which tile are we going to
+		// get our current tile
 		final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(this.getX(), this.getY());
 		
 		// Unblock our current Tile and block our new one

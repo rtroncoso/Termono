@@ -15,7 +15,8 @@ import org.andengine.util.debug.Debug;
 import android.util.Log;
 
 import com.quest.game.Game;
-import com.quest.objects.Trigger;
+import com.quest.triggers.MapChangeTrigger;
+import com.quest.triggers.Trigger;
 import com.quest.util.constants.IMeasureConstants;
 
 public class MapHelper implements IMeasureConstants {
@@ -110,7 +111,6 @@ public class MapHelper implements IMeasureConstants {
 							this.mCollideTiles.add(tempTile);
 						}
 					}
-
 				}
 			}
 			
@@ -131,7 +131,14 @@ public class MapHelper implements IMeasureConstants {
 						for (int TileColumn = 0; TileColumn < objectWidth; TileColumn++) {
 							TMXTile tempTile = this.getTMXTileAt(objectX + TileColumn * TILE_SIZE, objectY
 									+ TileRow * TILE_SIZE);
-							Trigger tmpTrigger = new Trigger(tempTile, 0);
+							MapChangeTrigger tmpTrigger = new MapChangeTrigger(tempTile) {
+								@Override
+								public void onHandleTriggerAction() {
+									// TODO Auto-generated method stub
+									super.onHandleTriggerAction();
+									MapHelper.this.loadMap(String.valueOf(this.mNextMapNumber));
+								}
+							};
 							tmpTrigger.setNextMapNumber(Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
 							Log.d("Quest!", "MapHelper - Info del Trigger:");
 							Log.d("Quest!", "Proximo Mapa: " + object.getTMXObjectProperties().get(0).getValue());
@@ -142,7 +149,6 @@ public class MapHelper implements IMeasureConstants {
 					}
 				}
 			}
-
 		}
 	}
 	

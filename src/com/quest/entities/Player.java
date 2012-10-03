@@ -9,6 +9,7 @@ import org.andengine.extension.tmx.TMXTile;
 
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
+import com.quest.triggers.Trigger;
 
 
 public class Player extends BaseEntity implements IOnScreenControlListener, ITouchArea {
@@ -59,10 +60,13 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
 				
-				// Moves to it if not blocked
-				if(!Game.getMapManager().checkCollision(tmxTileTo)) this.moveToTile(tmxTileTo, 1.0f);
-				if(!Game.getMapManager().checkTrigger(tmxTileTo).equals(null)); // Hacer cambio de mapa
+				// Check Tiles
+				Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
+				if(!tmpTrigger.equals(null)) tmpTrigger.onHandleTriggerAction(); // Hacer cambio de mapa
+				if(Game.getMapManager().checkCollision(tmxTileTo)) return;
 				
+				// Perform Move
+				this.moveToTile(tmxTileTo);
 				try {
 					Game.getClient().sendClientMessage(new ClientMessageMovePlayer(Game.getDataHandler().getUsername(1), this.getFacingDirectionToTile(tmxTileTo)));
 				} catch (IOException e) {
