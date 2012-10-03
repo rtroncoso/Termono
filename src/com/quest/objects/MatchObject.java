@@ -77,7 +77,7 @@ public class MatchObject extends Entity{
 							showPasswordInput();
 							WaitForPassword();
 						}else{
-							mMatchScene.EnterMatch(mIP, mMatchName,mUserID,mPassword);
+							mMatchScene.EnterMatch(mIP,mPassword);
 						}
 					}else{
 						mMatchScene.setSelectedMatch(mMatchName);
@@ -179,7 +179,7 @@ public class MatchObject extends Entity{
 	        		}else{
 	        			
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
-	        			mMatchScene.EnterMatch(mIP, mMatchName,mUserID,mPassword);
+	        			mMatchScene.EnterMatch(mIP,mPassword);
 	        		}
 	        	}
 	        }

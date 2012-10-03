@@ -18,6 +18,7 @@ import org.andengine.util.debug.Debug;
 import android.util.Log;
 
 import com.quest.helpers.PlayerHelper;
+import com.quest.network.messages.client.ClientMessageConnectToMatch;
 import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ConnectionCloseClientMessage;
@@ -27,6 +28,7 @@ import com.quest.network.messages.server.ConnectionCloseServerMessage;
 import com.quest.network.messages.server.ConnectionEstablishedServerMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ConnectionRejectedProtocolMissmatchServerMessage;
+import com.quest.network.messages.server.ServerMessageConnectionEstablished;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.network.messages.server.SetPaddleIDServerMessage;
 import com.quest.network.messages.server.UpdateEntityPositionServerMessage;
@@ -62,6 +64,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, ConnectionPongServerMessage.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_CLOSE, ConnectionCloseServerMessage.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED1, ServerMessageConnectionEstablished.class);
 	}
 
 
@@ -86,6 +89,23 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	protected SocketConnectionClientConnector newClientConnector(final SocketConnection pSocketConnection) throws IOException {
 		final SocketConnectionClientConnector clientConnector = new SocketConnectionClientConnector(pSocketConnection);
 
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECT_TO_MATCH, ClientMessageConnectToMatch.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+			//	final ClientMessageConnectToMatch clientMessageConnectToMatch= (ClientMessageConnectToMatch) pClientMessage;
+			//	Log.d("Quest!","Server - "+clientMessageConnectToMatch.getUserID()+" - "+clientMessageConnectToMatch.getUsername()+" - "+clientMessageConnectToMatch.getPassword());
+				final ServerMessageConnectionEstablished serverMessageConnectionEstablished = (ServerMessageConnectionEstablished) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED1);
+				serverMessageConnectionEstablished.setCharacterExists(false);
+				try {
+					Log.d("Quest!","SERVER MANDO MENSAJE");
+					pClientConnector.sendServerMessage(serverMessageConnectionEstablished);
+				} catch (IOException e) {
+					Debug.e(e);
+				}
+				QServer.this.mMessagePool.recycleMessage(serverMessageConnectionEstablished);
+			}
+		});
+		
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_CLOSE, ConnectionCloseClientMessage.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
@@ -127,8 +147,10 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				Log.d("Quest!","Pong");
 				final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG);
 				try {
+					Log.d("Quest!","Pong");
 					pClientConnector.sendServerMessage(connectionPongServerMessage);
 				} catch (IOException e) {
 					Debug.e(e);

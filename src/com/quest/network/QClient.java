@@ -17,6 +17,7 @@ import com.quest.network.messages.server.ConnectionCloseServerMessage;
 import com.quest.network.messages.server.ConnectionEstablishedServerMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ConnectionRejectedProtocolMissmatchServerMessage;
+import com.quest.network.messages.server.ServerMessageConnectionEstablished;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.network.messages.server.UpdateEntityPositionServerMessage;
 import com.quest.util.constants.MessageConstants;
@@ -45,6 +46,16 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 			});
 	
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED1, ServerMessageConnectionEstablished.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					Log.d("Quest!","CLIENT LLEGO EL MENSAJE DEL SERVER");
+					final ServerMessageConnectionEstablished serverMessageConnectionEstablished = (ServerMessageConnectionEstablished) pServerMessage;
+					final boolean characterexists = serverMessageConnectionEstablished.getCharacterExists();
+					Log.d("Quest!","Client - "+String.valueOf(characterexists));
+				}
+			});
+			
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED, ConnectionEstablishedServerMessage.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
