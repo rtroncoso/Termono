@@ -224,6 +224,9 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
+						MatchScene.this.mMatchList.clear();
+						MatchScene.this.mDiscoveredMatchEntity.detachChildren();
+						MatchScene.this.mMatchesEntity.detachChild(mDiscoveredMatchEntity);
 						MatchScene.this.clearTouchAreas();
 						SwitchEntity(LoadOwnMatchesEntity());//fijarse como funca					
 					}
@@ -317,6 +320,10 @@ public class MatchScene extends Scene {
 	public Entity LoadOwnMatchesEntity(){
 		this.mOwnMatchesEntity.detachChildren();
 		this.LastUI=0;
+		this.mMatchList = new ArrayList<MatchObject>();
+		this.mDiscoveredMatchEntity.detachChildren();//cambiar a dispose o algo
+		this.mSelectedMatchName = "";
+		
 		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
@@ -328,6 +335,9 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
+						MatchScene.this.mMatchList.clear();
+						MatchScene.this.mDiscoveredMatchEntity.detachChildren();
+						MatchScene.this.mMatchesEntity.detachChild(mDiscoveredMatchEntity);
 						MatchScene.this.clearTouchAreas();
 						MatchScene.this.SwitchEntity(LoadMatchesEntity());
 					}
@@ -373,7 +383,11 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-					//borrar la entity de la partida seleccionada
+						if(!MatchScene.this.mSelectedMatchName.equals("")){
+							Log.d("Quest!","No es null");
+						}else{
+							Log.d("Quest!","Es null");
+						}
 					}
 					break;
 				}
@@ -397,7 +411,7 @@ public class MatchScene extends Scene {
 							if(MatchScene.this.mSelectedMatchName!=""){
 								ShowLowerBar(true);
 								MatchScene.this.clearTouchAreas();
-								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,Game.getUserID()));							
+								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,"00:00:00:00:00:00"));//Game.getUserID()));							
 							}
 						}
 						break;
@@ -408,9 +422,18 @@ public class MatchScene extends Scene {
 		this.mOwnMatchesEntity.attachChild(this.mOkSprite);
 		this.registerTouchArea(this.mOkSprite);
 		
+		this.attachChild(LoadOwnMatches());
+		
 		return this.mOwnMatchesEntity;
 	}
 	
+	private Entity LoadOwnMatches(){
+		for(int i = 0;i<Game.getDataHandler().getMatchesAmount();i++){
+			int ID = Game.getDataHandler().getMatchID(i);
+			MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, null, MatchScene.this.mDiscoveredMatchEntity,false,Game.getDataHandler().getMatchName(ID),"00:00:00:00:00:00",Game.getDataHandler().hasPassword(ID),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));	
+		}
+		return this.mDiscoveredMatchEntity;
+	}
 	
 	
 	//Loby entity
@@ -577,7 +600,7 @@ public class MatchScene extends Scene {
 										ShowLowerBar(true);
 										MatchScene.this.clearTouchAreas();
 										Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
-										SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),Game.getUserID()));
+										SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),"00:00:00:00:00:00"));//Game.getUserID()));	
 							}else{
 								//mandar mensaje con el chara elegido
 								SwitchEntity(MatchScene.this.LoadLobbyEntity(true,null,null));
@@ -639,7 +662,7 @@ public class MatchScene extends Scene {
 						if(MatchScene.this.mMatchNameInput.getText().equals(null)||MatchScene.this.mMatchNameInput.getText().equals("")){
 							MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(250, 350, "Please enter a valid name for the match", "MatchScene;Alert"));
 						}else{
-							if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText())){
+							if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText(),1)){
 								Game.getTextHelper().ClearText("MatchScene;Alert");
 								Game.getTextHelper().ClearText("MatchScene;Alert2");
 								Step+=1;
@@ -1077,9 +1100,12 @@ public class MatchScene extends Scene {
 		//mandar que me uni, despues desde el new match entity mando que elegi character
 		//hacer que checkee si ya tiene un chara
 		try {
-			Game.getClient().sendClientMessage(new ConnectionPingClientMessage());
-			Game.getClient().sendClientMessage(new ClientMessageConnectToMatch(Game.getUserID(), Game.getDataHandler().getUsername(1), pPassword));
-			Log.d("Quest!",String.valueOf(Game.getClient().FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED1));
+			ConnectionPingClientMessage mensaje = new ConnectionPingClientMessage();
+			mensaje.setUser("tesghdhgdhdfhdft");
+			mensaje.setTimestamp(55555);
+			//Game.getClient().sendClientMessage(new ConnectionPingClientMessage());
+			Game.getClient().sendClientMessage(mensaje);
+		//	Game.getClient().sendClientMessage(new ClientMessageConnectToMatch(Game.getUserID(), Game.getDataHandler().getUsername(1), pPassword));
 		} catch (final IOException e) {
 			Debug.e(e);
 		}
@@ -1124,7 +1150,9 @@ public class MatchScene extends Scene {
 						}*///comentado para el AVD, sacar coment para el celu
 						if(conts==false){
 							Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
-							MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),200,MatchScene.this.mMatchList.size()*163+20,"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));						
+							if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){
+							MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
+							}
 						}
 					} catch (final UnknownHostException e) {
 						Log.d("Quest!","DiscoveryClient: IPException: " + e);
@@ -1164,6 +1192,14 @@ public class MatchScene extends Scene {
 
 	public void setSelectedMatch(String pSelectedMatchName){
 		this.mSelectedMatchName = pSelectedMatchName;
+		Log.d("Quest!","Selected Match: "+this.mSelectedMatchName);
+		for(int i = 0;i<this.mMatchList.size();i++){
+			if(this.mSelectedMatchName.equals(this.mMatchList.get(i).getMatchName())){
+				this.mMatchList.get(i).changeAlpha(1f);
+			}else{
+				this.mMatchList.get(i).changeAlpha(0.5f);
+			}
+		}
 	}
 	// ===========================================================
 	// Methods

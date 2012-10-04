@@ -147,10 +147,14 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ConnectionPingClientMessage connectionPingClientMessage = (ConnectionPingClientMessage) pClientMessage;
+				final long roundtripMilliseconds = System.currentTimeMillis() - connectionPingClientMessage.getTimestamp();
+				final String user = connectionPingClientMessage.getUser();
+				//Log.d("Quest!","Ping: " + roundtripMilliseconds / 2 + "ms  --  server "+user);
+				Log.d("Quest!","Ping: " + String.valueOf(connectionPingClientMessage.getTimestamp()) + "ms  --  server "+user);
 				Log.d("Quest!","Pong");
 				final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG);
 				try {
-					Log.d("Quest!","Pong");
 					pClientConnector.sendServerMessage(connectionPongServerMessage);
 				} catch (IOException e) {
 					Debug.e(e);

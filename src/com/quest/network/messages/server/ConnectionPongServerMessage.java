@@ -23,7 +23,6 @@ public class ConnectionPongServerMessage extends ServerMessage implements Server
 	// ===========================================================
 
 	private long mTimestamp;
-
 	// ===========================================================
 	// Constructors
 	// ===========================================================

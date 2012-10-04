@@ -39,7 +39,6 @@ public class MatchObject extends Entity{
 	private String mMatchName;
 	private String mUserID;
 	private String IPAdress;
-	private Entity mEntity;
 	private Boolean mJoining;
 	private Boolean mHasPassword;
 	private Text mText;
@@ -50,17 +49,16 @@ public class MatchObject extends Entity{
 	// Constructors
 	// ===========================================================
 	
-	public MatchObject(ITextureRegion pTextureRegion,int pSpriteX,int pSpriteY,MatchScene pScene,String pIPAdress,Entity pEntity,Boolean pJoining,String pMatchName,String pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) {
-		this.mMatchEntity = new Entity(0,0);
+	public MatchObject(ITextureRegion pTextureRegion,int pX,int pY,MatchScene pScene,String pIPAdress,Entity pEntity,Boolean pJoining,String pMatchName,String pUserID,boolean pHasPassword, String pKey) {
+		this.mMatchEntity = new Entity(pX,pY);
 		this.mIP = pIPAdress;
 		this.mMatchName = pMatchName;
-		this.mEntity = pEntity;
 		this.mMatchScene = pScene;
 		this.mJoining = pJoining;
 		this.mUserID = pUserID;
 		this.mHasPassword = pHasPassword;
 		
-		this.mMatchSprite = new Sprite(pSpriteX, pSpriteY, pTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mMatchSprite = new Sprite(0, 0, pTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -93,8 +91,11 @@ public class MatchObject extends Entity{
 		if(hasPassword()){
 			this.mMatchEntity.attachChild(new Sprite(530, 50, this.mMatchScene.getLockTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
 		}
-		
-		this.mText = Game.getTextHelper().NewText(pTextX, pTextY, "Match name:"+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(Game.getDataHandler().getProfileID(this.mUserID)), pKey);
+		if(mJoining){
+			this.mText = Game.getTextHelper().NewText(100, 20, "Match name: "+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(this.mUserID), pKey);
+		}else{
+			this.mText = Game.getTextHelper().NewText(100, 20, "Match name: "+this.mMatchName, pKey);
+		}
 		this.mMatchEntity.attachChild(this.mText);
 		
 		pScene.registerTouchArea(this.mMatchSprite);
@@ -122,6 +123,10 @@ public class MatchObject extends Entity{
 	
 	public boolean hasPassword(){
 		return this.mHasPassword;
+	}
+	
+	public Entity getMatchSprite(){
+		return this.mMatchEntity;
 	}
 	// ===========================================================
 	// Methods
@@ -184,6 +189,13 @@ public class MatchObject extends Entity{
 	        	}
 	        }
 	    }));
+	}
+
+
+	public void changeAlpha(float pAlpha) {
+		for(int i = 0;i<this.mMatchEntity.getChildCount();i++){
+			this.mMatchEntity.getChildByIndex(i).setAlpha(pAlpha);
+		}
 	}
 
 

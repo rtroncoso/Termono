@@ -211,6 +211,16 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    return myAnswer;
    	}
     
+    public String getUsername(String pUserID) {
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ fUsername +" FROM "+ tProfile +" WHERE "+ fUserID +"=?",new String[]{String.valueOf(pUserID)});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fUsername);
+	    String myAnswer = myCursor.getString(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+   	}
+    
     public void setUsername(int pProfileID,String pUsername) {
         ContentValues cv = new ContentValues();
         cv.put(fUsername,pUsername);
@@ -298,8 +308,29 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    return myAnswer;
     }
     
-    public boolean MatchExists(String pName){
-	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT * FROM "+ tMatch+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = 1 and "+tMatch+"."+fMatchID+" = "+tMatchProfile+"."+fMatchID+" and "+tMatch+"."+fMatchName+" =?",new String[]{pName});
+    public int getMatchID(int pRow){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+ tMatch+"."+fMatchID +" from "+tMatch+","+tMatchProfile+" on "+tMatchProfile+"."+fMatchID+" = "+tMatch+"."+fMatchID+" and "+tMatchProfile+"."+fProfileID+" = 1 order by "+ tMatch+"."+fMatchID+" asc limit 1 offset ?", new String[]{String.valueOf(pRow)});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fMatchID);
+	    int myAnswer = myCursor.getInt(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+    }
+    
+    public String getMatchName(int pMatchID){
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ fMatchName +" FROM "+ tMatch +" WHERE "+ fMatchID +"=?",new String[]{String.valueOf(pMatchID)});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fMatchName);
+	    String myAnswer = myCursor.getString(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+    }
+    
+    public boolean MatchExists(String pName, int pProfileID){
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT * FROM "+ tMatch+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = "+String.valueOf(pProfileID)+" and "+tMatch+"."+fMatchID+" = "+tMatchProfile+"."+fMatchID+" and "+tMatch+"."+fMatchName+" =?",new String[]{pName});
+	    
 	    int count = myCursor.getCount();
 	    myCursor.close();
 	    this.close();
@@ -318,5 +349,13 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    myCursor.close();
 	    this.close();
 	    return myAnswer;
+    }
+    
+    public int getMatchesAmount(){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select * from "+tMatch+","+tMatchProfile+" on "+tMatchProfile+"."+fMatchID+" = "+tMatch+"."+fMatchID+" and "+tMatchProfile+"."+fProfileID+" = 1", null);
+    	int x= myCursor.getCount();
+        myCursor.close();
+        this.close();
+        return x;
     }
 }

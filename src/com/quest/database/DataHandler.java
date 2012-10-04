@@ -28,6 +28,10 @@ public class DataHandler {
 		return this.mUserDB.getUsername(pProfileID);
 	}
 	
+	public String getUsername(String pUserID){
+		return this.mUserDB.getUsername(pUserID);
+	}	
+	
 	public void setUsername(int pProfileID,String pUsername){
 		this.mUserDB.setUsername(pProfileID,pUsername);
 	}	
@@ -57,8 +61,16 @@ public class DataHandler {
 		return this.mUserDB.getMatchID(pName, this.mUserDB.getProfileID(pUserID));		
 	}
 	
-	public boolean MatchExists(String pName){
-		return this.mUserDB.MatchExists(pName);
+	public int getMatchID(int pRow){
+		return this.mUserDB.getMatchID(pRow);		
+	}
+	
+	public String getMatchName(int pMatchID){
+		return this.mUserDB.getMatchName(pMatchID);
+	}
+	
+	public boolean MatchExists(String pName,int pProfileID){
+		return this.mUserDB.MatchExists(pName, pProfileID);
 	}
 	
 	public boolean hasPassword(int pMatchID){
@@ -73,6 +85,9 @@ public class DataHandler {
 		return this.mUserDB.hasMatches();
 	}
 	
+	public int getMatchesAmount(){
+		return this.mUserDB.getMatchesAmount();
+	}
 	/*
 	
 	public String isLevelUnLocked(int levelNum){
