@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
 
+import android.util.Log;
+
 /**
  * (c) 2010 Nicolas Gramlich 
  * (c) 2011 Zynga Inc.
@@ -23,7 +25,7 @@ public class ConnectionPingClientMessage extends ClientMessage implements Client
 	// ===========================================================
 
 	private long mTimestamp;
-	private String mUser = "sinmod";
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -43,14 +45,6 @@ public class ConnectionPingClientMessage extends ClientMessage implements Client
 	public void setTimestamp(final long pTimestamp) {
 		this.mTimestamp = pTimestamp;
 	}
-
-	public String getUser(){
-		return this.mUser;
-	}
-	
-	public void setUser(final String user){
-		this.mUser = user;
-	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -63,13 +57,11 @@ public class ConnectionPingClientMessage extends ClientMessage implements Client
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
 		this.mTimestamp = pDataInputStream.readLong();
-		this.mUser = pDataInputStream.readLine();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
 		pDataOutputStream.writeLong(this.mTimestamp);
-		pDataOutputStream.writeChars(this.mUser);
 	}
 
 	// ===========================================================

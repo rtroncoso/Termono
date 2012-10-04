@@ -42,7 +42,6 @@ import com.quest.game.Game;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
-import com.quest.network.messages.client.ClientMessageConnectToMatch;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
@@ -104,7 +103,8 @@ public class MatchScene extends Scene {
 	private Entity mOwnMatchesEntity;
 	private BitmapTextureAtlas mOwnMatchesTextureAtlas;
 	private String mSelectedMatchName = "";
-		
+	private Entity mLoadedOwnMatchesEntity;
+	private ArrayList<MatchObject> mOwnMatchesList;
 	//New Match	
 	private Entity mNewMatchEntity;
 	private BitmapTextureAtlas mNewMatchTextureAtlas;
@@ -154,6 +154,7 @@ public class MatchScene extends Scene {
 		this.mLobbyEntity = new Entity(0,0);
 		this.mDirectEntity = new Entity(0,0);
 		this.mDiscoveredMatchEntity = new Entity(110,61);
+		this.mLoadedOwnMatchesEntity = new Entity(110,61);
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2036,2036, TextureOptions.BILINEAR);
 		this.mScrollBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "scroll.png", 0, 0);
@@ -225,8 +226,6 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						MatchScene.this.mMatchList.clear();
-						MatchScene.this.mDiscoveredMatchEntity.detachChildren();
-						MatchScene.this.mMatchesEntity.detachChild(mDiscoveredMatchEntity);
 						MatchScene.this.clearTouchAreas();
 						SwitchEntity(LoadOwnMatchesEntity());//fijarse como funca					
 					}
@@ -320,8 +319,8 @@ public class MatchScene extends Scene {
 	public Entity LoadOwnMatchesEntity(){
 		this.mOwnMatchesEntity.detachChildren();
 		this.LastUI=0;
-		this.mMatchList = new ArrayList<MatchObject>();
-		this.mDiscoveredMatchEntity.detachChildren();//cambiar a dispose o algo
+		this.mOwnMatchesList = new ArrayList<MatchObject>();
+		this.mLoadedOwnMatchesEntity.detachChildren();//cambiar a dispose o algo
 		this.mSelectedMatchName = "";
 		
 		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
@@ -335,9 +334,7 @@ public class MatchScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-						MatchScene.this.mMatchList.clear();
-						MatchScene.this.mDiscoveredMatchEntity.detachChildren();
-						MatchScene.this.mMatchesEntity.detachChild(mDiscoveredMatchEntity);
+						MatchScene.this.mOwnMatchesList.clear();
 						MatchScene.this.clearTouchAreas();
 						MatchScene.this.SwitchEntity(LoadMatchesEntity());
 					}
@@ -408,10 +405,9 @@ public class MatchScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
-							if(MatchScene.this.mSelectedMatchName!=""){
-								ShowLowerBar(true);
+							if(!MatchScene.this.mSelectedMatchName.equals("")){
 								MatchScene.this.clearTouchAreas();
-								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,"00:00:00:00:00:00"));//Game.getUserID()));							
+								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,Game.getUserID()));//"00:00:00:00:00:00"));				
 							}
 						}
 						break;
@@ -422,7 +418,7 @@ public class MatchScene extends Scene {
 		this.mOwnMatchesEntity.attachChild(this.mOkSprite);
 		this.registerTouchArea(this.mOkSprite);
 		
-		this.attachChild(LoadOwnMatches());
+		this.mOwnMatchesEntity.attachChild(LoadOwnMatches());
 		
 		return this.mOwnMatchesEntity;
 	}
@@ -430,9 +426,9 @@ public class MatchScene extends Scene {
 	private Entity LoadOwnMatches(){
 		for(int i = 0;i<Game.getDataHandler().getMatchesAmount();i++){
 			int ID = Game.getDataHandler().getMatchID(i);
-			MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, null, MatchScene.this.mDiscoveredMatchEntity,false,Game.getDataHandler().getMatchName(ID),"00:00:00:00:00:00",Game.getDataHandler().hasPassword(ID),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));	
+			MatchScene.this.mOwnMatchesList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mOwnMatchesList.size()*163, MatchScene.this, null, MatchScene.this.mLoadedOwnMatchesEntity,false,Game.getDataHandler().getMatchName(ID),Game.getUserID(),Game.getDataHandler().hasPassword(ID),"MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));	
 		}
-		return this.mDiscoveredMatchEntity;
+		return this.mLoadedOwnMatchesEntity;
 	}
 	
 	
@@ -597,10 +593,9 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							if(!pJoining){
-										ShowLowerBar(true);
-										MatchScene.this.clearTouchAreas();
-										Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
-										SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),"00:00:00:00:00:00"));//Game.getUserID()));	
+								MatchScene.this.clearTouchAreas();
+								Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
+								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),Game.getUserID()));//"00:00:00:00:00:00"));	
 							}else{
 								//mandar mensaje con el chara elegido
 								SwitchEntity(MatchScene.this.LoadLobbyEntity(true,null,null));
@@ -1100,12 +1095,10 @@ public class MatchScene extends Scene {
 		//mandar que me uni, despues desde el new match entity mando que elegi character
 		//hacer que checkee si ya tiene un chara
 		try {
-			ConnectionPingClientMessage mensaje = new ConnectionPingClientMessage();
-			mensaje.setUser("tesghdhgdhdfhdft");
-			mensaje.setTimestamp(55555);
-			//Game.getClient().sendClientMessage(new ConnectionPingClientMessage());
-			Game.getClient().sendClientMessage(mensaje);
-		//	Game.getClient().sendClientMessage(new ClientMessageConnectToMatch(Game.getUserID(), Game.getDataHandler().getUsername(1), pPassword));
+			//ConnectionPingClientMessage mensaje = new ConnectionPingClientMessage();
+			//mensaje.setUser("tesghdhgdhdfhdft");
+		//	mensaje.setTimestamp(55555);			
+			Game.getClient().sendClientMessage(new ConnectionPingClientMessage());		
 		} catch (final IOException e) {
 			Debug.e(e);
 		}
@@ -1150,9 +1143,9 @@ public class MatchScene extends Scene {
 						}*///comentado para el AVD, sacar coment para el celu
 						if(conts==false){
 							Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
-							if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){
+							//if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)
 							MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
-							}
+							//}
 						}
 					} catch (final UnknownHostException e) {
 						Log.d("Quest!","DiscoveryClient: IPException: " + e);
@@ -1193,11 +1186,11 @@ public class MatchScene extends Scene {
 	public void setSelectedMatch(String pSelectedMatchName){
 		this.mSelectedMatchName = pSelectedMatchName;
 		Log.d("Quest!","Selected Match: "+this.mSelectedMatchName);
-		for(int i = 0;i<this.mMatchList.size();i++){
-			if(this.mSelectedMatchName.equals(this.mMatchList.get(i).getMatchName())){
-				this.mMatchList.get(i).changeAlpha(1f);
+		for(int i = 0;i<this.mOwnMatchesList.size();i++){
+			if(this.mSelectedMatchName.equals(this.mOwnMatchesList.get(i).getMatchName())){
+				this.mOwnMatchesList.get(i).changeAlpha(1f);
 			}else{
-				this.mMatchList.get(i).changeAlpha(0.5f);
+				this.mOwnMatchesList.get(i).changeAlpha(0.5f);
 			}
 		}
 	}
