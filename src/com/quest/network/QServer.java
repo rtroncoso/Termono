@@ -87,6 +87,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				final long roundtripMilliseconds = connectionPangClientMessage.getTimestamp();
 				Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 400, "Server Pang: " + roundtripMilliseconds + "ms", "Server"));
 				final ConnectionPungServerMessage connectionPungServerMessage = (ConnectionPungServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PUNG);
+				connectionPungServerMessage.setTimestamp(222);
 				try {
 					Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 430, "Server pung sent", "Server2"));
 					pClientConnector.sendServerMessage(connectionPungServerMessage);

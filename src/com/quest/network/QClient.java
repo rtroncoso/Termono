@@ -37,9 +37,9 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ConnectionPungServerMessage connectionPungServerMessage = (ConnectionPungServerMessage) pServerMessage;
-					final long roundtripMilliseconds = System.currentTimeMillis() - connectionPungServerMessage.getTimestamp();
-					Log.d("Quest!","CLIENT Pung: " + roundtripMilliseconds / 2 + "ms");
-					Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 440, "CLIENT Pung: " + roundtripMilliseconds / 2 + "ms", "Client"));
+					final long roundtripMilliseconds = connectionPungServerMessage.getTimestamp();
+					Log.d("Quest!","CLIENT Pung: " + roundtripMilliseconds + "ms");
+					Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 440, "CLIENT Pung: " + roundtripMilliseconds + "ms", "Client"));
 				}
 			});
 	

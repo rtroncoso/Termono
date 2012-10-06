@@ -60,6 +60,10 @@ public class DataHandler {
 	public int getMatchID(String pName, String pUserID){
 		return this.mUserDB.getMatchID(pName, this.mUserDB.getProfileID(pUserID));		
 	}
+
+	public int getMatchID(String pName){
+		return this.mUserDB.getMatchID(pName, 1);		
+	}
 	
 	public int getMatchID(int pRow){
 		return this.mUserDB.getMatchID(pRow);		
@@ -87,6 +91,10 @@ public class DataHandler {
 	
 	public int getMatchesAmount(){
 		return this.mUserDB.getMatchesAmount();
+	}
+	
+	public void DeleteMatch(int pMatchID){
+		this.mUserDB.DeleteMatch(pMatchID);
 	}
 	/*
 	

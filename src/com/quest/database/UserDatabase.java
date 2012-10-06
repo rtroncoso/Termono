@@ -358,4 +358,11 @@ public class UserDatabase extends SQLiteOpenHelper {
         this.close();
         return x;
     }
+    
+    public void DeleteMatch(int pMatchID){//Updetear con el valor de todo
+    	String[] args = new String[]{String.valueOf(pMatchID)};
+    	this.getWritableDatabase().delete(tMatch, fMatchID+" =?", args);
+    	this.getWritableDatabase().delete(tMatchProfile, fMatchID+" =?", args);
+    	this.close();
+    }
 }

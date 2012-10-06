@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 import com.quest.game.Game;
+import com.quest.objects.BooleanMessage;
 import com.quest.objects.InputText;
 
 public class TextHelper{
@@ -36,6 +37,7 @@ public class TextHelper{
 		Supa,
 		Custom
 	}
+	private boolean mReady = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -123,7 +125,7 @@ public class TextHelper{
 	public InputText NewInputText(float pX,float pY,final String title, final String message, TiledTextureRegion texture,int textOffsetX, int textOffsetY, boolean isPassword){
 		return new InputText(pX, pY, title, message, texture, this.mNormalFont, textOffsetX, textOffsetY, isPassword, Game.getInstance().getVertexBufferObjectManager(), Game.getInstance());
 	}
-	
+		
 	public void FlushText(String pString){
 		int a = 0;
 		for(int i = 0;i<mList.size();i++){

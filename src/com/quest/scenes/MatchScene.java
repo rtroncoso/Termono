@@ -44,6 +44,7 @@ import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
 import com.quest.network.messages.client.ConnectionPangClientMessage;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
+import com.quest.objects.BooleanMessage;
 import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
 
@@ -408,9 +409,22 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						if(!MatchScene.this.mSelectedMatchName.equals("")){
-							Log.d("Quest!","No es null");
-						}else{
-							Log.d("Quest!","Es null");
+							new BooleanMessage("Confirm", "Are you sure you want to delete this match?","Yes","No", Game.getInstance()){
+								@Override
+								public void onOK() {
+									Game.getDataHandler().DeleteMatch(Game.getDataHandler().getMatchID(mSelectedMatchName));
+									mSelectedMatchName="";
+									MatchScene.this.mOwnMatchesList.clear();
+									MatchScene.this.mLoadedOwnMatchesEntity.detachChildren();
+									LoadOwnMatchesEntity();
+									super.onOK();
+								}
+								@Override
+								public void onCancel() {
+									//Narinas
+									super.onCancel();
+								}
+							};
 						}
 					}
 					break;
@@ -418,6 +432,7 @@ public class MatchScene extends Scene {
 				return true;	
 			}
 		};
+		
 		
 		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
