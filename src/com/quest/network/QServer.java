@@ -17,10 +17,13 @@ import org.andengine.util.debug.Debug;
 
 import android.util.Log;
 
+import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
 import com.quest.network.messages.client.ClientMessageFlags;
+import com.quest.network.messages.client.ConnectionPangClientMessage;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
+import com.quest.network.messages.server.ConnectionPungServerMessage;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.util.constants.IGameConstants;
 
@@ -49,7 +52,8 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	}
 	
 	private void initMessagePool() {
-		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, ConnectionPongServerMessage.class);	
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, ConnectionPongServerMessage.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PUNG, ConnectionPungServerMessage.class);
 		//this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class);		
 	}
 
@@ -75,7 +79,23 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	protected SocketConnectionClientConnector newClientConnector(final SocketConnection pSocketConnection) throws IOException {
 		final SocketConnectionClientConnector clientConnector = new SocketConnectionClientConnector(pSocketConnection);
 
-
+		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PANG, ConnectionPangClientMessage.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ConnectionPangClientMessage connectionPangClientMessage = (ConnectionPangClientMessage) pClientMessage;
+				final long roundtripMilliseconds = connectionPangClientMessage.getTimestamp();
+				Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 400, "Server Pang: " + roundtripMilliseconds + "ms", "Server"));
+				final ConnectionPungServerMessage connectionPungServerMessage = (ConnectionPungServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PUNG);
+				try {
+					Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 430, "Server pung sent", "Server2"));
+					pClientConnector.sendServerMessage(connectionPungServerMessage);
+				} catch (IOException e) {
+					Debug.e(e);
+				}
+				QServer.this.mMessagePool.recycleMessage(connectionPungServerMessage);
+			}
+		});
 		
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
@@ -83,8 +103,10 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				final ConnectionPingClientMessage connectionPingClientMessage = (ConnectionPingClientMessage) pClientMessage;
 				final long roundtripMilliseconds = System.currentTimeMillis() - connectionPingClientMessage.getTimestamp();
 				Log.d("Quest!","Server Ping: " + roundtripMilliseconds / 2 + "ms");
+				Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 50, "Server Ping: " + roundtripMilliseconds / 2 + "ms", "Server"));
 				final ConnectionPongServerMessage connectionPongServerMessage = (ConnectionPongServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG);
 				try {
+					Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 70, "Server pong sent", "Server2"));
 					pClientConnector.sendServerMessage(connectionPongServerMessage);
 				} catch (IOException e) {
 					Debug.e(e);

@@ -3,12 +3,13 @@ package com.quest.objects;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.util.modifier.ease.EaseBackOut;
 
-import android.R.bool;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +35,7 @@ public class MatchObject extends Entity{
 	// ===========================================================
 	private Sprite mMatchSprite;
 	private Entity mMatchEntity;
+	private Entity mEntity;
 	private String mIP;
 	private MatchScene mMatchScene;
 	private String mMatchName;
@@ -45,11 +47,20 @@ public class MatchObject extends Entity{
 	private String mPassword = "";
 	private boolean mReady = false;
 	private TimerHandler tempTimer;
+	
+	
+	//slide
+	private float lastY;
+	private float initialY;
+	private float currY;
+	private boolean scroll;
+	private float speed;
+	private boolean running = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	
-	public MatchObject(ITextureRegion pTextureRegion,int pX,int pY,MatchScene pScene,String pIPAdress,Entity pEntity,Boolean pJoining,String pMatchName,String pUserID,boolean pHasPassword, String pKey) {
+	public MatchObject(ITextureRegion pTextureRegion,int pX,final int pY,MatchScene pScene,String pIPAdress,final Entity pEntity,Boolean pJoining,String pMatchName,String pUserID,boolean pHasPassword, String pKey) {
 		this.mMatchEntity = new Entity(pX,pY);
 		this.mIP = pIPAdress;
 		this.mMatchName = pMatchName;
@@ -57,6 +68,7 @@ public class MatchObject extends Entity{
 		this.mJoining = pJoining;
 		this.mUserID = pUserID;
 		this.mHasPassword = pHasPassword;
+		this.mEntity = pEntity;
 		
 		this.mMatchSprite = new Sprite(0, 0, pTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -64,21 +76,43 @@ public class MatchObject extends Entity{
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			switch(pSceneTouchEvent.getAction()) {
 			case TouchEvent.ACTION_DOWN:
-					mGrabbed = true;
+				mGrabbed = true;
+				if(running==true)endTimer();
+				scroll = false;
+				currY = initialY = lastY = pTouchAreaLocalY;
+				startTimer(false);
+				break;
+			case TouchEvent.ACTION_MOVE:
+				if(mGrabbed){
+				currY = pTouchAreaLocalY;
+					if((Math.sqrt(Math.pow(currY-initialY,2)))>5 || scroll == true){
+						scroll=true;
+						mEntity.setY(mEntity.getY()+(pTouchAreaLocalY-initialY));
+					}
+				}
 				break;
 			case TouchEvent.ACTION_UP:
 				if(mGrabbed) {
 					mGrabbed = false;
 					mReady = false;
-					if(mJoining){//si me estoy uniendo o creando
-						if(MatchObject.this.hasPassword()){
-							showPasswordInput();
-							WaitForPassword();
+					endTimer();
+					if(!scroll){//checkeo si lo scrolleo
+						if(mJoining){//si me estoy uniendo o creando
+							if(MatchObject.this.hasPassword()){
+								showPasswordInput();
+								WaitForPassword();
+							}else{
+								mMatchScene.EnterMatch(mIP,mPassword);
+							}
 						}else{
-							mMatchScene.EnterMatch(mIP,mPassword);
+							mMatchScene.setSelectedMatch(mMatchName);
 						}
 					}else{
-						mMatchScene.setSelectedMatch(mMatchName);
+						if((Math.sqrt(Math.pow(currY-lastY,2)))>3){//Me fijo si estaba escrolleando o frenado
+							speed = (currY - lastY);
+							startTimer(true);
+						}
+						
 					}
 				}				
 				break;
@@ -89,7 +123,8 @@ public class MatchObject extends Entity{
 		this.mMatchEntity.attachChild(this.mMatchSprite);
 		
 		if(hasPassword()){
-			this.mMatchEntity.attachChild(new Sprite(530, 50, this.mMatchScene.getLockTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
+			this.mMatchEntity.attachChild(new Sprite(500, 50, this.mMatchScene.getLockTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
+			
 		}
 		if(mJoining){
 			this.mText = Game.getTextHelper().NewText(100, 20, "Match name: "+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(this.mUserID), pKey);
@@ -177,7 +212,6 @@ public class MatchObject extends Entity{
 		this.mMatchScene.registerUpdateHandler(tempTimer = new TimerHandler(0.5f, true, new ITimerCallback() {
 			@Override
 	        public void onTimePassed(final TimerHandler pTimerHandler) {
-				Log.d("Logd",MatchObject.this.mPassword+" "+String.valueOf(mReady));
 				if(mReady==true){
 	        		if(mPassword.equals(null)||mPassword.equals("")){
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
@@ -199,6 +233,52 @@ public class MatchObject extends Entity{
 	}
 
 
+	public void startTimer(final boolean pScroll){
+		this.mMatchScene.registerUpdateHandler(tempTimer = new TimerHandler(0.2f, true, new ITimerCallback() {
+			@Override
+	        public void onTimePassed(final TimerHandler pTimerHandler) {
+				if(!pScroll){
+					lastY = currY;
+				}else{
+					running = true;
+					if(speed>0){
+						if(mEntity.getY()>61){
+							endTimer();
+						}else{
+							speed-=1;
+						}
+					}else{
+						if(mEntity.getY()<(((mEntity.getChildCount()-1)*mMatchSprite.getHeight())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getHeight()+50+mMatchSprite.getHeight())*-1){
+							endTimer();
+						}else{
+							speed+=1;
+						}
+					}
+					mEntity.setY(mEntity.getY()+speed);
+					if(speed == 0)endTimer();
+				}
+	        }
+	    }));
+	}
+	
+	public void endTimer(){
+		running = false;
+		mMatchScene.unregisterUpdateHandler(tempTimer);
+		slideBack();
+	}
+	
+	public void slideBack(){
+		if(mEntity.getY()>61){
+			mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), 61, EaseBackOut.getInstance()));
+		}else if(mEntity.getY()<(((mEntity.getChildCount()-1)*mMatchSprite.getHeight())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getHeight()+50+mMatchSprite.getHeight())*-1){
+			if(mEntity.getChildCount()>2 && mEntity.getY()<61){
+				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), (((mEntity.getChildCount()-1)*mMatchSprite.getHeight())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getHeight()+50+mMatchSprite.getHeight())*-1, EaseBackOut.getInstance()));
+			}else{
+				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), 61, EaseBackOut.getInstance()));
+			}
+		}
+	}
+	
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
