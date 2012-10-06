@@ -56,7 +56,7 @@ public class ConnectionPungServerMessage extends ServerMessage implements Server
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_SERVER_CONNECTION_PUNG;
+		return FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE;
 	}
 
 	@Override

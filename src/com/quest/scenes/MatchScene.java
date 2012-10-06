@@ -42,7 +42,7 @@ import com.quest.game.Game;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
-import com.quest.network.messages.client.ConnectionPangClientMessage;
+import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.objects.BooleanMessage;
 import com.quest.objects.InputText;
@@ -1170,15 +1170,9 @@ public class MatchScene extends Scene {
 		initClient(pIP);
 		//mandar que me uni, despues desde el new match entity mando que elegi character
 		//hacer que checkee si ya tiene un chara
-		//ConnectionPangClientMessage mensaje = new ConnectionPangClientMessage(5555);
-		//mensaje.setTimestamp(55555);
-		try {
-			//Game.getClient().sendClientMessage(mensaje);
-			Game.getClient().sendClientMessage(new ConnectionPangClientMessage(5555));
-			Game.getClient().sendClientMessage(new ConnectionPingClientMessage());
-		} catch (final IOException e) {
-			Debug.e(e);
-		}
+
+		Game.getClient().sendPingMessage();
+
 		MatchScene.this.clearTouchAreas();
 		SwitchEntity(LoadNewMatchEntity(true));
 	}

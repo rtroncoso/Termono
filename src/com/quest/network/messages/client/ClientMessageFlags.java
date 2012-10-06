@@ -8,7 +8,7 @@ public interface ClientMessageFlags {
 
 	/* Client --> Server */
 	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_PING = 1;
-	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_PANG = 3;
+	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST = 3;
 	public static final short FLAG_MESSAGE_CLIENT_MOVE_PLAYER = 210;
 
 }
