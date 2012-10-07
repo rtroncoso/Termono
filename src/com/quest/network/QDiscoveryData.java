@@ -93,7 +93,6 @@ public interface QDiscoveryData extends IDiscoveryData{
 
 		private byte[] mServerIP;
 		private int mServerPort;
-		private String mMessage;
 		private String mUserID;
 		private String mUsername;
 		private String mMatchName;
@@ -107,32 +106,16 @@ public interface QDiscoveryData extends IDiscoveryData{
 
 		}
 
-		public MatchesDiscoveryData(final byte[] pServerIP, final int pServerPort, String pMessage) {
+		public MatchesDiscoveryData(final byte[] pServerIP, final int pServerPort,final String pUserID,final String pUsername,final String pMatchName,final boolean pHasPassword) {
 			this.mServerIP = pServerIP;
 			this.mServerPort = pServerPort;
-			this.mMessage = pMessage;
+			this.mUserID = pUserID;
+			this.mUsername = pUsername;
+			this.mMatchName = pMatchName;
+			this.mHasPassword = pHasPassword;
 		}
 
-		private final String CleanMessage(){
-			this.mMessage = this.mMessage.trim();
-			String clean = ""; 
-			for(int i=0;i<this.mMessage.length();i+=2){
-				clean=clean+this.mMessage.substring(i,i+1);
-			}
-			return clean;
-		}
 		
-		private final void SplitMessage(String pMessage){
-			String[] temp = pMessage.split(";");
-			this.mUserID = temp[1];
-			this.mUsername = temp[2];
-			this.mMatchName = temp[3];
-			if(temp[4].equals(String.valueOf(true))){
-				this.mHasPassword = true;
-			}else{
-				this.mHasPassword = false;
-			}
-		}
 			
 		
 		// ===========================================================
@@ -175,8 +158,11 @@ public interface QDiscoveryData extends IDiscoveryData{
 				this.mServerIP[i] = pDataInputStream.readByte();
 			}
 			this.mServerPort = pDataInputStream.readShort();
-			this.mMessage = pDataInputStream.readLine();
-			this.SplitMessage(this.CleanMessage());
+			this.mUserID = pDataInputStream.readUTF();
+			this.mUsername = pDataInputStream.readUTF();
+			this.mMatchName = pDataInputStream.readUTF();
+			this.mHasPassword = pDataInputStream.readBoolean();
+			
 		}
 
 		@Override
@@ -184,7 +170,10 @@ public interface QDiscoveryData extends IDiscoveryData{
 			pDataOutputStream.writeByte((byte)this.mServerIP.length);
 			pDataOutputStream.write(this.mServerIP);
 			pDataOutputStream.writeShort((short)this.mServerPort);
-			pDataOutputStream.writeChars(mMessage);
+			pDataOutputStream.writeUTF(this.mUserID);
+			pDataOutputStream.writeUTF(this.mUsername);
+			pDataOutputStream.writeUTF(this.mMatchName);
+			pDataOutputStream.writeBoolean(this.mHasPassword);
 		}
 
 		// ===========================================================

@@ -82,16 +82,14 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST, ClientMessageConnectionRequest.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
-			//	final ClientMessageConnectionRequest clientMessageConnectionRequest = (ClientMessageConnectionRequest) pClientMessage;
-			//	final long userid = clientMessageConnectionRequest.getUserID();
-				//	final String userid = clientMessageConnectionRequest.getUserID();
-			//	String username = clientMessageConnectionRequest.getUsername();
-			//	final String password = clientMessageConnectionRequest.getPassword();
-			//	Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 400, "Server conectionrequest: " + userid+" "+username, "Server"));
+				final ClientMessageConnectionRequest clientMessageConnectionRequest = (ClientMessageConnectionRequest) pClientMessage;
+				final long pUserID = clientMessageConnectionRequest.getUserID();
+				final boolean pUsername = clientMessageConnectionRequest.getUsername();
+				final String pPassword = clientMessageConnectionRequest.getPassword();
+				Log.d("Quest!","SERVER Request: "+String.valueOf(pUserID)+" "+String.valueOf(pUsername)+" "+pPassword);
 				final ConnectionPungServerMessage connectionPungServerMessage = (ConnectionPungServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE);
 				connectionPungServerMessage.setTimestamp(222);
 				try {
-					Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 430, "Server pung sent", "Server2"));
 					pClientConnector.sendServerMessage(connectionPungServerMessage);
 				} catch (IOException e) {
 					Debug.e(e);

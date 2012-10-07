@@ -597,7 +597,7 @@ public class MatchScene extends Scene {
 				MatchScene.this.mSocketServerDiscoveryServer = new SocketServerDiscoveryServer<MatchesDiscoveryData>(DISCOVERY_PORT, new ExampleSocketServerDiscoveryServerListener()) {
 					@Override
 					protected MatchesDiscoveryData onCreateDiscoveryResponse() {
-						return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,";"+pUserID+";"+Game.getDataHandler().getUsername(1)+";"+pMatchName+";"+String.valueOf(Game.getDataHandler().hasPassword(Game.getDataHandler().getMatchID(pMatchName, pUserID)))+";");
+						return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,pUserID,Game.getDataHandler().getUsername(1),pMatchName,Game.getDataHandler().hasPassword(Game.getDataHandler().getMatchID(pMatchName, pUserID)));
 					}
 				};
 				MatchScene.this.mSocketServerDiscoveryServer.start();
@@ -1170,9 +1170,11 @@ public class MatchScene extends Scene {
 		initClient(pIP);
 		//mandar que me uni, despues desde el new match entity mando que elegi character
 		//hacer que checkee si ya tiene un chara
-
+		final String hola = "hola";
+		
+		Game.getClient().sendConnectionRequestMessage(1000,true,hola);
 		Game.getClient().sendPingMessage();
-
+		
 		MatchScene.this.clearTouchAreas();
 		SwitchEntity(LoadNewMatchEntity(true));
 	}

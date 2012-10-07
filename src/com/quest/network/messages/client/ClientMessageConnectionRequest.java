@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
+
 /**
  * (c) 2010 Nicolas Gramlich 
  * (c) 2011 Zynga Inc.
@@ -11,7 +13,7 @@ import java.io.IOException;
  * @author Nicolas Gramlich
  * @since 12:23:37 - 21.05.2011
  */
-public class ClientMessageConnectionRequest extends ClientBaseMessage implements ClientMessageFlags {
+public class ClientMessageConnectionRequest extends ClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -21,8 +23,8 @@ public class ClientMessageConnectionRequest extends ClientBaseMessage implements
 	// ===========================================================
 
 	private long mUserID=1;
-	//private String mUsername="nop";
-//	private String mPassword="nop";
+	private boolean mUsername=false;
+	private String mPassword="";
 	
 	// ===========================================================
 	// Constructors
@@ -32,9 +34,10 @@ public class ClientMessageConnectionRequest extends ClientBaseMessage implements
 	public ClientMessageConnectionRequest() {
 	}
 
-	public ClientMessageConnectionRequest(final long pUserID){//,final String pUsername){//,final String pPassword) {
+	public ClientMessageConnectionRequest(final long pUserID,final boolean pUsername,final String pPassword) {
 		mUserID = pUserID;
-	//	mUsername = pUsername;
+		mUsername = pUsername;
+		mPassword = pPassword;
 	}
 	// ===========================================================
 	// Getter & Setter
@@ -47,22 +50,22 @@ public class ClientMessageConnectionRequest extends ClientBaseMessage implements
 	public void setUserID(final long pUserID) {
 		this.mUserID = pUserID;
 	}
-	/*
-	public String getUsername() {
-		return cleanMessage(this.mUsername);
+	
+	public boolean getUsername() {
+		return this.mUsername;
 	}
 
-	public void setUsername(final String pUsername) {
+	public void setUsername(final boolean pUsername) {
 		this.mUsername = pUsername;
-	}*/
-	/*
+	}
+	
 	public String getPassword() {
 		return this.mPassword;
 	}
 
 	public void setPassword(final String pPassword) {
 		this.mPassword = pPassword;
-	}*/
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -75,15 +78,15 @@ public class ClientMessageConnectionRequest extends ClientBaseMessage implements
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
 		 this.mUserID = pDataInputStream.readLong();
-		// this.mUsername = pDataInputStream.readLine();
-		// this.mPassword = pDataInputStream.readLine();
+		 this.mUsername = pDataInputStream.readBoolean();
+		 this.mPassword = pDataInputStream.readUTF();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
 		pDataOutputStream.writeLong(this.mUserID);
-	//	pDataOutputStream.writeChars(this.mUsername);
-	//	pDataOutputStream.writeChars(this.mPassword);
+		pDataOutputStream.writeBoolean(this.mUsername);
+		pDataOutputStream.writeUTF(this.mPassword);
 	}
 
 	// ===========================================================

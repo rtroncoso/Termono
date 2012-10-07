@@ -13,6 +13,7 @@ import org.andengine.extension.multiplayer.protocol.server.connector.SocketConne
 import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 
+import android.R.bool;
 import android.util.Log;
 
 import com.quest.game.Game;
@@ -49,8 +50,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ConnectionPungServerMessage connectionPungServerMessage = (ConnectionPungServerMessage) pServerMessage;
 					final long roundtripMilliseconds = connectionPungServerMessage.getTimestamp();
-					Log.d("Quest!","CLIENT Pung: " + roundtripMilliseconds + "ms");
-					Game.getSceneManager().getCurrScene().attachChild(Game.getTextHelper().NewText(200, 440, "CLIENT Pung: " + roundtripMilliseconds + "ms", "Client"));
+					Log.d("Quest!","CLIENT Acknowledge: " + roundtripMilliseconds + "ms");					
 				}
 			});
 	
@@ -100,9 +100,11 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 		}
 		
 
-		public void sendConnectionRequestMessage(final long timestamp){			
+		public void sendConnectionRequestMessage(final long pUserID,final boolean pUsername,final String pPassword){			
 			final ClientMessageConnectionRequest clientMessageConnectionRequest = (ClientMessageConnectionRequest) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST);
-			clientMessageConnectionRequest.setUserID(timestamp);
+			clientMessageConnectionRequest.setUserID(pUserID);
+			clientMessageConnectionRequest.setUsername(pUsername);
+			clientMessageConnectionRequest.setPassword(pPassword);
 			try {
 				sendClientMessage(clientMessageConnectionRequest);				
 			} catch (Exception e) {
