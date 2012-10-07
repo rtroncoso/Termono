@@ -23,7 +23,7 @@ import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
-import com.quest.network.messages.server.ConnectionPungServerMessage;
+import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.util.constants.IGameConstants;
 
@@ -53,7 +53,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	
 	private void initMessagePool() {
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, ConnectionPongServerMessage.class);
-		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE, ConnectionPungServerMessage.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE, ServerMessageConnectionAcknowledge.class);
 		//this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class);		
 	}
 
@@ -83,18 +83,26 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageConnectionRequest clientMessageConnectionRequest = (ClientMessageConnectionRequest) pClientMessage;
-				final long pUserID = clientMessageConnectionRequest.getUserID();
-				final boolean pUsername = clientMessageConnectionRequest.getUsername();
-				final String pPassword = clientMessageConnectionRequest.getPassword();
-				Log.d("Quest!","SERVER Request: "+String.valueOf(pUserID)+" "+String.valueOf(pUsername)+" "+pPassword);
-				final ConnectionPungServerMessage connectionPungServerMessage = (ConnectionPungServerMessage) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE);
-				connectionPungServerMessage.setTimestamp(222);
-				try {
-					pClientConnector.sendServerMessage(connectionPungServerMessage);
-				} catch (IOException e) {
-					Debug.e(e);
+				if(clientMessageConnectionRequest.getPassword().equals(Game.getDataHandler().getMatchPassword(clientMessageConnectionRequest.getMatchName()))){
+					final ServerMessageConnectionAcknowledge serverMessageConnectionAcknowledge = (ServerMessageConnectionAcknowledge) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE);
+					if(Game.getDataHandler().CheckAndAddProfile(clientMessageConnectionRequest.getUserID(), getName())){//Agrega el perfil, checkeo si existe
+						if(Game.getDataHandler().getPlayerIDifExists(clientMessageConnectionRequest.getUserID(), clientMessageConnectionRequest.getMatchName())!=0){
+							serverMessageConnectionAcknowledge.setTimestamp(9999);
+						}else{
+							serverMessageConnectionAcknowledge.setTimestamp(0000);
+						}
+					}else{
+						serverMessageConnectionAcknowledge.setTimestamp(0000);
+					}
+					try {
+						pClientConnector.sendServerMessage(serverMessageConnectionAcknowledge);
+					} catch (IOException e) {
+						Debug.e(e);
+					}
+					QServer.this.mMessagePool.recycleMessage(serverMessageConnectionAcknowledge);
+				}else{
+					//refuse connection
 				}
-				QServer.this.mMessagePool.recycleMessage(connectionPungServerMessage);
 			}
 		});
 		

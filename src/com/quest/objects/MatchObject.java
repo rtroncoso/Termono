@@ -44,7 +44,7 @@ public class MatchObject extends Entity{
 	private Boolean mJoining;
 	private Boolean mHasPassword;
 	private Text mText;
-	private String mPassword = "";
+	private String mPassword = "**nopass**";
 	private boolean mReady = false;
 	private TimerHandler tempTimer;
 	
@@ -102,7 +102,7 @@ public class MatchObject extends Entity{
 								showPasswordInput();
 								WaitForPassword();
 							}else{
-								mMatchScene.EnterMatch(mIP,mPassword);
+								mMatchScene.EnterMatch(mIP,mPassword,mMatchName);
 							}
 						}else{
 							mMatchScene.setSelectedMatch(mMatchName);
@@ -216,9 +216,8 @@ public class MatchObject extends Entity{
 	        		if(mPassword.equals(null)||mPassword.equals("")){
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
 	        		}else{
-	        			
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
-	        			mMatchScene.EnterMatch(mIP,mPassword);
+	        			mMatchScene.EnterMatch(mIP,mPassword,mMatchName);
 	        		}
 	        	}
 	        }

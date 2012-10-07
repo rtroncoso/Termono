@@ -15,7 +15,7 @@ import android.util.Log;
  * @author Nicolas Gramlich
  * @since 12:23:20 - 21.05.2011
  */
-public class ConnectionPungServerMessage extends ServerMessage implements ServerMessageFlags {
+public class ServerMessageConnectionAcknowledge extends ServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -30,11 +30,11 @@ public class ConnectionPungServerMessage extends ServerMessage implements Server
 	// ===========================================================
 
 	@Deprecated
-	public ConnectionPungServerMessage() {
+	public ServerMessageConnectionAcknowledge() {
 
 	}
 
-	public ConnectionPungServerMessage(final long pTimestamp) {
+	public ServerMessageConnectionAcknowledge(final long pTimestamp) {
 		this.mTimestamp = pTimestamp;
 	}
 

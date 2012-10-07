@@ -40,19 +40,21 @@ public class DataHandler {
 		return this.mUserDB.getProfileID(pUserID);
 	}
 	
-	public void CheckAndAddProfile(String pUserID, String pUsername) {
+	public boolean CheckAndAddProfile(String pUserID, String pUsername) {
 		if(this.mUserDB.checkifProfileExists(pUserID)){
 			this.mUserDB.setUsername(this.mUserDB.getProfileID(pUserID), pUsername);//Lo updateo por si cambio el username
+			return true;//Existe el profile
 		}else{
 			this.mUserDB.addNewProfile(pUserID,pUsername);//lo agrego
+			return false;
 		}
 		
 	}
 	
 	//MatchProfile
-	public void AddNewMatch(int pProfileID,String pName,String pPassword){
+	public int AddNewMatch(int pProfileID,String pName,String pPassword){
 		if(pPassword.equals(null)||pPassword.equals(""))pPassword="**nopass**";
-		this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword));
+		return this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword));
 	}
 	
 	
@@ -77,6 +79,14 @@ public class DataHandler {
 		return this.mUserDB.MatchExists(pName, pProfileID);
 	}
 	
+	public String getMatchPassword(int pMatchID){
+		return this.mUserDB.getMatchPassword(pMatchID);
+	}
+	
+	public String getMatchPassword(String pMatchName){
+		return this.mUserDB.getMatchPassword(pMatchName);
+	}
+		
 	public boolean hasPassword(int pMatchID){
 		if(this.mUserDB.getMatchPassword(pMatchID).equals("**nopass**")){
 			return false;//no password
@@ -96,6 +106,30 @@ public class DataHandler {
 	public void DeleteMatch(int pMatchID){
 		this.mUserDB.DeleteMatch(pMatchID);
 	}
+	
+	//MatchPlayers
+	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass){
+		return this.mUserDB.addNewMatchPlayers(pProfileID, this.mUserDB.CreateNewPlayer(pProfileID, pClass));
+	}
+	
+	
+	//Player
+	public int getPlayerIDifExists(String pUserID, String pMatchName){
+		return this.mUserDB.getPlayerIDifExists(pUserID, this.mUserDB.getMatchID(pMatchName, 1));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*
 	
 	public String isLevelUnLocked(int levelNum){

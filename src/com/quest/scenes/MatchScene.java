@@ -666,7 +666,9 @@ public class MatchScene extends Scene {
 							mGrabbed = false;
 							MatchScene.this.clearTouchAreas();
 							if(!pJoining){
-								Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
+								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
+								int playerid = Game.getDataHandler().AddNewPlayer(matchid, 1, Integer.parseInt(mMessage[0]));
+								//atributos
 								if(AVD_DEBUGGING){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),"00:00:00:00:00:00"));
 								}else{
@@ -829,7 +831,7 @@ public class MatchScene extends Scene {
 				                  mOrcSprite.setAlpha(0.5f);
 				                  mMageSprite.setAlpha(0.5f);
 				                  mNextSprite.setVisible(true);
-				                  mMessage[0] = "Paladin";
+				                  mMessage[0] = "1";
 				                }
 				              break;
 				            }
@@ -852,7 +854,7 @@ public class MatchScene extends Scene {
 					                  mOrcSprite.setAlpha(0.5f);
 					                  mMageSprite.setAlpha(1f);
 					                  mNextSprite.setVisible(true);
-					                  mMessage[0] = "Mage";
+					                  mMessage[0] = "2";
 					                }
 					              break;
 					            }
@@ -875,7 +877,7 @@ public class MatchScene extends Scene {
 					                  mOrcSprite.setAlpha(1f);
 					                  mMageSprite.setAlpha(0.5f);
 					                  mNextSprite.setVisible(true);
-					                  mMessage[0] = "Orc";
+					                  mMessage[0] = "3";
 					                }
 					              break;
 					            }
@@ -898,7 +900,7 @@ public class MatchScene extends Scene {
 						                  mOrcSprite.setAlpha(0.5f);
 						                  mMageSprite.setAlpha(0.5f);
 						                  mNextSprite.setVisible(true);
-						                  mMessage[0] = "Archer";
+						                  mMessage[0] = "4";
 						                }
 						              break;
 						            }
@@ -1166,13 +1168,15 @@ public class MatchScene extends Scene {
 		this.attachChild(this.mCurrentEntity);
 	}
 	
-	public void EnterMatch(String pIP,String pPassword){
+	public void EnterMatch(String pIP,String pPassword,String pMatchName){
 		initClient(pIP);
 		//mandar que me uni, despues desde el new match entity mando que elegi character
-		//hacer que checkee si ya tiene un chara
-		final String hola = "hola";
-		
-		Game.getClient().sendConnectionRequestMessage(1000,true,hola);
+		//hacer que checkee si ya tiene un chara		
+		if(AVD_DEBUGGING){
+			Game.getClient().sendConnectionRequestMessage("00:00:00:00:00:00",Game.getDataHandler().getUsername(1),pPassword,pMatchName);
+		}else{
+			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(1),pPassword,pMatchName);
+		}
 		Game.getClient().sendPingMessage();
 		
 		MatchScene.this.clearTouchAreas();

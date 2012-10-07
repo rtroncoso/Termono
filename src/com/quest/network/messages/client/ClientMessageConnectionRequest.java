@@ -22,10 +22,10 @@ public class ClientMessageConnectionRequest extends ClientMessage implements Cli
 	// Fields
 	// ===========================================================
 
-	private long mUserID=1;
-	private boolean mUsername=false;
-	private String mPassword="";
-	
+	private String mUserID;
+	private String mUsername;
+	private String mPassword;
+	private String mMatchName;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -34,28 +34,29 @@ public class ClientMessageConnectionRequest extends ClientMessage implements Cli
 	public ClientMessageConnectionRequest() {
 	}
 
-	public ClientMessageConnectionRequest(final long pUserID,final boolean pUsername,final String pPassword) {
+	public ClientMessageConnectionRequest(final String pUserID,final String pUsername,final String pPassword,final String pMatchName) {
 		mUserID = pUserID;
 		mUsername = pUsername;
 		mPassword = pPassword;
+		mMatchName = pMatchName;
 	}
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 	
-	public long getUserID() {
+	public String getUserID() {
 		return this.mUserID;
 	}
 
-	public void setUserID(final long pUserID) {
+	public void setUserID(final String pUserID) {
 		this.mUserID = pUserID;
 	}
 	
-	public boolean getUsername() {
+	public String getUsername() {
 		return this.mUsername;
 	}
 
-	public void setUsername(final boolean pUsername) {
+	public void setUsername(final String pUsername) {
 		this.mUsername = pUsername;
 	}
 	
@@ -65,6 +66,14 @@ public class ClientMessageConnectionRequest extends ClientMessage implements Cli
 
 	public void setPassword(final String pPassword) {
 		this.mPassword = pPassword;
+	}
+	
+	public String getMatchName(){
+		return this.mMatchName;
+	}
+	
+	public void setMatchName(final String pMatchName){
+		this.mMatchName = pMatchName;
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -77,16 +86,18 @@ public class ClientMessageConnectionRequest extends ClientMessage implements Cli
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
-		 this.mUserID = pDataInputStream.readLong();
-		 this.mUsername = pDataInputStream.readBoolean();
+		 this.mUserID = pDataInputStream.readUTF();
+		 this.mUsername = pDataInputStream.readUTF();
 		 this.mPassword = pDataInputStream.readUTF();
+		 this.mMatchName = pDataInputStream.readUTF();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		pDataOutputStream.writeLong(this.mUserID);
-		pDataOutputStream.writeBoolean(this.mUsername);
+		pDataOutputStream.writeUTF(this.mUserID);
+		pDataOutputStream.writeUTF(this.mUsername);
 		pDataOutputStream.writeUTF(this.mPassword);
+		pDataOutputStream.writeUTF(this.mMatchName);
 	}
 
 	// ===========================================================

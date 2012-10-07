@@ -21,7 +21,7 @@ import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
-import com.quest.network.messages.server.ConnectionPungServerMessage;
+import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageFlags;
 
 public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags {
@@ -45,12 +45,12 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
 			super(new SocketConnection(new Socket(pServerIP, SERVER_PORT)), pSocketConnectionServerConnectorListener);
 	
-			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE, ConnectionPungServerMessage.class, new IServerMessageHandler<SocketConnection>() {
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE, ServerMessageConnectionAcknowledge.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					final ConnectionPungServerMessage connectionPungServerMessage = (ConnectionPungServerMessage) pServerMessage;
+					final ServerMessageConnectionAcknowledge connectionPungServerMessage = (ServerMessageConnectionAcknowledge) pServerMessage;
 					final long roundtripMilliseconds = connectionPungServerMessage.getTimestamp();
-					Log.d("Quest!","CLIENT Acknowledge: " + roundtripMilliseconds + "ms");					
+					Log.d("Quest!","CLIENT Acknowledge: " + roundtripMilliseconds);					
 				}
 			});
 	
@@ -100,11 +100,12 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 		}
 		
 
-		public void sendConnectionRequestMessage(final long pUserID,final boolean pUsername,final String pPassword){			
+		public void sendConnectionRequestMessage(final String pUserID,final String pUsername,final String pPassword,final String pMatchName){			
 			final ClientMessageConnectionRequest clientMessageConnectionRequest = (ClientMessageConnectionRequest) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST);
 			clientMessageConnectionRequest.setUserID(pUserID);
 			clientMessageConnectionRequest.setUsername(pUsername);
 			clientMessageConnectionRequest.setPassword(pPassword);
+			clientMessageConnectionRequest.setMatchName(pMatchName);
 			try {
 				sendClientMessage(clientMessageConnectionRequest);				
 			} catch (Exception e) {
