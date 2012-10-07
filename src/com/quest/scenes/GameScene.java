@@ -1,9 +1,9 @@
 package com.quest.scenes;
 
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
-import org.andengine.extension.tmx.TMXLayer;
 
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
@@ -30,6 +30,7 @@ public class GameScene extends Scene {
 		private ControlsHud mControlsHud;
 		private SpellbarHud mSpellbarHud;
 		private StatsHud mStatsHud;
+		private Entity mMapLayer;
 		
 		// ===========================================================
 		// Constructors
@@ -38,7 +39,15 @@ public class GameScene extends Scene {
 			
 			// TODO Auto-generated method stub
 			Game.getInstance().getEngine().registerUpdateHandler(new FPSLogger());
-			Game.getMapManager().loadMap("desert");
+			this.mMapLayer = new Entity();
+		}
+		
+		
+		public void initGame(String pMapName) {
+			
+			// Load the Map and Attach it
+			Game.getMapManager().loadMap(pMapName);
+			this.attachChild(this.mMapLayer);
 			
 			// Create the Player and insert in helper
 			Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
@@ -59,11 +68,6 @@ public class GameScene extends Scene {
 			
 			this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
 			this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
-
-			// Map Layers
-			for(final TMXLayer tLayer : Game.getMapManager().getCurrentMap().getTMXLayers()) {
-				this.attachChild(tLayer);
-			}
 			
 			// Players
 			this.attachChild(Game.getPlayerHelper().getPlayer("Player"));
@@ -82,7 +86,6 @@ public class GameScene extends Scene {
 			this.registerTouchArea(this.mEnemy.getBodySprite());
 			this.registerTouchArea(this.mMob2.getBodySprite());
 		}
-		
 		// ===========================================================
 		// Methods for/from SuperClass/Interfaces
 		// ===========================================================
@@ -106,6 +109,22 @@ public class GameScene extends Scene {
 		public void setStatsHud(StatsHud pStatsHud) {
 			this.mStatsHud = pStatsHud;
 		}
+
+		/**
+		 * @return the mMapLayer
+		 */
+		public Entity getMapLayer() {
+			return mMapLayer;
+		}
+
+
+		/**
+		 * @param mMapLayer the mMapLayer to set
+		 */
+		public void setMapLayer(Entity mMapLayer) {
+			this.mMapLayer = mMapLayer;
+		}
+
 
 		public void unloadHUD(){
 			Game.getSceneManager().getDisplay().getCamera().setHUD(null);

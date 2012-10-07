@@ -7,6 +7,8 @@ import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenCon
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 
+import android.util.Log;
+
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.triggers.Trigger;
@@ -62,17 +64,17 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				
 				// Check Tiles
 				Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
-				if(!tmpTrigger.equals(null)) tmpTrigger.onHandleTriggerAction(); // Hacer cambio de mapa
-				if(Game.getMapManager().checkCollision(tmxTileTo)) return;
+				if(tmpTrigger != null) tmpTrigger.onHandleTriggerAction(); // Hacer cambio de mapa
+					if(Game.getMapManager().checkCollision(tmxTileTo)) return;
 				
 				// Perform Move
 				this.moveToTile(tmxTileTo);
-				try {
+				/*try {
 					Game.getClient().sendClientMessage(new ClientMessageMovePlayer(Game.getDataHandler().getUsername(1), this.getFacingDirectionToTile(tmxTileTo)));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}*/
 			}
 		}
 	}

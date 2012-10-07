@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="40" height="40" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="Desert" tilewidth="32" tileheight="32" spacing="3" margin="2">
   <image source="gfx/desert_tiled.png" width="281" height="211"/>
   <tile id="30">
@@ -8,23 +8,23 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Ground" width="100" height="100">
+ <layer name="Ground" width="40" height="40">
   <properties>
    <property name="Attachable" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt2NlKAzEAhtGoF25gXcC6YMHtwu39X8+AljalOJM40wTmHPgvhA5CPttiFiGExYg7i5vFnRc+PzVjttAjnx5tGbvHddw87qbw+akZu8de3H7cQeHzU5NzNrdxdxm7jzuOO4k7zfxdenTvMe4pY89Bj1wlPV7i3uNegx5DK+nxvPGzHsPRoy0lPT7Dz/f1V9BjaEN+n29+r+iRb8gem+8bPfIN2cPn1f/lnM1b+Pk86ruPoEeuw98dhdXdxl876Pm65R6CHjlmYXX/uvxb/munPV+37Tk9us3D6v71Iu6yY1c9X7ftOT26lZzRLjc1tc9bj9SuzrXkrl6P8dbnf5f1/++Xd2RT01KP9XtKPfRogR5taanH+n2kHvV7bHuvTI0ebdGjLbvqUXJXr0d7m5ra561HqvZ565Gqfd56pGqftx6p2uetR6r2eeuRqn3eeqRqn7ceqdrnrQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANt8A7WStoo=
+   eJzt110LgjAUxvFTXvQiZC+QvZBg1kVl3//r9UCOyTCbK7eDnIvfRTDxnxt5yogo69ECElj2fB/pC2MLKewYtDQZwRgiD/faw6GDI8xgDrGHvhzOHRSe90r1XeAOV6Z9hfG5rS/E/nLvK+l9/p9M+z4xzyW3PvO5cusLvb+3av9sPf7QN6lMSb+L2kSW65TTj30J6flCfdc2seW6putc+lLS88UK1l9sLNc1Xdf3+RPhuMxmPvtsfjvr759Qs4/NPJZL3yD76vMFxz4O/w2kz43LbOazTwghxLC8AI7ktwI=
   </data>
  </layer>
- <layer name="Objects" width="100" height="100">
+ <layer name="Objects" width="40" height="40">
   <properties>
    <property name="Attachable" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt2mtPwjAYhuFX+eCBRDwk4iEiiopH5P//Ot9lW9hqpe2k65LeV/JEIRuGPrQNjTMRmUXMiWaiOe14f25idrGS333cB75GbmL2wfwIF7OLYi5caqaaq46vkZvY82NPs68ZNZ4LWbNyEzK215qbgNxqjjTHmnHg36IPdx40jwFZCH2E+mscXi3P1X08ad41z0Ifu9ZlfiyMx/SxO67xeBH66JNtDNbS7sHs41PK/fpL6GPXtu0Z5mPXfDD3FfoIZ9u3i+ea86P+3dWHOW/oI1zxnpdi3zNC5wfr1f8137vZi5k3Kdcj33wIfYQ6qHIom7ONbRl5XlfnTugjxEQ256/1Z3lbxp7X2e6jD7epbM5fzzTnjlx4Xme7jz7cfPeOvjOX8hw4N+Y4DKmXeby3PVh9jX+Xs/qc16tYWVU/fb67NL/f12dkuelr7fHpo+hgXV1LH/HyLfThK1YH5r5EH36GtF41zyPpI95a5duHOVfoI+38sK1duRlyH8yPeOlyVk8fw0tuUo+3mbnxODepx5/50TakuWD7P+vcpP78u3rKTeqxZ71qSz3e9NGWerzpoy31eNNHW+rxpg8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgM0PLum3zw==
+   eJzt2FsLgkAQhuGpmw4XWV1kBzA720n9/7+uERVhWEoFZz/NiwcRBF9mt1j0iMhr0Iw5bN7we+oIDX17gK62zC+Z1Yq5bA3QU6XbdsO/CwAauuAK0CDFoF1yzyHsQVNDIOZne5Y3cZ/3IMzvWyeCUWbMBmwo2O5zqDhfTNhUsN3nUnG+WLClYLsvh7b3fDKfc5A6fcWeDdtWsFPqCrPrgR1/OLMHu7CT8lqV6Uua4uxZzb4IsE/ua7S+Ouv7ovS38Vbsiyr0yVmizc+01sh9mvO7U/rfVtZTua8rfICGtpCzast3o36Ne71yPoNgvI0=
   </data>
  </layer>
- <objectgroup name="Collisions" width="100" height="100">
+ <objectgroup name="Collisions" width="40" height="40">
   <properties>
    <property name="Collide" value="true"/>
   </properties>
@@ -66,16 +66,15 @@
   <object x="1056" y="160" width="32" height="960"/>
   <object x="224" y="1088" width="864" height="32"/>
   <object x="224" y="160" width="32" height="960"/>
-  <object x="416" y="320" width="320" height="320"/>
  </objectgroup>
- <objectgroup name="MapChangeTriggers" width="100" height="100">
+ <objectgroup name="MapChangeTriggers" width="40" height="40">
   <properties>
    <property name="MapChangeTrigger" value="true"/>
   </properties>
-  <object x="1024" y="192" width="32" height="896">
+  <object x="256" y="192" width="32" height="896">
    <properties>
-    <property name="NextMapNumber" value="2"/>
-    <property name="NextMapX" value="0"/>
+    <property name="NextMapNumber" value="1"/>
+    <property name="NextMapX" value="39"/>
     <property name="NextMapY" value="same"/>
    </properties>
   </object>

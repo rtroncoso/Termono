@@ -94,7 +94,7 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	protected Scene onCreateScene() {
 		Game.mMapManager = new MapHelper();
-		Game.mSceneManager.setMainMenuScene();
+		Game.mSceneManager.setMatchScene();
 		return Game.mSceneManager.getCurrScene();
 	}
 

@@ -14,7 +14,8 @@
         android:label="@string/app_name" >
         <activity
             android:name=".Game"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:stateNotNeeded="false" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -3,6 +3,7 @@ package com.quest.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
 import org.andengine.extension.tmx.TMXObject;
 import org.andengine.extension.tmx.TMXObjectGroup;
@@ -31,13 +32,17 @@ public class MapHelper implements IMeasureConstants {
 	private TMXLoader mTmxLoader;
 	private TMXTiledMap mCurrentMap;
 	private List<TMXTile> mCollideTiles;
-	private List<Trigger> mTriggerTiles;
+	private List<MapChangeTrigger> mTriggerTiles;
+	private boolean isChangingMap;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public MapHelper() {
 
+		this.mCollideTiles = new ArrayList<TMXTile>();
+		this.mTriggerTiles = new ArrayList<MapChangeTrigger>();
+		
 		this.mTmxLoader = new TMXLoader(Game.getInstance().getAssets(), Game.getInstance().getEngine().getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, Game.getInstance().getVertexBufferObjectManager());
 	}
 	
@@ -70,21 +75,61 @@ public class MapHelper implements IMeasureConstants {
 		this.mCollideTiles = mCollideTiles;
 	}
 
+	/**
+	 * @return the mTriggerTiles
+	 */
+	public List<MapChangeTrigger> getTriggerTiles() {
+		return mTriggerTiles;
+	}
+
+	/**
+	 * @param mTriggerTiles the mTriggerTiles to set
+	 */
+	public void setTriggerTiles(List<MapChangeTrigger> mTriggerTiles) {
+		this.mTriggerTiles = mTriggerTiles;
+	}
+
+	/**
+	 * @return the isChangingMap
+	 */
+	public boolean isChangingMap() {
+		return isChangingMap;
+	}
+
+	/**
+	 * @param isChangingMap the isChangingMap to set
+	 */
+	public void setChangingMap(boolean isChangingMap) {
+		this.isChangingMap = isChangingMap;
+	}
+
 	// ===========================================================
 	// Methods
 	// ===========================================================
 	public void loadMap(String pName) {
+		// Detach old Map Layers
+		if(this.mCurrentMap != null) {
+			for(final TMXLayer tLayer : this.mCurrentMap.getTMXLayers()) {
+				Game.getSceneManager().getGameScene().getMapLayer().detachChild(tLayer);
+			}
+		}
+		
 		// Load the map
 		try {
 			this.mCurrentMap = this.mTmxLoader.loadFromAsset("tmx/" + pName + ".tmx");
 		} catch (final TMXLoadException tmxle) {
 			Debug.e(tmxle);
 		}
+
+		// Attach new Map Layers
+		for(final TMXLayer tLayer : this.mCurrentMap.getTMXLayers()) {
+			Game.getSceneManager().getGameScene().getMapLayer().attachChild(tLayer);
+		}
 		
+		
+		// Set Map Bounds (-funcionaba esto-)
 		Game.getSceneManager().getDisplay().setMapBounds(this.mCurrentMap.getTMXLayers().get(0).getWidth(), this.mCurrentMap.getTMXLayers().get(0).getHeight());
 		
-		// Load Properties
-		this.mCollideTiles = new ArrayList<TMXTile>();
 		// The for loop cycles through each object on the map
 		for (final TMXObjectGroup group : this.mCurrentMap.getTMXObjectGroups()) {
 
@@ -136,9 +181,14 @@ public class MapHelper implements IMeasureConstants {
 								public void onHandleTriggerAction() {
 									// TODO Auto-generated method stub
 									super.onHandleTriggerAction();
+									if(MapHelper.this.isChangingMap) return;
+									Log.d("Quest!", "Player - -no cambiaba de mapa-");
+									MapHelper.this.isChangingMap = true;
 									MapHelper.this.loadMap(String.valueOf(this.mNextMapNumber));
+									MapHelper.this.isChangingMap = false;
 								}
 							};
+							
 							tmpTrigger.setNextMapNumber(Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
 							Log.d("Quest!", "MapHelper - Info del Trigger:");
 							Log.d("Quest!", "Proximo Mapa: " + object.getTMXObjectProperties().get(0).getValue());
@@ -178,20 +228,6 @@ public class MapHelper implements IMeasureConstants {
 			return true;
 		else
 			return false;
-	}
-
-	/**
-	 * @return the mTriggerTiles
-	 */
-	public List<Trigger> getTriggerTiles() {
-		return mTriggerTiles;
-	}
-
-	/**
-	 * @param mTriggerTiles the mTriggerTiles to set
-	 */
-	public void setTriggerTiles(List<Trigger> mTriggerTiles) {
-		this.mTriggerTiles = mTriggerTiles;
 	}
 	
 	// ===========================================================
