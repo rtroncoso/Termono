@@ -102,7 +102,7 @@ public class MatchObject extends Entity{
 								showPasswordInput();
 								WaitForPassword();
 							}else{
-								mMatchScene.EnterMatch(mIP,mPassword,mMatchName);
+								mMatchScene.RequestConnection(mIP,mPassword,mMatchName);
 							}
 						}else{
 							mMatchScene.setSelectedMatch(mMatchName);
@@ -161,7 +161,7 @@ public class MatchObject extends Entity{
 	}
 	
 	public Entity getMatchSprite(){
-		return this.mMatchEntity;
+		return this.mMatchSprite;
 	}
 	// ===========================================================
 	// Methods
@@ -217,7 +217,7 @@ public class MatchObject extends Entity{
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
 	        		}else{
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
-	        			mMatchScene.EnterMatch(mIP,mPassword,mMatchName);
+	        			mMatchScene.RequestConnection(mIP,mPassword,mMatchName);
 	        		}
 	        	}
 	        }

@@ -109,20 +109,24 @@ public class DataHandler {
 	
 	//MatchPlayers
 	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass){
-		return this.mUserDB.addNewMatchPlayers(pProfileID, this.mUserDB.CreateNewPlayer(pProfileID, pClass));
+		return this.mUserDB.addNewMatchPlayers(pProfileID, this.mUserDB.CreateNewPlayer(pClass));
 	}
 	
 	
 	//Player
-	public int getPlayerIDifExists(String pUserID, String pMatchName){
-		return this.mUserDB.getPlayerIDifExists(pUserID, this.mUserDB.getMatchID(pMatchName, 1));
+	public int[] getPlayerIDifExists(int pProfileID, String pMatchName){
+		return this.mUserDB.getPlayerIDifExists(pProfileID, this.mUserDB.getMatchID(pMatchName, 1));
 	}
 	
 	
+	public int getPlayerLevel(int pPlayerID){
+		return this.mUserDB.getPlayerLevel(pPlayerID);
+	}
 	
 	
-	
-	
+	public int getPlayerClass(int pPlayerID){
+        return this.mUserDB.getPlayerClass(pPlayerID);
+    }
 	
 	
 	
@@ -258,12 +262,7 @@ public class DataHandler {
 		myDB.close();
 	}
 	
-	public int getPlayerClass(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getPlayerClass(pID);
-        myDB.close();
-        return myReturn;
-    }
+
 	
 	//spell
 	public String getSpellName(int pID){
