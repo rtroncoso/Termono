@@ -35,7 +35,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	
     static final String tPlayer = "Player";
     	static final String fPlayerID = "PlayerID";
-    	static final String fPlayerProfileID = "ProfileID";
+    	static final String fPlayerLevel = "Level";
     	static final String fPlayerPosition = "Position";
     	static final String fPlayerClass = "Class";
     	
@@ -66,6 +66,8 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    static final String fModifiersIntelligence = "Intelligence";
 	    static final String fModifiersPower = "Power";
 	    static final String fModifiersDefense = "Defense";
+	    static final String fModifiersCurrentHP = "HP";
+	    static final String fModifiersCurrentMana = "Mana";
 	    //PlayerID
 	    
     static final String tSpellBook = "SpellBook";
@@ -119,7 +121,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
     			fPlayerID+" INTEGER PRIMARY KEY , "+
-    			fPlayerProfileID+" INTEGER , "+
+    			fPlayerLevel+" INTEGER , "+
     			fPlayerPosition +" INTEGER , "+
     			fPlayerClass +" INTEGER)" 
                 );  
@@ -131,7 +133,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	
 	    db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventoryItem+" ("+
 	    		fInventoryItemID+" INTEGER PRIMARY KEY , "+
-        		fInventoryID+"INTEGER , "+
+        		fInventoryID+" INTEGER , "+
         		fInventoryItemAmount+" INTEGER, "+
         		fInventoryIsItemEquipped+" INTEGER , "+//boolean
         		fItemID+" INTEGER)" //conectado a la estatica
@@ -139,7 +141,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 	     
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttributes+" ("+
     			fAttributesID+" INTEGER PRIMARY KEY , "+
-    			fAttributesEndurance+"INTEGER , "+
+    			fAttributesEndurance+" INTEGER , "+
     			fAttributesIntelligence+" INTEGER ,"+
     			fAttributesPower+" INTEGER ,"+
     			fAttributesDefense+" INTEGER ,"+
@@ -148,26 +150,28 @@ public class UserDatabase extends SQLiteOpenHelper {
 
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tModifiers+" ("+
     			fModifiersID+" INTEGER PRIMARY KEY , "+
-    			fModifiersHitPoints+"INTEGER , "+
+    			fModifiersHitPoints+" INTEGER , "+
     			fModifiersManaPoints+" INTEGER ,"+
     			fModifiersEndurance+" INTEGER ,"+
     			fModifiersIntelligence+" INTEGER ,"+
     			fModifiersPower+" INTEGER ,"+
     			fModifiersDefense+" INTEGER ,"+
+    			fModifiersCurrentHP+" INTEGER ,"+
+    			fModifiersCurrentMana+" INTEGER ,"+
 	     		fPlayerID+" INTEGER)"
 	             );	     
 	    
 		 
 		 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBook+" ("+
 				fSpellBookID+" INTEGER PRIMARY KEY , "+
-				fPlayerID+"INTEGER)"
+				fPlayerID+" INTEGER)"
                  );			    
 
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBookSpell+" ("+
     			fSpellBookSpellID+" INTEGER PRIMARY KEY , "+
     			fSpellBookID +" INTEGER , "+
     			fSpellBookSpellLevel +" INTEGER , "+
-    			fSpellID +"INTEGER)" //conectado a la estatica
+    			fSpellID +" INTEGER)" //conectado a la estatica
                 );  	    	
 				 
 		 
@@ -380,9 +384,8 @@ public class UserDatabase extends SQLiteOpenHelper {
     }
     
     //Player
-    public int CreateNewPlayer(int pProfileID,int pClass){
+    public int CreateNewPlayer(int pClass){
 	  	  ContentValues cv = new ContentValues();
-	      cv.put(fPlayerProfileID,pProfileID);
 	      cv.put(fPlayerClass,pClass);
 	      this.getWritableDatabase().insert(tPlayer, fPlayerID, cv);
 	      Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerID+" from "+tPlayer+" order by "+fPlayerID+" desc limit 1", null);
@@ -394,20 +397,42 @@ public class UserDatabase extends SQLiteOpenHelper {
 	      return myAnswer;//devuelve el ID del player recien creado
     }
     
-    public int getPlayerIDifExists(String pUserID, int pMatchID){
-    	//Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+tPlayer+"."+fPlayerID+" FROM "+ tProfile+","+tMatchProfile+","+tMatch+","+tMatchPlayers+","+tPlayer +" ON " + tProfile+"."+fUserID+" =? and "+tProfile+"."+fProfileID+" = "+tMatchProfile+"."+fProfileID+" and "+tMatchProfile+"."+fMatchID+" = "+tMatch+"."+fMatchID+" and "+tMatch+"."+fMatchID+" = "+String.valueOf(pMatchID)+" and "+tMatch+"."+fMatchID+" = "+tMatchPlayers+"."+fMatchID+" and "+tMatchPlayers+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tProfile+"."+fProfileID+" = "+tPlayer+"."+fProfileID,new String[]{pUserID});
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+tPlayer+"."+fPlayerID+" FROM "+ tProfile+","+tMatchPlayers+","+tPlayer +" ON " + tProfile+"."+fUserID+" =? and "+tProfile+"."+fProfileID+" = "+tPlayer+"."+fProfileID+" and "+tMatchPlayers+"."+fMatchID+" = "+String.valueOf(pMatchID)+" and "+tMatchPlayers+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID,new String[]{pUserID});
-	    int count = myCursor.getCount();
+    public int[] getPlayerIDifExists(int pProfileID, int pMatchID){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+tPlayer+"."+fPlayerID+" FROM "+ tProfile+","+tMatchProfile+","+tMatch+","+tMatchPlayers+","+tPlayer +" ON " + tProfile+"."+fProfileID+" =? and "+tProfile+"."+fProfileID+" = "+tMatchProfile+"."+fProfileID+" and "+tMatchProfile+"."+fMatchID+" = "+tMatch+"."+fMatchID+" and "+tMatch+"."+fMatchID+" = "+String.valueOf(pMatchID)+" and "+tMatch+"."+fMatchID+" = "+tMatchPlayers+"."+fMatchID+" and "+tMatchPlayers+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID,new String[]{String.valueOf(pProfileID)});
+    	int count = myCursor.getCount();
 	    if(count>0){
-			  myCursor.moveToFirst();
-			  int index = myCursor.getColumnIndex(fPlayerID);
-			  int myAnswer = myCursor.getInt(index);
-			  myCursor.close();
-			  this.close();
-			  return myAnswer;
+	       	 int myAnswer[] = new int[myCursor.getCount()];
+	       	 int index = myCursor.getColumnIndex(fPlayerID);
+	       	 for(int i = 0; i < myCursor.getCount(); i++){
+	       		myCursor.moveToPosition(i);
+	       		myAnswer[i] = myCursor.getInt(index);
+	       	 }
+			 myCursor.close();
+			 this.close();
+			 return myAnswer;
 	    }else{
-	    	return 0;
+	    	return new int[]{};
 	    }
     }
+    
+    public int getPlayerLevel(int pPlayerID){
+      Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerLevel+" from "+tPlayer+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
+	  myCursor.moveToFirst();
+	  int index = myCursor.getColumnIndex(fPlayerLevel);
+	  int myAnswer = myCursor.getInt(index);
+	  myCursor.close();
+      this.close();
+      return myAnswer;
+    }
+    
+    public int getPlayerClass(int pPlayerID){
+   	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerClass+" from "+tPlayer+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
+   	  myCursor.moveToFirst();
+	  int index = myCursor.getColumnIndex(fPlayerClass);
+	  int myAnswer = myCursor.getInt(index);
+	  myCursor.close();
+      this.close();
+      return myAnswer;
+   }
     
 }

@@ -34,9 +34,17 @@ public class BooleanMessage{
 		this.mPositive = positivebutton;
 		this.mNegative = negativebutton;
 		this.mContext = context;
-		showMessage();
+		showMessage(false);
 	}
 	
+	public BooleanMessage(final String title, final String message,final String positivebutton,BaseGameActivity context) {
+		this.mMessage = message;
+		this.mTitle = title;
+		this.mPositive = positivebutton;
+		this.mNegative = null;
+		this.mContext = context;
+		showMessage(true);
+	}	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -48,7 +56,7 @@ public class BooleanMessage{
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void showMessage() {
+	public void showMessage(final boolean pOkOnly) {
 		mContext.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -64,13 +72,15 @@ public class BooleanMessage{
 					}
 				});
 
-				alert.setNegativeButton(mNegative, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-						onCancel();
-					}
-				});
-
+				if(!pOkOnly){
+					alert.setNegativeButton(mNegative, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int whichButton) {
+							onCancel();
+						}
+					});
+				}
+				
 				final AlertDialog dialog = alert.create();
 				dialog.setOnShowListener(new OnShowListener() {
 					@Override

@@ -16,13 +16,17 @@ import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 import android.R.bool;
 import android.util.Log;
 
+import com.quest.data.MatchData;
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
+import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageFlags;
+import com.quest.objects.BooleanMessage;
+import com.quest.scenes.MatchScene;
 
 public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags {
 	// ===========================================================
@@ -39,21 +43,41 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 	// ===========================================================
 		private void initMessagePool() {
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class);
-			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST, ClientMessageConnectionRequest.class);		
-		}
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST, ClientMessageConnectionRequest.class);
+			}
 	
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
 			super(new SocketConnection(new Socket(pServerIP, SERVER_PORT)), pSocketConnectionServerConnectorListener);
-	
+			
+			
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE, ServerMessageConnectionAcknowledge.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					final ServerMessageConnectionAcknowledge connectionPungServerMessage = (ServerMessageConnectionAcknowledge) pServerMessage;
-					final long roundtripMilliseconds = connectionPungServerMessage.getTimestamp();
-					Log.d("Quest!","CLIENT Acknowledge: " + roundtripMilliseconds);					
+					final ServerMessageConnectionAcknowledge serverMessageConnectionAcknowledge= (ServerMessageConnectionAcknowledge) pServerMessage;
+					Game.setMatchData(new MatchData(serverMessageConnectionAcknowledge.getMatchID(),serverMessageConnectionAcknowledge.getMatchName()));
+					Game.getSceneManager().getMatchScene().ClearTouchAreas();
+					Game.getSceneManager().getMatchScene().LoadMatchEntity(3);
 				}
 			});
 	
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_REFUSE, ServerMessageConnectionRefuse.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageConnectionRefuse serverMessageConnectionRefuse = (ServerMessageConnectionRefuse) pServerMessage;
+					if(serverMessageConnectionRefuse.getReason()){
+						new BooleanMessage(serverMessageConnectionRefuse.getMatchName(), "Wrong password provided.","Ok", Game.getInstance()){};
+					}else{
+						new BooleanMessage(serverMessageConnectionRefuse.getMatchName(), "You have been kicked.","Ok", Game.getInstance()){
+							@Override
+							public void onOK() {
+								//hacer que no pueda entrar
+								super.onOK();
+							}						
+						};
+					}
+				}
+			});
+			
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, ConnectionPongServerMessage.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
@@ -62,6 +86,10 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					Log.d("Quest!","CLIENT Ping: " + roundtripMilliseconds + "ms");					
 				}
 			});
+			
+			
+			
+			
 			/*
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class, new IServerMessageHandler<SocketConnection>() {
 				@Override

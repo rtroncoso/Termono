@@ -1,21 +1,12 @@
-package com.quest.network.messages.server;
+package com.quest.network.messages.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
+import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
 
-import android.util.Log;
-
-/**
- * (c) 2010 Nicolas Gramlich 
- * (c) 2011 Zynga Inc.
- * 
- * @author Nicolas Gramlich
- * @since 12:23:20 - 21.05.2011
- */
-public class ServerMessageConnectionAcknowledge extends ServerMessage implements ServerMessageFlags {
+public class ClientMessageCharacterCreate extends ClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -23,40 +14,59 @@ public class ServerMessageConnectionAcknowledge extends ServerMessage implements
 	// ===========================================================
 	// Fields
 	// ===========================================================
+
+	private String mUserID;
+	private String mUsername;
+	private String mPassword;
 	private String mMatchName;
-	private int mMatchID;//La ID que tiene el server de la match
-	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	@Deprecated
-	public ServerMessageConnectionAcknowledge() {
-
+	public ClientMessageCharacterCreate() {
 	}
 
-	public ServerMessageConnectionAcknowledge(final String pMatchName, final int pMatchID) {
-		this.setMatchName(pMatchName);
-		this.setMatchID(pMatchID);
+	public ClientMessageCharacterCreate(final String pUserID,final String pUsername,final String pPassword,final String pMatchName) {
+		mUserID = pUserID;
+		mUsername = pUsername;
+		mPassword = pPassword;
+		mMatchName = pMatchName;
 	}
-
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public String getMatchName() {
-		return mMatchName;
+	
+	public String getUserID() {
+		return this.mUserID;
 	}
 
-	public void setMatchName(String mMatchName) {
-		this.mMatchName = mMatchName;
+	public void setUserID(final String pUserID) {
+		this.mUserID = pUserID;
+	}
+	
+	public String getUsername() {
+		return this.mUsername;
 	}
 
-	public int getMatchID() {
-		return mMatchID;
+	public void setUsername(final String pUsername) {
+		this.mUsername = pUsername;
+	}
+	
+	public String getPassword() {
+		return this.mPassword;
 	}
 
-	public void setMatchID(int mMatchID) {
-		this.mMatchID = mMatchID;
+	public void setPassword(final String pPassword) {
+		this.mPassword = pPassword;
+	}
+	
+	public String getMatchName(){
+		return this.mMatchName;
+	}
+	
+	public void setMatchName(final String pMatchName){
+		this.mMatchName = pMatchName;
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -64,18 +74,22 @@ public class ServerMessageConnectionAcknowledge extends ServerMessage implements
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE;
+		return FLAG_MESSAGE_CLIENT_CHARACTER_CREATE;
 	}
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
-		this.mMatchID = pDataInputStream.readInt();
-		this.mMatchName = pDataInputStream.readUTF();
+		 this.mUserID = pDataInputStream.readUTF();
+		 this.mUsername = pDataInputStream.readUTF();
+		 this.mPassword = pDataInputStream.readUTF();
+		 this.mMatchName = pDataInputStream.readUTF();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		pDataOutputStream.writeInt(this.mMatchID);
+		pDataOutputStream.writeUTF(this.mUserID);
+		pDataOutputStream.writeUTF(this.mUsername);
+		pDataOutputStream.writeUTF(this.mPassword);
 		pDataOutputStream.writeUTF(this.mMatchName);
 	}
 

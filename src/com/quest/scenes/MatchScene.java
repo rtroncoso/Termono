@@ -1,6 +1,5 @@
 package com.quest.scenes;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -37,14 +36,14 @@ import android.view.Gravity;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.quest.data.MatchData;
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
 import com.quest.network.QServer;
-import com.quest.network.messages.client.ClientMessageConnectionRequest;
-import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.objects.BooleanMessage;
+import com.quest.objects.CharacterObject;
 import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
 
@@ -85,7 +84,6 @@ public class MatchScene extends Scene {
 	private Sprite mOkSprite;
 	private Sprite mCancelSprite;
 	private Entity mDiscoveredMatchEntity;
-	private DataHandler mDataHandler;	
 	private ArrayList<MatchObject> mMatchList;
 	private int LastUI;//Donde estuvo, own matches = 0, matches = 1
 	private boolean HasMatches;
@@ -112,10 +110,13 @@ public class MatchScene extends Scene {
 	private Entity mLoadedOwnMatchesEntity;
 	private ArrayList<MatchObject> mOwnMatchesList;
 	
-	//New Match	
-	private Entity mNewMatchEntity;
+	//Load Match	
+	private Entity mLoadMatchEntity;
 	private BitmapTextureAtlas mNewMatchTextureAtlas;
-	private Sprite mLobbyNewMatchSprite;
+	private Sprite mLoadMatchTopLeftSprite;
+	private Sprite mLoadMatchTopRightSprite;
+	private Sprite mLoadMatchBottomLeftSprite;
+	private Sprite mLoadMatchBottomRightSprite;
 	private TiledTextureRegion mTiledTextureRegion;
 	private String mMatchName;
 	private String mMatchPassword;
@@ -123,18 +124,21 @@ public class MatchScene extends Scene {
 	private InputText mMatchPasswordInput;
 	private ITextureRegion mPreviousTextureRegion;
 	private ITextureRegion mNextTextureRegion;
-	private Sprite mPreviousSprite;
-	private Sprite mNextSprite;
 	private int Step;
 	private ITextureRegion mOrcTextureRegion;
 	private ITextureRegion mPaladinTextureRegion;
 	private ITextureRegion mMageTextureRegion;
 	private ITextureRegion mArcherTextureRegion;
+	private boolean mCharacterCreation = false;
 	private Sprite mOrcSprite;
 	private Sprite mPaladinSprite;
 	private Sprite mMageSprite;
 	private Sprite mArcherSprite;
 	private String mMessage[];
+	
+	private int mSelectedCharacterID=0;	
+	private ArrayList<CharacterObject> mCharacterList;
+	private Entity mCharactersEntity;
 	
 	//Direct Connect
 	private Entity mDirectEntity;
@@ -149,7 +153,8 @@ public class MatchScene extends Scene {
 
 	
 	private SocketServerDiscoveryServer<MatchesDiscoveryData> mSocketServerDiscoveryServer;
-	private SocketServerDiscoveryClient<MatchesDiscoveryData> mSocketServerDiscoveryClient;	
+	private SocketServerDiscoveryClient<MatchesDiscoveryData> mSocketServerDiscoveryClient;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -157,11 +162,12 @@ public class MatchScene extends Scene {
 		this.mScrollEntity = new Entity(0,0);
 		this.mMatchesEntity = new Entity(0,0);
 		this.mOwnMatchesEntity = new Entity(0,0);
-		this.mNewMatchEntity = new Entity(0,0);
+		this.mLoadMatchEntity = new Entity(0,0);
 		this.mLobbyEntity = new Entity(0,0);
 		this.mDirectEntity = new Entity(0,0);
 		this.mDiscoveredMatchEntity = new Entity(125,61);
 		this.mLoadedOwnMatchesEntity = new Entity(125,61);
+		this.mCharactersEntity = new Entity((Game.getSceneManager().getDisplay().getCameraHeight()/2)-30,(Game.getSceneManager().getDisplay().getCameraWidth()/2));
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2036,2036, TextureOptions.BILINEAR);
 		this.mScrollBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "scroll.png", 0, 0);
@@ -257,7 +263,7 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						MatchScene.this.clearTouchAreas();
-						MatchScene.this.SwitchEntity(LoadNewMatchEntity(false));
+						MatchScene.this.SwitchEntity(LoadMatchEntity(1));
 					}
 					break;
 				}
@@ -388,7 +394,7 @@ public class MatchScene extends Scene {
 					if(mGrabbed) {
 						mGrabbed = false;
 						MatchScene.this.clearTouchAreas();
-						MatchScene.this.SwitchEntity(LoadNewMatchEntity(false));
+						MatchScene.this.SwitchEntity(LoadMatchEntity(1));
 					}
 					break;
 				}
@@ -447,11 +453,13 @@ public class MatchScene extends Scene {
 							mGrabbed = false;
 							if(!MatchScene.this.mSelectedMatchName.equals("")){
 								MatchScene.this.clearTouchAreas();
-								if(AVD_DEBUGGING){//sacar despues
-								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,"00:00:00:00:00:00"));
+								/*if(AVD_DEBUGGING){//sacar despues
+									SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,"00:00:00:00:00:00"));
 								}else{
-								SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,Game.getUserID()));
-								}
+									SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mSelectedMatchName,Game.getUserID()));
+								}*/
+								Game.setMatchData(new MatchData(Game.getDataHandler().getMatchID(MatchScene.this.mSelectedMatchName), MatchScene.this.mSelectedMatchName));
+								SwitchEntity(LoadMatchEntity(2));
 							}
 						}
 						break;
@@ -617,55 +625,57 @@ public class MatchScene extends Scene {
 	}
 	
 	
-	
-	public Entity LoadNewMatchEntity(final boolean pJoining){
-		this.mNewMatchEntity.detachChildren();
+	//Action 1 = new match / 2 = Load Match / 3 = Join Match
+	public Entity LoadMatchEntity(final int pAction){
+		this.mLoadMatchEntity.detachChildren();
 		Step = 0;
-		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			boolean mGrabbed = false;
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case TouchEvent.ACTION_DOWN:
-					mGrabbed = true;					
-					break;
-				case TouchEvent.ACTION_UP:
-					if(mGrabbed) {
-						mGrabbed = false;
-						MatchScene.this.clearTouchAreas();
-						if(LastUI==0){
-							ShowLowerBar(true);
-							MatchScene.this.SwitchEntity(LoadOwnMatchesEntity());
-						}else{
-							ShowLowerBar(true);
-							MatchScene.this.SwitchEntity(LoadMatchesEntity());
-						}
-					}
-					break;
-				}
-			return true;	
-			}
-		};
-		this.mNewMatchEntity.attachChild(this.mBackSprite);
-		this.registerTouchArea(mBackSprite);
 		
-		
-		this.mLobbyNewMatchSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			boolean mGrabbed = false;
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case TouchEvent.ACTION_DOWN:
-					if(MatchScene.this.mLobbyNewMatchSprite.isVisible()){
-						mGrabbed = true;				
-					}
-					break;
-				case TouchEvent.ACTION_UP:
-					if(MatchScene.this.mLobbyNewMatchSprite.isVisible()){
+		switch (pAction) {
+		case 1://Creando un nuevo match
+
+			this.mLoadMatchTopLeftSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
+						break;
+					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
 							MatchScene.this.clearTouchAreas();
-							if(!pJoining){
+							if(LastUI==0){
+								ShowLowerBar(true);
+								MatchScene.this.SwitchEntity(LoadOwnMatchesEntity());
+							}else{
+								ShowLowerBar(true);
+								MatchScene.this.SwitchEntity(LoadMatchesEntity());
+							}
+						}
+						break;
+					}
+				return true;	
+				}
+			};
+			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopLeftSprite);
+			this.registerTouchArea(mLoadMatchTopLeftSprite);
+			
+			this.mLoadMatchTopRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						if(MatchScene.this.mLoadMatchTopRightSprite.isVisible()){
+							mGrabbed = true;				
+						}
+						break;
+					case TouchEvent.ACTION_UP:
+						if(MatchScene.this.mLoadMatchTopRightSprite.isVisible()){
+							if(mGrabbed) {
+								mGrabbed = false;
+								MatchScene.this.clearTouchAreas();
 								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
 								int playerid = Game.getDataHandler().AddNewPlayer(matchid, 1, Integer.parseInt(mMessage[0]));
 								//atributos
@@ -674,104 +684,344 @@ public class MatchScene extends Scene {
 								}else{
 									SwitchEntity(LoadLobbyEntity(false, MatchScene.this.mMatchNameInput.getText(),Game.getUserID()));
 								}
-							}else{
-								//mandar mensaje con el chara elegido
-								SwitchEntity(MatchScene.this.LoadLobbyEntity(true,null,null));
 							}
 						}
+						break;
 					}
-					break;
+				return true;	
 				}
-			return true;	
-			}
-		};
-		this.mNewMatchEntity.attachChild(this.mLobbyNewMatchSprite);
-		this.registerTouchArea(this.mLobbyNewMatchSprite);
-		
-		//Previous
-		this.mPreviousSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-		      boolean mGrabbed = false;
-		      @Override
-		      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-		        switch(pSceneTouchEvent.getAction()) {
-		        case TouchEvent.ACTION_DOWN:
-		          if(MatchScene.this.mPreviousSprite.isVisible()){
-		            mGrabbed = true; 
-		          }
-		          break;
-		        case TouchEvent.ACTION_UP:
-		          if(MatchScene.this.mPreviousSprite.isVisible()){
-		            if(mGrabbed) {
-		              mGrabbed = false;
-		              Step-=1;
-		              MatchScene.this.StepChange(false,false,pJoining);
-		            }
-		          }
-		          break;
-		        }
-		        return true;  
-		      }
-		    };
-		    this.mNewMatchEntity.attachChild(this.mPreviousSprite);
-		    this.registerTouchArea(this.mPreviousSprite);
+			};
+			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopRightSprite);
+			this.registerTouchArea(this.mLoadMatchTopRightSprite);
 
-	
+			
+			//Previous
+			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			      boolean mGrabbed = false;
+			      @Override
+			      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			        switch(pSceneTouchEvent.getAction()) {
+			        case TouchEvent.ACTION_DOWN:
+			          if(MatchScene.this.mLoadMatchBottomLeftSprite.isVisible()){
+			            mGrabbed = true; 
+			          }
+			          break;
+			        case TouchEvent.ACTION_UP:
+			          if(MatchScene.this.mLoadMatchBottomLeftSprite.isVisible()){
+			            if(mGrabbed) {
+			              mGrabbed = false;
+			              Step-=1;
+			              MatchScene.this.StepChange(false,false,1);
+			            }
+			          }
+			          break;
+			        }
+			        return true;  
+			      }
+			    };
+		    this.mLoadMatchEntity.attachChild(this.mLoadMatchBottomLeftSprite);
+		    this.registerTouchArea(this.mLoadMatchBottomLeftSprite);
+
+
 	        //Next
-	        this.mNextSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-	          boolean mGrabbed = false;
-	          @Override
-	          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-	            switch(pSceneTouchEvent.getAction()) {
-	            case TouchEvent.ACTION_DOWN:
-	              if(MatchScene.this.mNextSprite.isVisible()){
-	                mGrabbed = true;        
-	              }
-	              break;
-	            case TouchEvent.ACTION_UP:
-	              if(MatchScene.this.mNextSprite.isVisible()){
-	                if(mGrabbed) {
-	                  mGrabbed = false;
-	                  if(Step==0 && !pJoining){
-						if(MatchScene.this.mMatchNameInput.getText().equals(null)||MatchScene.this.mMatchNameInput.getText().equals("")){
-							MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(250, 350, "Please enter a valid name for the match", "MatchScene;Alert"));
-						}else{
-							if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText(),1)){
-								Game.getTextHelper().ClearText("MatchScene;Alert");
-								Game.getTextHelper().ClearText("MatchScene;Alert2");
-								Step+=1;
-								MatchScene.this.StepChange(false,true,pJoining);
+	        this.mLoadMatchBottomRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		          boolean mGrabbed = false;
+		          @Override
+		          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+		            switch(pSceneTouchEvent.getAction()) {
+		            case TouchEvent.ACTION_DOWN:
+		              if(MatchScene.this.mLoadMatchBottomRightSprite.isVisible()){
+		                mGrabbed = true;        
+		              }
+		              break;
+		            case TouchEvent.ACTION_UP:
+		              if(MatchScene.this.mLoadMatchBottomRightSprite.isVisible()){
+		                if(mGrabbed) {
+		                  mGrabbed = false;
+		                  if(Step==0){
+							if(MatchScene.this.mMatchNameInput.getText().equals(null)||MatchScene.this.mMatchNameInput.getText().equals("")){
+								MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(250, 350, "Please enter a valid name for the match", "MatchScene;Alert"));
 							}else{
-								MatchScene.this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(200, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
+								if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText(),1)){
+									Game.getTextHelper().ClearText("MatchScene;Alert");
+									Game.getTextHelper().ClearText("MatchScene;Alert2");
+									Step+=1;
+									MatchScene.this.StepChange(false,true,1);
+								}else{
+									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(200, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
+								}
 							}
-						}
-	                  }else{
-	                  Step+=1;
-	                  MatchScene.this.StepChange(false,true,pJoining);
-	                  }
-	                }
-	              }
-	              break;
-	            }
-	            return true;  
-	          }
-	        };
-	        this.mNewMatchEntity.attachChild(this.mNextSprite);
-	        this.registerTouchArea(this.mNextSprite);
+		                  }else{
+		                  Step+=1;
+		                  MatchScene.this.StepChange(false,true,1);
+		                  }
+		                }
+		              }
+		              break;
+		            }
+		            return true;  
+		          }
+		        };
+	        this.mLoadMatchEntity.attachChild(this.mLoadMatchBottomRightSprite);
+	        this.registerTouchArea(this.mLoadMatchBottomRightSprite);
 
+			this.StepChange(true,true,pAction);
+			
+			break;
+
+		case 2://Loadeando un match
+			
+
+			//Back
+			this.mLoadMatchTopLeftSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
+						break;
+					case TouchEvent.ACTION_UP:
+						if(mGrabbed) {
+							mGrabbed = false;
+							MatchScene.this.clearTouchAreas();
+							ShowLowerBar(true);
+							MatchScene.this.SwitchEntity(LoadOwnMatchesEntity());
+						}
+						break;
+					}
+				return true;	
+				}
+			};
+			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopLeftSprite);
+			this.registerTouchArea(mLoadMatchTopLeftSprite);
+			
+			//Create new character
+			this.mLoadMatchTopRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						if(MatchScene.this.mLoadMatchTopRightSprite.isVisible()){
+							mGrabbed = true;				
+						}
+						break;
+					case TouchEvent.ACTION_UP:
+							if(mGrabbed) {
+								MatchScene.this.CharacterCreation(true, 0, 3);
+								mGrabbed = false;
+							}
+						break;
+					}
+				return true;	
+				}
+			};
+			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopRightSprite);
+			this.registerTouchArea(this.mLoadMatchTopRightSprite);
+			
+			//Delete Character
+			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			      boolean mGrabbed = false;
+			      @Override
+			      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			        switch(pSceneTouchEvent.getAction()) {
+			        case TouchEvent.ACTION_DOWN:
+			            mGrabbed = true; 
+			          break;
+			        case TouchEvent.ACTION_UP:
+			            if(mGrabbed) {
+			              mGrabbed = false;
+			              if(MatchScene.this.mSelectedCharacterID!=0){
+			            	  //Borrar chara
+			              }
+			            }
+			          break;
+			        }
+			        return true;  
+			      }
+			    };
+		    this.mLoadMatchEntity.attachChild(this.mLoadMatchBottomLeftSprite);
+		    this.registerTouchArea(this.mLoadMatchBottomLeftSprite);
+
+
+	        //Choose Character
+	        this.mLoadMatchBottomRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		          boolean mGrabbed = false;
+		          @Override
+		          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+		            switch(pSceneTouchEvent.getAction()) {
+		            case TouchEvent.ACTION_DOWN:
+		                mGrabbed = true;        
+		                break;
+		            case TouchEvent.ACTION_UP:
+		                if(mGrabbed) {
+		                  mGrabbed = false;
+		                  if(MatchScene.this.mSelectedCharacterID!=0){
+			            	  //Iniciar lobby con el char elegido
+			              }
+		                }
+		              break;
+		            }
+		            return true;  
+		          }
+		        };
+	        this.mLoadMatchEntity.attachChild(this.mLoadMatchBottomRightSprite);
+	        this.registerTouchArea(this.mLoadMatchBottomRightSprite);
+
+			//Load characters
+	        this.mCharactersEntity.setX(61);
+			this.mLoadMatchEntity.attachChild(LoadOwnCharacters());
+			
+			
+			break;
+			
+		case 3://Conectandome a un match
+
+			//Back
+			this.mLoadMatchTopLeftSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						mGrabbed = true;					
+						break;
+					case TouchEvent.ACTION_UP:
+						if(mGrabbed) {
+							mGrabbed = false;
+							//mandar mensaje de desconexion
+							Game.getClient().terminate();
+							MatchScene.this.clearTouchAreas();
+							ShowLowerBar(true);
+							MatchScene.this.SwitchEntity(LoadMatchesEntity());
+						}
+						break;
+					}
+				return true;	
+				}
+			};
+			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopLeftSprite);
+			this.registerTouchArea(mLoadMatchTopLeftSprite);
+			
+			//Create new character
+			this.mLoadMatchTopRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				boolean mGrabbed = false;
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					switch(pSceneTouchEvent.getAction()) {
+					case TouchEvent.ACTION_DOWN:
+						if(MatchScene.this.mLoadMatchTopRightSprite.isVisible()){
+							mGrabbed = true;				
+						}
+						break;
+					case TouchEvent.ACTION_UP:
+							if(mGrabbed) {
+								MatchScene.this.CharacterCreation(true, 0, 3);
+								mGrabbed = false;
+							}
+						break;
+					}
+				return true;	
+				}
+			};
+			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopRightSprite);
+			this.registerTouchArea(this.mLoadMatchTopRightSprite);
+			
+			
+			//Delete Character
+			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			      boolean mGrabbed = false;
+			      @Override
+			      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			        switch(pSceneTouchEvent.getAction()) {
+			        case TouchEvent.ACTION_DOWN:
+			            mGrabbed = true; 
+			          break;
+			        case TouchEvent.ACTION_UP:
+			            if(mGrabbed) {
+			              mGrabbed = false;
+			              if(MatchScene.this.mSelectedCharacterID!=0){
+			            	  //Mandar mensaje de borrar chara
+			              }
+			            }
+			          break;
+			        }
+			        return true;  
+			      }
+			  };
+		    this.mLoadMatchEntity.attachChild(this.mLoadMatchBottomLeftSprite);
+		    this.registerTouchArea(this.mLoadMatchBottomLeftSprite);
+
+
+	        //Choose Character
+	        this.mLoadMatchBottomRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		          boolean mGrabbed = false;
+		          @Override
+		          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+		            switch(pSceneTouchEvent.getAction()) {
+		            case TouchEvent.ACTION_DOWN:
+		                mGrabbed = true;        
+		                break;
+		            case TouchEvent.ACTION_UP:
+		                if(mGrabbed) {
+		                  mGrabbed = false;
+		                  if(MatchScene.this.mSelectedCharacterID!=0){
+			            	  //Mandar mensaje de con el char elegido chara
+			              }
+		                }
+		              break;
+		            }
+		            return true;  
+		          }
+		        };
+	        this.mLoadMatchEntity.attachChild(this.mLoadMatchBottomRightSprite);
+	        this.registerTouchArea(this.mLoadMatchBottomRightSprite);
+
+			//Wait for characters message
+			
+			break;
+		}
 		
-			this.StepChange(true,true,pJoining);
-			return this.mNewMatchEntity;
+		
+		
+		return this.mLoadMatchEntity;
 	}
 	
-		private void StepChange(boolean pStart,boolean nextstep,boolean pJoining){
+	private Entity LoadOwnCharacters(){
+		int[] IDArray = Game.getDataHandler().getPlayerIDifExists(1, Game.getMatchData().getMatchName());
+		if(IDArray.length>0){	
+			for(int i = 0;i<IDArray.length;i++){
+				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(IDArray[i]),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]), Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));
+			}
+		}else{//No tiene chara pido que se haga uno
+			this.mCharactersEntity.attachChild(Game.getTextHelper().NewText((Game.getSceneManager().getDisplay().getCameraWidth()/2)-200, (Game.getSceneManager().getDisplay().getCameraHeight()/2)-15, "You have no characters in this match, please create one.", "MatchScene;NoCharasAlert"));
+		}
+		return this.mLoadedOwnMatchesEntity;
+	}
+	
+	private ITextureRegion LoadCharacterTextureRegion(int pPlayerID){//Pasar a una clase bien hecha
+		switch (Game.getDataHandler().getPlayerClass(pPlayerID)) {
+		case 1:
+			return this.mPaladinTextureRegion; 
+		case 2:
+			return this.mMageTextureRegion;
+		case 3:
+			return this.mOrcTextureRegion;
+		default:
+			return this.mArcherTextureRegion;
+		}
+	}
+	
+		private void StepChange(boolean pStart,boolean nextstep,int pAction){
 		    if(pStart){
-		      this.mLobbyNewMatchSprite.setVisible(false);
+		      this.mLoadMatchTopRightSprite.setVisible(false);
 		      this.mMessage = new String[3];
-		      this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
-		      this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
-		      this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
-		      this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText3"));
-		      this.mNewMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText4"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText3"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText4"));
 		      Game.getTextHelper().ClearText("MatchScene;StepText1");
 		      Game.getTextHelper().ClearText("MatchScene;StepText2");
 		      Game.getTextHelper().ClearText("MatchScene;StepText3");
@@ -779,376 +1029,249 @@ public class MatchScene extends Scene {
 		    }
 		    this.clearTouchAreas();
 		    RegisterNewMatchTouchAreas();
-		    if(!pJoining){
 		    switch (Step) {
-		    case 0:
-		      this.mPreviousSprite.setVisible(false);		
-		      this.mNextSprite.setVisible(true);
-		      if(nextstep){
-				this.mMatchNameInput = Game.getTextHelper().NewInputText(250, 100, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
-				this.mNewMatchEntity.attachChild(mMatchNameInput);
-				this.mMatchPasswordInput = Game.getTextHelper().NewInputText(290, 150, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
-				this.mNewMatchEntity.attachChild(mMatchPasswordInput);
-		      }
-		      
-				Game.getTextHelper().ChangeText("Follow the instructions to create a new match", "MatchScene;StepText", 100, 50);	
-				Game.getTextHelper().ChangeText("Match name:", "MatchScene;StepText1",100, 100);
-				Game.getTextHelper().ChangeText("Match password:", "MatchScene;StepText2",100, 150);
-				this.registerTouchArea(mMatchNameInput);
-				this.registerTouchArea(mMatchPasswordInput);
-				
-			  if(!nextstep){
-				this.mMatchNameInput.setVisible(true);
-				this.mMatchPasswordInput.setVisible(true);
-				this.mNewMatchEntity.detachChild(mPaladinSprite);
-			  	this.mNewMatchEntity.detachChild(mMageSprite);
-				this.mNewMatchEntity.detachChild(mOrcSprite);
-				this.mNewMatchEntity.detachChild(mArcherSprite);
-				Game.getTextHelper().ClearText("MatchScene;StepText3");
-				Game.getTextHelper().ClearText("MatchScene;StepText4");
-			  }
-		      break; 
-		      
-		    case 1:
-		      this.mPreviousSprite.setVisible(true);
-	    	  if(nextstep){
-					this.mMatchNameInput.setVisible(false);
-					this.mMatchPasswordInput.setVisible(false);	 
-					
-			    	  this.mPaladinSprite = new Sprite(100, 250, this.mPaladinTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-				          boolean mGrabbed = false;
-				          @Override
-				          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				            switch(pSceneTouchEvent.getAction()) {
-				            case TouchEvent.ACTION_DOWN:
-				                mGrabbed = true;   
-				              break;
-				            case TouchEvent.ACTION_UP:
-				                if(mGrabbed) {
-				                  mGrabbed = false;
-				                  mPaladinSprite.setAlpha(1f);
-				                  mArcherSprite.setAlpha(0.5f);
-				                  mOrcSprite.setAlpha(0.5f);
-				                  mMageSprite.setAlpha(0.5f);
-				                  mNextSprite.setVisible(true);
-				                  mMessage[0] = "1";
-				                }
-				              break;
-				            }
-				            return true;  
-				          }
-				        };
-				    	this.mMageSprite = new Sprite(250, 250, this.mMageTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-					          boolean mGrabbed = false;
-					          @Override
-					          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					            switch(pSceneTouchEvent.getAction()) {
-					            case TouchEvent.ACTION_DOWN:
-					                mGrabbed = true;   
-					              break;
-					            case TouchEvent.ACTION_UP:
-					                if(mGrabbed) {
-					                  mGrabbed = false;
-					                  mPaladinSprite.setAlpha(0.5f);
-					                  mArcherSprite.setAlpha(0.5f);
-					                  mOrcSprite.setAlpha(0.5f);
-					                  mMageSprite.setAlpha(1f);
-					                  mNextSprite.setVisible(true);
-					                  mMessage[0] = "2";
-					                }
-					              break;
-					            }
-					            return true;  
-					          }
-					        };
-				    	this.mOrcSprite = new Sprite(335, 246, this.mOrcTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-					          boolean mGrabbed = false;
-					          @Override
-					          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					            switch(pSceneTouchEvent.getAction()) {
-					            case TouchEvent.ACTION_DOWN:
-					                mGrabbed = true;   
-					              break;
-					            case TouchEvent.ACTION_UP:
-					                if(mGrabbed) {
-					                  mGrabbed = false;
-					                  mPaladinSprite.setAlpha(0.5f);
-					                  mArcherSprite.setAlpha(0.5f);
-					                  mOrcSprite.setAlpha(1f);
-					                  mMageSprite.setAlpha(0.5f);
-					                  mNextSprite.setVisible(true);
-					                  mMessage[0] = "3";
-					                }
-					              break;
-					            }
-					            return true;  
-					          }
-					        };
-				    	this.mArcherSprite = new Sprite(455, 250, this.mArcherTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-						          boolean mGrabbed = false;
-						          @Override
-						          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						            switch(pSceneTouchEvent.getAction()) {
-						            case TouchEvent.ACTION_DOWN:
-						                mGrabbed = true;   
-						              break;
-						            case TouchEvent.ACTION_UP:
-						                if(mGrabbed) {
-						                  mGrabbed = false;
-						                  mPaladinSprite.setAlpha(0.5f);
-						                  mArcherSprite.setAlpha(1f);
-						                  mOrcSprite.setAlpha(0.5f);
-						                  mMageSprite.setAlpha(0.5f);
-						                  mNextSprite.setVisible(true);
-						                  mMessage[0] = "4";
-						                }
-						              break;
-						            }
-						            return true;  
-						          }
-						        };
-	    	  }
-	    	  Game.getTextHelper().ChangeText("Choose your character", "MatchScene;StepText", 100, 50);
-	    	  this.mNextSprite.setVisible(false);
-	    	  Game.getTextHelper().ChangeText("Paladin", "MatchScene;StepText1",100, 300);
-	    	  Game.getTextHelper().ChangeText("Mage", "MatchScene;StepText2",250, 300);
-	    	  Game.getTextHelper().ChangeText("Orc", "MatchScene;StepText3",335, 300);
-	    	  Game.getTextHelper().ChangeText("Archer", "MatchScene;StepText4",455, 300);
-			  
-	
-			    
-				mNewMatchEntity.attachChild(mPaladinSprite);
-				mNewMatchEntity.attachChild(mMageSprite);
-				mNewMatchEntity.attachChild(mOrcSprite);
-				mNewMatchEntity.attachChild(mArcherSprite);
-				this.registerTouchArea(mPaladinSprite);
-				this.registerTouchArea(mMageSprite);
-				this.registerTouchArea(mOrcSprite);
-				this.registerTouchArea(mArcherSprite);
-				
-				if(!nextstep){
-					int a = 0;
-					if(mMessage[0].equals("Paladin"))a=0;
-					if(mMessage[0].equals("Mage"))a=1;
-					if(mMessage[0].equals("Orc"))a=2;
-					if(mMessage[0].equals("Archer"))a=3;
-					this.mPaladinSprite.setAlpha(0.5f);
-					this.mMageSprite.setAlpha(0.5f);
-					this.mOrcSprite.setAlpha(0.5f);
-					this.mArcherSprite.setAlpha(0.5f);
-					switch(a){
-					case 0:this.mPaladinSprite.setAlpha(1f);break; 
-					case 1:this.mMageSprite.setAlpha(1f);break;
-					case 2:this.mOrcSprite.setAlpha(1f);break;
-					case 3:this.mArcherSprite.setAlpha(1f);break;
-					}
-					this.mNextSprite.setVisible(true);
-				}
-		      break;
-		      
-		    case 2:
-		      this.mNextSprite.setVisible(true);  
-	      	  if(nextstep){
-				this.mNewMatchEntity.detachChild(mPaladinSprite);
-				this.mNewMatchEntity.detachChild(mMageSprite);
-	  			this.mNewMatchEntity.detachChild(mOrcSprite);
-	  			this.mNewMatchEntity.detachChild(mArcherSprite);
-	  			Game.getTextHelper().ClearText("MatchScene;StepText1");
-	  			Game.getTextHelper().ClearText("MatchScene;StepText2");
-	  			Game.getTextHelper().ClearText("MatchScene;StepText3");
-	  			Game.getTextHelper().ClearText("MatchScene;StepText4");
-		      }
-	      	  
-	      	  
-		    	  
-		      if(!nextstep){
-		    	  
-		      }
-		      this.mLobbyNewMatchSprite.setVisible(false);//el ante ultimo tiene que tener esto
-		      break;
-		    case 3:
-		      this.mNextSprite.setVisible(false);
-		      if(nextstep){
-		    	  
-		      }
-		      
-		      
-		      
-		      if(!nextstep){
-		    	  
-		      }
-		      this.mLobbyNewMatchSprite.setVisible(true);
-		      break;
-		    }
+		   		    case 0:
+		   		      this.mLoadMatchBottomLeftSprite.setVisible(false);		
+		   		      this.mLoadMatchBottomRightSprite.setVisible(true);
+		   		      if(nextstep){
+		   				this.mMatchNameInput = Game.getTextHelper().NewInputText(250, 100, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
+		   				this.mLoadMatchEntity.attachChild(mMatchNameInput);
+		   				this.mMatchPasswordInput = Game.getTextHelper().NewInputText(290, 150, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
+		   				this.mLoadMatchEntity.attachChild(mMatchPasswordInput);
+		   		      }
+		   		      
+		   				Game.getTextHelper().ChangeText("Follow the instructions to create a new match", "MatchScene;StepText", 100, 50);	
+		   				Game.getTextHelper().ChangeText("Match name:", "MatchScene;StepText1",100, 100);
+		   				Game.getTextHelper().ChangeText("Match password:", "MatchScene;StepText2",100, 150);
+		   				this.registerTouchArea(mMatchNameInput);
+		   				this.registerTouchArea(mMatchPasswordInput);
+		   				
+		   			  if(!nextstep){
+		   				this.mMatchNameInput.setVisible(true);
+		   				this.mMatchPasswordInput.setVisible(true);
+		   				this.mLoadMatchEntity.detachChild(mPaladinSprite);
+		   			  	this.mLoadMatchEntity.detachChild(mMageSprite);
+		   				this.mLoadMatchEntity.detachChild(mOrcSprite);
+		   				this.mLoadMatchEntity.detachChild(mArcherSprite);
+		   				Game.getTextHelper().ClearText("MatchScene;StepText3");
+		   				Game.getTextHelper().ClearText("MatchScene;StepText4");
+		   			  }
+		   		      break; 
+		   		      
+		   		    case 1:
+		   		      this.mLoadMatchBottomLeftSprite.setVisible(true);
+		   	    	  if(nextstep){
+		   					this.mMatchNameInput.setVisible(false);
+		   					this.mMatchPasswordInput.setVisible(false);	 
+		   					
+		   			    	  this.mPaladinSprite = new Sprite(100, 250, this.mPaladinTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		   				          boolean mGrabbed = false;
+		   				          @Override
+		   				          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+		   				            switch(pSceneTouchEvent.getAction()) {
+		   				            case TouchEvent.ACTION_DOWN:
+		   				                mGrabbed = true;   
+		   				              break;
+		   				            case TouchEvent.ACTION_UP:
+		   				                if(mGrabbed) {
+		   				                  mGrabbed = false;
+		   				                  mPaladinSprite.setAlpha(1f);
+		   				                  mArcherSprite.setAlpha(0.5f);
+		   				                  mOrcSprite.setAlpha(0.5f);
+		   				                  mMageSprite.setAlpha(0.5f);
+		   				            	   mLoadMatchBottomRightSprite.setVisible(true);
+		   				                  mMessage[0] = "1";
+		   				                }
+		   				              break;
+		   				            }
+		   				            return true;  
+		   				          }
+		   				        };
+		   				    	this.mMageSprite = new Sprite(250, 250, this.mMageTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		   					          boolean mGrabbed = false;
+		   					          @Override
+		   					          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+		   					            switch(pSceneTouchEvent.getAction()) {
+		   					            case TouchEvent.ACTION_DOWN:
+		   					                mGrabbed = true;   
+		   					              break;
+		   					            case TouchEvent.ACTION_UP:
+		   					                if(mGrabbed) {
+		   					                  mGrabbed = false;
+		   					                  mPaladinSprite.setAlpha(0.5f);
+		   					                  mArcherSprite.setAlpha(0.5f);
+		   					                  mOrcSprite.setAlpha(0.5f);
+		   					                  mMageSprite.setAlpha(1f);
+		   					             	  mLoadMatchBottomRightSprite.setVisible(true);
+		   					                  mMessage[0] = "2";
+		   					                }
+		   					              break;
+		   					            }
+		   					            return true;  
+		   					          }
+		   					        };
+		   				    	this.mOrcSprite = new Sprite(335, 246, this.mOrcTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		   					          boolean mGrabbed = false;
+		   					          @Override
+		   					          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+		   					            switch(pSceneTouchEvent.getAction()) {
+		   					            case TouchEvent.ACTION_DOWN:
+		   					                mGrabbed = true;   
+		   					              break;
+		   					            case TouchEvent.ACTION_UP:
+		   					                if(mGrabbed) {
+		   					                  mGrabbed = false;
+		   					                  mPaladinSprite.setAlpha(0.5f);
+		   					                  mArcherSprite.setAlpha(0.5f);
+		   					                  mOrcSprite.setAlpha(1f);
+		   					                  mMageSprite.setAlpha(0.5f);
+		   					                  mLoadMatchBottomRightSprite.setVisible(true);
+		   					                  mMessage[0] = "3";
+		   					                }
+		   					              break;
+		   					            }
+		   					            return true;  
+		   					          }
+		   					        };
+		   				    	this.mArcherSprite = new Sprite(455, 250, this.mArcherTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		   						          boolean mGrabbed = false;
+		   						          @Override
+		   						          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+		   						            switch(pSceneTouchEvent.getAction()) {
+		   						            case TouchEvent.ACTION_DOWN:
+		   						                mGrabbed = true;   
+		   						              break;
+		   						            case TouchEvent.ACTION_UP:
+		   						                if(mGrabbed) {
+		   						                  mGrabbed = false;
+		   						                  mPaladinSprite.setAlpha(0.5f);
+		   						                  mArcherSprite.setAlpha(1f);
+		   						                  mOrcSprite.setAlpha(0.5f);
+		   						                  mMageSprite.setAlpha(0.5f);
+		   						             	  mLoadMatchBottomRightSprite.setVisible(true);
+		   						                  mMessage[0] = "4";
+		   						                }
+		   						              break;
+		   						            }
+		   						            return true;  
+		   						          }
+		   						        };
+		   	    	  }
+		   	    	  Game.getTextHelper().ChangeText("Choose your character", "MatchScene;StepText", 100, 50);
+		   	    	  this.mLoadMatchBottomRightSprite.setVisible(false);
+		   	    	  Game.getTextHelper().ChangeText("Paladin", "MatchScene;StepText1",100, 300);
+		   	    	  Game.getTextHelper().ChangeText("Mage", "MatchScene;StepText2",250, 300);
+		   	    	  Game.getTextHelper().ChangeText("Orc", "MatchScene;StepText3",335, 300);
+		   	    	  Game.getTextHelper().ChangeText("Archer", "MatchScene;StepText4",455, 300);
+		   			  
+		   	
+		   			    
+		   				mLoadMatchEntity.attachChild(mPaladinSprite);
+		   				mLoadMatchEntity.attachChild(mMageSprite);
+		   				mLoadMatchEntity.attachChild(mOrcSprite);
+		   				mLoadMatchEntity.attachChild(mArcherSprite);
+		   				this.registerTouchArea(mPaladinSprite);
+		   				this.registerTouchArea(mMageSprite);
+		   				this.registerTouchArea(mOrcSprite);
+		   				this.registerTouchArea(mArcherSprite);
+		   				
+		   				if(!nextstep){
+		   					int a = 0;
+		   					if(mMessage[0].equals("Paladin"))a=0;
+		   					if(mMessage[0].equals("Mage"))a=1;
+		   					if(mMessage[0].equals("Orc"))a=2;
+		   					if(mMessage[0].equals("Archer"))a=3;
+		   					this.mPaladinSprite.setAlpha(0.5f);
+		   					this.mMageSprite.setAlpha(0.5f);
+		   					this.mOrcSprite.setAlpha(0.5f);
+		   					this.mArcherSprite.setAlpha(0.5f);
+		   					switch(a){
+		   					case 0:this.mPaladinSprite.setAlpha(1f);break; 
+		   					case 1:this.mMageSprite.setAlpha(1f);break;
+		   					case 2:this.mOrcSprite.setAlpha(1f);break;
+		   					case 3:this.mArcherSprite.setAlpha(1f);break;
+		   					}
+		   					this.mLoadMatchBottomRightSprite.setVisible(true);
+		   				}
+		   		      break;
+		   		      
+		   		    case 2:
+		   		      this.mLoadMatchBottomRightSprite.setVisible(true);  
+		   	      	  if(nextstep){
+		   				this.mLoadMatchEntity.detachChild(mPaladinSprite);
+		   				this.mLoadMatchEntity.detachChild(mMageSprite);
+		   	  			this.mLoadMatchEntity.detachChild(mOrcSprite);
+		   	  			this.mLoadMatchEntity.detachChild(mArcherSprite);
+		   	  			Game.getTextHelper().ClearText("MatchScene;StepText1");
+		   	  			Game.getTextHelper().ClearText("MatchScene;StepText2");
+		   	  			Game.getTextHelper().ClearText("MatchScene;StepText3");
+		   	  			Game.getTextHelper().ClearText("MatchScene;StepText4");
+		   		      }
+		   	      	  
+		   	      	  
+		   		    	  
+		   		      if(!nextstep){
+		   		    	  
+		   		      }
+		   		      this.mLoadMatchTopRightSprite.setVisible(false);//el ante ultimo tiene que tener esto
+		   		      break;
+		   		    case 3:
+		   		      this.mLoadMatchBottomRightSprite.setVisible(false);
+		   		      if(nextstep){
+		   		    	  
+		   		      }
+		   		      
+		   		      
+		   		      
+		   		      if(!nextstep){
+		   		    	  
+		   		      }
+		   		      this.mLoadMatchTopRightSprite.setVisible(true);
+		   		      break;
+		   		    }
+		   			 	  
 		    
-		    }else{
-		    	
-			    switch (Step) {
-			    case 0:
-			    	if(nextstep){
-					      this.mPreviousSprite.setVisible(false);		      
-				    	  Game.getTextHelper().ChangeText("Choose your character", "MatchScene;StepText", 100, 50);
-				    	  this.mNextSprite.setVisible(false);
-				    	  Game.getTextHelper().ChangeText("Paladin", "MatchScene;StepText1",100, 300);
-				    	  Game.getTextHelper().ChangeText("Mage", "MatchScene;StepText2",250, 300);
-				    	  Game.getTextHelper().ChangeText("Orc", "MatchScene;StepText3",335, 300);
-				    	  Game.getTextHelper().ChangeText("Archer", "MatchScene;StepText4",455, 300);
-						  
-				    	  this.mPaladinSprite = new Sprite(100, 250, this.mPaladinTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-					          boolean mGrabbed = false;
-					          @Override
-					          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					            switch(pSceneTouchEvent.getAction()) {
-					            case TouchEvent.ACTION_DOWN:
-					                mGrabbed = true;   
-					              break;
-					            case TouchEvent.ACTION_UP:
-					                if(mGrabbed) {
-					                  mGrabbed = false;
-					                  mPaladinSprite.setAlpha(1f);
-					                  mArcherSprite.setAlpha(0.5f);
-					                  mOrcSprite.setAlpha(0.5f);
-					                  mMageSprite.setAlpha(0.5f);
-					                  mNextSprite.setVisible(true);
-					                  mMessage[0] = "Paladin";
-					                }
-					              break;
-					            }
-					            return true;  
-					          }
-					        };
-					    	this.mMageSprite = new Sprite(250, 250, this.mMageTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-						          boolean mGrabbed = false;
-						          @Override
-						          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						            switch(pSceneTouchEvent.getAction()) {
-						            case TouchEvent.ACTION_DOWN:
-						                mGrabbed = true;   
-						              break;
-						            case TouchEvent.ACTION_UP:
-						                if(mGrabbed) {
-						                  mGrabbed = false;
-						                  mPaladinSprite.setAlpha(0.5f);
-						                  mArcherSprite.setAlpha(0.5f);
-						                  mOrcSprite.setAlpha(0.5f);
-						                  mMageSprite.setAlpha(1f);
-						                  mNextSprite.setVisible(true);
-						                  mMessage[0] = "Mage";
-						                }
-						              break;
-						            }
-						            return true;  
-						          }
-						        };
-					    	this.mOrcSprite = new Sprite(335, 246, this.mOrcTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-						          boolean mGrabbed = false;
-						          @Override
-						          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						            switch(pSceneTouchEvent.getAction()) {
-						            case TouchEvent.ACTION_DOWN:
-						                mGrabbed = true;   
-						              break;
-						            case TouchEvent.ACTION_UP:
-						                if(mGrabbed) {
-						                  mGrabbed = false;
-						                  mPaladinSprite.setAlpha(0.5f);
-						                  mArcherSprite.setAlpha(0.5f);
-						                  mOrcSprite.setAlpha(1f);
-						                  mMageSprite.setAlpha(0.5f);
-						                  mNextSprite.setVisible(true);
-						                  mMessage[0] = "Orc";
-						                }
-						              break;
-						            }
-						            return true;  
-						          }
-						        };
-					    	this.mArcherSprite = new Sprite(455, 250, this.mArcherTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-							          boolean mGrabbed = false;
-							          @Override
-							          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-							            switch(pSceneTouchEvent.getAction()) {
-							            case TouchEvent.ACTION_DOWN:
-							                mGrabbed = true;   
-							              break;
-							            case TouchEvent.ACTION_UP:
-							                if(mGrabbed) {
-							                  mGrabbed = false;
-							                  mPaladinSprite.setAlpha(0.5f);
-							                  mArcherSprite.setAlpha(1f);
-							                  mOrcSprite.setAlpha(0.5f);
-							                  mMageSprite.setAlpha(0.5f);
-							                  mNextSprite.setVisible(true);
-							                  mMessage[0] = "Archer";
-							                }
-							              break;
-							            }
-							            return true;  
-							          }
-							        };
-			    	}
-				    
-					mNewMatchEntity.attachChild(mPaladinSprite);
-					mNewMatchEntity.attachChild(mMageSprite);
-					mNewMatchEntity.attachChild(mOrcSprite);
-					mNewMatchEntity.attachChild(mArcherSprite);
-					this.registerTouchArea(mPaladinSprite);
-					this.registerTouchArea(mMageSprite);
-					this.registerTouchArea(mOrcSprite);
-					this.registerTouchArea(mArcherSprite);
-			      
-			      break; 
-			      
-			    case 1:
-			      this.mPreviousSprite.setVisible(true);
-			      if(nextstep){
-						this.mNewMatchEntity.detachChild(mPaladinSprite);
-						this.mNewMatchEntity.detachChild(mMageSprite);
-			  			this.mNewMatchEntity.detachChild(mOrcSprite);
-			  			this.mNewMatchEntity.detachChild(mArcherSprite);
-			  			Game.getTextHelper().ClearText("MatchScene;StepText1");
-			  			Game.getTextHelper().ClearText("MatchScene;StepText2");
-			  			Game.getTextHelper().ClearText("MatchScene;StepText3");
-			  			Game.getTextHelper().ClearText("MatchScene;StepText4");
-			      }
-			        
-			      if(!nextstep){
-			    	  
-			      }
-			      break;
-			    case 2:
-			      this.mNextSprite.setVisible(true);
-			      if(nextstep){
-			    	  
-			      }
-			    	  
-			      if(!nextstep){
-			    	  
-			      }
-			      this.mLobbyNewMatchSprite.setVisible(false);//el ante ultimo tiene que tener esto
-			      break;
-			    case 3:
-			      this.mNextSprite.setVisible(false);
-			      if(nextstep){
-			    	  
-			      }
-			    	  
-			      if(!nextstep){
-			    	  
-			      }
-			      this.mLobbyNewMatchSprite.setVisible(true);
-			      break;
-			    }
-		    	
-		    }
 		  }
 		  
-		  private void RegisterNewMatchTouchAreas(){
-		    this.registerTouchArea(this.mBackSprite);
-		    this.registerTouchArea(this.mLobbyNewMatchSprite);
-		    this.registerTouchArea(this.mPreviousSprite);
-		    this.registerTouchArea(this.mNextSprite);
-		  }
+		private void CharacterCreation(boolean pStart, int pStep, int pAction){
+		    if(pStart){
+		    	switch (pAction) {
+					case 1:
+						
+						break;
+
+					case 2:
+					
+						break;
+						
+					case 3:
+						
+						break;
+				}
+			      //this.m.setVisible(false);
+			      this.mMessage = new String[3];
+			      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
+			      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
+			      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
+			      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText3"));
+			      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText4"));
+			      Game.getTextHelper().ClearText("MatchScene;StepText1");
+			      Game.getTextHelper().ClearText("MatchScene;StepText2");
+			      Game.getTextHelper().ClearText("MatchScene;StepText3");
+			      Game.getTextHelper().ClearText("MatchScene;StepText4");
+			    }
+			    this.clearTouchAreas();
+			    RegisterNewMatchTouchAreas();
+		}
+		
+	
+		
+	private void RegisterNewMatchTouchAreas(){
+	  this.registerTouchArea(this.mLoadMatchTopLeftSprite);
+	  this.registerTouchArea(this.mLoadMatchTopRightSprite);
+	  this.registerTouchArea(this.mLoadMatchBottomLeftSprite);
+	  this.registerTouchArea(this.mLoadMatchBottomRightSprite);
+	}
 		
 	private void ShowLowerBar(Boolean pBool){
 		this.mLowerBarSprite.setVisible(pBool);
@@ -1168,7 +1291,7 @@ public class MatchScene extends Scene {
 		this.attachChild(this.mCurrentEntity);
 	}
 	
-	public void EnterMatch(String pIP,String pPassword,String pMatchName){
+	public void RequestConnection(String pIP,String pPassword,String pMatchName){
 		initClient(pIP);
 		//mandar que me uni, despues desde el new match entity mando que elegi character
 		//hacer que checkee si ya tiene un chara		
@@ -1178,11 +1301,12 @@ public class MatchScene extends Scene {
 			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(1),pPassword,pMatchName);
 		}
 		Game.getClient().sendPingMessage();
-		
-		MatchScene.this.clearTouchAreas();
-		SwitchEntity(LoadNewMatchEntity(true));
-	}
+	} 
 	
+	public void ClearTouchAreas(){
+		MatchScene.this.clearTouchAreas();
+	}
+
 	private void initServer() {
 		Game.setServer(new QServer(new ExampleClientConnectorListener()));
 
@@ -1268,6 +1392,18 @@ public class MatchScene extends Scene {
 				this.mOwnMatchesList.get(i).changeAlpha(1f);
 			}else{
 				this.mOwnMatchesList.get(i).changeAlpha(0.5f);
+			}
+		}
+	}
+	
+	public void setSelectedCharacter(int pSelectedCharacterID){
+		this.mSelectedCharacterID = pSelectedCharacterID;
+		Log.d("Quest!","Selected Character: "+String.valueOf(this.mSelectedCharacterID));
+		for(int i = 0;i<this.mCharacterList.size();i++){
+			if(this.mSelectedCharacterID == this.mCharacterList.get(i).getCharacterID()){
+				this.mCharacterList.get(i).changeAlpha(1f);
+			}else{
+				this.mCharacterList.get(i).changeAlpha(0.5f);
 			}
 		}
 	}

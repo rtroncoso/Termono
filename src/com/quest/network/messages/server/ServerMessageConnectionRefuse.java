@@ -6,16 +6,7 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
 
-import android.util.Log;
-
-/**
- * (c) 2010 Nicolas Gramlich 
- * (c) 2011 Zynga Inc.
- * 
- * @author Nicolas Gramlich
- * @since 12:23:20 - 21.05.2011
- */
-public class ServerMessageConnectionAcknowledge extends ServerMessage implements ServerMessageFlags {
+public class ServerMessageConnectionRefuse extends ServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -24,59 +15,59 @@ public class ServerMessageConnectionAcknowledge extends ServerMessage implements
 	// Fields
 	// ===========================================================
 	private String mMatchName;
-	private int mMatchID;//La ID que tiene el server de la match
+	private boolean mReason;//True = bad password, False = Kicked/Banned 
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	@Deprecated
-	public ServerMessageConnectionAcknowledge() {
+	public ServerMessageConnectionRefuse() {
 
 	}
-
-	public ServerMessageConnectionAcknowledge(final String pMatchName, final int pMatchID) {
-		this.setMatchName(pMatchName);
-		this.setMatchID(pMatchID);
+	
+	public ServerMessageConnectionRefuse(final String pMatchName,final boolean pReason) {
+		this.mMatchName = pMatchName;
+		this.mReason = pReason;
 	}
-
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 	public String getMatchName() {
-		return mMatchName;
+		return this.mMatchName;
+	}
+	
+	public void setMatchName(final String pMatchName) {
+		this.mMatchName = pMatchName;
 	}
 
-	public void setMatchName(String mMatchName) {
-		this.mMatchName = mMatchName;
+	public boolean getReason() {
+		return this.mReason;
 	}
-
-	public int getMatchID() {
-		return mMatchID;
+	
+	public void setReason(final boolean pReason) {
+		this.mReason = pReason;
 	}
-
-	public void setMatchID(int mMatchID) {
-		this.mMatchID = mMatchID;
-	}
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE;
+		return FLAG_MESSAGE_SERVER_CONNECTION_REFUSE;
 	}
 
 	@Override
-	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
-		this.mMatchID = pDataInputStream.readInt();
+	protected void onReadTransmissionData(DataInputStream pDataInputStream)throws IOException {
 		this.mMatchName = pDataInputStream.readUTF();
+		this.mReason = pDataInputStream.readBoolean();
 	}
 
 	@Override
-	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		pDataOutputStream.writeInt(this.mMatchID);
+	protected void onWriteTransmissionData(DataOutputStream pDataOutputStream)throws IOException {
 		pDataOutputStream.writeUTF(this.mMatchName);
+		pDataOutputStream.writeBoolean(this.mReason);
 	}
 
 	// ===========================================================

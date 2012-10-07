@@ -13,9 +13,11 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.view.KeyEvent;
 
+import com.quest.data.MatchData;
+import com.quest.data.PlayerData;
 import com.quest.database.DataHandler;
-import com.quest.helpers.PlayerHelper;
 import com.quest.helpers.MapHelper;
+import com.quest.helpers.PlayerHelper;
 import com.quest.helpers.SceneHelper;
 import com.quest.helpers.TextHelper;
 import com.quest.network.QClient;
@@ -38,7 +40,8 @@ public class Game extends SimpleBaseGameActivity {
 	private static DataHandler mDataHandler;
 	private static TextHelper mTextHelper;
 	private static PlayerHelper mPlayerHelper;
-	
+	private static PlayerData mPlayerData;
+	private static MatchData mMatchData;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -190,6 +193,21 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mPlayerHelper = mPlayerHelper;
 	}
 	
+	public static void setPlayerData(PlayerData pPlayerData){
+		Game.mPlayerData = pPlayerData;
+	}
+	
+	public static PlayerData getPlayerData(){
+		return Game.mPlayerData;
+	}
+	
+	public static void setMatchData(MatchData pMatchData){
+		Game.mMatchData = pMatchData;
+	}
+	
+	public static MatchData getMatchData(){
+		return Game.mMatchData;
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================

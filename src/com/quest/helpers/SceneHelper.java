@@ -25,7 +25,7 @@ public class SceneHelper implements IMeasureConstants {
 	private Display mDisplay;
 	private GameScene mGameScene;
 	private GameMenuScene mGameMenuScene;
-	
+	private MatchScene mMatchScene;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -74,11 +74,16 @@ public class SceneHelper implements IMeasureConstants {
     
     public void setMatchScene(){
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
-    	this.mScene = new MatchScene();
+    	this.mMatchScene = new MatchScene();
+    	this.mScene = this.mMatchScene;
         Game.getInstance().getEngine().setScene(this.mScene);
     }
     
-    //#############JUEGO
+    public MatchScene getMatchScene() {
+		return mMatchScene;
+	}
+
+	//#############JUEGO
     public void setGameScene(){
     	if(this.mGameScene == null) {
         	this.mGameScene = new GameScene();
