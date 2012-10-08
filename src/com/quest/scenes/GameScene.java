@@ -12,6 +12,8 @@ import com.quest.display.hud.StatsHud;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.game.Game;
+import com.quest.helpers.AsyncTaskLoader;
+import com.quest.helpers.interfaces.IAsyncCallback;
 import com.quest.timers.Timers;
 
 public class GameScene extends Scene {
@@ -43,48 +45,61 @@ public class GameScene extends Scene {
 		}
 		
 		
-		public void initGame(String pMapName) {
+		public void initGame(final String pMapName) {
 			
-			// Load the Map and Attach it
-			Game.getMapManager().loadMap(pMapName);
-			this.attachChild(this.mMapLayer);
-			
-			// Create the Player and insert in helper
-			Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
-			
-			//Enemies
-			this.mEnemy = new Mob(15, 15, "Mob.png", 128, 256, 0, 0, 4, 4);
-			this.mMob2 = new Mob(25, 15, "Mob2.png", 128, 256, 0, 0, 4, 4);
-			
-			//Timer
-			this.mTimers = new Timers(mEnemy, mMob2);
-			this.mTimers.createMobMovementTimeHandler();
-			
-			this.mHud = new HUD();
-			this.mStatsHud = new StatsHud();
-			this.mSpellbarHud = new SpellbarHud(this.mHud);
-			this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getPlayer("Player"));
-			this.mMenuHud = new MenuHud(mHud);
-			
-			this.mHud.setChildScene(this.mControlsHud.getDigitalOnScreenControl());
-			this.mHud.registerTouchArea(this.mSpellbarHud.getSpellBar());
-			
-			// Players
-			this.attachChild(Game.getPlayerHelper().getPlayer("Player"));
-			this.attachChild(this.mEnemy);
-			this.attachChild(this.mMob2);
-			
-			// HUD 
-			this.mHud.attachChild(this.mSpellbarHud.getSpellBar());
-			this.mHud.attachChild(this.mStatsHud.getTermono());
-			this.mHud.attachChild(this.mControlsHud.getDigitalOnScreenControl());
-			this.mHud.attachChild(this.mMenuHud.getMenuSprite());
-			
-			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
-			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer("Player"));
+			// Loads everything in the background
+			Game.getSceneManager().setLoadingScene();
+	        new AsyncTaskLoader().execute(new IAsyncCallback() {
 
-			this.registerTouchArea(this.mEnemy.getBodySprite());
-			this.registerTouchArea(this.mMob2.getBodySprite());
+	            @Override
+	            public void workToDo() {
+	            	// Load the Map and Attach it
+	    			Game.getMapManager().loadMap(pMapName);
+	    			GameScene.this.attachChild(GameScene.this.mMapLayer);
+	    			
+	    			// Create the Player and insert in helper
+	    			Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
+	    			
+	    			//Enemies
+	    			GameScene.this.mEnemy = new Mob(15, 15, "Mob.png", 128, 256, 0, 0, 4, 4);
+	    			GameScene.this.mMob2 = new Mob(25, 15, "Mob2.png", 128, 256, 0, 0, 4, 4);
+	    			
+	    			//Timer
+	    			GameScene.this.mTimers = new Timers(mEnemy, mMob2);
+	    			GameScene.this.mTimers.createMobMovementTimeHandler();
+	    			
+	    			GameScene.this.mHud = new HUD();
+	    			GameScene.this.mStatsHud = new StatsHud();
+	    			GameScene.this.mSpellbarHud = new SpellbarHud(GameScene.this.mHud);
+	    			GameScene.this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getPlayer("Player"));
+	    			GameScene.this.mMenuHud = new MenuHud(mHud);
+	    			
+	    			GameScene.this.mHud.setChildScene(GameScene.this.mControlsHud.getDigitalOnScreenControl());
+	    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpellBar());
+	    			
+	    			// Players
+	    			GameScene.this.attachChild(Game.getPlayerHelper().getPlayer("Player"));
+	    			GameScene.this.attachChild(GameScene.this.mEnemy);
+	    			GameScene.this.attachChild(GameScene.this.mMob2);
+	    			
+	    			// HUD 
+	    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpellBar());
+	    			GameScene.this.mHud.attachChild(GameScene.this.mStatsHud.getTermono());
+	    			GameScene.this.mHud.attachChild(GameScene.this.mControlsHud.getDigitalOnScreenControl());
+	    			GameScene.this.mHud.attachChild(GameScene.this.mMenuHud.getMenuSprite());
+	    			
+	    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
+	    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer("Player"));
+
+	    			GameScene.this.registerTouchArea(GameScene.this.mEnemy.getBodySprite());
+	    			GameScene.this.registerTouchArea(GameScene.this.mMob2.getBodySprite());
+	            }
+
+	            @Override
+	            public void onComplete() {
+	            	Game.getSceneManager().setSpecificGameScene(GameScene.this);
+	            }
+	        });
 		}
 		// ===========================================================
 		// Methods for/from SuperClass/Interfaces

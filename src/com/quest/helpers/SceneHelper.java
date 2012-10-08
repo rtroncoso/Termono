@@ -2,10 +2,13 @@ package com.quest.helpers;
 
 import org.andengine.entity.scene.Scene;
 
+import android.util.Log;
+
 import com.quest.display.Display;
 import com.quest.game.Game;
 import com.quest.scenes.GameMenuScene;
 import com.quest.scenes.GameScene;
+import com.quest.scenes.LoadingScene;
 import com.quest.scenes.MainMenuScene;
 import com.quest.scenes.MatchScene;
 import com.quest.scenes.OptionsScene;
@@ -22,10 +25,13 @@ public class SceneHelper implements IMeasureConstants {
 	// Fields
 	// ===========================================================
 	private Scene mScene;
+	private Scene mSavedSceneState;
 	private Display mDisplay;
 	private GameScene mGameScene;
 	private GameMenuScene mGameMenuScene;
 	private MatchScene mMatchScene;
+	private LoadingScene mLoadingScene;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -50,29 +56,30 @@ public class SceneHelper implements IMeasureConstants {
 	public Display getDisplay() {
 		return mDisplay;
 	}
+	
 	//#############MENUS
-    public void setMainMenuScene(){
+    public void setMainMenuScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
     	this.mScene = new MainMenuScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
 
-    public void setPauseMenuScene(){
+    public void setPauseMenuScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
     	this.mScene = new PauseMenuScene();
         Game.getInstance().getEngine().setScene(this.mScene);    	
     }
     
-    public void setOptionsScene(){
+    public void setOptionsScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
     	this.mScene = new OptionsScene();
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
     
-    public void setMatchScene(){
+    public void setMatchScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mMatchScene = new MatchScene();
     	this.mScene = this.mMatchScene;
@@ -89,18 +96,24 @@ public class SceneHelper implements IMeasureConstants {
         	this.mGameScene = new GameScene();
     	}
     	this.mGameScene.initGame("1");
-    	Game.getInstance().getEngine().setScene(this.mGameScene);
-    	this.mScene = this.mGameScene;
-    	this.mDisplay.setZoom(1.6f);
     }
     
-    public GameScene getGameScene(){
+    //############MISC
+	public void setSpecificGameScene(GameScene pGameScene) {
+		this.mGameScene = pGameScene;
+		this.mScene = this.mGameScene;
+		Game.getInstance().getEngine().setScene(pGameScene);
+    	this.mDisplay.setZoom(1.6f);
+		
+	}
+    
+    public GameScene getGameScene() {
     	return this.mGameScene;
     }
 
     
     //############INTERFACES
-    public void setGameMenuScene(){
+    public void setGameMenuScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
     	this.mGameMenuScene = new GameMenuScene();
@@ -108,12 +121,29 @@ public class SceneHelper implements IMeasureConstants {
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
     
-    public GameMenuScene getGameMenuScene(){
+    public GameMenuScene getGameMenuScene() {
     	return this.mGameMenuScene;
     }
+
+	/**
+	 * @param mLoadingScene the mLoadingScene to set
+	 */
+	public void setLoadingScene() {
+    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
+    	this.mDisplay.setZoom(1.0f);
+		if(this.mLoadingScene == null) this.mLoadingScene = new LoadingScene();
+		this.mScene = this.mLoadingScene;
+		Game.getInstance().getEngine().setScene(this.mScene);
+	}
     
-    //############MISC
-    public Scene getCurrScene(){
+	/**
+	 * @return the mLoadingScene
+	 */
+	public LoadingScene getLoadingScene() {
+		return mLoadingScene;
+	}
+	
+    public Scene getCurrScene() {
         return this.mScene;
     }
     
@@ -122,6 +152,16 @@ public class SceneHelper implements IMeasureConstants {
 	// ===========================================================
 	// Methods
 	// ===========================================================
+    public void saveCurrentSceneState() {
+    	this.mSavedSceneState = this.mScene;
+    }
+    
+    public void restoreSavedScene() {
+    	if(this.mSavedSceneState == null) Log.e("Quest!", "SceneHelper - Error trying to restore a saved scene (NullPointerException)");
+    	this.mScene = this.mSavedSceneState;
+        Game.getInstance().getEngine().setScene(this.mScene);  
+    	
+    }
 	
 
 	// ===========================================================

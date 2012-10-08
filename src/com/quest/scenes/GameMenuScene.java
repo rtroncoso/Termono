@@ -1,8 +1,6 @@
 package com.quest.scenes;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -18,7 +16,6 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.modifier.ease.EaseBackOut;
 
 import android.util.Log;
-import android.view.KeyEvent;
 
 import com.quest.database.DataHandler;
 import com.quest.entities.objects.ItemIcon;

@@ -16,6 +16,7 @@ import org.andengine.util.debug.Debug;
 import android.util.Log;
 
 import com.quest.game.Game;
+import com.quest.helpers.interfaces.IAsyncCallback;
 import com.quest.triggers.MapChangeTrigger;
 import com.quest.triggers.Trigger;
 import com.quest.util.constants.IMeasureConstants;
@@ -181,11 +182,33 @@ public class MapHelper implements IMeasureConstants {
 								public void onHandleTriggerAction() {
 									// TODO Auto-generated method stub
 									super.onHandleTriggerAction();
+									// Check if it's already in a map change
 									if(MapHelper.this.isChangingMap) return;
-									Log.d("Quest!", "Player - -no cambiaba de mapa-");
 									MapHelper.this.isChangingMap = true;
-									MapHelper.this.loadMap(String.valueOf(this.mNextMapNumber));
-									MapHelper.this.isChangingMap = false;
+									
+									// Load the map in the background
+									Game.getSceneManager().saveCurrentSceneState();
+									Game.getSceneManager().setLoadingScene();
+									final int nextMapNumber = this.mNextMapNumber;
+							        new AsyncTaskLoader().execute(new IAsyncCallback() {
+
+										@Override
+										public void workToDo() {
+											// TODO Auto-generated method stub
+											MapHelper.this.loadMap(String.valueOf(nextMapNumber));
+											
+										}
+
+										@Override
+										public void onComplete() {
+											// TODO Auto-generated method stub
+
+									        // Map loaded!
+											MapHelper.this.isChangingMap = false;
+											Game.getSceneManager().restoreSavedScene();
+											Game.getSceneManager().getDisplay().setZoom(1.6f);
+										}
+							        });
 								}
 							};
 							
