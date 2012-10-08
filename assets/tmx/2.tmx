@@ -12,16 +12,16 @@
   <properties>
    <property name="Attachable" value="true"/>
   </properties>
-  <data encoding="base64" compression="zlib">
-   eJzt110LgjAUxvFTXvQiZC+QvZBg1kVl3//r9UCOyTCbK7eDnIvfRTDxnxt5yogo69ECElj2fB/pC2MLKewYtDQZwRgiD/faw6GDI8xgDrGHvhzOHRSe90r1XeAOV6Z9hfG5rS/E/nLvK+l9/p9M+z4xzyW3PvO5cusLvb+3av9sPf7QN6lMSb+L2kSW65TTj30J6flCfdc2seW6putc+lLS88UK1l9sLNc1Xdf3+RPhuMxmPvtsfjvr759Qs4/NPJZL3yD76vMFxz4O/w2kz43LbOazTwghxLC8AI7ktwI=
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3XXQuCMBTG8VNe9CJkL5C9kGDWRWXf/+v1QI7JMJsrt4Oci99FMPGfG3nKiCjr0QISWPZ8H+kLYwsp7Bi0NBnBGCIP99rDoYMjzGAOsYe+HM4dFJ73SvVd4A5Xpn2F8bmtL8T+cu8r6X3+n0z7PjHPJbc+87ly6wu9v7dq/2w9/tA3qUxJv4vaRJbrlNOPfQnp+UJ91zax5bqm61z6UtLzxQrWX2ws1zVd1/f5E+G4zGY++2x+O+vvn1Czj808lkvfIPvq8wXHPg7/DaTPjcts5rNPCCHEsLwAD0IH6QAZAAA=
   </data>
  </layer>
  <layer name="Objects" width="40" height="40">
   <properties>
    <property name="Attachable" value="true"/>
   </properties>
-  <data encoding="base64" compression="zlib">
-   eJzt2FsLgkAQhuGpmw4XWV1kBzA720n9/7+uERVhWEoFZz/NiwcRBF9mt1j0iMhr0Iw5bN7we+oIDX17gK62zC+Z1Yq5bA3QU6XbdsO/CwAauuAK0CDFoF1yzyHsQVNDIOZne5Y3cZ/3IMzvWyeCUWbMBmwo2O5zqDhfTNhUsN3nUnG+WLClYLsvh7b3fDKfc5A6fcWeDdtWsFPqCrPrgR1/OLMHu7CT8lqV6Uua4uxZzb4IsE/ua7S+Ouv7ovS38Vbsiyr0yVmizc+01sh9mvO7U/rfVtZTua8rfICGtpCzast3o36Ne71yPoNgvI0=
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3YWwuCQBCG4ambDhdZXWQHMDvbSf3/v64RFWFYSgVnP82LBxEEX2a3WPSIyGvQjDls3vB76ggNfXuArrbML5nVirlsDdBTpdt2w78LABq64ArQIMWgXXLPIexBU0Mg5md7ljdxn/cgzO9bJ4JRZswGbCjY7nOoOF9M2FSw3edScb5YsKVguy+Htvd8Mp9zkDp9xZ4N21awU+oKs+uBHX84swe7sJPyWpXpS5ri7FnNvgiwT+5rtL466/ui9LfxVuyLKvTJWaLNz7TWyH2a87tT+t9W1lO5ryt8gIa2kLNqy3ejfo17vXI+9nDfeQAZAAA=
   </data>
  </layer>
  <objectgroup name="Collisions" width="40" height="40">
