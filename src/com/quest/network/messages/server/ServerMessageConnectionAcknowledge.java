@@ -25,7 +25,6 @@ public class ServerMessageConnectionAcknowledge extends ServerMessage implements
 	// ===========================================================
 	private String mMatchName;
 	private int mMatchID;//La ID que tiene el server de la match
-	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -57,7 +56,7 @@ public class ServerMessageConnectionAcknowledge extends ServerMessage implements
 
 	public void setMatchID(int mMatchID) {
 		this.mMatchID = mMatchID;
-	}
+	}	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================

@@ -26,15 +26,17 @@ public class PlayerData {
 		
 	}
 	
-	public PlayerData(String pUsername, int pClass){
+	public PlayerData(String pUsername, int pClass,int pLevel){
 		this.setUsername(pUsername);
 		this.setPlayerClass(pClass);
+		this.setLevel(pLevel);
 	}
 
-	public PlayerData(int pPlayerID,int pClass,int pLevel){
+	public PlayerData(int pPlayerID,String pUsername,int pClass,int pLevel){
 		this.setPlayerID(pPlayerID);
 		this.setPlayerClass(pClass);
 		this.setPositionID(pLevel);
+		this.setUsername(pUsername);
 	}
 	
 	public void addAttributes(int pEndurance,int pIntelligence,int pPower,int pDefense){

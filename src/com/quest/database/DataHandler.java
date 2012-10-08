@@ -128,9 +128,13 @@ public class DataHandler {
         return this.mUserDB.getPlayerClass(pPlayerID);
     }
 	
+	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
+		this.mUserDB.setAttributes(pPower, pIntelligence, pDefense, pEndurance, pPlayerID);
+	}
 	
-	
-	
+	public void setPlayerLevel(int pLevel, int pPlayerID){
+		this.mUserDB.setPlayerLevel(pLevel,pPlayerID);
+	}
 	
 	
 	

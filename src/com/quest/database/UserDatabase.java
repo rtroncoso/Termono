@@ -36,6 +36,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     static final String tPlayer = "Player";
     	static final String fPlayerID = "PlayerID";
     	static final String fPlayerLevel = "Level";
+    	static final String fPlayerExperience = "Experience";
     	static final String fPlayerPosition = "Position";
     	static final String fPlayerClass = "Class";
     	
@@ -122,6 +123,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
     			fPlayerID+" INTEGER PRIMARY KEY , "+
     			fPlayerLevel+" INTEGER , "+
+    			fPlayerExperience+" INTEGER , "+
     			fPlayerPosition +" INTEGER , "+
     			fPlayerClass +" INTEGER)" 
                 );  
@@ -176,8 +178,8 @@ public class UserDatabase extends SQLiteOpenHelper {
 				 
 		 
 		 ContentValues cv = new ContentValues();
-		 cv.put(fUserID,Game.getUserID());
-		// cv.put(fUserID,"00:00:00:00:00:00");
+		 //cv.put(fUserID,Game.getUserID());
+		 cv.put(fUserID,"00:00:00:00:00:00");
 		 cv.put(fUsername, "Player");
 		 db.insert(tProfile, null, cv);	                    
          cv.clear();
@@ -393,6 +395,11 @@ public class UserDatabase extends SQLiteOpenHelper {
 		  int index = myCursor.getColumnIndex(fPlayerID);
 		  int myAnswer = myCursor.getInt(index);
 		  myCursor.close();
+		  
+		  cv.clear();
+		  cv.put(fPlayerID, myAnswer);
+		  this.getWritableDatabase().insert(tAttributes, fAttributesID, cv);
+		  
 	      this.close();
 	      return myAnswer;//devuelve el ID del player recien creado
     }
@@ -434,5 +441,27 @@ public class UserDatabase extends SQLiteOpenHelper {
       this.close();
       return myAnswer;
    }
+    
+    public void setPlayerLevel(int pLevel,int pPlayerID){
+    	ContentValues cv = new ContentValues();
+        cv.put(fPlayerLevel,pLevel);
+        this.getWritableDatabase().update(tPlayer, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+      }
+    
+    //Atributtes
+    public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
+  	  ContentValues cv = new ContentValues();
+      cv.put(fAttributesPower,pPower);
+      cv.put(fAttributesIntelligence, pIntelligence);
+      cv.put(fAttributesDefense, pDefense);
+      cv.put(fAttributesEndurance, pEndurance);
+      this.getWritableDatabase().update(tAttributes, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+      cv.clear();
+      this.close();
+    }
+    
+    
     
 }

@@ -10,8 +10,10 @@ public class MatchData {
 	// ===========================================================
 	// Fields
 	// ===========================================================
+	private String mUserID;
 	private String mMatchName;
 	private int mMatchID;//La id que tiene el server del match
+	private String mPassword;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -23,7 +25,11 @@ public class MatchData {
 		setMatchID(pMatchID);
 		setMatchName(pMatchName);
 	}
-		
+	
+	public MatchData(String pMatchName,String pPassword){
+		setPassword(pPassword);
+		setMatchName(pMatchName);
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -46,6 +52,22 @@ public class MatchData {
 
 	public void setMatchID(int mMatchID) {
 		this.mMatchID = mMatchID;
+	}
+
+	public String getUserID() {
+		return mUserID;
+	}
+
+	public void setUserID(String mUserID) {
+		this.mUserID = mUserID;
+	}
+
+	public String getPassword() {
+		return mPassword;
+	}
+
+	public void setPassword(String mPassword) {
+		this.mPassword = mPassword;
 	}
 
 	// ===========================================================

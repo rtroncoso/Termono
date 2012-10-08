@@ -102,7 +102,7 @@ public class MatchObject extends Entity{
 								showPasswordInput();
 								WaitForPassword();
 							}else{
-								mMatchScene.RequestConnection(mIP,mPassword,mMatchName);
+								mMatchScene.RequestConnection(mIP,mPassword,mMatchName,mUserID);
 							}
 						}else{
 							mMatchScene.setSelectedMatch(mMatchName);
@@ -217,7 +217,7 @@ public class MatchObject extends Entity{
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
 	        		}else{
 	        			mMatchScene.unregisterUpdateHandler(tempTimer);
-	        			mMatchScene.RequestConnection(mIP,mPassword,mMatchName);
+	        			mMatchScene.RequestConnection(mIP,mPassword,mMatchName,mUserID);
 	        		}
 	        	}
 	        }
