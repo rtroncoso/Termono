@@ -54,9 +54,10 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageConnectionAcknowledge serverMessageConnectionAcknowledge= (ServerMessageConnectionAcknowledge) pServerMessage;
+					Log.d("Quest!","Acknowledged");
 					Game.getMatchData().setMatchID(serverMessageConnectionAcknowledge.getMatchID());
 					Game.getSceneManager().getMatchScene().ClearTouchAreas();
-					Game.getSceneManager().getMatchScene().LoadMatchEntity(3);
+					Game.getSceneManager().getMatchScene().SwitchEntity(Game.getSceneManager().getMatchScene().LoadMatchEntity(3));
 				}
 			});
 	
