@@ -60,16 +60,12 @@
   <object x="1120" y="1056" width="32" height="32"/>
   <object x="992" y="1056" width="32" height="32"/>
   <object x="1184" y="1088" width="32" height="32"/>
-  <object x="0" y="0" width="1280" height="32"/>
-  <object x="1248" y="32" width="32" height="1216"/>
-  <object x="0" y="1248" width="1280" height="32"/>
-  <object x="0" y="32" width="32" height="1216"/>
  </objectgroup>
  <objectgroup name="MapChangeTriggers" width="40" height="40">
   <properties>
    <property name="MapChangeTrigger" value="true"/>
   </properties>
-  <object x="1216" y="32" width="32" height="1216">
+  <object x="1216" y="0" width="32" height="1280">
    <properties>
     <property name="NextMapNumber" value="2"/>
     <property name="NextMapX" value="2"/>

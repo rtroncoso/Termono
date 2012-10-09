@@ -130,17 +130,21 @@ public class SpellbarHud extends HUD{
 			float posX = 190.0f;
 			this.mSpells[i] = new Sprite(posX + (90 * i), Game.getInstance().getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 
+				private Boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
 							this.setScale(2.5f);
+							Game.getPlayerHelper().getPlayer("Player").setSpeedFactor(2.0f);
+							this.mGrabbed = true;
 							break;
-						case TouchEvent.ACTION_MOVE:
-						case TouchEvent.ACTION_CANCEL:
-						case TouchEvent.ACTION_OUTSIDE:
 						case TouchEvent.ACTION_UP:
-							this.setScale(2.0f);
+							if(this.mGrabbed == true){
+								this.setScale(2.0f);
+								Game.getPlayerHelper().getPlayer("Player").setSpeedFactor(1.0f);
+								this.mGrabbed= false;
+							}
 							break;
 					}
 					return true;

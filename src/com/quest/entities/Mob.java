@@ -104,10 +104,20 @@ public class Mob extends BaseEntity implements ITouchArea {
 			}		
 			if(move == true)
 			{
+
+				// Is it a legal position?
+				if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return;
+				
+				// Gets the Tile
 				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
-				// Moves to it if not blocked
-				if(!Game.getMapManager().checkCollision(tmxTileTo)) this.moveToTile(tmxTileTo);
+				// Animate the Character
+				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
+				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
+				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
+				
+				// Perform Move
+				this.moveToTile(tmxTileTo);
 			}
 		}		
 	}

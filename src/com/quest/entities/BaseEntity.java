@@ -43,12 +43,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected TMXTile mTMXTileAt;
 	protected ArrayList<Spell> mSpellsLayer;
 	protected boolean isWalking;
+	protected float mSpeedFactor;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public BaseEntity(int pInitialPosX, int pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		this.mEntityType = "BaseEntity";
+		this.mSpeedFactor = 1.0f;
 
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
@@ -116,21 +118,17 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 	
 	public BaseEntity moveToTile(final TMXTile pTileTo) {
-		return this.moveToTile(pTileTo, 1.0f);
-	}
-	
-	public BaseEntity moveToTile(final TMXTile pTileTo, final float pSpeed) {
 		
-		// Get our current tile
-		final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(this.getX(), this.getY());
+		// null Tile?
+		if(pTileTo == null)	return this;
 		
 		// Unblock our current Tile and block our new one
-		Game.getMapManager().unregisterCollisionTile(tmxTileAt);
+		Game.getMapManager().unregisterCollisionTile(this.mTMXTileAt);
 		Game.getMapManager().registerCollisionTile(pTileTo);
 
 		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pTileTo.getTileX(), pTileTo.getTileY());
 
-		this.mPathModifier = new PathModifier(pSpeed / SPEED_MODIFIER, this.mPath, new IPathModifierListener() {
+		this.mPathModifier = new PathModifier(SPEED_MODIFIER / this.mSpeedFactor, this.mPath, new IPathModifierListener() {
 
 			@Override
 			public void onPathStarted(PathModifier pPathModifier,
@@ -220,6 +218,20 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mTMXTileAt = mTMXTileAt;
 	}
 
+	/**
+	 * @return the mSpeedFactor
+	 */
+	public float getSpeedFactor() {
+		return mSpeedFactor;
+	}
+
+	/**
+	 * @param mSpeedFactor the mSpeedFactor to set
+	 */
+	public void setSpeedFactor(float mSpeedFactor) {
+		this.mSpeedFactor = mSpeedFactor;
+	}
+
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -228,7 +240,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	public void setPosition(float pX, float pY) {
 		super.setPosition(pX, pY);
 		
-		this.mTMXTileAt = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTileAt(pX, pY);
+		this.mTMXTileAt = Game.getMapManager().getTMXTileAt(pX, pY);
 	};
 	
 	@Override

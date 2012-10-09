@@ -21,7 +21,7 @@
    <property name="Attachable" value="true"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3YWwuCQBCG4ambDhdZXWQHMDvbSf3/v64RFWFYSgVnP82LBxEEX2a3WPSIyGvQjDls3vB76ggNfXuArrbML5nVirlsDdBTpdt2w78LABq64ArQIMWgXXLPIexBU0Mg5md7ljdxn/cgzO9bJ4JRZswGbCjY7nOoOF9M2FSw3edScb5YsKVguy+Htvd8Mp9zkDp9xZ4N21awU+oKs+uBHX84swe7sJPyWpXpS5ri7FnNvgiwT+5rtL466/ui9LfxVuyLKvTJWaLNz7TWyH2a87tT+t9W1lO5ryt8gIa2kLNqy3ejfo17vXI+9nDfeQAZAAA=
+   H4sIAAAAAAAAC+2Y2Q6CMBBFqz64RlwS1wRwxw34/69zDJA0TdG2juNgeDgPkCZzuDM0TX0hhE/AEPCAEVE9E2LmftzzC5j7leUX/KB+Ffv7Tb+IuR/3/AqODP1SRC9MP3XmMGfQ1U/nECn5YWT5SX4n5bnw4ZDfK09XYs07V792TgdoAE0kWiV+A6mmCZ70XV2gh0S/xM+Wec4CGAMTJKaK30yqZQP27GERCv05h5NnSOizBFYWrIm8ir1mA2zfsAcuwAHYEffKxO/plOZrKf0Shn7qXHPzc+nvTWT/xp3QL7HwU7Pklp+u15z9KPM7i2xvM+VK7PcvhAwcqoKaFcd7o7rHNTXuPADWhbkwABkAAA==
   </data>
  </layer>
  <objectgroup name="Collisions" width="40" height="40">
@@ -60,19 +60,16 @@
   <object x="1120" y="1056" width="32" height="32"/>
   <object x="992" y="1056" width="32" height="32"/>
   <object x="1184" y="1088" width="32" height="32"/>
-  <object x="0" y="0" width="1280" height="32"/>
-  <object x="1248" y="32" width="32" height="1248"/>
-  <object x="0" y="1248" width="1248" height="32"/>
-  <object x="0" y="32" width="32" height="1216"/>
+  <object x="672" y="448" width="32" height="32"/>
  </objectgroup>
  <objectgroup name="MapChangeTriggers" width="40" height="40">
   <properties>
    <property name="MapChangeTrigger" value="true"/>
   </properties>
-  <object x="32" y="32" width="32" height="1216">
+  <object x="32" y="0" width="32" height="1280">
    <properties>
     <property name="NextMapNumber" value="1"/>
-    <property name="NextMapX" value="38"/>
+    <property name="NextMapX" value="37"/>
     <property name="NextMapY" value="0"/>
    </properties>
   </object>

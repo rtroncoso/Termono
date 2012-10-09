@@ -113,6 +113,8 @@ public class MapHelper implements IMeasureConstants {
 			for(final TMXLayer tLayer : this.mCurrentMap.getTMXLayers()) {
 				Game.getSceneManager().getGameScene().getMapLayer().detachChild(tLayer);
 			}
+			this.mCollideTiles.clear();
+			this.mTriggerTiles.clear();
 		}
 		
 		// Load the map
@@ -127,8 +129,7 @@ public class MapHelper implements IMeasureConstants {
 			Game.getSceneManager().getGameScene().getMapLayer().attachChild(tLayer);
 		}
 		
-		
-		// Set Map Bounds (-funcionaba esto-)
+		// Set Map Bounds 
 		Game.getSceneManager().getDisplay().setMapBounds(this.mCurrentMap.getTMXLayers().get(0).getWidth(), this.mCurrentMap.getTMXLayers().get(0).getHeight());
 		
 		// The for loop cycles through each object on the map
@@ -206,7 +207,8 @@ public class MapHelper implements IMeasureConstants {
 											
 											// Load it and set new Player's position
 											MapHelper.this.loadMap(String.valueOf(nextMapNumber));
-											Log.d("Quest!", String.valueOf(nextMapY));
+											Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapX, 
+													(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapY);
 											
 										}
 
@@ -216,11 +218,8 @@ public class MapHelper implements IMeasureConstants {
 
 									        // Map loaded!
 											MapHelper.this.isChangingMap = false;
-											Game.getSceneManager().restoreSavedScene(true);
+											Game.getSceneManager().restoreSavedScene();
 											Game.getSceneManager().getDisplay().setZoom(1.6f);
-
-											Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapX, 
-													(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapY);
 										}
 							        });
 								}
@@ -266,6 +265,18 @@ public class MapHelper implements IMeasureConstants {
 			return true;
 		else
 			return false;
+	}
+	
+	public boolean isLegalPosition(int pPositionX, int pPositionY) {
+		
+		// Check for Map Bounds
+		if(pPositionX <= 0 || pPositionY <= 0 || pPositionX > (MAP_WIDTH * TILE_SIZE) ||  pPositionY > (MAP_HEIGHT * TILE_SIZE)) return false;
+
+		// Get the Tile
+		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(pPositionX, pPositionY);
+		if(this.checkCollision(tmxTileTo)) return false;
+		
+		return true; // Everything ok!
 	}
 	
 	// ===========================================================

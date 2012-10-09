@@ -1,16 +1,11 @@
 package com.quest.entities;
 
-import java.io.IOException;
-
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 
-import android.util.Log;
-
 import com.quest.game.Game;
-import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.triggers.Trigger;
 
 
@@ -50,22 +45,25 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			float pValueX, float pValueY) {
 
 		if(pValueX != 0.0f || pValueY != 0.0f) {
-			if(!this.isWalking) {
+			if(!this.isWalking && !Game.getMapManager().isChangingMap()) {
 				// Gets the new Tile
 				float moveToXTile = this.getX() + (TILE_SIZE * pValueX);
 				float moveToYTile = this.getY() + (TILE_SIZE * pValueY);
+				
+				// Is it a legal position?
+				if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return;
 
+				// Get the new Tile
 				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
-				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
+				// Animate the Character
+				long frameDuration = (long) ((SPEED_MODIFIER / this.mSpeedFactor) * 1000) / 4;
 				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
-
 				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
 				
 				// Check Tiles
 				Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
-				if(tmpTrigger != null) tmpTrigger.onHandleTriggerAction(); // Hacer cambio de mapa
-					if(Game.getMapManager().checkCollision(tmxTileTo)) return;
+				if(tmpTrigger != null) { tmpTrigger.onHandleTriggerAction(); return; } // Hacer cambio de mapa
 				
 				// Perform Move
 				this.moveToTile(tmxTileTo);

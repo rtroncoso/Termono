@@ -1,5 +1,6 @@
 package com.quest.helpers;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 
 import android.util.Log;
@@ -27,7 +28,7 @@ public class SceneHelper implements IMeasureConstants {
 	private Scene mScene;
 	private Scene mSavedSceneState;
 	private Display mDisplay;
-	private Display mSavedDisplayState;
+	private Entity mSavedFocus;
 	private GameScene mGameScene;
 	private GameMenuScene mGameMenuScene;
 	private MatchScene mMatchScene;
@@ -130,6 +131,7 @@ public class SceneHelper implements IMeasureConstants {
 	 * @param mLoadingScene the mLoadingScene to set
 	 */
 	public void setLoadingScene() {
+    	this.mDisplay.doFocusCamera(null);
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
 		if(this.mLoadingScene == null) this.mLoadingScene = new LoadingScene();
@@ -153,17 +155,27 @@ public class SceneHelper implements IMeasureConstants {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-    public void saveCurrentSceneState(boolean pSaveDisplayState) {
+    public void saveCurrentSceneState(boolean pChangeFocus) {
+    	// Guardamos la escena viejita
     	this.mSavedSceneState = this.mScene;
-    	if(pSaveDisplayState) this.mSavedDisplayState = this.mDisplay;
+    	
+        // Focus pocus
+    	if(pChangeFocus) {
+    		this.mSavedFocus = this.mDisplay.getFocusedEntity();
+    	}
     }
     
-    public void restoreSavedScene(boolean pRestoreSavedDisplay) {
+    public void restoreSavedScene() {
+    	// Levantamos la escena y la seteamos
     	if(this.mSavedSceneState == null) Log.e("Quest!", "SceneHelper - Error trying to restore a saved scene (NullPointerException)");
-    	if(this.mSavedDisplayState == null && pRestoreSavedDisplay) Log.e("Quest!", "SceneHelper - Error trying to restore a saved display (NullPointerException)");
     	this.mScene = this.mSavedSceneState;
-    	this.mDisplay = this.mSavedDisplayState;
         Game.getInstance().getEngine().setScene(this.mScene);  
+        
+        // Focus pocus
+    	if(this.mSavedFocus != null) {
+    		this.mDisplay.doFocusCamera(this.mSavedFocus);
+    		this.mSavedFocus = null;
+    	}
     	
     }
 	

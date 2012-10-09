@@ -10,6 +10,7 @@ public class Display {
 	// Fields
 	// ===========================================================
 	private SmoothCamera mCamera;
+	private Entity mFocusedEntity;
 	private int mCameraWidth;
 	private int mCameraHeight;
 	private int mDisplayWidth;
@@ -23,6 +24,7 @@ public class Display {
 		this.mCameraHeight = pCameraHeight;
 		this.mDisplayWidth = pDisplayWidth;
 		this.mDisplayHeight = pDisplayHeight;
+		this.mFocusedEntity = new Entity();
 		
 		this.mCamera = new SmoothCamera(0, 0, this.mCameraWidth, this.mCameraHeight, 8000.0f, 8000.0f, 2.0f) { 
 			@Override
@@ -44,7 +46,8 @@ public class Display {
 	// ===========================================================
 	public void doFocusCamera(Entity pEntity) {
 
-		this.mCamera.setChaseEntity(pEntity);
+		if(pEntity != null) this.mFocusedEntity = pEntity;
+		this.mCamera.setChaseEntity(this.mFocusedEntity);
 	}
 	
 	public void setMapBounds(int pWidth, int pHeight) {
@@ -104,6 +107,22 @@ public class Display {
 	public void setDisplayHeight(int pDisplayHeight) {
 		// TODO Auto-generated method stub
 		this.mDisplayHeight = pDisplayHeight;
+	}
+
+
+	/**
+	 * @return the mFocusedEntity
+	 */
+	public Entity getFocusedEntity() {
+		return mFocusedEntity;
+	}
+
+
+	/**
+	 * @param mFocusedEntity the mFocusedEntity to set
+	 */
+	public void setFocusedEntity(Entity mFocusedEntity) {
+		this.mFocusedEntity = mFocusedEntity;
 	}
 	
 	// ===========================================================
