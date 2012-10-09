@@ -55,28 +55,25 @@
   <object x="1152" y="704" width="32" height="32"/>
   <object x="1152" y="768" width="32" height="32"/>
   <object x="1152" y="736" width="32" height="32"/>
-  <object x="1216" y="576" width="64" height="32"/>
-  <object x="1248" y="608" width="32" height="32"/>
-  <object x="1248" y="864" width="32" height="32"/>
+  <object x="1216" y="576" width="32" height="32"/>
   <object x="1152" y="992" width="32" height="32"/>
   <object x="1120" y="1056" width="32" height="32"/>
   <object x="992" y="1056" width="32" height="32"/>
   <object x="1184" y="1088" width="32" height="32"/>
-  <object x="224" y="160" width="864" height="32"/>
-  <object x="1056" y="160" width="32" height="960"/>
-  <object x="224" y="1088" width="864" height="32"/>
-  <object x="224" y="160" width="32" height="960"/>
-  <object x="416" y="320" width="320" height="320"/>
+  <object x="0" y="0" width="1280" height="32"/>
+  <object x="1248" y="32" width="32" height="1216"/>
+  <object x="0" y="1248" width="1280" height="32"/>
+  <object x="0" y="32" width="32" height="1216"/>
  </objectgroup>
  <objectgroup name="MapChangeTriggers" width="40" height="40">
   <properties>
    <property name="MapChangeTrigger" value="true"/>
   </properties>
-  <object x="1024" y="192" width="32" height="896">
+  <object x="1216" y="32" width="32" height="1216">
    <properties>
     <property name="NextMapNumber" value="2"/>
-    <property name="NextMapX" value="0"/>
-    <property name="NextMapY" value="same"/>
+    <property name="NextMapX" value="2"/>
+    <property name="NextMapY" value="0"/>
    </properties>
   </object>
  </objectgroup>

@@ -18,12 +18,13 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.modifier.ease.EaseLinear;
 
+import com.quest.entities.interfaces.IEntityCallbacks;
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
 import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
 
-public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea {
+public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea, IEntityCallbacks {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -59,8 +60,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		// Load Texture into memory and on the screen
 		this.mBitmapTextureAtlas.load();
 
-		// Create the sprite and add it to the scene.
-		this.mBodySprite = new AnimatedSprite(0, 0, this.mTiledTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		// Create the sprite and add it to the entity
+		this.mBodySprite = new AnimatedSprite(0, 0 - (this.mTiledTextureRegion.getHeight() - 32), this.mTiledTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
@@ -69,9 +70,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 				return BaseEntity.this.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
 			}
 		};
-		
 		this.attachChild(this.mBodySprite);
-
+		
 		this.mSpellsLayer = new ArrayList<Spell>();
 		
 		this.setTileAt(pInitialPosX, pInitialPosY);
@@ -121,7 +121,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	
 	public BaseEntity moveToTile(final TMXTile pTileTo, final float pSpeed) {
 		
-		// get our current tile
+		// Get our current tile
 		final TMXTile tmxTileAt = Game.getMapManager().getTMXTileAt(this.getX(), this.getY());
 		
 		// Unblock our current Tile and block our new one
@@ -159,7 +159,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 				// TODO Auto-generated method stub
 
 				BaseEntity.this.isWalking = false;
-				BaseEntity.this.onEntityMoved(pTileTo);
 				//BaseEntity.this.mBodySprite.stopAnimation();
 
 			}	
@@ -200,18 +199,39 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	
 	public void setTileAt(int tileX, int tileY) {
 		
+		// Find out which Tile is it
 		final TMXTile tmpTMXTile = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTile(tileX, tileY);
 
-		final float pNewX = (this.mBodySprite.getWidth() > 32) ? tmpTMXTile.getTileX() - (this.mBodySprite.getWidth() - 32) : tmpTMXTile.getTileX();
-		final float pNewY = (this.mBodySprite.getHeight() > 32) ? tmpTMXTile.getTileY() - (this.mBodySprite.getHeight() - 32) : tmpTMXTile.getTileY();
+		// Set the position
+		this.setPosition(tmpTMXTile.getTileX(), tmpTMXTile.getTileY());
+	}
 
-		this.setPosition(pNewX, pNewY);
+	/**
+	 * @return the mTMXTileAt
+	 */
+	public TMXTile getTMXTileAt() {
+		return mTMXTileAt;
+	}
+
+	/**
+	 * @param mTMXTileAt the mTMXTileAt to set
+	 */
+	public void setTMXTileAt(TMXTile mTMXTileAt) {
+		this.mTMXTileAt = mTMXTileAt;
 	}
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
+	@Override
+	public void setPosition(float pX, float pY) {
+		super.setPosition(pX, pY);
+		
+		this.mTMXTileAt = Game.getMapManager().getCurrentMap().getTMXLayers().get(0).getTMXTileAt(pX, pY);
+	};
+	
+	@Override
 	public void onEntityMoved(TMXTile pNewTile) {
 		this.mTMXTileAt = pNewTile;
 		return;

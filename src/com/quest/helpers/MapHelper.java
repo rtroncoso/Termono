@@ -175,27 +175,38 @@ public class MapHelper implements IMeasureConstants {
 					// into the Arraylist CollideTiles
 					for (int TileRow = 0; TileRow < objectHeight; TileRow++) {
 						for (int TileColumn = 0; TileColumn < objectWidth; TileColumn++) {
+							
 							TMXTile tempTile = this.getTMXTileAt(objectX + TileColumn * TILE_SIZE, objectY
 									+ TileRow * TILE_SIZE);
+							
 							MapChangeTrigger tmpTrigger = new MapChangeTrigger(tempTile) {
+								
 								@Override
 								public void onHandleTriggerAction() {
 									// TODO Auto-generated method stub
 									super.onHandleTriggerAction();
+									
 									// Check if it's already in a map change
 									if(MapHelper.this.isChangingMap) return;
 									MapHelper.this.isChangingMap = true;
 									
-									// Load the map in the background
-									Game.getSceneManager().saveCurrentSceneState();
-									Game.getSceneManager().setLoadingScene();
+									// Set our constants
 									final int nextMapNumber = this.mNextMapNumber;
+									final int nextMapX = this.mNextMapX;
+									final int nextMapY = this.mNextMapY;
+									
+									// Load the map in the background
+									Game.getSceneManager().saveCurrentSceneState(true);
+									Game.getSceneManager().setLoadingScene();
 							        new AsyncTaskLoader().execute(new IAsyncCallback() {
 
 										@Override
 										public void workToDo() {
 											// TODO Auto-generated method stub
+											
+											// Load it and set new Player's position
 											MapHelper.this.loadMap(String.valueOf(nextMapNumber));
+											Log.d("Quest!", String.valueOf(nextMapY));
 											
 										}
 
@@ -205,18 +216,22 @@ public class MapHelper implements IMeasureConstants {
 
 									        // Map loaded!
 											MapHelper.this.isChangingMap = false;
-											Game.getSceneManager().restoreSavedScene();
+											Game.getSceneManager().restoreSavedScene(true);
 											Game.getSceneManager().getDisplay().setZoom(1.6f);
+
+											Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapX, 
+													(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapY);
 										}
 							        });
 								}
 							};
 							
+							// Set our Trigger info
 							tmpTrigger.setNextMapNumber(Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
-							Log.d("Quest!", "MapHelper - Info del Trigger:");
-							Log.d("Quest!", "Proximo Mapa: " + object.getTMXObjectProperties().get(0).getValue());
-							Log.d("Quest!", "X: " + object.getTMXObjectProperties().get(1).getValue());
-							Log.d("Quest!", "Y: " + object.getTMXObjectProperties().get(2).getValue());
+							tmpTrigger.setNextMapX(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()));
+							tmpTrigger.setNextMapY(Integer.parseInt(object.getTMXObjectProperties().get(2).getValue()));
+							
+							// Add it to the list
 							this.mTriggerTiles.add(tmpTrigger);
 						}
 					}

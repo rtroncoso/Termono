@@ -27,6 +27,7 @@ public class SceneHelper implements IMeasureConstants {
 	private Scene mScene;
 	private Scene mSavedSceneState;
 	private Display mDisplay;
+	private Display mSavedDisplayState;
 	private GameScene mGameScene;
 	private GameMenuScene mGameMenuScene;
 	private MatchScene mMatchScene;
@@ -152,13 +153,16 @@ public class SceneHelper implements IMeasureConstants {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-    public void saveCurrentSceneState() {
+    public void saveCurrentSceneState(boolean pSaveDisplayState) {
     	this.mSavedSceneState = this.mScene;
+    	if(pSaveDisplayState) this.mSavedDisplayState = this.mDisplay;
     }
     
-    public void restoreSavedScene() {
+    public void restoreSavedScene(boolean pRestoreSavedDisplay) {
     	if(this.mSavedSceneState == null) Log.e("Quest!", "SceneHelper - Error trying to restore a saved scene (NullPointerException)");
+    	if(this.mSavedDisplayState == null && pRestoreSavedDisplay) Log.e("Quest!", "SceneHelper - Error trying to restore a saved display (NullPointerException)");
     	this.mScene = this.mSavedSceneState;
+    	this.mDisplay = this.mSavedDisplayState;
         Game.getInstance().getEngine().setScene(this.mScene);  
     	
     }
