@@ -57,7 +57,7 @@ public class MatchScene extends Scene {
 	// ===========================================================
 	private static final int SERVER_PORT = 4444;
 	private static final int DISCOVERY_PORT = 4445;
-	protected static final boolean AVD_DEBUGGING = true;//CAMBIAR A FALSE PARA EL CELU
+	protected static final boolean AVD_DEBUGGING = false;//CAMBIAR A FALSE PARA EL CELU***
 	final byte[] wifiIPv4Address = WifiUtils.getWifiIPv4AddressRaw(Game.getInstance());
 	
 	// ===========================================================
@@ -557,8 +557,8 @@ public class MatchScene extends Scene {
 						}else{
 							MatchScene.this.SwitchEntity(LoadMatchesEntity());
 						}
-						Game.getServer().terminate();
-						MatchScene.this.mSocketServerDiscoveryServer.terminate();
+		//				Game.getServer().terminate();***Poner devuelta
+	//					MatchScene.this.mSocketServerDiscoveryServer.terminate();
 					}
 					break;
 				}
@@ -653,7 +653,8 @@ public class MatchScene extends Scene {
 		this.mCharacterList = new ArrayList<CharacterObject>();
 		this.mCharactersEntity.detachChildren();//cambiar a dispose o algo
 		this.mSelectedCharacterID = 0;
-
+		this.mCharactersEntity.setX(61);
+		
 		switch (pAction) {
 		case 1://Creando un nuevo match
 
@@ -700,11 +701,11 @@ public class MatchScene extends Scene {
 							if(mGrabbed) {
 								mGrabbed = false;
 								MatchScene.this.clearTouchAreas();
-								//Creando un nuevo character en partida propia
+								//Creando un nuevo character en partida propia nueva
 								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText(),false);
 								Game.setMatchData(new MatchData(matchid, MatchScene.this.mMatchNameInput.getText()));
 								Game.setPlayerData(new PlayerData(mChoices));
-								int playerid = Game.getDataHandler().AddNewPlayer(matchid, Game.getPlayerData().getPlayerClass());
+								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, Game.getPlayerData().getPlayerClass());
 								Game.getPlayerData().setPlayerID(playerid);
 								Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
 								Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
@@ -913,7 +914,6 @@ public class MatchScene extends Scene {
 	        this.registerTouchArea(this.mLoadMatchBottomRightSprite);
 
 			//Load characters
-	        this.mCharactersEntity.setX(61);
 			this.mLoadMatchEntity.attachChild(LoadOwnLocalCharacters());
 			
 			
@@ -1014,6 +1014,11 @@ public class MatchScene extends Scene {
 		                  if(MatchScene.this.mSelectedCharacterID!=0){
 			            	  //Mandar mensaje de con el char elegido chara
 		                	  Game.getClient().sendSelectedPlayer(mSelectedCharacterID);
+				            	 if(AVD_DEBUGGING){
+				            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(true,null,null));
+				            	 }else{
+				            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(true,null,null));
+			            		 }
 			              }
 		                }
 		              break;
@@ -1041,7 +1046,7 @@ public class MatchScene extends Scene {
 		int[] IDArray = Game.getDataHandler().getPlayerIDifExists(1, Game.getMatchData().getMatchName());
 		if(IDArray.length>0){	
 			for(int i = 0;i<IDArray.length;i++){
-				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(IDArray[i]),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]),Game.getDataHandler().getPlayerAttributes(IDArray[i]),Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));
+				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(Game.getDataHandler().getPlayerClass(IDArray[i])),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]),Game.getDataHandler().getPlayerAttributes(IDArray[i]),Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mCharacterList.size())));
 			}
 		}else{//No tiene chara pido que se haga uno
 			this.mCharactersEntity.attachChild(Game.getTextHelper().NewText(0, 0, "You have no characters in this match, please create one.", "MatchScene;NoCharasAlert"));
@@ -1050,16 +1055,17 @@ public class MatchScene extends Scene {
 	}
 	
 	public void LoadOwnRemoteCharacters(int pCharacterID, int pLevel, int pClass){//***Ajustar para que pida la textura/loquesea correspondiente
-		if(mCharactersEntity.getChildCount()==1)Game.getTextHelper().ClearText("MatchScene;RetrievingCharacters");
-		this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(pClass), this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, pCharacterID, pLevel,"MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));
+		if(mCharactersEntity.getChildCount()==1){Game.getTextHelper().ClearText("MatchScene;RetrievingCharacters");}
+		Log.d("Quest!","id " + pCharacterID+" level "+pLevel+" class "+pClass);
+		this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(pClass), this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, pCharacterID, pLevel,"MatchScene;"+String.valueOf(MatchScene.this.mCharacterList.size())));
 	}
 
-	public void msgCreateRemoteCharacter(){//***Ajustar para que pida la textura/loquesea correspondiente
+	public void msgCreateRemoteCharacter(){
 		if(mCharactersEntity.getChildCount()==1)Game.getTextHelper().ChangeText("You have no characters in this match, please create one.", "MatchScene;RetrievingCharacters",0,0);
 	}
 	
- 	private ITextureRegion LoadCharacterTextureRegion(int pPlayerID){//Pasar a una clase bien hecha
-		switch (Game.getDataHandler().getPlayerClass(pPlayerID)) {
+ 	private ITextureRegion LoadCharacterTextureRegion(int pPlayerClass){//Pasar a una clase bien hecha
+		switch (pPlayerClass){//Game.getDataHandler().getPlayerClass(pPlayerID)) {
 		case 1:
 			return this.mPaladinTextureRegion; 
 		case 2:
@@ -1629,7 +1635,7 @@ public class MatchScene extends Scene {
 													mGrabbed = false;
 													MatchScene.this.clearTouchAreas();
 													Game.setPlayerData(new PlayerData(mChoices));
-													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(), Game.getPlayerData().getPlayerClass());
+													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, Game.getPlayerData().getPlayerClass());
 													Game.getPlayerData().setPlayerID(playerid);
 													Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
 													Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
@@ -1644,7 +1650,8 @@ public class MatchScene extends Scene {
 													Game.setPlayerData(new PlayerData(mChoices));
 													Game.getClient().sendPlayerCreate(Game.getPlayerData());//Pasar al client
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
-														Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
+													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
+														//sacado para debuggear volver a poner ***
 													}
 													if(AVD_DEBUGGING){//sacar despues
 														SwitchEntity(LoadLobbyEntity(true, null,null));
@@ -2009,7 +2016,7 @@ public class MatchScene extends Scene {
 		Game.setProfileData(new ProfileData(pUserID,Game.getDataHandler().getUsername(pUserID)));
 		Game.setMatchData(new MatchData(pMatchName,pPassword));//****Cambiar a client
 		if(AVD_DEBUGGING){
-			Game.getClient().sendConnectionRequestMessage("11:11:11:11:11:11",Game.getDataHandler().getUsername(1),pPassword,pMatchName);
+			Game.getClient().sendConnectionRequestMessage("11:11:11:11:11:11","Username2",pPassword,pMatchName);
 		}else{
 			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(1),pPassword,pMatchName);
 		}

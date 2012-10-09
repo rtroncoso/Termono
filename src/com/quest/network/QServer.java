@@ -119,10 +119,10 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 					//checkeo si tiene conosco el profile y lo agrego si no lo tengo
 					if(Game.getDataHandler().CheckAndAddProfile(connectedClientProfileData.getUserID(),connectedClientProfileData.getUsername())){//Agrega el perfil, checkeo si existe
 						//agrego el ProfileID a profileData
-						connectedClientProfileData.setProfileID(Game.getDataHandler().getProfileID(connectedClientProfileData.getUserID())); 
+						connectedClientProfileData.setProfileID(Game.getDataHandler().getProfileID(connectedClientProfileData.getUserID()));
 						//levanto un array con las IDs de los personajes del cliente
-						final int[] IDArray = Game.getDataHandler().getPlayerIDifExists(connectedClientPlayerData.getProfileID(), clientMessageConnectionRequest.getMatchName());
-						if(IDArray.length>0){	
+						final int[] IDArray = Game.getDataHandler().getPlayerIDifExists(connectedClientProfileData.getProfileID(), clientMessageConnectionRequest.getMatchName());
+						if(IDArray.length>0){
 							//mando mensajes con charas
 							for(int i=0;i<IDArray.length;i++){
 								final ServerMessageExistingPlayer serverMessageExistingPlayer = (ServerMessageExistingPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER);
@@ -186,7 +186,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				connectedClientPlayerData.setPlayerClass(clientMessagePlayerCreate.getPlayerClass());
 				connectedClientPlayerData.setAttributes(clientMessagePlayerCreate.getAttributes());
 
-				int playerid = Game.getDataHandler().AddNewPlayer(connectedClientMatchData.getMatchID(), connectedClientPlayerData.getPlayerClass());
+				int playerid = Game.getDataHandler().AddNewPlayer(connectedClientMatchData.getMatchID(),connectedClientProfileData.getProfileID(), connectedClientPlayerData.getPlayerClass());
 				connectedClientPlayerData.setPlayerID(playerid);
 				Game.getDataHandler().setPlayerAttributes(connectedClientPlayerData.getAttributes(), connectedClientPlayerData.getPlayerID());
 				Game.getDataHandler().setPlayerLevel(1, connectedClientPlayerData.getPlayerID());

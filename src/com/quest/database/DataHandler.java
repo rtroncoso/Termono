@@ -120,8 +120,8 @@ public class DataHandler {
 	}
 	
 	//MatchPlayers
-	public int AddNewPlayer(int pMatchID,int pClass){
-		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pClass));
+	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass){
+		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass));
 	}
 	
 	

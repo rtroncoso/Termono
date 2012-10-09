@@ -10,7 +10,6 @@ public class PlayerData {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private int mProfileID;
 	private String mUsername;
 	private int mPlayerID;
 	private int mPositionID;
@@ -200,22 +199,6 @@ public class PlayerData {
 
 	public void setCurrMana(int currMana) {
 		this.currMana = currMana;
-	}
-
-	public String getUsername() {
-		return mUsername;
-	}
-
-	public void setUsername(String mUsername) {
-		this.mUsername = mUsername;
-	}
-
-	public int getProfileID() {
-		return mProfileID;
-	}
-
-	public void setProfileID(int mProfileID) {
-		this.mProfileID = mProfileID;
 	}
 
 	public int[] getAttributes(){

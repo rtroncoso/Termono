@@ -10,14 +10,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.modifier.ease.EaseBackOut;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnShowListener;
-import android.text.InputType;
-import android.view.Gravity;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.util.Log;
 
 import com.quest.game.Game;
 import com.quest.scenes.MatchScene;
@@ -60,12 +53,13 @@ public class CharacterObject extends Entity{
 		this.mCharacterID = pCharacterID;
 		this.mEntity = pEntity;
 		this.mLevel = pLevel;
+		createObject(pTextureRegion, pScene, pEntity, pLevel, pKey);
 	}
 	
 	public CharacterObject(ITextureRegion pTextureRegion,final int pX,int pY,MatchScene pScene,final Entity pEntity,int pCharacterID,int pLevel,int[] pAttributes,int pClass,String pKey) {
 		int Y = pY;
 		this.mClass = pClass;
-		if(mClass==3)Y = pY-8;//Ajusto diferencia de tamaño con el orco
+		if(mClass==3)Y = pY+8;//Ajusto diferencia de tamaño con el orco
 		this.mCharacterEntity = new Entity(pX,pY);
 		this.mMatchScene = pScene;
 		this.mCharacterID = pCharacterID;
@@ -123,7 +117,6 @@ public class CharacterObject extends Entity{
 
 		this.mText = Game.getTextHelper().NewText(this.mCharacterSprite.getX()-15, this.mCharacterSprite.getHeight()+10, "L: "+String.valueOf(pLevel), pKey);
 		this.mCharacterEntity.attachChild(this.mText);
-		
 		pScene.registerTouchArea(this.mCharacterSprite);
 		pEntity.attachChild(this.mCharacterEntity);
 	}

@@ -100,6 +100,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageExistingPlayer serverMessageExistingPlayer = (ServerMessageExistingPlayer) pServerMessage;
 					//Tiene player en la partida, lo agrego a la lista
+					Log.d("Quest!","Char");
 					Game.getSceneManager().getMatchScene().LoadOwnRemoteCharacters(serverMessageExistingPlayer.getCharacterID(), serverMessageExistingPlayer.getLevel(), serverMessageExistingPlayer.getPlayerClass());
 				}
 			});

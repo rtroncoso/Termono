@@ -40,6 +40,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	static final String fPlayerExperience = "Experience";
     	static final String fPlayerPosition = "Position";
     	static final String fPlayerClass = "Class";
+    	//ProfileID (el profile del que lo creo, no creo que esto este bien asi pero sino no se vincular los players de una partida con el profile que los creo)
     	
     static final String tInventory = "Inventory";	
 	    static final String fInventoryID = "InventoryID";
@@ -124,6 +125,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
     			fPlayerID+" INTEGER PRIMARY KEY , "+
+    			fProfileID +" INTEGER , "+
     			fPlayerLevel+" INTEGER , "+
     			fPlayerExperience+" INTEGER , "+
     			fPlayerPosition +" INTEGER , "+
@@ -260,14 +262,20 @@ public class UserDatabase extends SQLiteOpenHelper {
     
     //ProfileMatch
     public int addNewMatchProfile(int pProfileID,int pMatchID, boolean pJoined){
-    	  ContentValues cv = new ContentValues();
-          cv.put(fProfileID,pProfileID);
-          cv.put(fMatchID,pMatchID);
-          cv.put(fMatchProfileJoined,pJoined);
-          this.getWritableDatabase().insert(tMatchProfile, null, cv);
-          cv.clear();
-          this.close(); 
-          return pMatchID;
+    	  Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT * FROM "+ tProfile+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = "+tProfile+"."+fProfileID+" and "+tMatchProfile+"."+fMatchID+" =? and "+tProfile+"."+fProfileID+" =?",new String[]{String.valueOf(pMatchID),String.valueOf(pProfileID)});
+	  	  int count = myCursor.getCount();
+	  	  myCursor.close();
+	  	  this.close();
+	  	  if(count==0){//No existe el MatchProfile, lo agrego
+  	    	ContentValues cv = new ContentValues();
+            cv.put(fProfileID,pProfileID);
+            cv.put(fMatchID,pMatchID);
+            cv.put(fMatchProfileJoined,pJoined);
+            this.getWritableDatabase().insert(tMatchProfile, null, cv);
+            cv.clear();
+            this.close(); 
+	  	  }//Si ya existe no hace falta agregarlo
+	  	return pMatchID;
     }
     
     public boolean checkifJoined(String pUserID,String pMatchName){
@@ -400,9 +408,10 @@ public class UserDatabase extends SQLiteOpenHelper {
     }
     
     //Player
-    public int CreateNewPlayer(int pClass){
+    public int CreateNewPlayer(int pProfileID,int pClass){
 	  	  ContentValues cv = new ContentValues();
-	      cv.put(fPlayerClass,pClass);
+	  	  cv.put(fProfileID,pProfileID);
+	  	  cv.put(fPlayerClass,pClass);
 	      this.getWritableDatabase().insert(tPlayer, fPlayerID, cv);
 	      Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerID+" from "+tPlayer+" order by "+fPlayerID+" desc limit 1", null);
 		  myCursor.moveToFirst();
@@ -419,7 +428,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     }
     
     public int[] getPlayerIDifExists(int pProfileID, int pMatchID){
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+tPlayer+"."+fPlayerID+" FROM "+ tProfile+","+tMatchProfile+","+tMatch+","+tMatchPlayers+","+tPlayer +" ON " + tProfile+"."+fProfileID+" =? and "+tProfile+"."+fProfileID+" = "+tMatchProfile+"."+fProfileID+" and "+tMatchProfile+"."+fMatchID+" = "+tMatch+"."+fMatchID+" and "+tMatch+"."+fMatchID+" = "+String.valueOf(pMatchID)+" and "+tMatch+"."+fMatchID+" = "+tMatchPlayers+"."+fMatchID+" and "+tMatchPlayers+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID,new String[]{String.valueOf(pProfileID)});
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+tPlayer+"."+fPlayerID+" FROM "+tMatchPlayers+","+tPlayer +" ON " + tPlayer+"."+fProfileID+" =? and "+tMatchPlayers+"."+fMatchID+" =? and "+tMatchPlayers+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID,new String[]{String.valueOf(pProfileID),String.valueOf(pMatchID)});
     	int count = myCursor.getCount();
 	    if(count>0){
 	       	 int myAnswer[] = new int[myCursor.getCount()];
