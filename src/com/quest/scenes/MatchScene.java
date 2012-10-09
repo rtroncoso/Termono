@@ -39,6 +39,7 @@ import android.widget.EditText;
 
 import com.quest.data.MatchData;
 import com.quest.data.PlayerData;
+import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
 import com.quest.network.QClient;
@@ -97,6 +98,7 @@ public class MatchScene extends Scene {
 		private ITextureRegion mDirectConnectTextureRegion;
 		private ITextureRegion mOwnMatchesTextureRegion;
 		private ITextureRegion mLockTextureRegion;
+		private ITextureRegion mJoinedTextureRegion;
 		private Sprite mRefreshSprite;
 		private Sprite mDirectConnectSprite;
 		private Sprite mOwnMatchesSprite;
@@ -212,6 +214,7 @@ public class MatchScene extends Scene {
 		this.mAttributeBackgroundTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesBackground.png", 795, 1230);
 		this.mAttributeMinusTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesMinus.png", 965, 1230);
 		this.mAttributePlusTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesPlus.png", 1030, 1230);
+		this.mJoinedTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "joined.png", 1095, 1230);
 		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "ButtonSprite.png", 0, 0, 1, 1);
 		this.mSceneTextureAtlas.load();	
 		
@@ -697,12 +700,13 @@ public class MatchScene extends Scene {
 							if(mGrabbed) {
 								mGrabbed = false;
 								MatchScene.this.clearTouchAreas();
-								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText());
+								//Creando un nuevo character en partida propia
+								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText(),false);
 								Game.setMatchData(new MatchData(matchid, MatchScene.this.mMatchNameInput.getText()));
-								int playerid = Game.getDataHandler().AddNewPlayer(matchid, mChoices[0]);
-								Game.setPlayerData(new PlayerData(playerid,Game.getDataHandler().getUsername(1), mChoices[0], 1));
-								Game.getPlayerData().addAttributes(mChoices[4], mChoices[2], mChoices[1], mChoices[3]);
-								Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getPower(), Game.getPlayerData().getIntelligence(), Game.getPlayerData().getDefense(), Game.getPlayerData().getEndurance(), Game.getPlayerData().getPlayerID());
+								Game.setPlayerData(new PlayerData(mChoices));
+								int playerid = Game.getDataHandler().AddNewPlayer(matchid, Game.getPlayerData().getPlayerClass());
+								Game.getPlayerData().setPlayerID(playerid);
+								Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
 								Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
 								if(AVD_DEBUGGING){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
@@ -883,10 +887,15 @@ public class MatchScene extends Scene {
 		            case TouchEvent.ACTION_UP:
 		                if(mGrabbed) {
 		                  mGrabbed = false;
+		                  //Eligiendo un character de una partida propia
 		                  if(MatchScene.this.mSelectedCharacterID!=0){
-		                	 /*buscar el chara con la id del selected
-		                	  * cargar el player data con eso
-		                	  */
+		                	  int pIndex = 0;
+		                	  for(int i = 0;i<mCharacterList.size();i++){
+		                		  if(mCharacterList.get(i).getCharacterID() == mSelectedCharacterID){
+		                			  pIndex = i;   
+		                		  }
+		                	  }
+		                	 Game.setPlayerData(new PlayerData(mSelectedCharacterID, mCharacterList.get(pIndex).getCharacterClass(), mCharacterList.get(pIndex).getCharacterLevel(),mCharacterList.get(pIndex).getCharacterAttributes()));
 			            	 MatchScene.this.clearTouchAreas();
 			            	 if(AVD_DEBUGGING){
 			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), "00:00:00:00:00:00"));
@@ -905,7 +914,7 @@ public class MatchScene extends Scene {
 
 			//Load characters
 	        this.mCharactersEntity.setX(61);
-			this.mLoadMatchEntity.attachChild(LoadOwnCharacters());
+			this.mLoadMatchEntity.attachChild(LoadOwnLocalCharacters());
 			
 			
 			break;
@@ -951,7 +960,7 @@ public class MatchScene extends Scene {
 						break;
 					case TouchEvent.ACTION_UP:
 							if(mGrabbed) {
-								//sacar la entity de characters~
+								MatchScene.this.mLoadMatchEntity.detachChild(mCharactersEntity);
 								MatchScene.this.CharacterCreation(true, 0, 3,true);
 								mGrabbed = false;
 							}
@@ -1001,8 +1010,10 @@ public class MatchScene extends Scene {
 		            case TouchEvent.ACTION_UP:
 		                if(mGrabbed) {
 		                  mGrabbed = false;
+		                  //Eligiendo un chara en partida ajena
 		                  if(MatchScene.this.mSelectedCharacterID!=0){
 			            	  //Mandar mensaje de con el char elegido chara
+		                	  Game.getClient().sendSelectedPlayer(mSelectedCharacterID);
 			              }
 		                }
 		              break;
@@ -1013,7 +1024,10 @@ public class MatchScene extends Scene {
 	        this.mLoadMatchEntity.attachChild(this.mLoadMatchBottomRightSprite);
 	        this.registerTouchArea(this.mLoadMatchBottomRightSprite);
 
-			//Wait for characters message
+	        this.mCharactersEntity.setX(61);
+	        this.mCharactersEntity.attachChild(Game.getTextHelper().NewText(500, 500, "----------------------------------------------------------------------------------------------", "MatchScene;RetrievingCharacters"));
+	        Game.getTextHelper().ChangeText("Retrieving characters, please wait.", "MatchScene;RetrievingCharacters", 0, 0);
+	        this.mLoadMatchEntity.attachChild(mCharactersEntity);
 			
 			break;
 		}
@@ -1023,11 +1037,11 @@ public class MatchScene extends Scene {
 		return this.mLoadMatchEntity;
 	}
 	
-	private Entity LoadOwnCharacters(){
+	private Entity LoadOwnLocalCharacters(){
 		int[] IDArray = Game.getDataHandler().getPlayerIDifExists(1, Game.getMatchData().getMatchName());
 		if(IDArray.length>0){	
 			for(int i = 0;i<IDArray.length;i++){
-				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(IDArray[i]),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]), Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));
+				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(IDArray[i]),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]),Game.getDataHandler().getPlayerAttributes(IDArray[i]),Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));
 			}
 		}else{//No tiene chara pido que se haga uno
 			this.mCharactersEntity.attachChild(Game.getTextHelper().NewText(0, 0, "You have no characters in this match, please create one.", "MatchScene;NoCharasAlert"));
@@ -1035,7 +1049,16 @@ public class MatchScene extends Scene {
 		return this.mCharactersEntity;
 	}
 	
-	private ITextureRegion LoadCharacterTextureRegion(int pPlayerID){//Pasar a una clase bien hecha
+	public void LoadOwnRemoteCharacters(int pCharacterID, int pLevel, int pClass){//***Ajustar para que pida la textura/loquesea correspondiente
+		if(mCharactersEntity.getChildCount()==1)Game.getTextHelper().ClearText("MatchScene;RetrievingCharacters");
+		this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(pClass), this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, pCharacterID, pLevel,"MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));
+	}
+
+	public void msgCreateRemoteCharacter(){//***Ajustar para que pida la textura/loquesea correspondiente
+		if(mCharactersEntity.getChildCount()==1)Game.getTextHelper().ChangeText("You have no characters in this match, please create one.", "MatchScene;RetrievingCharacters",0,0);
+	}
+	
+ 	private ITextureRegion LoadCharacterTextureRegion(int pPlayerID){//Pasar a una clase bien hecha
 		switch (Game.getDataHandler().getPlayerClass(pPlayerID)) {
 		case 1:
 			return this.mPaladinTextureRegion; 
@@ -1518,110 +1541,7 @@ public class MatchScene extends Scene {
 					case 1:
 						//Nada
 						break;
-					case 2:
-						Step=0;
-						this.mChoices = new int[6];
-						this.mChoices[0] = 0;
-						this.mChoices[1] = 1;
-						this.mChoices[2] = 1;
-						this.mChoices[3] = 1;
-						this.mChoices[4] = 1;
-						this.mChoices[5] = 20;
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText3"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText4"));
-						Game.getTextHelper().ClearText("MatchScene;StepText3");
-						Game.getTextHelper().ClearText("MatchScene;StepText4");
-						Game.getTextHelper().ClearText("MatchScene;StepText1");
-						Game.getTextHelper().ClearText("MatchScene;StepText2");
-						this.mLoadMatchEntity.detachChild(this.mLoadMatchBottomLeftSprite);
-						this.mLoadMatchEntity.detachChild(this.mLoadMatchBottomRightSprite);
-						this.mLoadMatchEntity.detachChild(this.mLoadMatchTopRightSprite);
-						this.previousSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-					      boolean mGrabbed = false;
-					      @Override
-					      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					        switch(pSceneTouchEvent.getAction()) {
-					        case TouchEvent.ACTION_DOWN:
-					          if(previousSprite.isVisible()){
-					            mGrabbed = true; 
-					          }
-					          break;
-					        case TouchEvent.ACTION_UP:
-					          if(previousSprite.isVisible()){
-					            if(mGrabbed) {
-					              mGrabbed = false;
-					              Step-=1;
-					              CharacterCreation(false, Step, 2, false);
-					            }
-					          }
-					          break;
-					        }
-					        return true;  
-					      }
-					    };
-					    this.mLoadMatchEntity.attachChild(previousSprite);
-						this.nextSprite  = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
-					          boolean mGrabbed = false;
-					          @Override
-					          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					            switch(pSceneTouchEvent.getAction()) {
-					            case TouchEvent.ACTION_DOWN:
-					              if(nextSprite.isVisible()){
-					                mGrabbed = true;        
-					              }
-					              break;
-					            case TouchEvent.ACTION_UP:
-					              if(nextSprite.isVisible()){
-					                if(mGrabbed) {
-					                  mGrabbed = false;
-					                  Step+=1;
-					                  CharacterCreation(false, Step, 2, true);
-					                }
-					              }
-					              break;
-					            }
-					            return true;  
-					          }
-					        };
-				        this.mLoadMatchEntity.attachChild(nextSprite);
-				        this.okSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-							boolean mGrabbed = false;
-							@Override
-							public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-								switch(pSceneTouchEvent.getAction()) {
-								case TouchEvent.ACTION_DOWN:
-									if(okSprite.isVisible()){
-										mGrabbed = true;				
-									}
-									break;
-								case TouchEvent.ACTION_UP:
-									if(okSprite.isVisible()){
-										if(mGrabbed) {
-											mGrabbed = false;
-											MatchScene.this.clearTouchAreas();
-											int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(), mChoices[0]);
-											Game.setPlayerData(new PlayerData(playerid,Game.getDataHandler().getUsername(1), mChoices[0], 1));
-											Game.getPlayerData().addAttributes(mChoices[4], mChoices[2], mChoices[1], mChoices[3]);
-											Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getPower(), Game.getPlayerData().getIntelligence(), Game.getPlayerData().getDefense(), Game.getPlayerData().getEndurance(), Game.getPlayerData().getPlayerID());
-											Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
-											if(AVD_DEBUGGING){//sacar despues
-												SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
-											}else{
-												SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
-											}
-										}
-									}
-									break;
-								}
-							return true;	
-							}
-						};
-						this.mLoadMatchEntity.attachChild(this.okSprite);
-						break;						
-					case 3:
+					default:
 						Step=0;
 						this.mChoices = new int[6];
 						this.mChoices[0] = 0;
@@ -1704,15 +1624,33 @@ public class MatchScene extends Scene {
 										if(okSprite.isVisible()){
 											if(mGrabbed) {
 												mGrabbed = false;
-												MatchScene.this.clearTouchAreas();
-												Game.setPlayerData(new PlayerData(Game.getDataHandler().getUsername(1),mChoices[0],1));
-												Game.getPlayerData().addAttributes(mChoices[4], mChoices[2], mChoices[1], mChoices[3]);
-												//Mandar mensaje con el user data
-												Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getMatchData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword());
-												if(AVD_DEBUGGING){//sacar despues
-													SwitchEntity(LoadLobbyEntity(true, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
+												if(pAction==2){
+													//Creando un chara en una partida loadeada
+													mGrabbed = false;
+													MatchScene.this.clearTouchAreas();
+													Game.setPlayerData(new PlayerData(mChoices));
+													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(), Game.getPlayerData().getPlayerClass());
+													Game.getPlayerData().setPlayerID(playerid);
+													Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
+													Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
+													if(AVD_DEBUGGING){//sacar despues
+														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
+													}else{
+														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
+													}
 												}else{
-													SwitchEntity(LoadLobbyEntity(true, Game.getMatchData().getMatchName(),Game.getUserID()));
+													//Creando chara en partida ajena
+													MatchScene.this.clearTouchAreas();
+													Game.setPlayerData(new PlayerData(mChoices));
+													Game.getClient().sendPlayerCreate(Game.getPlayerData());//Pasar al client
+													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
+														Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
+													}
+													if(AVD_DEBUGGING){//sacar despues
+														SwitchEntity(LoadLobbyEntity(true, null,null));
+													}else{
+														SwitchEntity(LoadLobbyEntity(true, null,null));
+													}
 												}
 											}
 										}
@@ -2068,13 +2006,15 @@ public class MatchScene extends Scene {
 	
 	public void RequestConnection(String pIP,String pPassword,String pMatchName,String pUserID){
 		initClient(pIP);
+		Game.setProfileData(new ProfileData(pUserID,Game.getDataHandler().getUsername(pUserID)));
+		Game.setMatchData(new MatchData(pMatchName,pPassword));//****Cambiar a client
 		if(AVD_DEBUGGING){
-			Game.getClient().sendConnectionRequestMessage("00:00:00:00:00:00",Game.getDataHandler().getUsername(1),pPassword,pMatchName);
+			Game.getClient().sendConnectionRequestMessage("11:11:11:11:11:11",Game.getDataHandler().getUsername(1),pPassword,pMatchName);
 		}else{
 			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(1),pPassword,pMatchName);
 		}
 		Game.getClient().sendPingMessage();
-		Game.setMatchData(new MatchData(pMatchName,pPassword));
+
 	} 
 	
 	public void ClearTouchAreas(){
@@ -2158,6 +2098,10 @@ public class MatchScene extends Scene {
 		return this.mLockTextureRegion;
 	}
 
+	public ITextureRegion getJoinedTexture(){
+		return this.mJoinedTextureRegion;
+	}
+	
 	public void setSelectedMatch(String pSelectedMatchName){
 		this.mSelectedMatchName = pSelectedMatchName;
 		Log.d("Quest!","Selected Match: "+this.mSelectedMatchName);

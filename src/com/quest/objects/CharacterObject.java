@@ -41,7 +41,8 @@ public class CharacterObject extends Entity{
 	private Text mText;
 	private TimerHandler tempTimer;
 	private int mClass;
-	
+	private int[] mAttributes;
+	private int mLevel;
 	//slide
 	private float lastX;
 	private float initialX;
@@ -53,16 +54,29 @@ public class CharacterObject extends Entity{
 	// Constructors
 	// ===========================================================
 	
-	public CharacterObject(ITextureRegion pTextureRegion,final int pX,int pY,MatchScene pScene,final Entity pEntity,int pCharacterID,int pLevel,int pClass,String pKey) {
-		int Y = pY;
-		if(mClass==3)Y = pY-10;//Ajusto diferencia de tamaño con el orco
+	public CharacterObject(ITextureRegion pTextureRegion,final int pX,int pY,MatchScene pScene,final Entity pEntity,int pCharacterID,int pLevel,String pKey) {
 		this.mCharacterEntity = new Entity(pX,pY);
 		this.mMatchScene = pScene;
 		this.mCharacterID = pCharacterID;
 		this.mEntity = pEntity;
+		this.mLevel = pLevel;
+	}
+	
+	public CharacterObject(ITextureRegion pTextureRegion,final int pX,int pY,MatchScene pScene,final Entity pEntity,int pCharacterID,int pLevel,int[] pAttributes,int pClass,String pKey) {
+		int Y = pY;
 		this.mClass = pClass;
-
+		if(mClass==3)Y = pY-8;//Ajusto diferencia de tamaño con el orco
+		this.mCharacterEntity = new Entity(pX,pY);
+		this.mMatchScene = pScene;
+		this.mCharacterID = pCharacterID;
+		this.mEntity = pEntity;
+		this.mAttributes = pAttributes;
+		this.mLevel = pLevel;
+		createObject(pTextureRegion, pScene, pEntity, pLevel, pKey);
+	}
 		
+
+	private void createObject(ITextureRegion pTextureRegion,MatchScene pScene,final Entity pEntity,int pLevel,String pKey){	
 		this.mCharacterSprite = new Sprite(0, 0, pTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
@@ -125,7 +139,17 @@ public class CharacterObject extends Entity{
 		return this.mCharacterID;
 	}
 
+	public int getCharacterClass(){
+		return this.mClass;
+	}
 
+	public int[] getCharacterAttributes(){
+		return this.mAttributes;
+	}
+	
+	public int getCharacterLevel(){
+		return this.mLevel;
+	}
 	public Entity getCharacterSprite(){
 		return this.mCharacterSprite;
 	}
@@ -154,7 +178,7 @@ public class CharacterObject extends Entity{
 							speed-=1;
 						}
 					}else{
-						if(mEntity.getX()<(((mEntity.getChildCount()-1)*mCharacterSprite.getWidth())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getWidth()+61+mCharacterSprite.getWidth())*-1){
+						if(mEntity.getX()<(((mEntity.getChildCount()-2)*mCharacterSprite.getWidth())+((mEntity.getChildCount()-2)*29)- Game.getSceneManager().getDisplay().getCamera().getWidth()+61+mCharacterSprite.getWidth())*-1){
 							endTimer();
 						}else{
 							speed+=1;
@@ -176,9 +200,9 @@ public class CharacterObject extends Entity{
 	public void slideBack(){
 		if(mEntity.getX()>61){
 			mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), 61, mEntity.getY(), mEntity.getY(), EaseBackOut.getInstance()));
-		}else if(mEntity.getX()<(((mEntity.getChildCount()-1)*mCharacterSprite.getWidth())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getWidth()+61+mCharacterSprite.getWidth())*-1){
+		}else if(mEntity.getX()<(((mEntity.getChildCount()-2)*mCharacterSprite.getWidth())+((mEntity.getChildCount()-2)*29)- Game.getSceneManager().getDisplay().getCamera().getWidth()+61+mCharacterSprite.getWidth())*-1){
 			if(mEntity.getChildCount()>15 && mEntity.getX()<61){
-				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), (((mEntity.getChildCount()-1)*mCharacterSprite.getWidth())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getWidth()+61+mCharacterSprite.getWidth())*-1, mEntity.getY(), mEntity.getY(), EaseBackOut.getInstance()));
+				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), (((mEntity.getChildCount()-2)*mCharacterSprite.getWidth())+((mEntity.getChildCount()-2)*29)- Game.getSceneManager().getDisplay().getCamera().getWidth()+61+mCharacterSprite.getWidth())*-1, mEntity.getY(), mEntity.getY(), EaseBackOut.getInstance()));
 			}else{
 				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), 61, mEntity.getY(), mEntity.getY(), EaseBackOut.getInstance()));
 			}

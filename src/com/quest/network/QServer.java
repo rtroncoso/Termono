@@ -17,15 +17,21 @@ import org.andengine.util.debug.Debug;
 
 import android.util.Log;
 
+import com.quest.data.MatchData;
 import com.quest.data.PlayerData;
+import com.quest.data.ProfileData;
 import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
-import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
+import com.quest.network.messages.client.ClientMessageFlags;
+import com.quest.network.messages.client.ClientMessagePlayerCreate;
+import com.quest.network.messages.client.ClientMessageSelectedPlayer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
+import com.quest.network.messages.server.ServerMessageCreatePlayer;
+import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.util.constants.IGameConstants;
 
@@ -57,6 +63,8 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_PONG, ConnectionPongServerMessage.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE, ServerMessageConnectionAcknowledge.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CONNECTION_REFUSE, ServerMessageConnectionRefuse.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CREATE_PLAYER, ServerMessageCreatePlayer.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER, ServerMessageExistingPlayer.class);
 		//this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class);		
 	}
 
@@ -80,16 +88,27 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	@Override
 	protected SocketConnectionClientConnector newClientConnector(final SocketConnection pSocketConnection) throws IOException {
 		final SocketConnectionClientConnector clientConnector = new SocketConnectionClientConnector(pSocketConnection);
-		final PlayerData playerData = new PlayerData();
+		final PlayerData connectedClientPlayerData = new PlayerData();
+		final MatchData	 connectedClientMatchData = new MatchData();
+		final ProfileData connectedClientProfileData = new ProfileData();
 		
+		//Un cliente pidio conectarse al match
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST, ClientMessageConnectionRequest.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageConnectionRequest clientMessageConnectionRequest = (ClientMessageConnectionRequest) pClientMessage;
 				if(clientMessageConnectionRequest.getPassword().equals(Game.getDataHandler().getMatchPassword(clientMessageConnectionRequest.getMatchName()))){//Si la pass esta bien
+					//creo msg de acknowledge
 					final ServerMessageConnectionAcknowledge serverMessageConnectionAcknowledge = (ServerMessageConnectionAcknowledge) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_ACKNOWLEDGE);
-					serverMessageConnectionAcknowledge.setMatchName(clientMessageConnectionRequest.getMatchName());
-					serverMessageConnectionAcknowledge.setMatchID(Game.getDataHandler().getMatchID(clientMessageConnectionRequest.getMatchName()));					
+					//lleno los data con lo del mensaje
+					connectedClientProfileData.setUserID(clientMessageConnectionRequest.getUserID());
+					connectedClientProfileData.setUsername(clientMessageConnectionRequest.getUsername());
+					connectedClientMatchData.setMatchName(clientMessageConnectionRequest.getMatchName());
+					connectedClientMatchData.setMatchID(Game.getDataHandler().getMatchID(clientMessageConnectionRequest.getMatchName()));
+					//completo el msg de acknowledge
+					serverMessageConnectionAcknowledge.setMatchName(connectedClientMatchData.getMatchName());
+					serverMessageConnectionAcknowledge.setMatchID(connectedClientMatchData.getMatchID());					
+					//mando el mensaje
 					try {
 						pClientConnector.sendServerMessage(serverMessageConnectionAcknowledge);
 					} catch (IOException e) {
@@ -97,21 +116,53 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 					}
 					QServer.this.mMessagePool.recycleMessage(serverMessageConnectionAcknowledge);
 					
-					if(Game.getDataHandler().CheckAndAddProfile(clientMessageConnectionRequest.getUserID(), getName())){//Agrega el perfil, checkeo si existe
-						playerData.setProfileID(Game.getDataHandler().getProfileID(clientMessageConnectionRequest.getUserID()));//agrego el ProfileID a playerData 
-						
-						final int[] IDArray = Game.getDataHandler().getPlayerIDifExists(playerData.getProfileID(), clientMessageConnectionRequest.getMatchName());
+					//checkeo si tiene conosco el profile y lo agrego si no lo tengo
+					if(Game.getDataHandler().CheckAndAddProfile(connectedClientProfileData.getUserID(),connectedClientProfileData.getUsername())){//Agrega el perfil, checkeo si existe
+						//agrego el ProfileID a profileData
+						connectedClientProfileData.setProfileID(Game.getDataHandler().getProfileID(connectedClientProfileData.getUserID())); 
+						//levanto un array con las IDs de los personajes del cliente
+						final int[] IDArray = Game.getDataHandler().getPlayerIDifExists(connectedClientPlayerData.getProfileID(), clientMessageConnectionRequest.getMatchName());
 						if(IDArray.length>0){	
-							
-						}else{//No tiene chara pido que se haga uno
-							
+							//mando mensajes con charas
+							for(int i=0;i<IDArray.length;i++){
+								final ServerMessageExistingPlayer serverMessageExistingPlayer = (ServerMessageExistingPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER);
+								serverMessageExistingPlayer.setCharacterID(IDArray[i]);
+								serverMessageExistingPlayer.setLevel(Game.getDataHandler().getPlayerLevel(IDArray[i]));
+								serverMessageExistingPlayer.setPlayerClass(Game.getDataHandler().getPlayerClass(IDArray[i]));
+								try {
+									pClientConnector.sendServerMessage(serverMessageExistingPlayer);
+								} catch (IOException e) {
+									Debug.e(e);
+								}
+								QServer.this.mMessagePool.recycleMessage(serverMessageExistingPlayer);
+							}
+						}else{
+							//creo el MatchProfile la id del cliente con la id de la partida a la que se conecto
+							Game.getDataHandler().AddNewMatchProfile(connectedClientProfileData.getProfileID(), connectedClientMatchData.getMatchID(),false);
+							//No tiene chara pido que se haga uno
+							final ServerMessageCreatePlayer serverMessageCreatePlayer = (ServerMessageCreatePlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CREATE_PLAYER);
+							try {
+								pClientConnector.sendServerMessage(serverMessageCreatePlayer);
+							} catch (IOException e) {
+								Debug.e(e);
+							}
+							QServer.this.mMessagePool.recycleMessage(serverMessageCreatePlayer);
 						}
-					}else{//No conocia el perfil, no tiene chara pido que haga uno
-						playerData.setProfileID(Game.getDataHandler().getProfileID(clientMessageConnectionRequest.getUserID()));//agrego el ProfileID a playerData
-						
+					}else{//No conocia el perfil(ya se agrega cuando se checkea),osea que no tiene chara pido que haga uno
+						//agrego el ProfileID a profileData
+						connectedClientProfileData.setProfileID(Game.getDataHandler().getProfileID(connectedClientProfileData.getUserID()));//agrego el ProfileID a playerData
+						//creo el MatchProfile la id del cliente con la id de la partida a la que se conecto
+						Game.getDataHandler().AddNewMatchProfile(connectedClientProfileData.getProfileID(), connectedClientMatchData.getMatchID(),false);
+						final ServerMessageCreatePlayer serverMessageCreatePlayer = (ServerMessageCreatePlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CREATE_PLAYER);
+						try {
+							pClientConnector.sendServerMessage(serverMessageCreatePlayer);
+						} catch (IOException e) {
+							Debug.e(e);
+						}
+						QServer.this.mMessagePool.recycleMessage(serverMessageCreatePlayer);
 					}
 					
-				}else{
+				}else{//la contraseña esta mal
 					final ServerMessageConnectionRefuse serverMessageConnectionRefuse = (ServerMessageConnectionRefuse) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_REFUSE);
 					serverMessageConnectionRefuse.setMatchName(clientMessageConnectionRequest.getMatchName());
 					serverMessageConnectionRefuse.setReason(true);
@@ -124,6 +175,41 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				}
 			}
 		});
+		
+		
+		//El cliente creo un nuevo player.
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE, ClientMessagePlayerCreate.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessagePlayerCreate clientMessagePlayerCreate = (ClientMessagePlayerCreate) pClientMessage;
+				//creo el personaje que me mando
+				connectedClientPlayerData.setPlayerClass(clientMessagePlayerCreate.getPlayerClass());
+				connectedClientPlayerData.setAttributes(clientMessagePlayerCreate.getAttributes());
+
+				int playerid = Game.getDataHandler().AddNewPlayer(connectedClientMatchData.getMatchID(), connectedClientPlayerData.getPlayerClass());
+				connectedClientPlayerData.setPlayerID(playerid);
+				Game.getDataHandler().setPlayerAttributes(connectedClientPlayerData.getAttributes(), connectedClientPlayerData.getPlayerID());
+				Game.getDataHandler().setPlayerLevel(1, connectedClientPlayerData.getPlayerID());
+				
+				//Devolverle el playerID/PlayerDATA?
+				
+			}
+		});
+		
+		//El cliente creo un eligio player.
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER, ClientMessageSelectedPlayer.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessageSelectedPlayer clientMessageSelectedPlayer = (ClientMessageSelectedPlayer) pClientMessage;
+				//cargo en data el personaje que me mando
+				connectedClientPlayerData.setPlayerID(clientMessageSelectedPlayer.getPlayerID());
+				connectedClientPlayerData.setPlayerClass(Game.getDataHandler().getPlayerClass(connectedClientPlayerData.getPlayerID()));
+				connectedClientPlayerData.setLevel(Game.getDataHandler().getPlayerLevel(connectedClientPlayerData.getPlayerID())); 
+				connectedClientPlayerData.setAttributes(Game.getDataHandler().getPlayerAttributes(connectedClientPlayerData.getPlayerID()));
+				//***completar tambien los modifiers y lo que falta
+			}
+		});
+		
 		
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class, new IClientMessageHandler<SocketConnection>() {
 			@Override

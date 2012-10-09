@@ -52,11 +52,18 @@ public class DataHandler {
 	}
 	
 	//MatchProfile
-	public int AddNewMatch(int pProfileID,String pName,String pPassword){
+	public int AddNewMatch(int pProfileID,String pName,String pPassword, boolean pJoined){
 		if(pPassword.equals(null)||pPassword.equals(""))pPassword="**nopass**";
-		return this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword));
+		return this.mUserDB.addNewMatchProfile(pProfileID, this.mUserDB.CreateNewMatch(pName,pPassword), pJoined);
 	}
 	
+	public void AddNewMatchProfile(int pProfileID,int pMatchID,boolean pJoined){
+		this.mUserDB.addNewMatchProfile(pProfileID, pMatchID, pJoined);
+	}
+	
+	public boolean checkifJoined(String pUserID,String pMatchName){
+		return this.mUserDB.checkifJoined(pUserID, pMatchName);
+	}
 	
 	//Match
 	public int getMatchID(String pName, String pUserID){
@@ -84,9 +91,14 @@ public class DataHandler {
 	}
 	
 	public String getMatchPassword(String pMatchName){
-		return this.mUserDB.getMatchPassword(pMatchName);
+		return this.mUserDB.getMatchPassword(pMatchName,1,0);
+	}
+
+	public String getMatchPassword(String pMatchName,String pUserID){//Para matches a las que se unio
+		return this.mUserDB.getMatchPassword(pMatchName,getProfileID(pUserID),1);
 	}
 		
+	
 	public boolean hasPassword(int pMatchID){
 		if(this.mUserDB.getMatchPassword(pMatchID).equals("**nopass**")){
 			return false;//no password
@@ -130,6 +142,14 @@ public class DataHandler {
 	
 	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
 		this.mUserDB.setAttributes(pPower, pIntelligence, pDefense, pEndurance, pPlayerID);
+	}
+	
+	public void setPlayerAttributes(int[] pAttributes,int pPlayerID){
+		this.mUserDB.setAttributes(pAttributes[0], pAttributes[1], pAttributes[2], pAttributes[3], pPlayerID);
+	}
+	
+	public int[] getPlayerAttributes(int pPlayerID){
+		return this.mUserDB.getAttributes(pPlayerID);
 	}
 	
 	public void setPlayerLevel(int pLevel, int pPlayerID){

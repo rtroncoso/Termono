@@ -18,6 +18,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 	
 	static final String tMatchProfile = "MatchProfile";
 		static final String fMatchProfileID = "MatchProfileID";
+		static final String fMatchProfileJoined = "Joined";
 		//ProfileID
 		//MatchID
 		
@@ -100,6 +101,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tMatchProfile+" ("+
     			fMatchProfileID+" INTEGER PRIMARY KEY , "+
+    			fMatchProfileJoined +" INTEGER , "+
     			fProfileID +" INTEGER , "+
     			fMatchID +" INTEGER)" 
                 );  	
@@ -257,16 +259,28 @@ public class UserDatabase extends SQLiteOpenHelper {
    }
     
     //ProfileMatch
-    public int addNewMatchProfile(int pProfileID,int pMatchID){
+    public int addNewMatchProfile(int pProfileID,int pMatchID, boolean pJoined){
     	  ContentValues cv = new ContentValues();
           cv.put(fProfileID,pProfileID);
           cv.put(fMatchID,pMatchID);
+          cv.put(fMatchProfileJoined,pJoined);
           this.getWritableDatabase().insert(tMatchProfile, null, cv);
           cv.clear();
           this.close(); 
           return pMatchID;
     }
     
+    public boolean checkifJoined(String pUserID,String pMatchName){
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT * FROM "+ tProfile+","+tMatch+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = "+tProfile+"."+fProfileID+" and "+tMatch+"."+fMatchID+" = "+tMatchProfile+"."+fMatchID+" and "+tMatch+"."+fMatchName+" =? and "+tProfile+"."+fUserID+" =? and "+tMatchProfile+"."+fMatchProfileJoined+" = 1",new String[]{pMatchName,pUserID});
+	    int count = myCursor.getCount();
+	    myCursor.close();
+	    this.close();
+	    if(count>0){
+	    	return true;//Existe la partida
+	    }else{
+	    	return false;//No existe la partida
+	    }
+    }
     
     //Match
     public int CreateNewMatch(String pName,String pPassword){
@@ -348,8 +362,8 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    return myAnswer;
     }
     
-    public String getMatchPassword(String pMatchName){
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ tMatch+"."+fMatchPassword +" FROM "+ tMatch+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = 1 and "+tMatch+"."+fMatchID+" = "+tMatchProfile+"."+fMatchID+" and "+tMatch+"."+fMatchName+" =?",new String[]{pMatchName});
+    public String getMatchPassword(String pMatchName,int pProfileID,int pJoined){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ tMatch+"."+fMatchPassword +" FROM "+ tMatch+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = "+String.valueOf(pProfileID)+" and "+tMatch+"."+fMatchID+" = "+tMatchProfile+"."+fMatchID+" and "+tMatch+"."+fMatchName+" =? and "+tMatchProfile+"."+fMatchProfileJoined+" = "+String.valueOf(pJoined),new String[]{pMatchName});
 	    myCursor.moveToFirst();
 	    int index = myCursor.getColumnIndex(fMatchPassword);
 	    String myAnswer = myCursor.getString(index);
@@ -379,7 +393,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	  ContentValues cv = new ContentValues();
           cv.put(fMatchID,pMatchID);
           cv.put(fPlayerID,pPlayerID);
-          this.getWritableDatabase().insert(tMatchPlayers, null, cv);
+          this.getWritableDatabase().insert(tMatchPlayers, fMatchPlayersID, cv);
           cv.clear();
           this.close();
           return pPlayerID;
@@ -418,6 +432,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 			 this.close();
 			 return myAnswer;
 	    }else{
+	    	this.close();
 	    	return new int[]{};
 	    }
     }
@@ -462,6 +477,21 @@ public class UserDatabase extends SQLiteOpenHelper {
       this.close();
     }
     
-    
+    public int[] getAttributes(int pPlayerID){
+      int[] myAnswer = new int[4];
+	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tAttributes+".* from "+tPlayer+","+tAttributes+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tAttributes+"."+fPlayerID, new String[]{String.valueOf(pPlayerID)});
+ 	  myCursor.moveToFirst();
+  	  int index = myCursor.getColumnIndex(fAttributesPower);
+  	  myAnswer[0]=myCursor.getInt(index);
+  	  index = myCursor.getColumnIndex(fAttributesIntelligence);
+  	  myAnswer[1]=myCursor.getInt(index);
+  	  index = myCursor.getColumnIndex(fAttributesDefense);
+  	  myAnswer[2]=myCursor.getInt(index);
+  	  index = myCursor.getColumnIndex(fAttributesEndurance);
+  	  myAnswer[3]=myCursor.getInt(index);
+  	  myCursor.close();
+  	  this.close();
+  	  return myAnswer;
+     }
     
 }

@@ -43,6 +43,7 @@ public class MatchObject extends Entity{
 	private String IPAdress;
 	private Boolean mJoining;
 	private Boolean mHasPassword;
+	private Boolean mJoined = false;
 	private Text mText;
 	private String mPassword = "**nopass**";
 	private boolean mReady = false;
@@ -69,6 +70,10 @@ public class MatchObject extends Entity{
 		this.mUserID = pUserID;
 		this.mHasPassword = pHasPassword;
 		this.mEntity = pEntity;
+		if(mJoining)this.mJoined = Game.getDataHandler().checkifJoined(mUserID, mMatchName);
+		if(mJoined)this.mPassword = Game.getDataHandler().getMatchPassword(this.mMatchName,this.mUserID);
+		
+		
 		
 		this.mMatchSprite = new Sprite(0, 0, pTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -99,8 +104,12 @@ public class MatchObject extends Entity{
 					if(!scroll){//checkeo si lo scrolleo
 						if(mJoining){//si me estoy uniendo o creando
 							if(MatchObject.this.hasPassword()){
-								showPasswordInput();
-								WaitForPassword();
+								if(mJoined){
+									mMatchScene.RequestConnection(mIP,mPassword,mMatchName,mUserID);
+								}else{
+									showPasswordInput();
+									WaitForPassword();
+								}
 							}else{
 								mMatchScene.RequestConnection(mIP,mPassword,mMatchName,mUserID);
 							}
@@ -122,10 +131,12 @@ public class MatchObject extends Entity{
 		};
 		this.mMatchEntity.attachChild(this.mMatchSprite);
 		
-		if(hasPassword()){
-			this.mMatchEntity.attachChild(new Sprite(500, 50, this.mMatchScene.getLockTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
+		
+		//Icons
+		if(hasPassword())this.mMatchEntity.attachChild(new Sprite(500, 50, this.mMatchScene.getLockTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
+		if(mJoined)this.mMatchEntity.attachChild(new Sprite(450, 50, this.mMatchScene.getJoinedTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
 			
-		}
+		
 		if(mJoining){
 			this.mText = Game.getTextHelper().NewText(100, 20, "Match name: "+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(this.mUserID), pKey);
 		}else{
@@ -231,7 +242,8 @@ public class MatchObject extends Entity{
 		}
 	}
 
-
+	
+	
 	public void startTimer(final boolean pScroll){
 		this.mMatchScene.registerUpdateHandler(tempTimer = new TimerHandler(0.2f, true, new ITimerCallback() {
 			@Override

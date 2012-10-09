@@ -1,70 +1,55 @@
-package com.quest.data;
+package com.quest.network.messages.server;
 
-public class MatchData {
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
+import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
+
+public class ServerMessageCreatePlayer  extends ServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	
-	
+
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private String mMatchName;
-	private int mMatchID;//La id que tiene el server del match
-	private String mPassword;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public MatchData(){
-		
-	}
-	
-	public MatchData(int pMatchID,String pMatchName){
-		setMatchID(pMatchID);
-		setMatchName(pMatchName);
-	}
-	
-	public MatchData(String pMatchName,String pPassword){
-		setPassword(pPassword);
-		setMatchName(pMatchName);
-	}
-	// ===========================================================
-	// Methods for/from SuperClass/Interfaces
-	// ===========================================================
-	
 
+	@Deprecated
+	public ServerMessageCreatePlayer() {
+		//Mensaje para indicar que tiene que crear un player nue
+	}
+	
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public String getMatchName() {
-		return mMatchName;
+	
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+
+	@Override
+	public short getFlag() {
+		return FLAG_MESSAGE_SERVER_CREATE_PLAYER;
 	}
 
-	public void setMatchName(String mMatchName) {
-		this.mMatchName = mMatchName;
+	@Override
+	protected void onReadTransmissionData(DataInputStream pDataInputStream)throws IOException {
+		//dududuuu
 	}
 
-	public int getMatchID() {
-		return mMatchID;
-	}
-
-	public void setMatchID(int mMatchID) {
-		this.mMatchID = mMatchID;
-	}
-
-	public String getPassword() {
-		return mPassword;
-	}
-
-	public void setPassword(String mPassword) {
-		this.mPassword = mPassword;
+	@Override
+	protected void onWriteTransmissionData(DataOutputStream pDataOutputStream)throws IOException {
+		//nein
 	}
 
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	
 
 	// ===========================================================
 	// Inner and Anonymous Classes

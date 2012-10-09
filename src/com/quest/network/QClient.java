@@ -17,13 +17,18 @@ import android.R.bool;
 import android.util.Log;
 
 import com.quest.data.MatchData;
+import com.quest.data.PlayerData;
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageFlags;
+import com.quest.network.messages.client.ClientMessagePlayerCreate;
+import com.quest.network.messages.client.ClientMessageSelectedPlayer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
+import com.quest.network.messages.server.ServerMessageCreatePlayer;
+import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.objects.BooleanMessage;
 import com.quest.scenes.MatchScene;
@@ -44,6 +49,8 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 		private void initMessagePool() {
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_CONNECTION_PING, ConnectionPingClientMessage.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST, ClientMessageConnectionRequest.class);
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE, ClientMessagePlayerCreate.class);
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER, ClientMessageSelectedPlayer.class);
 			}
 	
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
@@ -76,6 +83,24 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 							}						
 						};
 					}
+				}
+			});
+			
+			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_CREATE_PLAYER, ServerMessageCreatePlayer.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					//No tiene player en la partida, le pido que se haga uno
+					Game.getSceneManager().getMatchScene().msgCreateRemoteCharacter();
+				}
+			});
+			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER, ServerMessageExistingPlayer.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageExistingPlayer serverMessageExistingPlayer = (ServerMessageExistingPlayer) pServerMessage;
+					//Tiene player en la partida, lo agrego a la lista
+					Game.getSceneManager().getMatchScene().LoadOwnRemoteCharacters(serverMessageExistingPlayer.getCharacterID(), serverMessageExistingPlayer.getLevel(), serverMessageExistingPlayer.getPlayerClass());
 				}
 			});
 			
@@ -142,6 +167,30 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			}
 			QClient.this.mMessagePool.recycleMessage(clientMessageConnectionRequest);
 		}
+		
+		public void sendPlayerCreate(final PlayerData playerData){			
+			final ClientMessagePlayerCreate clientMessagePlayerCreate= (ClientMessagePlayerCreate) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE);
+			clientMessagePlayerCreate.setPlayerClass(playerData.getPlayerClass());
+			clientMessagePlayerCreate.setAttributes(playerData.getAttributes());
+			try {
+				sendClientMessage(clientMessagePlayerCreate);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessagePlayerCreate);
+		}	
+		
+		public void sendSelectedPlayer(int pPlayerID){			
+			final ClientMessageSelectedPlayer clientMessageSelectedPlayer= (ClientMessageSelectedPlayer) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER);
+			clientMessageSelectedPlayer.setPlayerID(pPlayerID);
+			try {
+				sendClientMessage(clientMessageSelectedPlayer);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessageSelectedPlayer);
+		}	
+		
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

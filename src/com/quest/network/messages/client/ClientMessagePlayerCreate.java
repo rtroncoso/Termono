@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
 
-public class ClientMessageCharacterCreate extends ClientMessage implements ClientMessageFlags {
+public class ClientMessagePlayerCreate extends ClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -15,82 +15,72 @@ public class ClientMessageCharacterCreate extends ClientMessage implements Clien
 	// Fields
 	// ===========================================================
 
-	private String mUserID;
-	private String mUsername;
-	private String mPassword;
-	private String mMatchName;
+	private int mClass;
+	private int mEndurance,mIntelligence,mPower,mDefense;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	@Deprecated
-	public ClientMessageCharacterCreate() {
+	public ClientMessagePlayerCreate() {
 	}
 
-	public ClientMessageCharacterCreate(final String pUserID,final String pUsername,final String pPassword,final String pMatchName) {
-		mUserID = pUserID;
-		mUsername = pUsername;
-		mPassword = pPassword;
-		mMatchName = pMatchName;
+	public ClientMessagePlayerCreate(final int pClass,final int[] pAttributes){
+		this.mClass = pClass;
+		this.mPower = pAttributes[0];
+		this.mIntelligence = pAttributes[1];
+		this.mDefense = pAttributes[2];
+		this.mEndurance = pAttributes[3];
 	}
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 	
-	public String getUserID() {
-		return this.mUserID;
+	public void setPlayerClass(int mClass) {
+		this.mClass = mClass;
 	}
 
-	public void setUserID(final String pUserID) {
-		this.mUserID = pUserID;
+	public void setAttributes(int[] pAttributes){
+		this.mPower = pAttributes[0];
+		this.mIntelligence = pAttributes[1];
+		this.mDefense = pAttributes[2];
+		this.mEndurance = pAttributes[3];
 	}
 	
-	public String getUsername() {
-		return this.mUsername;
-	}
-
-	public void setUsername(final String pUsername) {
-		this.mUsername = pUsername;
+	public int getPlayerClass(){
+		return this.mClass;
 	}
 	
-	public String getPassword() {
-		return this.mPassword;
-	}
-
-	public void setPassword(final String pPassword) {
-		this.mPassword = pPassword;
-	}
-	
-	public String getMatchName(){
-		return this.mMatchName;
-	}
-	
-	public void setMatchName(final String pMatchName){
-		this.mMatchName = pMatchName;
+	public int[] getAttributes(){
+		return new int[]{this.mPower,this.mIntelligence,this.mDefense,this.mEndurance};
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
+
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_CLIENT_CHARACTER_CREATE;
+		return FLAG_MESSAGE_CLIENT_PLAYER_CREATE;
 	}
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
-		 this.mUserID = pDataInputStream.readUTF();
-		 this.mUsername = pDataInputStream.readUTF();
-		 this.mPassword = pDataInputStream.readUTF();
-		 this.mMatchName = pDataInputStream.readUTF();
+		 this.mClass = pDataInputStream.readInt();
+		 this.mPower = pDataInputStream.readInt();
+		 this.mIntelligence = pDataInputStream.readInt();
+		 this.mDefense = pDataInputStream.readInt();
+		 this.mEndurance = pDataInputStream.readInt();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		pDataOutputStream.writeUTF(this.mUserID);
-		pDataOutputStream.writeUTF(this.mUsername);
-		pDataOutputStream.writeUTF(this.mPassword);
-		pDataOutputStream.writeUTF(this.mMatchName);
+		pDataOutputStream.writeInt(this.mClass);
+		pDataOutputStream.writeInt(this.mPower);
+		pDataOutputStream.writeInt(this.mIntelligence);
+		pDataOutputStream.writeInt(this.mDefense);
+		pDataOutputStream.writeInt(this.mEndurance);		
 	}
 
 	// ===========================================================

@@ -26,24 +26,31 @@ public class PlayerData {
 		
 	}
 	
-	public PlayerData(String pUsername, int pClass,int pLevel){
-		this.setUsername(pUsername);
-		this.setPlayerClass(pClass);
-		this.setLevel(pLevel);
+	public PlayerData(int[] pChoices){//Este se llena para mandar el mensaje de creation al server
+		this.setPlayerClass(pChoices[0]);
+		setAttributes(pChoices[1],pChoices[2],pChoices[3],pChoices[4]);
 	}
 
-	public PlayerData(int pPlayerID,String pUsername,int pClass,int pLevel){
+	public PlayerData(int pPlayerID,int pClass,int pLevel,int[] pAttributes){//Este se llena cuando elijo el chara en mi propia partida
 		this.setPlayerID(pPlayerID);
 		this.setPlayerClass(pClass);
-		this.setPositionID(pLevel);
-		this.setUsername(pUsername);
+		this.setLevel(pLevel);
+		this.setAttributes(pAttributes);
+		//modifiers y el resto
 	}
 	
-	public void addAttributes(int pEndurance,int pIntelligence,int pPower,int pDefense){
-		this.setEndurance(pEndurance);
-		this.setIntelligence(pIntelligence);
+	public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance){
 		this.setPower(pPower);
+		this.setIntelligence(pIntelligence);
 		this.setDefense(pDefense);
+		this.setEndurance(pEndurance);
+	}
+	
+	public void setAttributes(int[] pAttributes){
+		this.setPower(pAttributes[0]);
+		this.setIntelligence(pAttributes[1]);
+		this.setDefense(pAttributes[2]);
+		this.setEndurance(pAttributes[3]);
 	}
 	
 	public void updateModifiers(int pEndurance,int pIntelligence,int pPower,int pDefense,int pTotalHP,int pTotalMana,int pModHP,int pModMana){
@@ -211,6 +218,9 @@ public class PlayerData {
 		this.mProfileID = mProfileID;
 	}
 
+	public int[] getAttributes(){
+		return new int[]{getPower(),getIntelligence(),getDefense(),getEndurance()};
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================

@@ -1,6 +1,6 @@
 package com.quest.data;
 
-public class MatchData {
+public class ProfileData {
 
 	// ===========================================================
 	// Constants
@@ -10,25 +10,27 @@ public class MatchData {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private String mMatchName;
-	private int mMatchID;//La id que tiene el server del match
-	private String mPassword;
+	private String mUserID;
+	private String mUsername;
+	private int mProfileID;//La id que tiene el server del profile
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public MatchData(){
+	public ProfileData(){
 		
 	}
 	
-	public MatchData(int pMatchID,String pMatchName){
-		setMatchID(pMatchID);
-		setMatchName(pMatchName);
+	public ProfileData(String pUserID,String pUsername){//El propio
+		setUserID(pUserID);
+		setUsername(pUsername);
 	}
 	
-	public MatchData(String pMatchName,String pPassword){
-		setPassword(pPassword);
-		setMatchName(pMatchName);
+	public ProfileData(String pUserID,String pUsername,int pProfileID){//El del server
+		setUserID(pUserID);
+		setUsername(pUsername);
+		setProfileID(pProfileID);
 	}
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -37,30 +39,29 @@ public class MatchData {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public String getMatchName() {
-		return mMatchName;
+	public String getUsername() {
+		return mUsername;
 	}
 
-	public void setMatchName(String mMatchName) {
-		this.mMatchName = mMatchName;
+	public void setUsername(String pUsername) {
+		this.mUsername = pUsername;
 	}
 
-	public int getMatchID() {
-		return mMatchID;
+	public String getUserID() {
+		return mUserID;
 	}
 
-	public void setMatchID(int mMatchID) {
-		this.mMatchID = mMatchID;
+	public void setUserID(String pUserID) {
+		this.mUserID = pUserID;
 	}
 
-	public String getPassword() {
-		return mPassword;
+	public int getProfileID() {
+		return mProfileID;
 	}
 
-	public void setPassword(String mPassword) {
-		this.mPassword = mPassword;
+	public void setProfileID(int pProfileID) {
+		this.mProfileID = pProfileID;
 	}
-
 	// ===========================================================
 	// Methods
 	// ===========================================================

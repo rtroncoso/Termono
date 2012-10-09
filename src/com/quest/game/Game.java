@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 
 import com.quest.data.MatchData;
 import com.quest.data.PlayerData;
+import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.PlayerHelper;
@@ -42,6 +43,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static PlayerHelper mPlayerHelper;
 	private static PlayerData mPlayerData;
 	private static MatchData mMatchData;
+	private static ProfileData mProfileData;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -208,9 +210,19 @@ public class Game extends SimpleBaseGameActivity {
 	public static MatchData getMatchData(){
 		return Game.mMatchData;
 	}
+	
+	public static ProfileData getProfileData() {
+		return mProfileData;
+	}
+
+	public static void setProfileData(ProfileData mProfileData) {
+		Game.mProfileData = mProfileData;
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================
+
+
 
 	// ===========================================================
 	// Inner and Anonymous Classes
