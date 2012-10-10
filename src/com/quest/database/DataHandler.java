@@ -121,10 +121,7 @@ public class DataHandler {
 	
 	//MatchPlayers
 	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass){
-		int id = this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass));
-		//this.mUserDB.setModifiers();
-		//this.mUserDB.addInventoryItem();
-		return id;
+		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass));
 	}
 	
 	
@@ -143,6 +140,11 @@ public class DataHandler {
         return this.mUserDB.getPlayerClass(pPlayerID);
     }
 	
+	public void setPlayerLevel(int pLevel, int pPlayerID){
+		this.mUserDB.setPlayerLevel(pLevel,pPlayerID);
+	}
+
+	//Attributes
 	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
 		this.mUserDB.setAttributes(pPower, pIntelligence, pDefense, pEndurance, pPlayerID);
 	}
@@ -155,9 +157,45 @@ public class DataHandler {
 		return this.mUserDB.getAttributes(pPlayerID);
 	}
 	
-	public void setPlayerLevel(int pLevel, int pPlayerID){
-		this.mUserDB.setPlayerLevel(pLevel,pPlayerID);
+	//Modifiers
+	public void setPlayerModifiers(int pPlayerID,int pPower,int pIntelligence,int pDefense,int pEndurance,int currHP,int currMP,int totalManaBoost,int totalHPBoost){
+		this.mUserDB.setModifiers(pPlayerID,pPower,pIntelligence,pDefense,pEndurance,currHP,currMP,totalManaBoost,totalHPBoost);
 	}
+
+	public void setPlayerModifiers(int[] pModifiers,int pPlayerID){
+		this.mUserDB.setModifiers(pPlayerID,pModifiers[0], pModifiers[1], pModifiers[2], pModifiers[3], pModifiers[4],pModifiers[5],pModifiers[6],pModifiers[7]);
+	}
+	
+	public int[] getPlayerModifiers(int pPlayerID){
+		return this.mUserDB.getModifiers(pPlayerID);
+	}
+	
+	//Inventory
+	public void addInventoryItem(int pPlayerID,int pItemID, int pAmount){
+		this.mUserDB.addInventoryItem(pPlayerID,pItemID,pAmount);
+	}
+	
+	public void InventoryItemIncreaseAmount(int pPlayerID,int pItemID){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)+1);
+	}
+
+	public void InventoryItemIncreaseAmountby(int pPlayerID,int pItemID,int pAmount){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)+pAmount);
+	}
+	
+	public void InventoryItemDecreaseAmount(int pPlayerID,int pItemID){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)-1);
+		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)<0)this.mUserDB.removeInventoryItem(pPlayerID,pItemID);
+	}
+
+	public void InventoryItemDecreaseAmountby(int pPlayerID,int pItemID,int pAmount){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)-pAmount);
+		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)<0)this.mUserDB.removeInventoryItem(pPlayerID,pItemID);
+	}
+	
+	
+	
+	
 	
 	
 	

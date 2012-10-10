@@ -1,10 +1,12 @@
 package com.quest.scenes;
 
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.text.ChoiceFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
@@ -26,6 +28,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
+import org.andengine.util.adt.array.ArrayUtils;
 import org.andengine.util.debug.Debug;
 
 import android.app.AlertDialog;
@@ -49,7 +52,7 @@ import com.quest.objects.BooleanMessage;
 import com.quest.objects.CharacterObject;
 import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
-
+import java.util.Arrays.*;
 public class MatchScene extends Scene {
 
 	// ===========================================================
@@ -710,6 +713,14 @@ public class MatchScene extends Scene {
 								Game.getPlayerData().setPlayerID(playerid);
 								Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
 								Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
+								int[] ModifiersArray = new int[8];
+								System.arraycopy(mChoices, 1, ModifiersArray, 0, mChoices.length);
+								ModifiersArray[4] = ModifiersArray[3]*10;//Current Hp = endurance * 10
+								ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+								ModifiersArray[6] = 0;//Hp boost = 0
+								ModifiersArray[7] = 0;//Mana boost = 0
+								Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
+								Game.getPlayerData().setModifiers(Game.getDataHandler().getPlayerModifiers(playerid));
 								if(AVD_DEBUGGING){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 								}else{

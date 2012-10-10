@@ -18,6 +18,7 @@ public class PlayerData {
 	private int mEndurance,mIntelligence,mPower,mDefense;
 	private int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana;
 	private int currHP,currMana;
+	private int ManaBoost,HPBoost;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -52,13 +53,19 @@ public class PlayerData {
 		this.setEndurance(pAttributes[3]);
 	}
 	
-	public void updateModifiers(int pEndurance,int pIntelligence,int pPower,int pDefense,int pTotalHP,int pTotalMana,int pModHP,int pModMana){
+	
+	public void setModifiers(int[] Modifiers){
+		setModifiers(Modifiers[0], Modifiers[1], Modifiers[2], Modifiers[3], Modifiers[4], Modifiers[5]);
+		updateHPMana(Modifiers[6], Modifiers[7]);
+	}
+	
+	public void setModifiers(int pPower,int pIntelligence,int pDefense,int pEndurance,int pTotalHP,int pTotalMana){
 		this.setModEndurance(pEndurance);
 		this.setModIntelligence(pIntelligence);
 		this.setModPower(pPower);
 		this.setModDefense(pDefense);
-		this.setModHP(pModHP);
-		this.setModMana(pModMana);
+		this.setModHP(pTotalHP);
+		this.setModMana(pTotalMana);
 	}
 	
 	public void updateHPMana(int currHP,int currMana){

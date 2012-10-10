@@ -2,6 +2,7 @@ package com.quest.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.FeatureInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -422,8 +423,9 @@ public class UserDatabase extends SQLiteOpenHelper {
 		  cv.clear();
 		  cv.put(fPlayerID, myAnswer);
 		  this.getWritableDatabase().insert(tAttributes, fAttributesID, cv);
-		  this.getWritableDatabase().insert(tInventory, fInventoryID, cv);
 		  this.getWritableDatabase().insert(tModifiers, fModifiersID, cv);
+		  this.getWritableDatabase().insert(tInventory, fInventoryID, cv);
+		  this.getWritableDatabase().insert(tSpellBook, fSpellBookID, cv);
 	      this.close();
 	      return myAnswer;//devuelve el ID del player recien creado
     }
@@ -504,4 +506,83 @@ public class UserDatabase extends SQLiteOpenHelper {
   	  return myAnswer;
      }
     
+    //Modifiers
+    public void setModifiers(int pPlayerID,int pPower,int pIntelligence,int pDefense,int pEndurance,int currHP,int currMP,int totalManaBoost,int totalHPBoost){
+    	ContentValues cv = new ContentValues();
+        cv.put(fModifiersPower,pPower);
+        cv.put(fModifiersIntelligence, pIntelligence);
+        cv.put(fModifiersDefense, pDefense);
+        cv.put(fModifiersEndurance, pEndurance);
+        cv.put(fModifiersHitPoints, (pEndurance*10)+totalHPBoost);
+        cv.put(fModifiersManaPoints, (pIntelligence*10)+totalManaBoost);
+        cv.put(fModifiersCurrentHP, currHP);
+        cv.put(fModifiersCurrentMana, currMP);
+        this.getWritableDatabase().update(tAttributes, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+      }
+    
+    public int[] getModifiers(int pPlayerID){
+        int[] myAnswer = new int[8];
+        Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tModifiers+".* from "+tPlayer+","+tModifiers+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tModifiers+"."+fPlayerID, new String[]{String.valueOf(pPlayerID)});
+   	  	myCursor.moveToFirst();
+   	  	int index = myCursor.getColumnIndex(fModifiersPower);
+	  	myAnswer[0]=myCursor.getInt(index);
+	  	index = myCursor.getColumnIndex(fModifiersIntelligence);
+	  	myAnswer[1]=myCursor.getInt(index);
+	  	index = myCursor.getColumnIndex(fModifiersDefense);
+	  	myAnswer[2]=myCursor.getInt(index);
+	  	index = myCursor.getColumnIndex(fModifiersEndurance);
+	  	myAnswer[3]=myCursor.getInt(index);
+	  	index = myCursor.getColumnIndex(fModifiersHitPoints);
+	  	myAnswer[4]=myCursor.getInt(index);
+	  	index = myCursor.getColumnIndex(fModifiersManaPoints);
+	  	myAnswer[5]=myCursor.getInt(index);
+	  	index = myCursor.getColumnIndex(fModifiersCurrentHP);
+	  	myAnswer[6]=myCursor.getInt(index);
+	  	index = myCursor.getColumnIndex(fModifiersCurrentMana);
+	  	myAnswer[7]=myCursor.getInt(index);
+	  	myCursor.close();
+	  	this.close();
+	  	return myAnswer;
+       }
+    
+    //Inventory
+    public void addInventoryItem(int pPlayerID,int pItemID,int pAmount){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tInventoryItem+"."+fInventoryItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tInventoryItem+"."+fInventoryID+" = "+tInventory+"."+fInventoryID+" and "+tInventory+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tPlayer+"."+fPlayerID+" =? and "+tInventoryItem+"."+fItemID+" =?", new String[]{String.valueOf(pPlayerID),String.valueOf(pItemID)});
+    	this.close();
+    	int count = myCursor.getCount();
+    	if(count>0){//Ya tiene el item, updateo el amount
+           	int index = myCursor.getColumnIndex(fInventoryItemID);
+      		int myAnswer = myCursor.getInt(index);//consigo el inventoryitemID
+	    	ContentValues cv = new ContentValues();
+	        cv.put(fInventoryItemAmount,pAmount);//updateo el amount
+	        this.getWritableDatabase().update(tInventoryItem, cv, fInventoryItemID+" =?",new String[]{String.valueOf(myAnswer)});
+	    }else{//No tiene el item, lo agrego
+	    	ContentValues cv = new ContentValues();
+	        cv.put(fInventoryItemAmount,pAmount);
+	    	cv.put(fItemID,pItemID);
+	    	cv.put(fInventoryIsItemEquipped,0);
+	    	this.getWritableDatabase().insert(tInventoryItem, fInventoryItemID, cv);
+	    }
+	    myCursor.close();
+	    this.close();
+    }
+    
+    public int getInventoryItemAmount(int pPlayerID,int pItemID){
+       	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tInventoryItem+"."+fInventoryItemAmount+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tInventoryItem+"."+fInventoryID+" = "+tInventory+"."+fInventoryID+" and "+tInventory+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tPlayer+"."+fPlayerID+" =? and "+tInventoryItem+"."+fItemID+" =?", new String[]{String.valueOf(pPlayerID),String.valueOf(pItemID)});
+       	int index = myCursor.getColumnIndex(fInventoryItemAmount);
+  		int myAnswer = myCursor.getInt(index);
+  		myCursor.close();
+        this.close();
+        return myAnswer;
+    }
+    
+    public void removeInventoryItem(int pPlayerID, int pItemID){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tInventoryItem+"."+fInventoryItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tInventoryItem+"."+fInventoryID+" = "+tInventory+"."+fInventoryID+" and "+tInventory+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tPlayer+"."+fPlayerID+" =? and "+tInventoryItem+"."+fItemID+" =?", new String[]{String.valueOf(pPlayerID),String.valueOf(pItemID)});
+       	int index = myCursor.getColumnIndex(fInventoryItemID);
+  		int myAnswer = myCursor.getInt(index);
+    	this.getWritableDatabase().delete(tInventoryItem, tInventoryItem+"."+fInventoryItemID+" =?",new String[]{String.valueOf(myAnswer)});
+    }
+        
 }
