@@ -251,6 +251,7 @@ public class MatchObject extends Entity{
 				if(!pScroll){
 					lastY = currY;
 				}else{
+					tempTimer.setTimerSeconds(0.08f);
 					running = true;
 					if(speed>0){
 						if(mEntity.getY()>61){

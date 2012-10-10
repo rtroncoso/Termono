@@ -121,7 +121,10 @@ public class DataHandler {
 	
 	//MatchPlayers
 	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass){
-		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass));
+		int id = this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass));
+		//this.mUserDB.setModifiers();
+		//this.mUserDB.addInventoryItem();
+		return id;
 	}
 	
 	

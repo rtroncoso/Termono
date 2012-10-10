@@ -182,8 +182,8 @@ public class UserDatabase extends SQLiteOpenHelper {
 				 
 		 
 		 ContentValues cv = new ContentValues();
-		 //cv.put(fUserID,Game.getUserID());
-		 cv.put(fUserID,"00:00:00:00:00:00");
+		 cv.put(fUserID,Game.getUserID());
+		// cv.put(fUserID,"00:00:00:00:00:00");
 		 cv.put(fUsername, "Player");
 		 db.insert(tProfile, null, cv);	                    
          cv.clear();
@@ -422,7 +422,8 @@ public class UserDatabase extends SQLiteOpenHelper {
 		  cv.clear();
 		  cv.put(fPlayerID, myAnswer);
 		  this.getWritableDatabase().insert(tAttributes, fAttributesID, cv);
-		  
+		  this.getWritableDatabase().insert(tInventory, fInventoryID, cv);
+		  this.getWritableDatabase().insert(tModifiers, fModifiersID, cv);
 	      this.close();
 	      return myAnswer;//devuelve el ID del player recien creado
     }

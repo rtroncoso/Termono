@@ -702,6 +702,7 @@ public class MatchScene extends Scene {
 								mGrabbed = false;
 								MatchScene.this.clearTouchAreas();
 								//Creando un nuevo character en partida propia nueva
+								HasMatches = true;
 								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText(),false);
 								Game.setMatchData(new MatchData(matchid, MatchScene.this.mMatchNameInput.getText()));
 								Game.setPlayerData(new PlayerData(mChoices));
@@ -778,7 +779,7 @@ public class MatchScene extends Scene {
 									Step+=1;
 									MatchScene.this.MatchCreate(false,true);
 								}else{
-									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(200, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
+									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(20, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
 								}
 							}
 		                  }else{
@@ -1086,7 +1087,7 @@ public class MatchScene extends Scene {
 				this.mChoices[2] = 1;
 				this.mChoices[3] = 1;
 				this.mChoices[4] = 1;
-				this.mChoices[5] = 20;
+				this.mChoices[5] = 10;
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
@@ -1555,7 +1556,7 @@ public class MatchScene extends Scene {
 						this.mChoices[2] = 1;
 						this.mChoices[3] = 1;
 						this.mChoices[4] = 1;
-						this.mChoices[5] = 20;
+						this.mChoices[5] = 10;
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
@@ -2143,7 +2144,7 @@ public class MatchScene extends Scene {
 
 				alert.setTitle("Enter a username");
 				alert.setMessage("Welcome to Quest! please enter the name that will be displayed to other players");
-				final EditText editText = new EditText(Game.getInstance());
+				final EditText editText = new EditText(Game.getInstance());//*** checkear que ponga algo
 				editText.setTextSize(15f);
 				editText.setText("");
 				editText.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -2151,7 +2152,11 @@ public class MatchScene extends Scene {
 				alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
+						if(!editText.getText().toString().equals(null)||!editText.getText().toString().equals("")){
 						Game.getDataHandler().setUsername(1,editText.getText().toString());
+						}else{
+							showUsernameInput();
+						}
 					}
 				});
 				alert.setCancelable(false);
