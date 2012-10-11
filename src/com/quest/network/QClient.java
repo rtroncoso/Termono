@@ -169,10 +169,9 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			QClient.this.mMessagePool.recycleMessage(clientMessageConnectionRequest);
 		}
 		
-		public void sendPlayerCreate(final PlayerData playerData){			
+		public void sendPlayerCreate(int[] pChoices){			
 			final ClientMessagePlayerCreate clientMessagePlayerCreate= (ClientMessagePlayerCreate) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE);
-			clientMessagePlayerCreate.setPlayerClass(playerData.getPlayerClass());
-			clientMessagePlayerCreate.setAttributes(playerData.getAttributes());
+			clientMessagePlayerCreate.setChoices(pChoices);
 			try {
 				sendClientMessage(clientMessagePlayerCreate);				
 			} catch (Exception e) {

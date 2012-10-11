@@ -1659,11 +1659,9 @@ public class MatchScene extends Scene {
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
-													Game.setPlayerData(new PlayerData(mChoices));
-													Game.getClient().sendPlayerCreate(Game.getPlayerData());//Pasar al client
+													Game.getClient().sendPlayerCreate(mChoices);
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
 													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
-														//sacado para debuggear volver a poner ***
 													}
 													if(AVD_DEBUGGING){//sacar despues
 														SwitchEntity(LoadLobbyEntity(true, null,null));

@@ -26,26 +26,23 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	public ClientMessagePlayerCreate() {
 	}
 
-	public ClientMessagePlayerCreate(final int pClass,final int[] pAttributes){
-		this.mClass = pClass;
-		this.mPower = pAttributes[0];
-		this.mIntelligence = pAttributes[1];
-		this.mDefense = pAttributes[2];
-		this.mEndurance = pAttributes[3];
+	public ClientMessagePlayerCreate(final int[] pChoices){
+		this.mClass = pChoices[0];
+		this.mPower = pChoices[1];
+		this.mIntelligence = pChoices[2];
+		this.mDefense = pChoices[3];
+		this.mEndurance = pChoices[4];
 	}
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 	
-	public void setPlayerClass(int mClass) {
-		this.mClass = mClass;
-	}
-
-	public void setAttributes(int[] pAttributes){
-		this.mPower = pAttributes[0];
-		this.mIntelligence = pAttributes[1];
-		this.mDefense = pAttributes[2];
-		this.mEndurance = pAttributes[3];
+	public void setChoices(int[] pChoices){
+		this.mClass = pChoices[0];
+		this.mPower = pChoices[1];
+		this.mIntelligence = pChoices[2];
+		this.mDefense = pChoices[3];
+		this.mEndurance = pChoices[4];
 	}
 	
 	public int getPlayerClass(){
