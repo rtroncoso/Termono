@@ -713,12 +713,10 @@ public class MatchScene extends Scene {
 								Game.getPlayerData().setPlayerID(playerid);
 								Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
 								Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
-								int[] ModifiersArray = new int[8];
+								int[] ModifiersArray = new int[6];
 								System.arraycopy(mChoices, 1, ModifiersArray, 0, mChoices.length);
 								ModifiersArray[4] = ModifiersArray[3]*10;//Current Hp = endurance * 10
 								ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
-								ModifiersArray[6] = 0;//Hp boost = 0
-								ModifiersArray[7] = 0;//Mana boost = 0
 								Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
 								Game.getPlayerData().setModifiers(Game.getDataHandler().getPlayerModifiers(playerid));
 								if(AVD_DEBUGGING){//sacar despues
@@ -1659,7 +1657,7 @@ public class MatchScene extends Scene {
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
-													Game.getClient().sendPlayerCreate(mChoices);
+													Game.getClient().sendPlayerCreate(mChoices);//*** sacar profile data y match data
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
 													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
 													}

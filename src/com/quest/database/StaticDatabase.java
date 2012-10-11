@@ -8,149 +8,125 @@ import android.database.sqlite.SQLiteOpenHelper;
  
 public class StaticDatabase extends SQLiteOpenHelper {
         static final String dbName = "Static";
-       //fItemAmount+" INTEGER , "+
+        
+        //Class
+        static final String tClass = "Class"; 
+        static final String fClassID = "ClassID";
+        static final String fClassIconTexture = "IconTexture";
+        static final String fClassAnimationTexture = "AnimationTexture";
+        static final String fClassAnimationRows = "AnimationRows";
+        static final String fClassAnimationCols = "AnimationCols";
+        static final String fClassFrameWidth = "FrameWidth";
+        static final String fClassFrameHeight = "FrameHeight";
+        
+        //Item
         static final String tItem = "Item"; 
         static final String fItemID = "ItemID";
         static final String fItemName = "Name";
-        static final String fItemTexture = "Texture";
+        static final String fItemIconTexture = "IconTexture";
+        static final String fItemAnimationTexture = "AnimationTexture";
         static final String fItemType = "Type";
         static final String fItemDescription = "Description";
         static final String fItemBuyPrice = "BuyPrice";
         static final String fItemSellPrice = "SellPrice";
         static final String fItemClass = "ItemClassID";
+        //fItemModifierID
+        //droprate etc
         
-        static final String fModifierID = "Modifier";
+        //Item Modifiers
+        static final String tItemModifiers = "ItemModifiers";
+        static final String fItemModifierID = "ModifierID";
+	    static final String fItemModifierEndurance = "Endurance";
+	    static final String fItemModifierIntelligence = "Intelligence";
+	    static final String fItemModifierPower = "Power";
+	    static final String fItemModifierDefense = "Defense";
         
-        static final String tInventory = "Inventory";
-        static final String fInventoryPlayerID = "PlayerID";
-        static final String fInventoryItemID = "ItemID";
-        static final String fInventoryItemAmount = "Amount";
-        static final String fInventoryIsItemEquipped = "IsEquipped";
-        
-        
-        static final String tPlayer = "Player";
-        static final String fPlayerID = "PlayerID";
-        static final String fPlayerName = "PlayerName";
-        static final String fPlayerClass = "PlayerClass";
-        
-        
-        static final String tModifiers = "Modifiers";
-        static final String fMHitPoint = "HP";
-        static final String fMEndurance = "Endurance";
-        static final String fMManaPoints = "ManaPoints";
-        static final String fMIntelligence = "Intelligence";
-        static final String fMPower = "Power";
-        static final String fMDefense = "Defense";
-        
-        //atributos
-        static final String tAttributes = "Attributes";
-        static final String fPEndurance = "Endurance";
-        static final String fPIntelligence = "Intelligence";
-        static final String fPPower = "Power";
-        static final String fPDefense = "Defense";
-        
+	    
         //spells -estaticos, hacer tabla spellbook
         static final String tSpells = "Spells";
         static final String fSpellID = "SpellID";
         static final String fSpellName = "Name";
-        static final String fSpellTexture = "Texture";
+        static final String fSpellIconTexture = "IconTexture";
+        static final String fSpellAnimationTexture = "AnimationTexture";
         static final String fSpellType = "Type";
         static final String fSpellDescription = "Description";
-    //    static final String fSpellLevels = "Levels";		por ahora todos tienen la misma cantidad
+        static final String fSpellLevels = "Levels";
         static final String fSpellClass = "Class";
         static final String fSpellEffectID = "EffectID";
-        
-        //spellbook - los que tiene el player
-        static final String tSpellBook = "SpellBook";
-        static final String fSpellBookPlayerID = "PlayerID";
-        static final String fSpellBookSpellID = "SpellID";
-        static final String fSpellBookSpellLevel = "Level";
-        
         
         //SpellEffect table
         static final String tSpellEffect = "SpellEffect";
         static final String fEffectSpellID = "SpellID";
-        static final String fEffectSpellLevel0 = "cero";
-        static final String fEffectSpellLevel1 = "uno";
-        static final String fEffectSpellLevel2 = "dos";
-        static final String fEffectSpellLevel3 = "tres";
+        static final String fEffectSpellLevel1 = "Effect1";
+        static final String fEffectSpellLevel2 = "Effect2";
+        static final String fEffectSpellLevel3 = "Effect3";
+        static final String fEffectSpellLevel4 = "Effect4";
+        static final String fEffectSpellLevel5 = "Effect5";
         
         
         public StaticDatabase(Context context) {
 // THE VALUE OF 1 ON THE NEXT LINE REPRESENTS THE VERSION NUMBER OF THE DATABASE
 // IN THE FUTURE IF YOU MAKE CHANGES TO THE DATABASE, YOU NEED TO INCREMENT THIS NUMBER
 // DOING SO WILL CAUSE THE METHOD onUpgrade() TO AUTOMATICALLY GET TRIGGERED
-                super(context, dbName, null, 25);
+                super(context, dbName, null, 1);
         }
  
         @Override
         public void onCreate(SQLiteDatabase db) {
 // ESTABLISH NEW DATABASE TABLES IF THEY DON'T ALREADY EXIST IN THE DATABASE
+	            db.execSQL("CREATE TABLE IF NOT EXISTS "+tClass+" ("+
+	            		fClassID+" INTEGER PRIMARY KEY , "+
+	            		fClassIconTexture+" TEXT ,"+
+	            		fClassAnimationTexture+" TEXT ,"+
+	            		fClassAnimationRows+" INTEGER ,"+
+	            		fClassAnimationCols+" INTEGER ,"+
+	            		fClassFrameWidth+" INTEGER ,"+
+	            		fClassFrameHeight+" INTEGER)"
+	                    );
+	            
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tItem+" ("+
                         fItemID+" INTEGER PRIMARY KEY , "+
                         fItemName+" TEXT , "+
-                        fItemTexture+" TEXT , "+
+                        fItemIconTexture+" TEXT , "+
+                        fItemAnimationTexture+" TEXT , "+
                         fItemType+" INTEGER , "+
                         fItemDescription+" TEXT , "+
                         fItemBuyPrice+" INTEGER , "+
                         fItemSellPrice+" INTEGER , "+
                         fItemClass+" INTEGER, "+
-                        fModifierID+" INTEGER)"
+                        fItemModifierID+" INTEGER)"
                         );
-                //hacer que no sea auto increasing?
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
-                		fInventoryItemID+" INTEGER PRIMARY KEY , "+
-                		fInventoryPlayerID+" INTEGER, "+
-                        fInventoryItemAmount+" INTEGER , "+
-                        fInventoryIsItemEquipped+" INTEGER)"
-                        );
-                
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tPlayer+" ("+
-                		fPlayerID+" INTEGER PRIMARY KEY , "+
-                		fPlayerName+" TEXT ,"+
-                		fPlayerClass+" INTEGER)"
+
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tItemModifiers+" ("+
+                		fItemModifierID+" INTEGER PRIMARY KEY , "+
+                		fItemModifierPower+" INTEGER, "+
+                        fItemModifierIntelligence+" INTEGER , "+
+                        fItemModifierDefense+" INTEGER , "+
+                        fItemModifierEndurance+" INTEGER)"
                         );
                 
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tModifiers+" ("+
-                		fModifierID+" INTEGER PRIMARY KEY , "+
-                		fMHitPoint+" INTEGER ,"+
-                		fMEndurance+" INTEGER ,"+
-                		fMManaPoints+" INTEGER ,"+
-                		fMIntelligence+" INTEGER ,"+
-                		fMPower+" INTEGER ,"+
-                		fMDefense+" INTEGER)"
-                        );
-                
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttributes+" ("+
-                		fPlayerID+" INTEGER PRIMARY KEY , "+//es necesario?
-                		fPEndurance+" INTEGER ,"+
-                		fPIntelligence+" INTEGER ,"+
-                		fPPower+" INTEGER ,"+
-                		fPDefense+" INTEGER)"
-                        );
                 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpells+" ("+
                         fSpellID+" INTEGER PRIMARY KEY , "+
                         fSpellName+" TEXT , "+
-                        fSpellTexture+" TEXT , "+
-                        fSpellType+" INTEGER , "+//no se ni para que por ahora
+                        fSpellIconTexture+" TEXT , "+
+                        fSpellAnimationTexture+" TEXT , "+
+                        fSpellType+" INTEGER , "+
                         fSpellDescription+" TEXT , "+
+                        fSpellLevels+" INTEGER, "+
                         fSpellClass+" INTEGER, "+
                         fSpellEffectID+" INTEGER)"
                         );
                 
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBook+" ("+
-                		fSpellBookSpellID+" INTEGER PRIMARY KEY , "+
-                		fSpellBookPlayerID+" INTEGER , "+//Hacer un "Unlocked" o pasarle solo los que tiene?
-                		fSpellBookSpellLevel+" INTEGER)"
-                        );
+                               
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellEffect+" ("+
                 		fEffectSpellID+" INTEGER PRIMARY KEY , "+
-                		fEffectSpellLevel0+" TEXT ,"+//Como defino los datos aca adentro? los encapsulo en un string por ahora
-                		fEffectSpellLevel1+" TEXT ,"+
+                		fEffectSpellLevel1+" TEXT ,"+//Como definir los datos aca adentro? los encapsulo en un string por ahora
                 		fEffectSpellLevel2+" TEXT ,"+
-                		fEffectSpellLevel3+" TEXT)"
+                		fEffectSpellLevel3+" TEXT ,"+
+                		fEffectSpellLevel4+" TEXT ,"+
+                		fEffectSpellLevel5+" TEXT)"
                         );                
                 
                 
@@ -158,6 +134,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
        
 // OPTIONALLY PREPOPULATE THE TABLE WITH SOME VALUES   
                  ContentValues cv = new ContentValues();
+                 		/*
                  		//@=====//::::::::::::::> - Swords 
                  		cv.put(fItemID, 0);//-------Cypress Stick-----------
                  		cv.put(fItemName, "Cypress Stick");cv.put(fItemTexture, "Paladin/Swords/CypressStick.png");cv.put(fItemType, 5);cv.put(fItemDescription, "A reliable wooden stick");cv.put(fItemBuyPrice, 15);cv.put(fItemSellPrice, 8);cv.put(fItemClass,1);cv.put(fModifierID,0);db.insert(tItem, null, cv);
@@ -244,45 +221,10 @@ public class StaticDatabase extends SQLiteOpenHelper {
 		        	      //--------knights plate2----
 		                cv.put(fModifierID,11);cv.put(fMHitPoint,0);cv.put(fMEndurance,10);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,23);db.insert(tModifiers, null, cv);
 		                //--------mythril chain-----
-		                cv.put(fModifierID,12);cv.put(fMHitPoint,0);cv.put(fMEndurance,15);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,35);db.insert(tModifiers, null, cv);
-		          
+		                cv.put(fModifierID,12);cv.put(fMHitPoint,0);cv.put(fMEndurance,15);cv.put(fMManaPoints,0);cv.put(fMIntelligence,0);cv.put(fMPower,0);cv.put(fMDefense,35);db.insert(tModifiers, null, cv);      
 		                cv.clear();
-		                
-		                //Spells
-		                //Energy blast
-	                    cv.put(fSpellID, 0);cv.put(fSpellName, "Energy blast");cv.put(fSpellTexture, "Spells/Icons/EnergyBlast.png");cv.put(fSpellType, 0);cv.put(fSpellDescription, "A basic missile of energy.");cv.put(fSpellClass, 3);cv.put(fSpellEffectID, 0);db.insert(tSpells, null, cv);
-	                    //Fire Ball
-	                    cv.put(fSpellID, 1);cv.put(fSpellName, "Fire Ball");cv.put(fSpellTexture, "Spells/Icons/FireBall.png");cv.put(fSpellType, 1);cv.put(fSpellDescription, "A small ball of fire.");cv.put(fSpellClass, 3);cv.put(fSpellEffectID, 1);db.insert(tSpells, null, cv);
-	                    
-	                    //Sword Bash
-	                    cv.put(fSpellID, 2);cv.put(fSpellName, "Sword Bash");cv.put(fSpellTexture, "Spells/Icons/SwordBash.png");cv.put(fSpellType, 6);cv.put(fSpellDescription, "Hits the enemy with a powerfull bash");cv.put(fSpellClass, 1);cv.put(fSpellEffectID, 2);db.insert(tSpells, null, cv);
-	                    
-	                    cv.clear();
-	                    
-	                    //spell effect
-	                    //Energy blast
-	                    cv.put(fEffectSpellID, 0);
-	                    cv.put(fEffectSpellLevel0, ",5,0,");
-	                    cv.put(fEffectSpellLevel1, ",10,0,");
-	                    cv.put(fEffectSpellLevel2, ",20,1,");//1 = dmg to mana
-	                    cv.put(fEffectSpellLevel3, ",35,1,");
-	                    db.insert(tSpellEffect, null, cv);
-	                    //Fire Ball
-	                    cv.put(fEffectSpellID, 1);
-	                    cv.put(fEffectSpellLevel0, ",15,0,"); //2 = burn
-	                    cv.put(fEffectSpellLevel1, ",20,0,");
-	                    cv.put(fEffectSpellLevel2, ",40,2,");
-	                    cv.put(fEffectSpellLevel3, ",65,2,");
-	                    db.insert(tSpellEffect, null, cv);
-	                    //Sword Bash
-	                    cv.put(fEffectSpellID, 2);
-	                    cv.put(fEffectSpellLevel0, ",15,0,"); //hacer que el daño sea un porcentaje?
-	                    cv.put(fEffectSpellLevel1, ",20,0,");
-	                    cv.put(fEffectSpellLevel2, ",40,2,");
-	                    cv.put(fEffectSpellLevel3, ",65,2,");
-	                    db.insert(tSpellEffect, null, cv);
-	                    cv.clear();
-		                /*
+
+	                    /*
 		              //@=====//##############> - Shields 
 		              //--------wooden shield-----
 		                cv.put(fModifierID,13);
@@ -341,193 +283,18 @@ public class StaticDatabase extends SQLiteOpenHelper {
 		                
 		                */
 		                		                
-		                
-		                
-		                
-		                ///TEST ITEMS
-		                cv.put(fItemID, 40);
-		                cv.put(fItemName, "TESTITEM");
-		                cv.put(fItemTexture, "Orc/Weapons/Warhammer.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A test item");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 500);
-		                cv.put(fItemClass,2);
-		                cv.put(fModifierID,40);
-		                db.insert(tItem, null, cv); 
-		                cv.put(fItemID, 41);
-		                cv.put(fItemName, "TESTITEM");
-		                cv.put(fItemTexture, "Orc/Weapons/Warhammer.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A test item");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 500);
-		                cv.put(fItemClass,0);
-		                cv.put(fModifierID,41);
-		                db.insert(tItem, null, cv); 
-		                cv.put(fItemID, 42);
-		                cv.put(fItemName, "TESTITEM");
-		                cv.put(fItemTexture, "Orc/Weapons/Warhammer.png");
-		                cv.put(fItemType, 0);
-		                cv.put(fItemDescription, "A test item");
-		                cv.put(fItemBuyPrice, 0);
-		                cv.put(fItemSellPrice, 500);
-		                cv.put(fItemClass,3);
-		                cv.put(fModifierID,42);
-		                db.insert(tItem, null, cv); 
-						//cv.clear(); //Hace falta hacerle clear?
-		                cv.clear();
-						
-		                //INVENTORY	
-		                cv.put(fInventoryItemID,0);//tiene que ser igual a fItemID
-		                cv.put(fInventoryItemAmount, 1);//tiene que ser igual a fItemName
-		                cv.put(fInventoryIsItemEquipped, 0);
-		                cv.put(fPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
-		                db.insert(tInventory, null, cv);
-		                cv.put(fInventoryItemID,2);
-		 		        cv.put(fInventoryItemAmount, 1);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		                cv.put(fInventoryItemID,5);//tiene que ser igual a fItemID
-		 		        cv.put(fInventoryItemAmount, 2);//tiene que ser igual a fItemName
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);//tiene que ser igual a PlayerID o fPlayerInventoryID?
-		 		        db.insert(tInventory, null, cv);
-		 			    cv.put(fInventoryItemID,7);
-		 		        cv.put(fInventoryItemAmount, 1);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		 		        cv.put(fInventoryItemID,11);
-		 		        cv.put(fInventoryItemAmount, 1);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		 		        cv.put(fInventoryItemID,14);
-		 		        cv.put(fInventoryItemAmount, 1);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		 		        cv.put(fInventoryItemID,18);
-		 		        cv.put(fInventoryItemAmount, 2);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		 		        cv.put(fInventoryItemID,20);
-		 		        cv.put(fInventoryItemAmount, 1);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		 		    	cv.put(fInventoryItemID,23);
-		 		        cv.put(fInventoryItemAmount, 5);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);	
-		 		        //item de prueba
-		 		        cv.put(fInventoryItemID,40);
-		 		   		cv.put(fInventoryItemAmount, 1);
-	 		        	cv.put(fInventoryIsItemEquipped, 0);
-	 		        	cv.put(fPlayerID, 0);
-	 		        	db.insert(tInventory, null, cv);	  
-		                //mas items
-		                cv.put(fInventoryItemID,9);
-		 		        cv.put(fInventoryItemAmount, 5);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		 		    	cv.put(fInventoryItemID,16);
-		 		        cv.put(fInventoryItemAmount, 5);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);
-		 		       //items de prueba
-		 		        cv.put(fInventoryItemID,41);
-		 		   		cv.put(fInventoryItemAmount, 1);
-	 		        	cv.put(fInventoryIsItemEquipped, 0);
-	 		        	cv.put(fPlayerID, 0);
-	 		        	db.insert(tInventory, null, cv);
-		 		    	cv.put(fInventoryItemID,21);
-		 		        cv.put(fInventoryItemAmount, 5);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);	
-		 		        cv.put(fInventoryItemID,42);
-		 		   		cv.put(fInventoryItemAmount, 1);
-	 		        	cv.put(fInventoryIsItemEquipped, 0);
-	 		        	cv.put(fPlayerID, 0);
-	 		        	db.insert(tInventory, null, cv);
-	 		        	cv.put(fInventoryItemID,10);
-		 		        cv.put(fInventoryItemAmount, 5);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);	
-		 		        cv.put(fInventoryItemID,19);
-		 		        cv.put(fInventoryItemAmount, 5);
-		 		        cv.put(fInventoryIsItemEquipped, 0);
-		 		        cv.put(fPlayerID, 0);
-		 		        db.insert(tInventory, null, cv);	
-		 		       cv.clear();
-		 		       
-		 		        
-		 		        //clases 0 multi; 1 pala; 2 arquero; 3 mago; 4 orco;
-		 		        cv.put(fPlayerID, 0);
-		                cv.put(fPlayerName, "Joaquin");
-		                cv.put(fPlayerClass, 1);
-	                	db.insert(tPlayer, null, cv);
-	                	
-	                	cv.put(fPlayerID, 1);
-			            cv.put(fPlayerName, "Ramiro");
-			            cv.put(fPlayerClass, 3);
-		                db.insert(tPlayer, null, cv);
-	                	
-	                	cv.clear();
-	                	 
-	                	//atributos
-	                    cv.put(fPlayerID, 0);
-	                    cv.put(fPEndurance,1);
-	                    cv.put(fPIntelligence,1);
-	            		cv.put(fPPower,1);
-	    				cv.put(fPDefense,1);
-	                    db.insert(tAttributes, null, cv);	                    
-	                    cv.clear();
-	                  
-	                    //spellbook
-	                    cv.put(fSpellBookSpellID, 2);
-	                    cv.put(fSpellBookPlayerID, 0); //le cargo 1 a joaquin
-	                    cv.put(fSpellBookSpellLevel, 0);
-	                    db.insert(tSpellBook, null, cv);
-	                    cv.put(fSpellBookSpellID, 0);
-	                    cv.put(fSpellBookPlayerID, 1); //hacer el inner join
-	                    cv.put(fSpellBookSpellLevel, 0);
-	                    db.insert(tSpellBook, null, cv);
-	                    cv.put(fSpellBookSpellID, 1);
-	                    cv.put(fSpellBookPlayerID, 1); //hacer el inner join
-	                    cv.put(fSpellBookSpellLevel, 2);
-	                    db.insert(tSpellBook, null, cv);
-	                    cv.clear();
-	                    
-		                
-/*             
- * MORE ADVANCED EXAMPLES OF USAGE
- *
-                db.execSQL("CREATE TRIGGER fk_empdept_deptid " +
-                                " BEFORE INSERT "+
-                                " ON "+employeeTable+                          
-                                " FOR EACH ROW BEGIN"+
-                                " SELECT CASE WHEN ((SELECT "+colDeptID+" FROM "+deptTable+" WHERE "+colDeptID+"=new."+colDept+" ) IS NULL)"+
-                                " THEN RAISE (ABORT,'Foreign Key Violation') END;"+
-                                "  END;");
-               
-                db.execSQL("CREATE VIEW "+viewEmps+
-                                " AS SELECT "+employeeTable+"."+colID+" AS _id,"+
-                                " "+employeeTable+"."+colName+","+
-                                " "+employeeTable+"."+colAge+","+
-                                " "+deptTable+"."+colDeptName+""+
-                                " FROM "+employeeTable+" JOIN "+deptTable+
-                                " ON "+employeeTable+"."+colDept+" ="+deptTable+"."+colDeptID
-                                );
-*/                             
+                 cv.put(fItemID, 0);//-------Cypress Stick-----------
+          		 cv.put(fItemName, "Cypress Stick");
+          		 cv.put(fItemIconTexture, "Paladin/Swords/CypressStick.png");
+          		 cv.put(fItemAnimationTexture, "Paladin/Swords/CypressStick.png");
+          		 cv.put(fItemType, 5);
+          		 cv.put(fItemDescription, "A reliable wooden stick");
+          		 cv.put(fItemBuyPrice, 15);
+          		 cv.put(fItemSellPrice, 8);
+          		 cv.put(fItemClass,1);
+          		 cv.put(fItemModifierID,0);
+          		 db.insert(tItem, null, cv);
+          		 
         }
         
  
@@ -536,82 +303,76 @@ public class StaticDatabase extends SQLiteOpenHelper {
 // THIS METHOD DELETES THE EXISTING TABLE AND THEN CALLS THE METHOD onCreate() AGAIN TO RECREATE A NEW TABLE
 // THIS SERVES TO ESSENTIALLY RESET THE DATABASE
 // INSTEAD YOU COULD MODIFY THE EXISTING TABLES BY ADDING/REMOVING COLUMNS/ROWS/VALUES THEN NO EXISTING DATA WOULD BE LOST
-                db.execSQL("DROP TABLE IF EXISTS "+tItem);
-                db.execSQL("DROP TABLE IF EXISTS Levels");
-                db.execSQL("DROP TABLE IF EXISTS "+tInventory);
-                db.execSQL("DROP TABLE IF EXISTS "+tPlayer);
-                db.execSQL("DROP TABLE IF EXISTS "+tAttributes);
-                db.execSQL("DROP TABLE IF EXISTS "+tSpellBook);
-                db.execSQL("DROP TABLE IF EXISTS "+tSpellEffect);
-                db.execSQL("DROP TABLE IF EXISTS "+tSpells);
-                db.execSQL("DROP TABLE IF EXISTS "+tModifiers);
+                db.execSQL("DROP TABLE IF EXISTS *");
                 onCreate(db);
         }
         
+         //Class table
+        public String getClassIconTexture(int pID){
+       	 	SQLiteDatabase myDB = this.getReadableDatabase();
+       	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fClassIconTexture +" FROM "+ tClass+" WHERE "+ fClassID +"=?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fClassIconTexture);
+        	String myAnswer = myCursor.getString(index);
+        	myCursor.close();
+        	return myAnswer;
+        }
         
-       /*
-         public String isLevelUnLocked(int ID) {
-// THIS METHOD IS CALLED BY YOUR MAIN ACTIVITY TO READ A VALUE FROM THE DATABASE                 
-                 SQLiteDatabase myDB = this.getReadableDatabase();
-                 String[] mySearch = new String[]{String.valueOf(ID)};
-                 Cursor myCursor = myDB.rawQuery("SELECT "+ fLevelUnLocked +" FROM "+ tLevels +" WHERE "+ fLevelID +"=?",mySearch);
-                 myCursor.moveToFirst();
-                 int index = myCursor.getColumnIndex(fLevelUnLocked);
-                 String myAnswer = myCursor.getString(index);
-                 myCursor.close();
-                 return myAnswer;
-         }
-         
-         public int unLockLevel(int ID, String isUnLocked)
-         {
-// THIS METHOD IS CALLED BY YOUR MAIN ACTIVITY TO WRITE A VALUE TO THE DATABASE          
-                 SQLiteDatabase myDB = this.getWritableDatabase();
-                 ContentValues cv = new ContentValues();
-                 cv.put(fLevelUnLocked, isUnLocked);
-                 int numRowsAffected = myDB.update(tLevels, cv, fLevelID+"=?", new String []{String.valueOf(ID)});
-                 return numRowsAffected;
-         }
-               
-         
-         public int BeatLevel(int ID, String isBeat)
-         {
-// THIS METHOD IS CALLED BY YOUR MAIN ACTIVITY TO WRITE A VALUE TO THE DATABASE          
-                 SQLiteDatabase myDB = this.getWritableDatabase();
-                 ContentValues cv = new ContentValues();
-                 cv.put(fLevelBeat,isBeat);   
-                 int numRowsAffected = myDB.update(tLevels, cv, fLevelID+"=?", new String []{String.valueOf(ID)});
-                 return numRowsAffected;
-         }
-         
-         public String isLevelBeat(int ID) {
-        	// THIS METHOD IS CALLED BY YOUR MAIN ACTIVITY TO READ A VALUE FROM THE DATABASE                 
-        	                 SQLiteDatabase myDB = this.getReadableDatabase();
-        	                 String[] mySearch = new String[]{String.valueOf(ID)};
-        	                 Cursor myCursor = myDB.rawQuery("SELECT "+ fLevelBeat +" FROM "+ tLevels +" WHERE "+ fLevelID +"=?",mySearch);
-        	                 myCursor.moveToFirst();
-        	                 int index = myCursor.getColumnIndex(fLevelBeat);
-        	                 String myAnswer = myCursor.getString(index);
-        	                 myCursor.close();
-        	                 return myAnswer;
-        	         }
-         */
+        public String getClassAnimationTexture(int pID){
+       	 	SQLiteDatabase myDB = this.getReadableDatabase();
+       	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fClassAnimationTexture +" FROM "+ tClass+" WHERE "+ fClassID +"=?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fClassAnimationTexture);
+        	String myAnswer = myCursor.getString(index);
+        	myCursor.close();
+        	return myAnswer;
+        }
+        
+        public int getClassAnimationRows(int pID){
+       	 	SQLiteDatabase myDB = this.getReadableDatabase();
+       	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fClassAnimationRows+" FROM "+ tClass+" WHERE "+ fClassID +"=?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fClassAnimationRows);
+        	int myAnswer = myCursor.getInt(index);
+        	myCursor.close();
+        	return myAnswer;
+        }
+        
+        public int getClassAnimationCols(int pID){
+       	 	SQLiteDatabase myDB = this.getReadableDatabase();
+       	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fClassAnimationCols+" FROM "+ tClass+" WHERE "+ fClassID +"=?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fClassAnimationCols);
+        	int myAnswer = myCursor.getInt(index);
+        	myCursor.close();
+        	return myAnswer;
+        }
+        
+        public int getClassFrameWidth(int pID){
+       	 	SQLiteDatabase myDB = this.getReadableDatabase();
+       	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fClassFrameWidth+" FROM "+ tClass+" WHERE "+ fClassID +"=?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fClassFrameWidth);
+        	int myAnswer = myCursor.getInt(index);
+        	myCursor.close();
+        	return myAnswer;
+        }
+        
+        public int getClassFrameHeight(int pID){
+       	 	SQLiteDatabase myDB = this.getReadableDatabase();
+       	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fClassFrameHeight+" FROM "+ tClass+" WHERE "+ fClassID +"=?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fClassFrameHeight);
+        	int myAnswer = myCursor.getInt(index);
+        	myCursor.close();
+        	return myAnswer;
+        }
+        
         
          //Item table
-        /*
-         public int getInventoryItemID(int pIndex){
-       	  SQLiteDatabase myDB = this.getReadableDatabase();
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fInventoryItemID +" FROM "+ tInventory,null);
-             myCursor.moveToPosition(pIndex);
-             int index = myCursor.getColumnIndex(fInventoryItemID);
-             int myAnswer = myCursor.getInt(index);
-             myCursor.close();
-             return myAnswer;
-         }
-        */
          public String getItemName(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};//no se que pasarle para que quede bien, por ahora convierto a string
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemName +" FROM "+ tItem +" WHERE "+ fItemID +"=?",mySearch);
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemName +" FROM "+ tItem +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
              myCursor.moveToFirst();
              int index = myCursor.getColumnIndex(fItemName);
              String myAnswer = myCursor.getString(index);
@@ -619,21 +380,29 @@ public class StaticDatabase extends SQLiteOpenHelper {
              return myAnswer;
          }         
          
-         public String getItemImagePath(int pID){
+         public String getItemIconTexture(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemTexture +" FROM "+ tItem +" WHERE "+ fItemID +"=?",mySearch);
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemIconTexture +" FROM "+ tItem +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
              myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fItemTexture);
+             int index = myCursor.getColumnIndex(fItemIconTexture);
              String myAnswer = myCursor.getString(index);
              myCursor.close();
              return myAnswer;
          }         
          
+         public String getItemAnimationTexture(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemAnimationTexture +" FROM "+ tItem +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fItemAnimationTexture);
+             String myAnswer = myCursor.getString(index);
+             myCursor.close();
+             return myAnswer;
+         }
+         
          public int getItemType(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemType +" FROM "+ tItem +" WHERE "+ fItemID +"=?",mySearch);
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemType +" FROM "+ tItem +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
              myCursor.moveToFirst();
              int index = myCursor.getColumnIndex(fItemType);
              int myAnswer = myCursor.getInt(index);
@@ -643,8 +412,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
          
          public int getItemBuyPrice(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
-        	 String[] mySearch = new String[]{String.valueOf(pID)};
-        	 Cursor myCursor = myDB.rawQuery("SELECT "+fItemBuyPrice+" FROM "+tItem+" WHERE "+fItemID+"=?",mySearch);
+        	 Cursor myCursor = myDB.rawQuery("SELECT "+fItemBuyPrice+" FROM "+tItem+" WHERE "+fItemID+"=?",new String[]{String.valueOf(pID)});
         	 myCursor.moveToFirst();
         	 int index = myCursor.getColumnIndex(fItemBuyPrice);
         	 int myAnswer = myCursor.getInt(index);
@@ -654,8 +422,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
          
          public int getItemSellPrice(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
-        	 String[] mySearch = new String[]{String.valueOf(pID)};
-        	 Cursor myCursor = myDB.rawQuery("SELECT "+fItemSellPrice+" FROM "+tItem+" WHERE "+fItemID+"=?",mySearch);
+        	 Cursor myCursor = myDB.rawQuery("SELECT "+fItemSellPrice+" FROM "+tItem+" WHERE "+fItemID+"=?",new String[]{String.valueOf(pID)});
         	 myCursor.moveToFirst();
         	 int index = myCursor.getColumnIndex(fItemSellPrice);
         	 int myAnswer = myCursor.getInt(index);
@@ -665,8 +432,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         
          public String getItemDescription(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemDescription +" FROM "+ tItem +" WHERE "+ fItemID +"=?",mySearch);
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemDescription +" FROM "+ tItem +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
              myCursor.moveToFirst();
              int index = myCursor.getColumnIndex(fItemDescription);
              String myAnswer = myCursor.getString(index);
@@ -676,297 +442,13 @@ public class StaticDatabase extends SQLiteOpenHelper {
          
          public int getItemClass(int pID){
         	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemClass +" FROM "+ tItem +" WHERE "+ fItemID +"=?",mySearch);
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemClass +" FROM "+ tItem +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
              myCursor.moveToFirst();
              int index = myCursor.getColumnIndex(fItemClass);
              int myAnswer = myCursor.getInt(index);
              myCursor.close();
              return myAnswer;
          }
-         
-         
-         //Inventory table
-         public int getInventoryCount(){
-                SQLiteDatabase db=this.getWritableDatabase();
-                Cursor cur= db.rawQuery("SELECT * FROM "+tInventory, null);
-                int x= cur.getCount();
-                cur.close();
-                return x;
-         }
-         
-         public int getItemAmount(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fInventoryItemAmount +" FROM "+ tInventory +" WHERE "+ fInventoryItemID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fInventoryItemAmount);
-             int myAnswer = myCursor.getInt(index);
-             myCursor.close();
-             return myAnswer;
-         }
-                  
-         public int[] getEquippedIDs(int pEstado){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-        	 String[] mySearch = new String[]{String.valueOf(pEstado)};
-        	 Cursor myCursor = myDB.rawQuery("SELECT "+ fInventoryItemID +" FROM "+ tInventory +" WHERE "+ fInventoryIsItemEquipped +"=?",mySearch);
-        	 int index = myCursor.getColumnIndex(fInventoryItemID);
-        	 int myAnswer[] = new int[myCursor.getCount()];
-        	 for(int i = 0; i < myCursor.getCount(); i++){
-        		myCursor.moveToPosition(i);
-        		myAnswer[i] = myCursor.getInt(index);
-        	 }
-             myCursor.close();
-             return myAnswer;
-         }
-
-         public void EquipItem(int ID, int pEquipped){
-                 SQLiteDatabase myDB = this.getWritableDatabase();
-                 ContentValues cv = new ContentValues();
-                 cv.put(fInventoryIsItemEquipped,String.valueOf(pEquipped));   
-                 myDB.update(tInventory, cv, fInventoryItemID+"=?", new String []{String.valueOf(ID)});
-         }
-         
-         public int isItemEquipped(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fInventoryIsItemEquipped+" FROM "+ tInventory +" WHERE "+ fInventoryItemID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fInventoryIsItemEquipped);
-             int myAnswer = myCursor.getInt(index);
-             myCursor.close();
-             return myAnswer;
-         }
-         
-         
-         //Player table
-         public int getPlayerClass(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fPlayerClass +" FROM "+ tPlayer +" WHERE "+ fPlayerID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fPlayerClass);
-             int myAnswer = myCursor.getInt(index);
-             myCursor.close();
-             return myAnswer;
-         }
-         /*
-         public int getPlayerAttributes(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fModifierID +" FROM "+ tPlayer +" WHERE "+ fPlayerID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fPlayerClass);
-             int myAnswer = myCursor.getInt(index);
-             myCursor.close();
-             return myAnswer;
-         }
-         */
-         
-         
-         //Spell table
-         public String getSpellName(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};//no se que pasarle para que quede bien, por ahora convierto a string
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellName +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fSpellName);
-             String myAnswer = myCursor.getString(index);
-             myCursor.close();
-             return myAnswer;
-         }         
-         
-         public String getSpellImagePath(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellTexture +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fSpellTexture);
-             String myAnswer = myCursor.getString(index);
-             myCursor.close();
-             return myAnswer;
-         }         
-         
-         public int getSpellType(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellType +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fSpellType);
-             int myAnswer = myCursor.getInt(index);
-             myCursor.close();
-             return myAnswer;
-         }
-         
-        
-         public String getSpellDescription(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellDescription +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fSpellDescription);
-             String myAnswer = myCursor.getString(index);
-             myCursor.close();
-             return myAnswer;
-         }      
-         
-         public int getSpellClass(int pID){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-             String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
-             Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellClass +" FROM "+ tSpells +" WHERE "+ fSpellID +"=?",mySearch);
-             myCursor.moveToFirst();
-             int index = myCursor.getColumnIndex(fSpellClass);
-             int myAnswer = myCursor.getInt(index);
-             myCursor.close();
-             return myAnswer;
-         }
-         
-          
-         public int[] getClassSpells(int pClass){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-        	 String[] mySearch = new String[]{String.valueOf(pClass)};
-        	 Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellID +" FROM "+ tSpells +" WHERE "+ fSpellClass +"=?",mySearch);
-        	 int index = myCursor.getColumnIndex(fSpellID);
-        	 int myAnswer[] = new int[myCursor.getCount()];
-        	 for(int i = 0; i < myCursor.getCount(); i++){
-        		myCursor.moveToPosition(i);
-        		myAnswer[i] = myCursor.getInt(index);
-        	 }
-             myCursor.close();
-             return myAnswer;
-         }
-         
-         
-         //Spell Effect
-         public String getSpellEffect(int pID,int pLevel){
-        	 SQLiteDatabase myDB = this.getReadableDatabase();
-        	 String[] mySearch = new String[]{String.valueOf(pID)};
-        	 String pepe = "cero";
-        	 switch(pLevel){
-        	 case 0:
-        		 pepe = "cero";
-        		 break;
-        	 case 1:
-        		 pepe = "uno";
-        		 break;
-        	 case 2:
-        		 pepe = "dos";
-        		 break;
-        	 case 3:
-        		 pepe = "tres";
-        		 break;
-        	 }
-        	 Cursor myCursor = myDB.rawQuery("SELECT "+pepe+" FROM "+tSpellEffect+" WHERE "+fEffectSpellID+"=?",mySearch);
-        	//Cursor myCursor = myDB.rawQuery("SELECT "+String.valueOf(pLevel)+" FROM "+tSpellEffect+" WHERE "+fEffectSpellID+"=?",mySearch);
-        	 myCursor.moveToFirst();
-        	 int index = myCursor.getColumnIndex(String.valueOf(pepe));
-        	 String myAnswer = myCursor.getString(index);
-        	 myCursor.close();
-        	 return myAnswer;
-         }
-         
-         //SpellBook
-         public int getSpellBookCount(){
-             SQLiteDatabase db=this.getWritableDatabase();
-             Cursor cur= db.rawQuery("SELECT * FROM "+tSpellBook, null);
-             int x= cur.getCount();
-             cur.close();
-             return x;
-         }
-      
-	      public int getSpellLevel(int pID){
-	    	  SQLiteDatabase myDB = this.getReadableDatabase();
-	          String[] mySearch = new String[]{String.valueOf(pID)};//{String.valueOf(Name)};
-	          Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellBookSpellLevel +" FROM "+ tSpellBook +" WHERE "+ fSpellBookSpellID +"=?",mySearch);
-	          myCursor.moveToFirst();
-	          int index = myCursor.getColumnIndex(fSpellBookSpellLevel);
-	          int myAnswer = myCursor.getInt(index);
-	          myCursor.close();
-	          return myAnswer;
-	      }
-	               
-	      public void SpellLevelUp(int ID, int pLevel){//hacer los inner join para que de alguna manera solo agarre lo del playerID
-	              SQLiteDatabase myDB = this.getWritableDatabase();
-	              ContentValues cv = new ContentValues();
-	              cv.put(fSpellBookSpellLevel,pLevel+1);   
-	              myDB.update(tSpellBook, cv, fSpellBookSpellID+"=?", new String []{String.valueOf(ID)});
-	      }
-	               
-                 
-/*       
- * MORE ADVANCED EXAMPLES OF USAGE
- *
-         void AddEmployee(String _name, int _age, int _dept) {
-                SQLiteDatabase db= this.getWritableDatabase();
-                ContentValues cv=new ContentValues();
-                        cv.put(colName, _name);
-                        cv.put(colAge, _age);
-                        cv.put(colDept, _dept);
-                        //cv.put(colDept,2);
-                db.insert(employeeTable, colName, cv);
-                db.close();
-        }
-       
-         int getEmployeeCount()
-         {
-                SQLiteDatabase db=this.getWritableDatabase();
-                Cursor cur= db.rawQuery("Select * from "+employeeTable, null);
-                int x= cur.getCount();
-                cur.close();
-                return x;
-         }
-         
-         Cursor getAllEmployees()
-         {
-                 SQLiteDatabase db=this.getWritableDatabase();
-                 //Cursor cur= db.rawQuery("Select "+colID+" as _id , "+colName+", "+colAge+" from "+employeeTable, new String [] {});
-                 Cursor cur= db.rawQuery("SELECT * FROM "+viewEmps,null);
-                 return cur;
-         }
-         
-         public int GetDeptID(String Dept)
-         {
-                 SQLiteDatabase db=this.getReadableDatabase();
-                 Cursor c=db.query(deptTable, new String[]{colDeptID+" as _id",colDeptName},colDeptName+"=?", new String[]{Dept}, null, null, null);
-                 //Cursor c=db.rawQuery("SELECT "+colDeptID+" as _id FROM "+deptTable+" WHERE "+colDeptName+"=?", new String []{Dept});
-                 c.moveToFirst();
-                 return c.getInt(c.getColumnIndex("_id"));
-         }
-         
-         public String GetDept(int ID)
-         {
-                 SQLiteDatabase db=this.getReadableDatabase();
-                 String[] params=new String[]{String.valueOf(ID)};
-                 Cursor c=db.rawQuery("SELECT "+colDeptName+" FROM"+ deptTable+" WHERE "+colDeptID+"=?",params);
-                 c.moveToFirst();
-                 int index= c.getColumnIndex(colDeptName);
-                 return c.getString(index);
-         }
-         
-         public Cursor getEmpByDept(String Dept)
-         {
-                 SQLiteDatabase db=this.getReadableDatabase();
-                 String [] columns=new String[]{"_id",colName,colAge,colDeptName};
-                 Cursor c=db.query(viewEmps, columns, colDeptName+"=?", new String[]{Dept}, null, null, null);
-                 return c;
-         }
-         
-         public int UpdateEmp(String _name, int _age, int _dept, int _eid)
-         {
-                 SQLiteDatabase db=this.getWritableDatabase();
-                 ContentValues cv=new ContentValues();
-                 cv.put(colName, _name);
-                 cv.put(colAge, _age);
-                 cv.put(colDept, _dept);
-                 return db.update(employeeTable, cv, colID+"=?", new String []{String.valueOf(_eid)});
-         }
-         
-         public void DeleteEmp(String _name, int _age, int _dept, int _eid)
-         {
-                 SQLiteDatabase db=this.getWritableDatabase();
-                 db.delete(employeeTable,colID+"=?", new String [] {String.valueOf(_eid)});
-                 db.close();           
-         }
-*/       
  
+         
 }

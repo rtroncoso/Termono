@@ -19,16 +19,38 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	
-
+	private int mClass;
+	private int mPlayerID;
+	private int mPositionID;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public Player(int pInitialPosX, int pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		// TODO Auto-generated constructor stub
 		super(pInitialPosX, pInitialPosY, pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);
-		
+
 		this.mEntityType = "Player";
+	}
+	
+	public Player(int pPlayerID,int pClass) {
+		// TODO Auto-generated constructor stub
+		//aca lo ideal seria pasarle solo playerID que se ejecute lo de abajo y pasarle mClass al constructor, pero me cago en java que no me deja...
+		//this.mClass = Game.getDataHandler().getPlayerClass(pPlayerID);
+		super(0, 0, Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
+		this.mPlayerID = pPlayerID;
+		this.mClass = pClass;
+		this.setLevel(Game.getDataHandler().getPlayerLevel(this.mPlayerID));
+		this.setAttributes(Game.getDataHandler().getPlayerAttributes(this.mPlayerID));
+		this.setModifiers(Game.getDataHandler().getPlayerModifiers(this.mPlayerID));
+		this.mEntityType = "Player";
+	}
+	
+	public Player(int pPlayerID,int pClass,int pLevel,int[] pAttributes){//Creacion de lado cliente
+		super(0, 0, Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
+		this.mPlayerID = pPlayerID;
+		this.mClass = pClass;
+		this.mLevel = pLevel;
+		
 	}
 
 	// ===========================================================
@@ -80,6 +102,22 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public int getPlayerClass() {
+		return mClass;
+	}
+
+	public void setPlayerClass(int mClass) {
+		this.mClass = mClass;
+	}
+	
+
+	public int getPositionID() {
+		return mPositionID;
+	}
+
+	public void setPositionID(int mPositionID) {
+		this.mPositionID = mPositionID;
+	}
 
 	// ===========================================================
 	// Inner and Anonymous Classes

@@ -41,6 +41,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	static final String fPlayerExperience = "Experience";
     	static final String fPlayerPosition = "Position";
     	static final String fPlayerClass = "Class";
+    	static final String fPlayerHeadID = "Head";
     	//ProfileID (el profile del que lo creo, no creo que esto este bien asi pero sino no se vincular los players de una partida con el profile que los creo)
     	
     static final String tInventory = "Inventory";	
@@ -130,6 +131,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fPlayerLevel+" INTEGER , "+
     			fPlayerExperience+" INTEGER , "+
     			fPlayerPosition +" INTEGER , "+
+    			fPlayerHeadID +" INTEGER , "+
     			fPlayerClass +" INTEGER)" 
                 );  
     	  
@@ -419,7 +421,6 @@ public class UserDatabase extends SQLiteOpenHelper {
 		  int index = myCursor.getColumnIndex(fPlayerID);
 		  int myAnswer = myCursor.getInt(index);
 		  myCursor.close();
-		  
 		  cv.clear();
 		  cv.put(fPlayerID, myAnswer);
 		  this.getWritableDatabase().insert(tAttributes, fAttributesID, cv);
@@ -476,7 +477,25 @@ public class UserDatabase extends SQLiteOpenHelper {
         cv.clear();
         this.close();
       }
-    
+
+    public int getPlayerHead(int pPlayerID){
+     	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerHeadID+" from "+tPlayer+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
+       	  myCursor.moveToFirst();
+    	  int index = myCursor.getColumnIndex(fPlayerHeadID);
+    	  int myAnswer = myCursor.getInt(index);
+    	  myCursor.close();
+          this.close();
+          return myAnswer;    	
+    }
+
+    public void setPlayerHead(int pHeadID,int pPlayerID){
+    	ContentValues cv = new ContentValues();
+        cv.put(fPlayerHeadID,pHeadID);
+        this.getWritableDatabase().update(tPlayer, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+      }
+
     //Atributtes
     public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
   	  ContentValues cv = new ContentValues();
@@ -507,14 +526,14 @@ public class UserDatabase extends SQLiteOpenHelper {
      }
     
     //Modifiers
-    public void setModifiers(int pPlayerID,int pPower,int pIntelligence,int pDefense,int pEndurance,int currHP,int currMP,int totalManaBoost,int totalHPBoost){
+    public void setModifiers(int pPlayerID,int pPower,int pIntelligence,int pDefense,int pEndurance,int currHP,int currMP){
     	ContentValues cv = new ContentValues();
         cv.put(fModifiersPower,pPower);
         cv.put(fModifiersIntelligence, pIntelligence);
         cv.put(fModifiersDefense, pDefense);
         cv.put(fModifiersEndurance, pEndurance);
-        cv.put(fModifiersHitPoints, (pEndurance*10)+totalHPBoost);
-        cv.put(fModifiersManaPoints, (pIntelligence*10)+totalManaBoost);
+        cv.put(fModifiersHitPoints, (pEndurance*10));
+        cv.put(fModifiersManaPoints, (pIntelligence*10));
         cv.put(fModifiersCurrentHP, currHP);
         cv.put(fModifiersCurrentMana, currMP);
         this.getWritableDatabase().update(tAttributes, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
