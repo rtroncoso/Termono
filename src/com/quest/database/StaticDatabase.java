@@ -354,6 +354,21 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fClassFrameHeight,256);
           		cv.put(fClassFrameWidth,256);
           		db.insert(tClass, null, cv); 
+          		
+          		cv.clear();
+          		
+          		cv.put(fHeadID, 4);
+          		cv.put(fHeadIconTexture,"Players/Heads/Icons/Paladin.png");
+          		cv.put(fHeadAnimationTexture,"Players/Heads/Icons/Paladin.png");
+          		cv.put(fHeadAnimationCols,5);
+          		cv.put(fHeadAnimationRows,4);
+          		cv.put(fHeadFrameHeight,256);
+          		cv.put(fHeadFrameWidth,256);
+          		cv.put(fClassID,1);
+          		db.insert(tHead, null, cv); 
+          		
+
+	            
         }
         
  
