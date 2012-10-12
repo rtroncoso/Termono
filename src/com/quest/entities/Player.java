@@ -21,6 +21,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// ===========================================================
 	private int mClass;
 	private int mPlayerID;
+	private int mHeadID;
 	private int mPositionID;
 	// ===========================================================
 	// Constructors
@@ -42,6 +43,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setLevel(Game.getDataHandler().getPlayerLevel(this.mPlayerID));
 		this.setAttributes(Game.getDataHandler().getPlayerAttributes(this.mPlayerID));
 		this.setModifiers(Game.getDataHandler().getPlayerModifiers(this.mPlayerID));
+		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
 		this.mEntityType = "Player";
 	}
 	
@@ -110,13 +112,20 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mClass = mClass;
 	}
 	
-
 	public int getPositionID() {
 		return mPositionID;
 	}
 
 	public void setPositionID(int mPositionID) {
 		this.mPositionID = mPositionID;
+	}
+
+	public int getHeadID() {
+		return mHeadID;
+	}
+
+	public void setHeadID(int mHeadID) {
+		this.mHeadID = mHeadID;
 	}
 
 	// ===========================================================

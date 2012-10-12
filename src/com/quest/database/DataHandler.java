@@ -124,21 +124,23 @@ public class DataHandler {
 	}
 	
 	//MatchPlayers
-	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass){
-		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass));
+	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass,int pHeadID){
+		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass,pHeadID));
 	}
 	
 	
 	//Player
 	public int[] getPlayerIDifExists(int pProfileID, String pMatchName){
 		return this.mUserDB.getPlayerIDifExists(pProfileID, this.mUserDB.getMatchID(pMatchName, 1));
-	}
-	
+	}	
 	
 	public int getPlayerLevel(int pPlayerID){
 		return this.mUserDB.getPlayerLevel(pPlayerID);
 	}
 	
+	public int getPlayerHeadID(int pPlayerID){
+        return this.mUserDB.getPlayerHeadID(pPlayerID);
+    }
 	
 	public int getPlayerClass(int pPlayerID){
         return this.mUserDB.getPlayerClass(pPlayerID);

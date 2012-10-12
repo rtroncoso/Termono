@@ -19,6 +19,17 @@ public class StaticDatabase extends SQLiteOpenHelper {
         static final String fClassFrameWidth = "FrameWidth";
         static final String fClassFrameHeight = "FrameHeight";
         
+        //Head
+        static final String tHead = "Head"; 
+        static final String fHeadID = "HeadID";
+        static final String fHeadIconTexture = "IconTexture";
+        static final String fHeadAnimationTexture = "AnimationTexture";
+        static final String fHeadAnimationRows = "AnimationRows";
+        static final String fHeadAnimationCols = "AnimationCols";
+        static final String fHeadFrameWidth = "FrameWidth";
+        static final String fHeadFrameHeight = "FrameHeight";
+        //ClassID - diferencia de que class es
+        
         //Item
         static final String tItem = "Item"; 
         static final String fItemID = "ItemID";
@@ -82,6 +93,17 @@ public class StaticDatabase extends SQLiteOpenHelper {
 	            		fClassAnimationCols+" INTEGER ,"+
 	            		fClassFrameWidth+" INTEGER ,"+
 	            		fClassFrameHeight+" INTEGER)"
+	                    );
+	            
+	            db.execSQL("CREATE TABLE IF NOT EXISTS "+tHead+" ("+
+	            		fHeadID+" INTEGER PRIMARY KEY , "+
+	            		fHeadIconTexture+" TEXT ,"+
+	            		fHeadAnimationTexture+" TEXT ,"+
+	            		fHeadAnimationRows+" INTEGER ,"+
+	            		fHeadAnimationCols+" INTEGER ,"+
+	            		fHeadFrameWidth+" INTEGER ,"+
+	            		fHeadFrameHeight+" INTEGER ,"+
+	            		fClassID+" INTEGER)"
 	                    );
 	            
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tItem+" ("+

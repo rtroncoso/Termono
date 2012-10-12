@@ -182,7 +182,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessagePlayerCreate clientMessagePlayerCreate = (ClientMessagePlayerCreate) pClientMessage;
 				//creo el personaje que me mando
-				int playerid = Game.getDataHandler().AddNewPlayer(connectedClientMatchData.getMatchID(),connectedClientProfileData.getProfileID(), clientMessagePlayerCreate.getPlayerClass());
+				int playerid = Game.getDataHandler().AddNewPlayer(connectedClientMatchData.getMatchID(),connectedClientProfileData.getProfileID(), clientMessagePlayerCreate.getPlayerClass(),clientMessagePlayerCreate.getPlayerHeadID());
 				Game.getDataHandler().setPlayerAttributes(clientMessagePlayerCreate.getAttributes(), playerid);
 				int[] ModifiersArray = new int[6];
 				System.arraycopy(clientMessagePlayerCreate.getAttributes(), 0, ModifiersArray, 0, clientMessagePlayerCreate.getAttributes().length);

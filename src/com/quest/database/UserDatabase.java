@@ -421,10 +421,11 @@ public class UserDatabase extends SQLiteOpenHelper {
     }
     
     //Player
-    public int CreateNewPlayer(int pProfileID,int pClass){
+    public int CreateNewPlayer(int pProfileID,int pClass,int pHeadID){
 	  	  ContentValues cv = new ContentValues();
 	  	  cv.put(fProfileID,pProfileID);
 	  	  cv.put(fPlayerClass,pClass);
+	  	  cv.put(fPlayerHeadID,pHeadID);
 	      this.getWritableDatabase().insert(tPlayer, fPlayerID, cv);
 	      Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerID+" from "+tPlayer+" order by "+fPlayerID+" desc limit 1", null);
 		  myCursor.moveToFirst();
@@ -488,7 +489,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         this.close();
       }
 
-    public int getPlayerHead(int pPlayerID){
+    public int getPlayerHeadID(int pPlayerID){
      	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerHeadID+" from "+tPlayer+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
        	  myCursor.moveToFirst();
     	  int index = myCursor.getColumnIndex(fPlayerHeadID);
