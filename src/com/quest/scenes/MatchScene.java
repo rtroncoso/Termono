@@ -705,7 +705,10 @@ public class MatchScene extends Scene {
 								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, mChoices[0],mChoices[1]);//*** headID
 								Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
 								Game.getDataHandler().setPlayerLevel(1, playerid);
-								int[] ModifiersArray = new int[6];System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-1);ModifiersArray[4] = ModifiersArray[3]*10;ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+								int[] ModifiersArray = new int[6];//***
+								System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-2);
+								ModifiersArray[4] = ModifiersArray[3]*10;
+								ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
 								Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
 								
 								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
@@ -1640,8 +1643,8 @@ public class MatchScene extends Scene {
 													
 													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, mChoices[0], mChoices[1]);//*** headID
 													Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
-													Game.getDataHandler().setPlayerLevel(1, playerid);
-													int[] ModifiersArray = new int[6];System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-1);ModifiersArray[4] = ModifiersArray[3]*10;ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+													Game.getDataHandler().setPlayerLevel(1, playerid);//***
+													int[] ModifiersArray = new int[6];System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-2);ModifiersArray[4] = ModifiersArray[3]*10;ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
 													Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
 													
 													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));

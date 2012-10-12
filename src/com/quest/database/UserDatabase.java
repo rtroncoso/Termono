@@ -169,7 +169,8 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fModifiersCurrentMana+" INTEGER ,"+
 	     		fPlayerID+" INTEGER)"
 	             );	     
-	    
+        
+        
 		 
 		 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBook+" ("+
 				fSpellBookID+" INTEGER PRIMARY KEY , "+
@@ -475,6 +476,16 @@ public class UserDatabase extends SQLiteOpenHelper {
    	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerClass+" from "+tPlayer+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
    	  myCursor.moveToFirst();
 	  int index = myCursor.getColumnIndex(fPlayerClass);
+	  int myAnswer = myCursor.getInt(index);
+	  myCursor.close();
+      this.close();
+      return myAnswer;
+   }
+    
+    public int getPlayerProfile(int pPlayerID){
+   	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fProfileID+" from "+tPlayer+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
+   	  myCursor.moveToFirst();
+	  int index = myCursor.getColumnIndex(fProfileID);
 	  int myAnswer = myCursor.getInt(index);
 	  myCursor.close();
       this.close();

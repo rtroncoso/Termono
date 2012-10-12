@@ -134,6 +134,10 @@ public class DataHandler {
 		return this.mUserDB.getPlayerIDifExists(pProfileID, this.mUserDB.getMatchID(pMatchName, 1));
 	}	
 	
+	public int[] getPlayerIDifExists(int pProfileID,int pMatchID){
+		return this.mUserDB.getPlayerIDifExists(pProfileID,pMatchID);
+	}	
+	
 	public int getPlayerLevel(int pPlayerID){
 		return this.mUserDB.getPlayerLevel(pPlayerID);
 	}
@@ -149,6 +153,11 @@ public class DataHandler {
 	public void setPlayerLevel(int pLevel, int pPlayerID){
 		this.mUserDB.setPlayerLevel(pLevel,pPlayerID);
 	}
+	
+	public int getPlayerProfileID(int pPlayerID){
+        return this.mUserDB.getPlayerProfile(pPlayerID);
+    }
+	
 
 	//Attributes
 	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){

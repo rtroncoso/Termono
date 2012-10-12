@@ -23,6 +23,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private int mPlayerID;
 	private int mHeadID;
 	private int mPositionID;
+	private String mUserID;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -47,12 +48,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mEntityType = "Player";
 	}
 	
-	public Player(int pPlayerID,int pClass,int pLevel,int[] pAttributes){//Creacion de lado cliente
+	public Player(int pPlayerID,int pClass,int pLevel,int[] pAttributes,int pHeadID){//Creacion de lado cliente
 		super(0, 0, Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
 		this.mLevel = pLevel;
-		
+		this.mHeadID = pHeadID;
+		this.mUserID = Game.getDataHandler().getUserID(1);
+		this.mEntityType = "Player";
 	}
 
 	// ===========================================================
@@ -127,6 +130,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	public void setHeadID(int mHeadID) {
 		this.mHeadID = mHeadID;
 	}
+	
+	public String getUserID() {
+		return this.mUserID;
+	}
+
+	public void setUserID(String pUserID) {
+		this.mUserID = pUserID;
+	} 
 
 	// ===========================================================
 	// Inner and Anonymous Classes
