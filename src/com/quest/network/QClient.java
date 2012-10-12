@@ -7,17 +7,12 @@ import org.andengine.extension.multiplayer.protocol.adt.message.IMessage;
 import org.andengine.extension.multiplayer.protocol.adt.message.server.IServerMessage;
 import org.andengine.extension.multiplayer.protocol.client.IServerMessageHandler;
 import org.andengine.extension.multiplayer.protocol.client.connector.ServerConnector;
-import org.andengine.extension.multiplayer.protocol.client.connector.SocketConnectionServerConnector;
 import org.andengine.extension.multiplayer.protocol.client.connector.SocketConnectionServerConnector.ISocketConnectionServerConnectorListener;
-import org.andengine.extension.multiplayer.protocol.server.connector.SocketConnectionClientConnector;
 import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 
-import android.R.bool;
 import android.util.Log;
 
-import com.quest.data.MatchData;
-import com.quest.data.PlayerData;
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageFlags;
@@ -31,7 +26,6 @@ import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.objects.BooleanMessage;
-import com.quest.scenes.MatchScene;
 
 public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags {
 	// ===========================================================

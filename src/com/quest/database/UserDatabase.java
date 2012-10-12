@@ -204,6 +204,16 @@ public class UserDatabase extends SQLiteOpenHelper {
     
     //QUERIES
     //Profile
+    public String getUserID(int pProfileID) {
+	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ fUserID +" FROM "+ tProfile +" WHERE "+ fProfileID +"=?",new String[]{String.valueOf(pProfileID)});
+	    myCursor.moveToFirst();
+	    int index = myCursor.getColumnIndex(fUserID);
+	    String myAnswer = myCursor.getString(index);
+	    myCursor.close();
+	    this.close();
+	    return myAnswer;
+   	}
+    
     public String getUsername(int pProfileID) {
 	    Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT "+ fUsername +" FROM "+ tProfile +" WHERE "+ fProfileID +"=?",new String[]{String.valueOf(pProfileID)});
 	    myCursor.moveToFirst();

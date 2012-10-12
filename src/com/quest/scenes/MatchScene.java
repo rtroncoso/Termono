@@ -1,12 +1,9 @@
 package com.quest.scenes;
 
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.text.ChoiceFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
@@ -28,7 +25,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
-import org.andengine.util.adt.array.ArrayUtils;
 import org.andengine.util.debug.Debug;
 
 import android.app.AlertDialog;
@@ -41,9 +37,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.quest.data.MatchData;
-import com.quest.data.PlayerData;
 import com.quest.data.ProfileData;
-import com.quest.database.DataHandler;
+import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
@@ -52,7 +47,6 @@ import com.quest.objects.BooleanMessage;
 import com.quest.objects.CharacterObject;
 import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
-import java.util.Arrays.*;
 public class MatchScene extends Scene {
 
 	// ===========================================================
@@ -708,17 +702,14 @@ public class MatchScene extends Scene {
 								HasMatches = true;
 								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText(),false);
 								Game.setMatchData(new MatchData(matchid, MatchScene.this.mMatchNameInput.getText()));
-								Game.setPlayerData(new PlayerData(mChoices));
-								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, Game.getPlayerData().getPlayerClass());
-								Game.getPlayerData().setPlayerID(playerid);
-								Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
-								Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
-								int[] ModifiersArray = new int[6];
-								System.arraycopy(mChoices, 1, ModifiersArray, 0, mChoices.length);
-								ModifiersArray[4] = ModifiersArray[3]*10;//Current Hp = endurance * 10
-								ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, mChoices[0]);
+								Game.getDataHandler().setPlayerAttributes(mChoices[1],mChoices[2],mChoices[3],mChoices[4], playerid);
+								Game.getDataHandler().setPlayerLevel(1, playerid);
+								int[] ModifiersArray = new int[6];System.arraycopy(mChoices, 1, ModifiersArray, 0, mChoices.length);ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
 								Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
-								Game.getPlayerData().setModifiers(Game.getDataHandler().getPlayerModifiers(playerid));
+								
+								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
+								
 								if(AVD_DEBUGGING){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 								}else{
@@ -906,7 +897,7 @@ public class MatchScene extends Scene {
 		                			  pIndex = i;   
 		                		  }
 		                	  }
-		                	 Game.setPlayerData(new PlayerData(mSelectedCharacterID, mCharacterList.get(pIndex).getCharacterClass(), mCharacterList.get(pIndex).getCharacterLevel(),mCharacterList.get(pIndex).getCharacterAttributes()));
+		                	 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID)),Game.getDataHandler().getUserID(1));
 			            	 MatchScene.this.clearTouchAreas();
 			            	 if(AVD_DEBUGGING){
 			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), "00:00:00:00:00:00"));
@@ -1644,11 +1635,14 @@ public class MatchScene extends Scene {
 													//Creando un chara en una partida loadeada
 													mGrabbed = false;
 													MatchScene.this.clearTouchAreas();
-													Game.setPlayerData(new PlayerData(mChoices));
-													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, Game.getPlayerData().getPlayerClass());
-													Game.getPlayerData().setPlayerID(playerid);
-													Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
-													Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
+													
+													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, mChoices[0]);
+													Game.getDataHandler().setPlayerAttributes(mChoices[1],mChoices[2],mChoices[3],mChoices[4], playerid);
+													Game.getDataHandler().setPlayerLevel(1, playerid);
+													int[] ModifiersArray = new int[6];System.arraycopy(mChoices, 1, ModifiersArray, 0, mChoices.length);ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+													Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
+													
+													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
 													if(AVD_DEBUGGING){//sacar despues
 														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 													}else{

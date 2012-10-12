@@ -24,6 +24,10 @@ public class DataHandler {
 		}
 	}
 	
+	public String getUserID(int pProfileID){
+		return this.mUserDB.getUserID(pProfileID);
+	}
+	
 	public String getUsername(int pProfileID){
 		return this.mUserDB.getUsername(pProfileID);
 	}

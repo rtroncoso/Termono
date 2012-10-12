@@ -58,7 +58,8 @@ public class GameScene extends Scene {
 	    			GameScene.this.attachChild(GameScene.this.mMapLayer);
 	    			
 	    			// Create the Player and insert in helper
-	    			Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
+	    		//	Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
+	    			Game.getPlayerHelper().addPlayer(new Player(0, 0, Game.getDataHandler().getClassAnimationTexture(1), Game.getDataHandler().getClassFrameWidth(1), Game.getDataHandler().getClassFrameHeight(1), 0, 0, Game.getDataHandler().getClassAnimationCols(1), Game.getDataHandler().getClassAnimationRows(1)), "Player");
 	    			
 	    			//Enemies
 	    			GameScene.this.mEnemy = new Mob(15, 15, "Mob.png", 128, 256, 0, 0, 4, 4);

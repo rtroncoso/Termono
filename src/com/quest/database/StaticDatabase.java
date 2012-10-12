@@ -295,6 +295,43 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		 cv.put(fItemModifierID,0);
           		 db.insert(tItem, null, cv);
           		 
+          		 cv.clear();
+          		 
+          		cv.put(fClassID, 1);
+          		cv.put(fClassIconTexture,"Players/Icons/Paladin.png");
+          		cv.put(fClassAnimationTexture,"Players/Animations/Paladin.png");
+          		cv.put(fClassAnimationCols,5);
+          		cv.put(fClassAnimationRows,4);
+          		cv.put(fClassFrameHeight,256);
+          		cv.put(fClassFrameWidth,256);
+          		db.insert(tClass, null, cv);
+          		
+          		cv.put(fClassID, 2);
+          		cv.put(fClassIconTexture,"Players/Icons/Mage.png");
+          		cv.put(fClassAnimationTexture,"Players/Animations/Mage.png");
+          		cv.put(fClassAnimationCols,4);
+          		cv.put(fClassAnimationRows,4);
+          		cv.put(fClassFrameHeight,256);
+          		cv.put(fClassFrameWidth,256);
+          		db.insert(tClass, null, cv);
+          		
+          		cv.put(fClassID, 3);
+          		cv.put(fClassIconTexture,"Players/Icons/Orc.png");
+          		cv.put(fClassAnimationTexture,"Players/Animations/Orc.png");
+          		cv.put(fClassAnimationCols,5);
+          		cv.put(fClassAnimationRows,4);
+          		cv.put(fClassFrameHeight,256);
+          		cv.put(fClassFrameWidth,256);
+          		db.insert(tClass, null, cv);
+          		
+          		cv.put(fClassID, 4);
+          		cv.put(fClassIconTexture,"Players/Icons/Archer.png");
+          		cv.put(fClassAnimationTexture,"Players/Animations/Archer.png");
+          		cv.put(fClassAnimationCols,5);
+          		cv.put(fClassAnimationRows,4);
+          		cv.put(fClassFrameHeight,256);
+          		cv.put(fClassFrameWidth,256);
+          		db.insert(tClass, null, cv); 
         }
         
  
