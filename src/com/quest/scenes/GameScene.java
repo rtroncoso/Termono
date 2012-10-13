@@ -49,6 +49,7 @@ public class GameScene extends Scene {
 			
 			// Loads everything in the background
 			Game.getSceneManager().setLoadingScene();
+			Looper.myLooper().prepare();//tira ctrl shift o
 	        new AsyncTaskLoader().execute(new IAsyncCallback() {
 
 	            @Override
@@ -59,10 +60,12 @@ public class GameScene extends Scene {
 	    			
 	    			// Create the Player and insert in helper
 	    			//Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
-	    			
+	    			Game.getPlayerHelper().getPlayerbyIndex(0).setTileAt(20, 20);
 	    			//Enemies
-	    			GameScene.this.mEnemy = new Mob(15, 15, "Mob.png", 128, 256, 0, 0, 4, 4);
-	    			GameScene.this.mMob2 = new Mob(25, 15, "Mob2.png", 128, 256, 0, 0, 4, 4);
+	    			GameScene.this.mEnemy = new Mob("Mob.png", 128, 256, 0, 0, 4, 4);
+	    			GameScene.this.mMob2 = new Mob("Mob2.png", 128, 256, 0, 0, 4, 4);
+	    			GameScene.this.mEnemy.setTileAt(15, 15);
+	    			GameScene.this.mMob2.setTileAt(25, 15);
 	    			
 	    			//Timer
 	    			GameScene.this.mTimers = new Timers(mEnemy, mMob2);

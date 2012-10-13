@@ -554,8 +554,8 @@ public class MatchScene extends Scene {
 						}else{
 							MatchScene.this.SwitchEntity(LoadMatchesEntity());
 						}
-		//				Game.getServer().terminate();***Poner devuelta
-	//					MatchScene.this.mSocketServerDiscoveryServer.terminate();
+						Game.getServer().terminate();//***Poner devuelta
+						MatchScene.this.mSocketServerDiscoveryServer.terminate();
 					}
 					break;
 				}
@@ -707,7 +707,7 @@ public class MatchScene extends Scene {
 								Game.getDataHandler().setPlayerLevel(1, playerid);
 								int[] ModifiersArray = new int[6];//***
 								System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-2);
-								ModifiersArray[4] = ModifiersArray[3]*10;
+								ModifiersArray[4] = ModifiersArray[3]*10;//Current Hp = endurance * 10
 								ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
 								Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
 								
@@ -2067,14 +2067,14 @@ public class MatchScene extends Scene {
 								conts=true;
 							}
 						}
-						/*if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
+						if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
 							conts=true;
-						}*///comentado para el AVD, sacar coment para el celu
+						}//comentado para el AVD, sacar coment para el celu ***
 						if(conts==false){
 							Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
-							//if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)
+							if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)
 							MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
-							//}
+							}
 						}
 					} catch (final UnknownHostException e) {
 						Log.d("Quest!","DiscoveryClient: IPException: " + e);
@@ -2150,18 +2150,18 @@ public class MatchScene extends Scene {
 
 				alert.setTitle("Enter a username");
 				alert.setMessage("Welcome to Quest! please enter the name that will be displayed to other players");
-				final EditText editText = new EditText(Game.getInstance());//*** checkear que ponga algo
+				final EditText editText = new EditText(Game.getInstance());
 				editText.setTextSize(15f);
 				editText.setText("");
 				editText.setGravity(Gravity.CENTER_HORIZONTAL);
 				alert.setView(editText);
 				alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-						if(!editText.getText().toString().equals(null)||!editText.getText().toString().equals("")){
-						Game.getDataHandler().setUsername(1,editText.getText().toString());
-						}else{
+					public void onClick(DialogInterface dialog, int whichButton) {//*** que checkee que no deje en blanco
+						if(editText.getText().toString().equals(null)||editText.getText().toString().equals("")||editText.getText().toString().equals(" ")){
 							showUsernameInput();
+						}else{
+							Game.getDataHandler().setUsername(1,editText.getText().toString());
 						}
 					}
 				});

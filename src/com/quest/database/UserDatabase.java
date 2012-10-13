@@ -90,7 +90,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    
 	    
     public UserDatabase(Context context) {
-            super(context, dbName, null, 2);
+            super(context, dbName, null, 4);
     }
 
     @Override
@@ -196,7 +196,8 @@ public class UserDatabase extends SQLiteOpenHelper {
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-          //  db.execSQL("DROP TABLE IF EXISTS *");
+            db.execSQL("DROP TABLE IF EXISTS "+tProfile);//*** sacar
+    		
             onCreate(db);
     }
     
@@ -482,7 +483,7 @@ public class UserDatabase extends SQLiteOpenHelper {
       return myAnswer;
    }
     
-    public int getPlayerProfile(int pPlayerID){
+    public int getPlayerProfileID(int pPlayerID){
    	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fProfileID+" from "+tPlayer+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
    	  myCursor.moveToFirst();
 	  int index = myCursor.getColumnIndex(fProfileID);
@@ -558,7 +559,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         cv.put(fModifiersManaPoints, (pIntelligence*10));
         cv.put(fModifiersCurrentHP, currHP);
         cv.put(fModifiersCurrentMana, currMP);
-        this.getWritableDatabase().update(tAttributes, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        this.getWritableDatabase().update(tModifiers, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
         cv.clear();
         this.close();
       }

@@ -56,7 +56,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public BaseEntity(int pInitialPosX, int pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
+	public BaseEntity(String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		this.mEntityType = "BaseEntity";
 		this.mSpeedFactor = 1.0f;
 
@@ -83,8 +83,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.attachChild(this.mBodySprite);
 		
 		this.mSpellsLayer = new ArrayList<Spell>();
-		
-		this.setTileAt(pInitialPosX, pInitialPosY);
 	}
 
 	// ===========================================================

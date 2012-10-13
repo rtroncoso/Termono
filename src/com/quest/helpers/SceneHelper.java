@@ -83,7 +83,7 @@ public class SceneHelper implements IMeasureConstants {
     
     public void setMatchScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
-    	this.mMatchScene = new MatchScene();
+    	if(this.mMatchScene==null)this.mMatchScene = new MatchScene();
     	this.mScene = this.mMatchScene;
         Game.getInstance().getEngine().setScene(this.mScene);
     }
