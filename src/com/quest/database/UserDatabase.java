@@ -590,6 +590,33 @@ public class UserDatabase extends SQLiteOpenHelper {
        }
     
     //Inventory
+    public int[] getInventory(int pPlayerID){//All inventory
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
+    	int index = myCursor.getColumnIndex(fItemID);
+        int myAnswer[] = new int[myCursor.getCount()];
+        for(int i = 0; i < myCursor.getCount(); i++){
+        	myCursor.moveToPosition(i);
+        	myAnswer[i] = myCursor.getInt(index);
+        }
+    	 myCursor.close();
+    	 return myAnswer;
+    }
+    
+    public int[] getInventoryItemsbyEquipStatus(int pPlayerID,boolean pEquipped){//Equipped/Unequipped only
+    	String mEquipped = "0";
+    	if(pEquipped)mEquipped = "1";
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID+" and "+tInventoryItem+"."+fInventoryIsItemEquipped+" =?", new String[]{String.valueOf(pPlayerID),mEquipped});
+    	int index = myCursor.getColumnIndex(fItemID);
+        int myAnswer[] = new int[myCursor.getCount()];
+        for(int i = 0; i < myCursor.getCount(); i++){
+        	myCursor.moveToPosition(i);
+        	myAnswer[i] = myCursor.getInt(index);
+        }
+    	 myCursor.close();
+    	 return myAnswer;
+    }
+    
+    
     public void addInventoryItem(int pPlayerID,int pItemID,int pAmount){
     	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tInventoryItem+"."+fInventoryItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tInventoryItem+"."+fInventoryID+" = "+tInventory+"."+fInventoryID+" and "+tInventory+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tPlayer+"."+fPlayerID+" =? and "+tInventoryItem+"."+fItemID+" =?", new String[]{String.valueOf(pPlayerID),String.valueOf(pItemID)});
     	this.close();
@@ -627,4 +654,5 @@ public class UserDatabase extends SQLiteOpenHelper {
     	this.getWritableDatabase().delete(tInventoryItem, tInventoryItem+"."+fInventoryItemID+" =?",new String[]{String.valueOf(myAnswer)});
     }
         
+
 }

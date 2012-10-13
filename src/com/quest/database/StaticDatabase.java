@@ -53,8 +53,8 @@ public class StaticDatabase extends SQLiteOpenHelper {
 	    static final String fItemModifierDefense = "Defense";
         
 	    
-        //spells -estaticos, hacer tabla spellbook
-        static final String tSpells = "Spells";
+        //spells 
+	    static final String tSpells = "Spells";
         static final String fSpellID = "SpellID";
         static final String fSpellName = "Name";
         static final String fSpellIconTexture = "IconTexture";
@@ -115,8 +115,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
                         fItemDescription+" TEXT , "+
                         fItemBuyPrice+" INTEGER , "+
                         fItemSellPrice+" INTEGER , "+
-                        fItemClass+" INTEGER, "+
-                        fItemModifierID+" INTEGER)"
+                        fItemClass+" INTEGER)"
                         );
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tItemModifiers+" ("+
@@ -124,7 +123,8 @@ public class StaticDatabase extends SQLiteOpenHelper {
                 		fItemModifierPower+" INTEGER, "+
                         fItemModifierIntelligence+" INTEGER , "+
                         fItemModifierDefense+" INTEGER , "+
-                        fItemModifierEndurance+" INTEGER)"
+                        fItemModifierEndurance+" INTEGER , "+
+                        fItemID+" INTEGER)"
                         );
                 
                 
@@ -140,7 +140,6 @@ public class StaticDatabase extends SQLiteOpenHelper {
                         fSpellEffectID+" INTEGER)"
                         );
                 
-                               
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellEffect+" ("+
                 		fEffectSpellID+" INTEGER PRIMARY KEY , "+
@@ -150,6 +149,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
                 		fEffectSpellLevel4+" TEXT ,"+
                 		fEffectSpellLevel5+" TEXT)"
                         );                
+                
                 
                 
                 
@@ -521,6 +521,23 @@ public class StaticDatabase extends SQLiteOpenHelper {
              int index = myCursor.getColumnIndex(fItemClass);
              int myAnswer = myCursor.getInt(index);
              myCursor.close();
+             return myAnswer;
+         }
+         
+         public int[] getItemModifiers(int pItemID){
+        	 int[] myAnswer = new int[4];
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             Cursor myCursor = myDB.rawQuery("SELECT * FROM "+ tItemModifiers +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pItemID)});
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fItemModifierPower);
+          	 myAnswer[0]=myCursor.getInt(index);
+          	 index = myCursor.getColumnIndex(fItemModifierIntelligence);
+          	 myAnswer[1]=myCursor.getInt(index);
+          	 index = myCursor.getColumnIndex(fItemModifierDefense);
+          	 myAnswer[2]=myCursor.getInt(index);
+          	 index = myCursor.getColumnIndex(fItemModifierEndurance);
+          	 myAnswer[3]=myCursor.getInt(index);
+          	 myCursor.close();
              return myAnswer;
          }
  

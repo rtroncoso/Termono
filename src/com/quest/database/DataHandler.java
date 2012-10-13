@@ -187,6 +187,18 @@ public class DataHandler {
 	}
 	
 	//Inventory
+	public int[] getInventory(int pPlayerID){
+		return this.mUserDB.getInventory(pPlayerID);
+	}
+	
+	public int[] getEquippedItems(int pPlayerID){
+		return this.mUserDB.getInventoryItemsbyEquipStatus(pPlayerID, true);
+	}
+	
+	public int[] getUnequippedItems(int pPlayerID){
+		return this.mUserDB.getInventoryItemsbyEquipStatus(pPlayerID, false);
+	}
+	
 	public void addInventoryItem(int pPlayerID,int pItemID, int pAmount){
 		this.mUserDB.addInventoryItem(pPlayerID,pItemID,pAmount);
 	}
@@ -208,9 +220,6 @@ public class DataHandler {
 		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)-pAmount);
 		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)<0)this.mUserDB.removeInventoryItem(pPlayerID,pItemID);
 	}
-	
-	
-	
 	
 	
 	
@@ -288,5 +297,25 @@ public class DataHandler {
 	public int getItemClass(int pItemID){
 		return this.mStaticDB.getItemClass(pItemID);
     }
+	
+	public int[] getItemModifiers(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID);
+	}
+	
+	public int getItemModPower(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[0];
+	}
+	
+	public int getItemModIntelligence(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[1];
+	}
+	
+	public int getItemModDefense(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[2];
+	}
+	
+	public int getItemModEndurance(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[3];
+	}
 	
 }

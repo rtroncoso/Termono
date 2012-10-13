@@ -64,7 +64,6 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mSceneManager = new SceneHelper();
 		Game.mDataHandler = new DataHandler();
 		Game.mPlayerHelper = new PlayerHelper();
-//		Game.mTextHelper = new TextHelper(); todavia no hay texture manager, lo seteo desde mainmenuscene
 		
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInf = wifiMan.getConnectionInfo();
