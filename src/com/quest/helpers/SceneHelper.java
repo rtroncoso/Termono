@@ -14,6 +14,7 @@ import com.quest.scenes.MainMenuScene;
 import com.quest.scenes.MatchScene;
 import com.quest.scenes.OptionsScene;
 import com.quest.scenes.PauseMenuScene;
+import com.quest.scenes.TestScene;
 import com.quest.util.constants.IMeasureConstants;
 
 public class SceneHelper implements IMeasureConstants {
@@ -113,6 +114,12 @@ public class SceneHelper implements IMeasureConstants {
     	return this.mGameScene;
     }
 
+    
+    public void setTestScene(){
+    	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
+    	this.mScene = new TestScene();    	
+        Game.getInstance().getEngine().setScene(this.mScene);    	
+    }
     
     //############INTERFACES
     public void setGameMenuScene() {

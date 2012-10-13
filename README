@@ -27,4 +27,4 @@
 (_) Agregar el seteo de password nueva en el load de matches
 
  _ 
-(_)
+(_) Hacer el async task para que en el main caigan los carteles

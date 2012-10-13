@@ -580,7 +580,8 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							Game.getTextHelper().FlushText("MatchScene");
-							Game.getSceneManager().setGameScene();
+							//Game.getSceneManager().setGameScene();
+							Game.getSceneManager().setTestScene();
 						}
 						break;
 					}
