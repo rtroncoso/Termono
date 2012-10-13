@@ -5,7 +5,11 @@ import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenCon
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 
+import android.util.Log;
+
+import com.quest.entities.objects.InventoryItem;
 import com.quest.game.Game;
+import com.quest.helpers.InventoryItemHelper;
 import com.quest.triggers.Trigger;
 
 
@@ -24,6 +28,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private int mHeadID;
 	private int mPositionID;
 	private String mUserID;
+	private InventoryItemHelper mInventory;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -46,24 +51,32 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setModifiers(Game.getDataHandler().getPlayerModifiers(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
 		this.mUserID = Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
+		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID),Game.getDataHandler().getInventoryKeys(this.mPlayerID)));
 		this.mEntityType = "Player";
 	}
 	
 	
-	public Player(int pPlayerID,int pClass,int pLevel,int[] pAttributes,int pHeadID){//Creacion de lado cliente
+	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int[] pAttributes,int pHeadID){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
 		this.mLevel = pLevel;
 		this.mHeadID = pHeadID;
-		this.mUserID = Game.getDataHandler().getUserID(1);
+		this.mUserID = pUserID;
 		this.mEntityType = "Player";
 	}
 
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	
+	private InventoryItemHelper LoadInventory(int[] pItemIDs,int[] pAmounts,int[] isEquipped,int[] pItemKeys){
+		InventoryItemHelper pInventory = new InventoryItemHelper();
+		if(pItemIDs.length!=pItemKeys.length)Log.e("Quest!","InventoryHelper - Array leghts don't match");
+		for(int i : pItemKeys){
+			pInventory.addItem(new InventoryItem(pItemIDs[i], pAmounts[i], isEquipped[i]), pItemKeys[i]);
+		}
+		return pInventory;
+	}
 	
 
 	// ===========================================================
@@ -139,6 +152,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 	public void setUserID(String pUserID) {
 		this.mUserID = pUserID;
+	}
+
+	public InventoryItemHelper getInventory() {
+		return mInventory;
+	}
+
+	public void setInventory(InventoryItemHelper mInventory) {
+		this.mInventory = mInventory;
 	} 
 
 	// ===========================================================

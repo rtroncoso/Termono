@@ -187,8 +187,20 @@ public class DataHandler {
 	}
 	
 	//Inventory
-	public int[] getInventory(int pPlayerID){
-		return this.mUserDB.getInventory(pPlayerID);
+	public int[] getInventoryKeys(int pPlayerID){
+		return this.mUserDB.getInventoryKeys(pPlayerID);
+	}
+	
+	public int[] getInventoryItems(int pPlayerID){
+		return this.mUserDB.getInventoryItems(pPlayerID);
+	}
+	
+	public int[] getInventoryEquipStatus(int pPlayerID){
+		return this.mUserDB.getInventoryEquipStatus(pPlayerID);
+	}
+
+	public int[] getInventoryAmounts(int pPlayerID){
+		return this.mUserDB.getInventoryAmounts(pPlayerID);
 	}
 	
 	public int[] getEquippedItems(int pPlayerID){
@@ -199,26 +211,25 @@ public class DataHandler {
 		return this.mUserDB.getInventoryItemsbyEquipStatus(pPlayerID, false);
 	}
 	
-	public void addInventoryItem(int pPlayerID,int pItemID, int pAmount){
-		this.mUserDB.addInventoryItem(pPlayerID,pItemID,pAmount);
+	public int addInventoryItem(int pPlayerID,int pItemID, int pAmount){
+		int inventoryitemKey;
+		if(this.mStaticDB.isItemStackable(pItemID)){
+			inventoryitemKey = this.mUserDB.increaseItemAmount(pPlayerID, pItemID, pAmount);
+		}else{
+			inventoryitemKey = this.mUserDB.addInventoryItem(pPlayerID,pItemID,pAmount);
+		}
+		return inventoryitemKey;
 	}
 	
-	public void InventoryItemIncreaseAmount(int pPlayerID,int pItemID){
-		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)+1);
-	}
-
-	public void InventoryItemIncreaseAmountby(int pPlayerID,int pItemID,int pAmount){
-		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)+pAmount);
-	}
 	
-	public void InventoryItemDecreaseAmount(int pPlayerID,int pItemID){
-		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)-1);
-		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)<0)this.mUserDB.removeInventoryItem(pPlayerID,pItemID);
+	public void InventoryItemDecreaseAmount(int pPlayerID,int pItemKey){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemKey, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)-1);
+		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)<1)this.mUserDB.removeInventoryItem(pPlayerID,pItemKey);
 	}
 
-	public void InventoryItemDecreaseAmountby(int pPlayerID,int pItemID,int pAmount){
-		this.mUserDB.addInventoryItem(pPlayerID, pItemID, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)-pAmount);
-		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemID)<0)this.mUserDB.removeInventoryItem(pPlayerID,pItemID);
+	public void InventoryItemDecreaseAmountby(int pPlayerID,int pItemKey,int pAmount){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemKey, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)-pAmount);
+		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)<1)this.mUserDB.removeInventoryItem(pPlayerID,pItemKey);
 	}
 	
 	
@@ -281,6 +292,10 @@ public class DataHandler {
 	public String getItemAnimationTexture(int pItemID){
 		return this.mStaticDB.getItemAnimationTexture(pItemID);
     }
+	
+	public boolean isItemStackable(int pItemID){
+		return this.mStaticDB.isItemStackable(pItemID);
+	}
 	
 	public int getItemBuyPrice(int pItemID){
 		return this.mStaticDB.getItemBuyPrice(pItemID);

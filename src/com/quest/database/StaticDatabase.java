@@ -37,6 +37,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         static final String fItemIconTexture = "IconTexture";
         static final String fItemAnimationTexture = "AnimationTexture";
         static final String fItemType = "Type";
+        static final String fItemStackable = "Stackable";
         static final String fItemDescription = "Description";
         static final String fItemBuyPrice = "BuyPrice";
         static final String fItemSellPrice = "SellPrice";
@@ -112,6 +113,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
                         fItemIconTexture+" TEXT , "+
                         fItemAnimationTexture+" TEXT , "+
                         fItemType+" INTEGER , "+
+                        fItemStackable+" INTEGER , "+
                         fItemDescription+" TEXT , "+
                         fItemBuyPrice+" INTEGER , "+
                         fItemSellPrice+" INTEGER , "+
@@ -541,5 +543,15 @@ public class StaticDatabase extends SQLiteOpenHelper {
              return myAnswer;
          }
  
+         public boolean isItemStackable(int pItemID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemStackable +" FROM "+ tItem +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pItemID)});
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fItemStackable);
+             boolean stackable = false;
+             if(myCursor.getInt(index)==1)stackable=true;
+             myCursor.close();
+             return stackable;
+         }
          
 }
