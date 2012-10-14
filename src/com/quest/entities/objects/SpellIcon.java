@@ -35,7 +35,7 @@ public class SpellIcon {
 	// Constructors
 	// ===========================================================
 	public SpellIcon(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pIconX,int pIconY,Entity pEntity,Scene pScene,int pID){
-		this.mID = pID;
+	/*	this.mID = pID;
 		this.mName = pDataHandler.getSpellName(pID);
 		this.mIconImagePath = pDataHandler.getSpellImagePath(mID);
 		this.mLevel = pDataHandler.getSpellLevel(pID);
@@ -77,6 +77,8 @@ public class SpellIcon {
 		this.mSpellIcon.setScale(2.5f);
 		pEntity.attachChild(this.mSpellIcon);
 		pScene.registerTouchArea(this.mSpellIcon);
+		
+		*/
 	}
 	
 	

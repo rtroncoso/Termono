@@ -251,18 +251,19 @@ public class MatchObject extends Entity{
 				if(!pScroll){
 					lastY = currY;
 				}else{
+					tempTimer.setTimerSeconds(0.04f);
 					running = true;
 					if(speed>0){
 						if(mEntity.getY()>61){
 							endTimer();
 						}else{
-							speed-=1;
+							speed-=0.5;
 						}
 					}else{
 						if(mEntity.getY()<(((mEntity.getChildCount()-1)*mMatchSprite.getHeight())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getHeight()+50+mMatchSprite.getHeight())*-1){
 							endTimer();
 						}else{
-							speed+=1;
+							speed+=0.5;
 						}
 					}
 					mEntity.setY(mEntity.getY()+speed);

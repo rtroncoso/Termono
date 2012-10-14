@@ -708,15 +708,15 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		//pedir los items que necesito
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Items/");
 		this.mEquipmentUnEquippedItemsTextureAtlas= new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,24, TextureOptions.BILINEAR);
-		int tempArray[] = mDataHandler.getEquippedIDs(0);
-		for(int i=0;i<tempArray.length;i++){	//checkear si esta bien restarle 1 al length
+	//	int tempArray[] = mDataHandler.getEquippedIDs(0); ***
+	/*	for(int i=0;i<tempArray.length;i++){	//checkear si esta bien restarle 1 al length
 			if(this.mDataHandler.getItemClass(tempArray[i]) == this.mDataHandler.getPlayerClass(0)){//checkeo que los items sean de la clase del player
 			//	this.mUnEquippedCount+=1;//le sumo uno al unEquipped count para saber cuantos items hay sin equipar  \\ no le sumo, ya lo hace la funcion
 			final ItemIcon pItem = new ItemIcon(mDataHandler,mEquipmentUnEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentUnEquippedItemsEntity,GameMenuScene.this,tempArray[i],0);
 			this.PlaceEquipmentItem(pItem);
 			}//si no son no los cargo wepa
 		}
-		this.mEquipmentUnEquippedItemsTextureAtlas.load();
+		this.mEquipmentUnEquippedItemsTextureAtlas.load();*/
 	}
 	
 	
@@ -724,7 +724,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Items/");
 		this.mEquipmentEquippedItemsTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 144,24, TextureOptions.BILINEAR);
 		
-		int tempArray[] = mDataHandler.getEquippedIDs(1);//consegui las ID de todo lo que esta equipado
+	/*	int tempArray[] = mDataHandler.getEquippedIDs(1);//consegui las ID de todo lo que esta equipado ***
 		for(int i=0;i<tempArray.length;i++){					
 			final ItemIcon pItem = new ItemIcon(mDataHandler,mEquipmentEquippedItemsTextureAtlas,0+24*i,0,0,0,mEquipmentEntity,GameMenuScene.this,tempArray[i],0);
 			
@@ -755,6 +755,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			tempSprite.setAlpha(0.5f);
 		}
 		this.mEquipmentEquippedItemsTextureAtlas.load();
+		*/
 	}
 	
 	
@@ -943,7 +944,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 		//hacer query a la base de datos con la clase del player y que me devuelva un array con todos los hechizos de esa clase
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.mSkillTreeAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 512,512, TextureOptions.BILINEAR);
-		int tempArray[] = this.mDataHandler.getClassSpells(this.mDataHandler.getPlayerClass(1));//Le paso la class del player, despues definirla en la entidad
+	/*	int tempArray[] = this.mDataHandler.getClassSpells(this.mDataHandler.getPlayerClass(1));//Le paso la class del player, despues definirla en la entidad
 		//recorrer el array creando sprites dandoles de X y de Y lo que esta en el arraylist en la posicion ID
 		
 		for(int i=0;i<tempArray.length;i++){
@@ -953,7 +954,7 @@ public class GameMenuScene extends Scene{// implements IOnSceneTouchListener{
 			final SpellIcon pIcon = new SpellIcon(mDataHandler,this.mSkillTreeAtlas,i*34,0,0,0,this.mSkillTreeEntity,GameMenuScene.this,tempArray[i]);
 			this.placeSpellIcon(pIcon);
 		}
-		this.mSkillTreeAtlas.load();
+		this.mSkillTreeAtlas.load();*/
 	}
 	
 	public void placeSpellIcon(SpellIcon pIcon){

@@ -17,6 +17,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 
 	private int mClass;
 	private int mEndurance,mIntelligence,mPower,mDefense;
+	private int mHeadID;
 	
 	// ===========================================================
 	// Constructors
@@ -26,26 +27,25 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	public ClientMessagePlayerCreate() {
 	}
 
-	public ClientMessagePlayerCreate(final int pClass,final int[] pAttributes){
-		this.mClass = pClass;
-		this.mPower = pAttributes[0];
-		this.mIntelligence = pAttributes[1];
-		this.mDefense = pAttributes[2];
-		this.mEndurance = pAttributes[3];
+	public ClientMessagePlayerCreate(final int[] pChoices){
+		this.mClass = pChoices[0];
+		this.mHeadID = pChoices[1];
+		this.mPower = pChoices[2];
+		this.mIntelligence = pChoices[3];
+		this.mDefense = pChoices[4];
+		this.mEndurance = pChoices[5];	
 	}
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 	
-	public void setPlayerClass(int mClass) {
-		this.mClass = mClass;
-	}
-
-	public void setAttributes(int[] pAttributes){
-		this.mPower = pAttributes[0];
-		this.mIntelligence = pAttributes[1];
-		this.mDefense = pAttributes[2];
-		this.mEndurance = pAttributes[3];
+	public void setChoices(int[] pChoices){
+		this.mClass = pChoices[0];
+		this.mHeadID = pChoices[1];
+		this.mPower = pChoices[2];
+		this.mIntelligence = pChoices[3];
+		this.mDefense = pChoices[4];
+		this.mEndurance = pChoices[5];		
 	}
 	
 	public int getPlayerClass(){
@@ -55,6 +55,11 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	public int[] getAttributes(){
 		return new int[]{this.mPower,this.mIntelligence,this.mDefense,this.mEndurance};
 	}
+	
+	public int getPlayerHeadID(){
+		return this.mHeadID;
+	}
+
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -72,6 +77,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 		 this.mIntelligence = pDataInputStream.readInt();
 		 this.mDefense = pDataInputStream.readInt();
 		 this.mEndurance = pDataInputStream.readInt();
+		 this.mHeadID = pDataInputStream.readInt();
 	}
 
 	@Override
@@ -80,7 +86,8 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 		pDataOutputStream.writeInt(this.mPower);
 		pDataOutputStream.writeInt(this.mIntelligence);
 		pDataOutputStream.writeInt(this.mDefense);
-		pDataOutputStream.writeInt(this.mEndurance);		
+		pDataOutputStream.writeInt(this.mEndurance);
+		pDataOutputStream.writeInt(this.mHeadID);		
 	}
 
 	// ===========================================================

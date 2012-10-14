@@ -18,8 +18,8 @@ import org.andengine.util.debug.Debug;
 import android.util.Log;
 
 import com.quest.data.MatchData;
-import com.quest.data.PlayerData;
 import com.quest.data.ProfileData;
+import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
@@ -88,7 +88,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	@Override
 	protected SocketConnectionClientConnector newClientConnector(final SocketConnection pSocketConnection) throws IOException {
 		final SocketConnectionClientConnector clientConnector = new SocketConnectionClientConnector(pSocketConnection);
-		final PlayerData connectedClientPlayerData = new PlayerData();
 		final MatchData	 connectedClientMatchData = new MatchData();
 		final ProfileData connectedClientProfileData = new ProfileData();
 		
@@ -183,14 +182,16 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessagePlayerCreate clientMessagePlayerCreate = (ClientMessagePlayerCreate) pClientMessage;
 				//creo el personaje que me mando
-				connectedClientPlayerData.setPlayerClass(clientMessagePlayerCreate.getPlayerClass());
-				connectedClientPlayerData.setAttributes(clientMessagePlayerCreate.getAttributes());
-
-				int playerid = Game.getDataHandler().AddNewPlayer(connectedClientMatchData.getMatchID(),connectedClientProfileData.getProfileID(), connectedClientPlayerData.getPlayerClass());
-				connectedClientPlayerData.setPlayerID(playerid);
-				Game.getDataHandler().setPlayerAttributes(connectedClientPlayerData.getAttributes(), connectedClientPlayerData.getPlayerID());
-				Game.getDataHandler().setPlayerLevel(1, connectedClientPlayerData.getPlayerID());
+				int playerid = Game.getDataHandler().AddNewPlayer(connectedClientMatchData.getMatchID(),connectedClientProfileData.getProfileID(), clientMessagePlayerCreate.getPlayerClass(),clientMessagePlayerCreate.getPlayerHeadID());
+				Game.getDataHandler().setPlayerAttributes(clientMessagePlayerCreate.getAttributes(), playerid);
+				int[] ModifiersArray = new int[6];
+				System.arraycopy(clientMessagePlayerCreate.getAttributes(), 0, ModifiersArray, 0, clientMessagePlayerCreate.getAttributes().length);
+				ModifiersArray[4] = ModifiersArray[3]*10;//Current Hp = endurance * 10
+				ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+				Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
+				Game.getDataHandler().setPlayerLevel(1, playerid);
 				
+				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),connectedClientProfileData.getUserID());
 				//Devolverle el playerID/PlayerDATA?
 				
 			}
@@ -202,10 +203,8 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageSelectedPlayer clientMessageSelectedPlayer = (ClientMessageSelectedPlayer) pClientMessage;
 				//cargo en data el personaje que me mando
-				connectedClientPlayerData.setPlayerID(clientMessageSelectedPlayer.getPlayerID());
-				connectedClientPlayerData.setPlayerClass(Game.getDataHandler().getPlayerClass(connectedClientPlayerData.getPlayerID()));
-				connectedClientPlayerData.setLevel(Game.getDataHandler().getPlayerLevel(connectedClientPlayerData.getPlayerID())); 
-				connectedClientPlayerData.setAttributes(Game.getDataHandler().getPlayerAttributes(connectedClientPlayerData.getPlayerID()));
+				Game.getPlayerHelper().addPlayer(new Player(clientMessageSelectedPlayer.getPlayerID(), Game.getDataHandler().getPlayerClass(clientMessageSelectedPlayer.getPlayerID())),connectedClientProfileData.getUserID());
+				
 				//***completar tambien los modifiers y lo que falta
 			}
 		});

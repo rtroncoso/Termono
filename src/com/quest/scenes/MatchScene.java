@@ -3,7 +3,6 @@ package com.quest.scenes;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.text.ChoiceFormat;
 import java.util.ArrayList;
 
 import org.andengine.entity.Entity;
@@ -38,9 +37,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.quest.data.MatchData;
-import com.quest.data.PlayerData;
 import com.quest.data.ProfileData;
-import com.quest.database.DataHandler;
+import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.network.QClient;
 import com.quest.network.QDiscoveryData.MatchesDiscoveryData;
@@ -49,7 +47,6 @@ import com.quest.objects.BooleanMessage;
 import com.quest.objects.CharacterObject;
 import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
-
 public class MatchScene extends Scene {
 
 	// ===========================================================
@@ -557,8 +554,8 @@ public class MatchScene extends Scene {
 						}else{
 							MatchScene.this.SwitchEntity(LoadMatchesEntity());
 						}
-		//				Game.getServer().terminate();***Poner devuelta
-	//					MatchScene.this.mSocketServerDiscoveryServer.terminate();
+						Game.getServer().terminate();//***Poner devuelta
+						MatchScene.this.mSocketServerDiscoveryServer.terminate();
 					}
 					break;
 				}
@@ -583,7 +580,8 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							Game.getTextHelper().FlushText("MatchScene");
-							Game.getSceneManager().setGameScene();
+							//Game.getSceneManager().setGameScene();
+							Game.getSceneManager().setTestScene();
 						}
 						break;
 					}
@@ -702,13 +700,20 @@ public class MatchScene extends Scene {
 								mGrabbed = false;
 								MatchScene.this.clearTouchAreas();
 								//Creando un nuevo character en partida propia nueva
+								HasMatches = true;
 								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText(),false);
 								Game.setMatchData(new MatchData(matchid, MatchScene.this.mMatchNameInput.getText()));
-								Game.setPlayerData(new PlayerData(mChoices));
-								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, Game.getPlayerData().getPlayerClass());
-								Game.getPlayerData().setPlayerID(playerid);
-								Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
-								Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
+								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, mChoices[0],mChoices[1]);//*** headID
+								Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
+								Game.getDataHandler().setPlayerLevel(1, playerid);
+								int[] ModifiersArray = new int[6];//***
+								System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-2);
+								ModifiersArray[4] = ModifiersArray[3]*10;//Current Hp = endurance * 10
+								ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+								Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
+								
+								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
+								
 								if(AVD_DEBUGGING){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 								}else{
@@ -778,7 +783,7 @@ public class MatchScene extends Scene {
 									Step+=1;
 									MatchScene.this.MatchCreate(false,true);
 								}else{
-									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(200, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
+									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(20, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
 								}
 							}
 		                  }else{
@@ -896,7 +901,7 @@ public class MatchScene extends Scene {
 		                			  pIndex = i;   
 		                		  }
 		                	  }
-		                	 Game.setPlayerData(new PlayerData(mSelectedCharacterID, mCharacterList.get(pIndex).getCharacterClass(), mCharacterList.get(pIndex).getCharacterLevel(),mCharacterList.get(pIndex).getCharacterAttributes()));
+		                	 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID)),Game.getDataHandler().getUserID(1));
 			            	 MatchScene.this.clearTouchAreas();
 			            	 if(AVD_DEBUGGING){
 			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), "00:00:00:00:00:00"));
@@ -1080,13 +1085,14 @@ public class MatchScene extends Scene {
 		private void MatchCreate(boolean pStart,boolean nextstep){
 		    if(pStart){
 		      this.mLoadMatchTopRightSprite.setVisible(false);
-		      this.mChoices = new int[6];
-		      this.mChoices[0] = 0;
-				this.mChoices[1] = 1;
+				this.mChoices = new int[7];
+				this.mChoices[0] = 0;
+				this.mChoices[1] = 1;//***
 				this.mChoices[2] = 1;
 				this.mChoices[3] = 1;
 				this.mChoices[4] = 1;
-				this.mChoices[5] = 20;
+				this.mChoices[5] = 1;
+				this.mChoices[6] = 10;
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
@@ -1549,13 +1555,14 @@ public class MatchScene extends Scene {
 						break;
 					default:
 						Step=0;
-						this.mChoices = new int[6];
+						this.mChoices = new int[7];
 						this.mChoices[0] = 0;
-						this.mChoices[1] = 1;
+						this.mChoices[1] = 0;
 						this.mChoices[2] = 1;
 						this.mChoices[3] = 1;
 						this.mChoices[4] = 1;
-						this.mChoices[5] = 20;
+						this.mChoices[5] = 1;
+						this.mChoices[6] = 10;
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
@@ -1634,11 +1641,14 @@ public class MatchScene extends Scene {
 													//Creando un chara en una partida loadeada
 													mGrabbed = false;
 													MatchScene.this.clearTouchAreas();
-													Game.setPlayerData(new PlayerData(mChoices));
-													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, Game.getPlayerData().getPlayerClass());
-													Game.getPlayerData().setPlayerID(playerid);
-													Game.getDataHandler().setPlayerAttributes(Game.getPlayerData().getAttributes(), Game.getPlayerData().getPlayerID());
-													Game.getDataHandler().setPlayerLevel(1, Game.getPlayerData().getPlayerID());
+													
+													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, mChoices[0], mChoices[1]);//*** headID
+													Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
+													Game.getDataHandler().setPlayerLevel(1, playerid);//***
+													int[] ModifiersArray = new int[6];System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-2);ModifiersArray[4] = ModifiersArray[3]*10;ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
+													Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
+													
+													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
 													if(AVD_DEBUGGING){//sacar despues
 														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 													}else{
@@ -1647,11 +1657,9 @@ public class MatchScene extends Scene {
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
-													Game.setPlayerData(new PlayerData(mChoices));
-													Game.getClient().sendPlayerCreate(Game.getPlayerData());//Pasar al client
+													Game.getClient().sendPlayerCreate(mChoices);//*** sacar profile data y match data
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
 													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
-														//sacado para debuggear volver a poner ***
 													}
 													if(AVD_DEBUGGING){//sacar despues
 														SwitchEntity(LoadLobbyEntity(true, null,null));
@@ -1738,23 +1746,23 @@ public class MatchScene extends Scene {
 			   				this.mLoadMatchEntity.detachChild(mArcherSprite);
 						}
 						
-						if(mChoices[5]==0){
+						if(mChoices[6]==0){
 		        		  MatchScene.this.mLoadMatchTopRightSprite.setVisible(true);
 		        		  mAttributePlusSprite1.setVisible(false);
 		        		  mAttributePlusSprite2.setVisible(false);
 		        		  mAttributePlusSprite3.setVisible(false);
 		        		  mAttributePlusSprite4.setVisible(false);
 						}
-						if(mChoices[1]==1)mAttributeMinusSprite1.setVisible(false);						
-						if(mChoices[2]==1)mAttributeMinusSprite2.setVisible(false);
-						if(mChoices[3]==1)mAttributeMinusSprite3.setVisible(false);
-						if(mChoices[4]==1)mAttributeMinusSprite4.setVisible(false);
+						if(mChoices[2]==1)mAttributeMinusSprite1.setVisible(false);						
+						if(mChoices[3]==1)mAttributeMinusSprite2.setVisible(false);
+						if(mChoices[4]==1)mAttributeMinusSprite3.setVisible(false);
+						if(mChoices[5]==1)mAttributeMinusSprite4.setVisible(false);
 						
-						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[5]), "MatchScene;StepText",150, 30);
-						Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[1]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
-						Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[2]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
-						Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[3]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
-						Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[4]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);						
+						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[6]), "MatchScene;StepText",150, 30);
+						Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[2]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
+						Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[3]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
+						Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[4]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
+						Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[5]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);						
 						
 			   	    	mLoadMatchEntity.attachChild(mAttributeBackgroundSprite1);
 			   	    	mLoadMatchEntity.attachChild(mAttributeBackgroundSprite2);
@@ -1851,23 +1859,23 @@ public class MatchScene extends Scene {
 			   				this.mLoadMatchEntity.detachChild(mArcherSprite);
 						}
 						
-						if(mChoices[5]==0){
+						if(mChoices[6]==0){
 		        		  MatchScene.this.okSprite.setVisible(true);
 		        		  mAttributePlusSprite1.setVisible(false);
 		        		  mAttributePlusSprite2.setVisible(false);
 		        		  mAttributePlusSprite3.setVisible(false);
 		        		  mAttributePlusSprite4.setVisible(false);
 						}
-						if(mChoices[1]==1)mAttributeMinusSprite1.setVisible(false);						
-						if(mChoices[2]==1)mAttributeMinusSprite2.setVisible(false);
-						if(mChoices[3]==1)mAttributeMinusSprite3.setVisible(false);
-						if(mChoices[4]==1)mAttributeMinusSprite4.setVisible(false);
+						if(mChoices[2]==1)mAttributeMinusSprite1.setVisible(false);						
+						if(mChoices[3]==1)mAttributeMinusSprite2.setVisible(false);
+						if(mChoices[4]==1)mAttributeMinusSprite3.setVisible(false);
+						if(mChoices[5]==1)mAttributeMinusSprite4.setVisible(false);
 						
-						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[5]), "MatchScene;StepText",150, 50);
-						Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[1]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
-						Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[2]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
-						Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[3]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
-						Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[4]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);						
+						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[6]), "MatchScene;StepText",150, 50);
+						Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[2]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
+						Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[3]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
+						Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[4]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
+						Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[5]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);						
 						
 			   	    	mLoadMatchEntity.attachChild(mAttributeBackgroundSprite1);
 			   	    	mLoadMatchEntity.attachChild(mAttributeBackgroundSprite2);
@@ -1908,61 +1916,61 @@ public class MatchScene extends Scene {
 		if(pAdding){
 			switch(pSelection){
 			case 1:
-				mChoices[1]+=1;
-				mChoices[5]-=1;
+				mChoices[2]+=1;
+				mChoices[6]-=1;
 				this.mAttributeMinusSprite1.setVisible(true);
-				Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[1]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
+				Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[2]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
 				break;
 			case 2:
-				mChoices[2]+=1;
-				mChoices[5]-=1;
+				mChoices[3]+=1;
+				mChoices[6]-=1;
 				this.mAttributeMinusSprite2.setVisible(true);
-				Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[2]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
+				Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[3]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
 				break;
 			case 3:
-				mChoices[3]+=1;
-				mChoices[5]-=1;
+				mChoices[4]+=1;
+				mChoices[6]-=1;
 				this.mAttributeMinusSprite3.setVisible(true);
-				Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[3]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
+				Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[4]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
 				break;
 			case 4:
-				mChoices[4]+=1;
-				mChoices[5]-=1;
+				mChoices[5]+=1;
+				mChoices[6]-=1;
 				this.mAttributeMinusSprite4.setVisible(true);
-				Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[4]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);
+				Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[5]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);
 				break;
 			}
 		}else{
 			switch(pSelection){
 			case 1:
-				mChoices[1]-=1;
-				mChoices[5]+=1;
-				if(mChoices[1]==1)this.mAttributeMinusSprite1.setVisible(false);
-				Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[1]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
+				mChoices[2]-=1;
+				mChoices[6]+=1;
+				if(mChoices[2]==1)this.mAttributeMinusSprite1.setVisible(false);
+				Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[2]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
 				break;
 			case 2:
-				mChoices[2]-=1;
-				mChoices[5]+=1;
-				if(mChoices[2]==1)this.mAttributeMinusSprite2.setVisible(false);
-				Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[2]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
+				mChoices[3]-=1;
+				mChoices[6]+=1;
+				if(mChoices[3]==1)this.mAttributeMinusSprite2.setVisible(false);
+				Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[3]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
 				break;
 			case 3:
-				mChoices[3]-=1;
-				mChoices[5]+=1;
-				if(mChoices[3]==1)this.mAttributeMinusSprite3.setVisible(false);
-				Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[3]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
+				mChoices[4]-=1;
+				mChoices[6]+=1;
+				if(mChoices[4]==1)this.mAttributeMinusSprite3.setVisible(false);
+				Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[4]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
 				break;
 			case 4:
-				mChoices[4]-=1;
-				mChoices[5]+=1;
-				if(mChoices[4]==1)this.mAttributeMinusSprite4.setVisible(false);
-				Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[4]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);
+				mChoices[5]-=1;
+				mChoices[6]+=1;
+				if(mChoices[5]==1)this.mAttributeMinusSprite4.setVisible(false);
+				Game.getTextHelper().ChangeText("Endurance: "+String.valueOf(mChoices[5]), "MatchScene;StepText4",mAttributeBackgroundSprite4.getX()+20, mAttributeBackgroundSprite4.getY()-20);
 				break;
 			}
 		
 		}
-		Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[5]), "MatchScene;StepText",150, 30);
-		if(mChoices[5]==0){
+		Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[6]), "MatchScene;StepText",150, 30);
+		if(mChoices[6]==0){
 			this.mAttributePlusSprite1.setVisible(false);
 			this.mAttributePlusSprite2.setVisible(false);
 			this.mAttributePlusSprite3.setVisible(false);
@@ -2060,14 +2068,14 @@ public class MatchScene extends Scene {
 								conts=true;
 							}
 						}
-						/*if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
+						if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
 							conts=true;
-						}*///comentado para el AVD, sacar coment para el celu
+						}//comentado para el AVD, sacar coment para el celu ***
 						if(conts==false){
 							Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
-							//if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)
+							if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)
 							MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
-							//}
+							}
 						}
 					} catch (final UnknownHostException e) {
 						Log.d("Quest!","DiscoveryClient: IPException: " + e);
@@ -2150,8 +2158,12 @@ public class MatchScene extends Scene {
 				alert.setView(editText);
 				alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-						Game.getDataHandler().setUsername(1,editText.getText().toString());
+					public void onClick(DialogInterface dialog, int whichButton) {//*** que checkee que no deje en blanco
+						if(editText.getText().toString().equals(null)||editText.getText().toString().equals("")||editText.getText().toString().equals(" ")){
+							showUsernameInput();
+						}else{
+							Game.getDataHandler().setUsername(1,editText.getText().toString());
+						}
 					}
 				});
 				alert.setCancelable(false);

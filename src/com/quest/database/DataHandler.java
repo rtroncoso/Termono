@@ -17,11 +17,16 @@ public class DataHandler {
 	
 	//Profile
 	public boolean CheckUsername(int pProfileID){
-		if(this.mUserDB.getUsername(pProfileID).equals("Player")){
+		String usr = this.mUserDB.getUsername(pProfileID);
+		if(usr.equals("Player")||usr.equals("")){
 			return false;//no tiene user
 		}else{
 			return true;//tiene user
 		}
+	}
+	
+	public String getUserID(int pProfileID){
+		return this.mUserDB.getUserID(pProfileID);
 	}
 	
 	public String getUsername(int pProfileID){
@@ -120,26 +125,42 @@ public class DataHandler {
 	}
 	
 	//MatchPlayers
-	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass){
-		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass));
+	public int AddNewPlayer(int pMatchID,int pProfileID,int pClass,int pHeadID){
+		return this.mUserDB.addNewMatchPlayers(pMatchID, this.mUserDB.CreateNewPlayer(pProfileID,pClass,pHeadID));
 	}
 	
 	
 	//Player
 	public int[] getPlayerIDifExists(int pProfileID, String pMatchName){
 		return this.mUserDB.getPlayerIDifExists(pProfileID, this.mUserDB.getMatchID(pMatchName, 1));
-	}
+	}	
 	
+	public int[] getPlayerIDifExists(int pProfileID,int pMatchID){
+		return this.mUserDB.getPlayerIDifExists(pProfileID,pMatchID);
+	}	
 	
 	public int getPlayerLevel(int pPlayerID){
 		return this.mUserDB.getPlayerLevel(pPlayerID);
 	}
 	
+	public int getPlayerHeadID(int pPlayerID){
+        return this.mUserDB.getPlayerHeadID(pPlayerID);
+    }
 	
 	public int getPlayerClass(int pPlayerID){
         return this.mUserDB.getPlayerClass(pPlayerID);
     }
 	
+	public void setPlayerLevel(int pLevel, int pPlayerID){
+		this.mUserDB.setPlayerLevel(pLevel,pPlayerID);
+	}
+	
+	public int getPlayerProfileID(int pPlayerID){
+        return this.mUserDB.getPlayerProfileID(pPlayerID);
+    }
+	
+
+	//Attributes
 	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
 		this.mUserDB.setAttributes(pPower, pIntelligence, pDefense, pEndurance, pPlayerID);
 	}
@@ -152,217 +173,164 @@ public class DataHandler {
 		return this.mUserDB.getAttributes(pPlayerID);
 	}
 	
-	public void setPlayerLevel(int pLevel, int pPlayerID){
-		this.mUserDB.setPlayerLevel(pLevel,pPlayerID);
+	//Modifiers
+	public void setPlayerModifiers(int pPlayerID,int pPower,int pIntelligence,int pDefense,int pEndurance,int currHP,int currMP){
+		this.mUserDB.setModifiers(pPlayerID,pPower,pIntelligence,pDefense,pEndurance,currHP,currMP);
+	}
+
+	public void setPlayerModifiers(int[] pModifiers,int pPlayerID){
+		this.mUserDB.setModifiers(pPlayerID,pModifiers[0], pModifiers[1], pModifiers[2], pModifiers[3], pModifiers[4],pModifiers[5]);
+	}
+	
+	public int[] getPlayerModifiers(int pPlayerID){
+		return this.mUserDB.getModifiers(pPlayerID);
+	}
+	
+	//Inventory
+	public int[] getInventoryKeys(int pPlayerID){
+		return this.mUserDB.getInventoryKeys(pPlayerID);
+	}
+	
+	public int[] getInventoryItems(int pPlayerID){
+		return this.mUserDB.getInventoryItems(pPlayerID);
+	}
+	
+	public int[] getInventoryEquipStatus(int pPlayerID){
+		return this.mUserDB.getInventoryEquipStatus(pPlayerID);
+	}
+
+	public int[] getInventoryAmounts(int pPlayerID){
+		return this.mUserDB.getInventoryAmounts(pPlayerID);
+	}
+	
+	public int[] getEquippedItems(int pPlayerID){
+		return this.mUserDB.getInventoryItemsbyEquipStatus(pPlayerID, true);
+	}
+	
+	public int[] getUnequippedItems(int pPlayerID){
+		return this.mUserDB.getInventoryItemsbyEquipStatus(pPlayerID, false);
+	}
+	
+	public int addInventoryItem(int pPlayerID,int pItemID, int pAmount){
+		int inventoryitemKey;
+		if(this.mStaticDB.isItemStackable(pItemID)){
+			inventoryitemKey = this.mUserDB.increaseItemAmount(pPlayerID, pItemID, pAmount);
+		}else{
+			inventoryitemKey = this.mUserDB.addInventoryItem(pPlayerID,pItemID,pAmount);
+		}
+		return inventoryitemKey;
+	}
+	
+	
+	public void InventoryItemDecreaseAmount(int pPlayerID,int pItemKey){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemKey, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)-1);
+		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)<1)this.mUserDB.removeInventoryItem(pPlayerID,pItemKey);
+	}
+
+	public void InventoryItemDecreaseAmountby(int pPlayerID,int pItemKey,int pAmount){
+		this.mUserDB.addInventoryItem(pPlayerID, pItemKey, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)-pAmount);
+		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)<1)this.mUserDB.removeInventoryItem(pPlayerID,pItemKey);
 	}
 	
 	
 	
-	/*
+	
+/*
 	
 	public String isLevelUnLocked(int levelNum){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
+        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());  <---- Fijarme si afecta memoria/input
         String myReturn = myDB.isLevelUnLocked(levelNum);
         myDB.close();
         return myReturn;
     }
-       
-    public int unLockLevel(int levelNum, String isUnLocked){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.unLockLevel(levelNum, isUnLocked);
-        myDB.close();
-        return myReturn;
-    }
-    
-    public int BeatLevel(int levelNum, String isBeat){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.BeatLevel(levelNum, isBeat);
-        myDB.close();
-        return myReturn;
-    }
-    
-    public String isLevelBeat(int levelNum){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.isLevelBeat(levelNum);
-        myDB.close();
-        return myReturn;
-    }
-    
-    */
-	public String getItemName(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getItemName(pID);
-        myDB.close();
-        return myReturn;
+ */
+	
+	
+	
+	//**********
+	//ESTATICA
+	//**********
+	//Class
+	public String getClassIconTexture(int pClass){
+        return this.mStaticDB.getClassIconTexture(pClass);
     }
 	
-	public int getItemType(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getItemType(pID);
-        myDB.close();
-        return myReturn;
+	public String getClassAnimationTexture(int pClass){
+        return this.mStaticDB.getClassAnimationTexture(pClass);
+    }
+	
+	public int getClassAnimationRows(int pClass){
+        return this.mStaticDB.getClassAnimationRows(pClass);
+    }
+	
+	public int getClassAnimationCols(int pClass){
+        return this.mStaticDB.getClassAnimationCols(pClass);
+    }
+	
+	public int getClassFrameWidth(int pClass){
+        return this.mStaticDB.getClassFrameWidth(pClass);
+    }
+	
+	public int getClassFrameHeight(int pClass){
+        return this.mStaticDB.getClassFrameHeight(pClass);
     }
 	
 	
-	public String getItemImagePath(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getItemImagePath(pID);
-        myDB.close();
-        return myReturn;
+	//Item
+	public String getItemName(int pItemID){
+        return this.mStaticDB.getItemName(pItemID);
     }
 	
-	public int getItemBuyPrice(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getItemBuyPrice(pID);
-        myDB.close();
-        return myReturn;
+	public int getItemType(int pItemID){
+        return this.mStaticDB.getItemType(pItemID);
+    }
+	
+	public String getItemIconTexture(int pItemID){
+		return this.mStaticDB.getItemIconTexture(pItemID);
     }
 
-	public int getItemSellPrice(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getItemSellPrice(pID);
-        myDB.close();
-        return myReturn;
+	public String getItemAnimationTexture(int pItemID){
+		return this.mStaticDB.getItemAnimationTexture(pItemID);
     }
 	
-	public String getItemDescription(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getItemDescription(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	public int getItemClass(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getItemClass(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	public int getInventoryCount(){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getInventoryCount();
-        myDB.close();
-        return myReturn;
-    }
-	/*
-	public int getInventoryItemID(int pIndex){
-        myDatabase myDB = new myDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getInventoryItemID(pIndex);
-        myDB.close();
-        return myReturn;
-    }
-	*/
-	
-	public int getItemAmount(int pID){
-		 StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-	        int myReturn = myDB.getItemAmount(pID);
-	        myDB.close();
-	        return myReturn;
+	public boolean isItemStackable(int pItemID){
+		return this.mStaticDB.isItemStackable(pItemID);
 	}
 	
-	
-	public int[] getEquippedIDs(int pEstado){
-		 StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-	        int[] myReturn = myDB.getEquippedIDs(pEstado);
-	        myDB.close();
-	        return myReturn;
-	}
-	
-	public boolean isItemEquipped(int pID){
-		StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-		int temp = myDB.isItemEquipped(pID);
-		myDB.close();
-		if(temp == 0){
-			return false;
-		}else{
-			return true;
-		}
-	}
-	
-	public void EquipItem(int pID, int pEquipped){
-		StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-		myDB.EquipItem(pID, pEquipped);
-		myDB.close();
-	}
-	
-
-	
-	//spell
-	public String getSpellName(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getSpellName(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	public int getSpellType(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getSpellType(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	
-	public String getSpellImagePath(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getSpellImagePath(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	
-	public String getSpellDescription(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getSpellDescription(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	public int getSpellClass(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getSpellClass(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	
-	public int[] getClassSpells(int pClass){
-		 StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-	        int[] myReturn = myDB.getClassSpells(pClass);
-	        myDB.close();
-	        return myReturn;
-	}
-	
-	//spellbook
-	public int getSpellBookCount(){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getSpellBookCount();
-        myDB.close();
-        return myReturn;
-    }
-	
-	public int getSpellLevel(int pID){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        int myReturn = myDB.getSpellLevel(pID);
-        myDB.close();
-        return myReturn;
-    }
-	
-	public void SpellLevelUp(int ID, int pLevel){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        myDB.SpellLevelUp(ID, pLevel);
-        myDB.close();
-    }
-	
-	//Spell Effect
-	public String getSpellEffect(int pID,int pLevel){
-        StaticDatabase myDB = new StaticDatabase(Game.getInstance().getApplicationContext());
-        String myReturn = myDB.getSpellEffect(pID,pLevel);
-        myDB.close();
-        return myReturn;
+	public int getItemBuyPrice(int pItemID){
+		return this.mStaticDB.getItemBuyPrice(pItemID);
     }
 
-
+	public int getItemSellPrice(int pItemID){
+		return this.mStaticDB.getItemSellPrice(pItemID);
+    }
+	
+	public String getItemDescription(int pItemID){
+		return this.mStaticDB.getItemDescription(pItemID);
+    }
+	
+	public int getItemClass(int pItemID){
+		return this.mStaticDB.getItemClass(pItemID);
+    }
+	
+	public int[] getItemModifiers(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID);
+	}
+	
+	public int getItemModPower(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[0];
+	}
+	
+	public int getItemModIntelligence(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[1];
+	}
+	
+	public int getItemModDefense(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[2];
+	}
+	
+	public int getItemModEndurance(int pItemID){
+		return this.mStaticDB.getItemModifiers(pItemID)[3];
+	}
 	
 }

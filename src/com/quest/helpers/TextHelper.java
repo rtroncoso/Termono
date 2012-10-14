@@ -44,7 +44,7 @@ public class TextHelper{
 	public TextHelper(/*FontUsed pFontUsed*/){
 			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 			this.mNormalFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256);		
-			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), this.mNormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.BLACK, 2, Color.WHITE);
+			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), this.mNormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.WHITE, 1, Color.BLACK);
 			Game.getInstance().getEngine().getTextureManager().loadTexture(this.mNormalFontTexture);
 			Game.getInstance().getEngine().getFontManager().loadFont(this.mNormalFont);
 			

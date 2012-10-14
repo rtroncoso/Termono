@@ -45,10 +45,18 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected boolean isWalking;
 	protected float mSpeedFactor;
 	
+	
+	
+	//a ordenar
+	protected int mLevel;
+	protected int currHP,currMana;
+	protected int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana;
+	protected int mEndurance,mIntelligence,mPower,mDefense;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public BaseEntity(int pInitialPosX, int pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
+	public BaseEntity(String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		this.mEntityType = "BaseEntity";
 		this.mSpeedFactor = 1.0f;
 
@@ -75,8 +83,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.attachChild(this.mBodySprite);
 		
 		this.mSpellsLayer = new ArrayList<Spell>();
-		
-		this.setTileAt(pInitialPosX, pInitialPosY);
 	}
 
 	// ===========================================================
@@ -232,6 +238,149 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mSpeedFactor = mSpeedFactor;
 	}
 
+	//a ordenar
+
+	public int getLevel() {
+		return mLevel;
+	}
+
+	public void setLevel(int mLevel) {
+		this.mLevel = mLevel;
+	}
+
+	public int getEndurance() {
+		return mEndurance;
+	}
+
+	public void setEndurance(int mEndurance) {
+		this.mEndurance = mEndurance;
+	}
+
+	public int getIntelligence() {
+		return mIntelligence;
+	}
+
+	public void setIntelligence(int mIntelligence) {
+		this.mIntelligence = mIntelligence;
+	}
+
+	public int getPower() {
+		return mPower;
+	}
+
+	public void setPower(int mPower) {
+		this.mPower = mPower;
+	}
+
+	public int getDefense() {
+		return mDefense;
+	}
+
+	public void setDefense(int mDefense) {
+		this.mDefense = mDefense;
+	}
+
+	public int getModEndurance() {
+		return mModEndurance;
+	}
+
+	public void setModEndurance(int mModEndurance) {
+		this.mModEndurance = mModEndurance;
+	}
+
+	public int getModIntelligence() {
+		return mModIntelligence;
+	}
+
+	public void setModIntelligence(int mModIntelligence) {
+		this.mModIntelligence = mModIntelligence;
+	}
+
+	public int getModPower() {
+		return mModPower;
+	}
+
+	public void setModPower(int mModPower) {
+		this.mModPower = mModPower;
+	}
+
+	public int getModDefense() {
+		return mModDefense;
+	}
+
+	public void setModDefense(int mModDefense) {
+		this.mModDefense = mModDefense;
+	}
+
+	public int getModHP() {
+		return mModHP;
+	}
+
+	public void setModHP(int mModHP) {
+		this.mModHP = mModHP;
+	}
+
+	public int getModMana() {
+		return mModMana;
+	}
+
+	public void setModMana(int mModMana) {
+		this.mModMana = mModMana;
+	}
+
+	public int getCurrHP() {
+		return currHP;
+	}
+
+	public void setCurrHP(int currHP) {
+		this.currHP = currHP;
+	}
+
+	public int getCurrMana() {
+		return currMana;
+	}
+
+	public void setCurrMana(int currMana) {
+		this.currMana = currMana;
+	}
+	
+	public int[] getAttributes(){
+		return new int[]{getPower(),getIntelligence(),getDefense(),getEndurance()};
+	}
+	
+	public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance){
+		this.setPower(pPower);
+		this.setIntelligence(pIntelligence);
+		this.setDefense(pDefense);
+		this.setEndurance(pEndurance);
+	}
+	
+	public void setAttributes(int[] pAttributes){
+		this.setPower(pAttributes[0]);
+		this.setIntelligence(pAttributes[1]);
+		this.setDefense(pAttributes[2]);
+		this.setEndurance(pAttributes[3]);
+	}
+	
+	
+	public void setModifiers(int[] Modifiers){
+		setModifiers(Modifiers[0], Modifiers[1], Modifiers[2], Modifiers[3], Modifiers[4], Modifiers[5]);
+		updateHPMana(Modifiers[6], Modifiers[7]);
+	}
+	
+	public void setModifiers(int pPower,int pIntelligence,int pDefense,int pEndurance,int pTotalHP,int pTotalMana){
+		this.setModEndurance(pEndurance);
+		this.setModIntelligence(pIntelligence);
+		this.setModPower(pPower);
+		this.setModDefense(pDefense);
+		this.setModHP(pTotalHP);
+		this.setModMana(pTotalMana);
+	}
+	
+	public void updateHPMana(int currHP,int currMana){
+		this.setCurrHP(currHP);
+		this.setCurrMana(currMana);
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================

@@ -65,7 +65,7 @@ private ItemIcon mEquippedHead;
 	
 	public void EquipItem(ItemIcon pItem, int pType){
 		this.setEquipped(pType, pItem);
-		this.mDataHandler.EquipItem(pItem.getID(), 1);
+	//***	this.mDataHandler.EquipItem(pItem.getID(), 1);
 		this.mGameMenuScene.getEquipmentUnEquippedItemsEntity().detachChild(pItem.getIcon());//lo saco de la entidad de los desequipados
 		this.mGameMenuScene.getEquipmentEntity().attachChild(pItem.getIcon());//lo cambio a la entidad de los equipados
 		pItem.setEntity(this.mGameMenuScene.getEquipmentEntity());//le paso la entidad para que se reste cuando lo mueva
@@ -83,7 +83,7 @@ private ItemIcon mEquippedHead;
 		}else{//si se esta desequipando
 			this.mGameMenuScene.getItemList().add(this.mGameMenuScene.getUnEquippedCount(), pEquipped);//agrega lo que estaba equipado como ultimo
 		}
-		this.mDataHandler.EquipItem(pEquipped.getID(), 0);//lo des equipo
+	//***	this.mDataHandler.EquipItem(pEquipped.getID(), 0);//lo des equipo
 		this.mGameMenuScene.getEquipmentEntity().detachChild(pEquipped.getIcon());//lo saco de la entidad de los equipados
 		this.mGameMenuScene.getEquipmentUnEquippedItemsEntity().attachChild(pEquipped.getIcon());//lo cambio a la entidad de los desequipados
 		pEquipped.setEntity(this.mGameMenuScene.getEquipmentUnEquippedItemsEntity());//le paso la entidad para que se reste cuando lo mueva

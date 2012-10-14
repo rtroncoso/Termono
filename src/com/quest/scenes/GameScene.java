@@ -49,6 +49,7 @@ public class GameScene extends Scene {
 			
 			// Loads everything in the background
 			Game.getSceneManager().setLoadingScene();
+			//Looper.myLooper().prepare();//tira ctrl shift o
 	        new AsyncTaskLoader().execute(new IAsyncCallback() {
 
 	            @Override
@@ -58,11 +59,14 @@ public class GameScene extends Scene {
 	    			GameScene.this.attachChild(GameScene.this.mMapLayer);
 	    			
 	    			// Create the Player and insert in helper
-	    			Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
-	    			
+	    			//Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
+	    			//Game.getPlayerHelper().addPlayer(new Player(20, 20, "Players/Animations/Paladin.png", 128, 256, 0, 0, 4, 4), "Player");
+	    			Game.getPlayerHelper().getPlayerbyIndex(0).setTileAt(20, 20);
 	    			//Enemies
-	    			GameScene.this.mEnemy = new Mob(15, 15, "Mob.png", 128, 256, 0, 0, 4, 4);
-	    			GameScene.this.mMob2 = new Mob(25, 15, "Mob2.png", 128, 256, 0, 0, 4, 4);
+	    			GameScene.this.mEnemy = new Mob("Mob.png", 128, 256, 0, 0, 4, 4);
+	    			GameScene.this.mMob2 = new Mob("Mob2.png", 128, 256, 0, 0, 4, 4);
+	    			GameScene.this.mEnemy.setTileAt(15, 15);
+	    			GameScene.this.mMob2.setTileAt(25, 15);
 	    			
 	    			//Timer
 	    			GameScene.this.mTimers = new Timers(mEnemy, mMob2);
@@ -71,14 +75,14 @@ public class GameScene extends Scene {
 	    			GameScene.this.mHud = new HUD();
 	    			GameScene.this.mStatsHud = new StatsHud();
 	    			GameScene.this.mSpellbarHud = new SpellbarHud(GameScene.this.mHud);
-	    			GameScene.this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getPlayer("Player"));
+	    			GameScene.this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
 	    			GameScene.this.mMenuHud = new MenuHud(mHud);
 	    			
 	    			GameScene.this.mHud.setChildScene(GameScene.this.mControlsHud.getDigitalOnScreenControl());
 	    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpellBar());
 	    			
 	    			// Players
-	    			GameScene.this.attachChild(Game.getPlayerHelper().getPlayer("Player"));
+	    			GameScene.this.attachChild(Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
 	    			GameScene.this.attachChild(GameScene.this.mEnemy);
 	    			GameScene.this.attachChild(GameScene.this.mMob2);
 	    			
@@ -89,7 +93,7 @@ public class GameScene extends Scene {
 	    			GameScene.this.mHud.attachChild(GameScene.this.mMenuHud.getMenuSprite());
 	    			
 	    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
-	    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer("Player"));
+	    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
 
 	    			GameScene.this.registerTouchArea(GameScene.this.mEnemy.getBodySprite());
 	    			GameScene.this.registerTouchArea(GameScene.this.mMob2.getBodySprite());

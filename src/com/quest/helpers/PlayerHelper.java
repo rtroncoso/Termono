@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.quest.entities.BaseEntity;
 import com.quest.entities.Player;
+import com.quest.game.Game;
 
 public class PlayerHelper {
 	
@@ -29,17 +30,17 @@ public class PlayerHelper {
 		}
 	}
 	
-	public BaseEntity getPlayer(String pKey) {
-		
+	public BaseEntity getPlayer(String pKey) {		
 		for(Player tmpEntity : this.mPlayers) {
-			if(tmpEntity.getUserData().equals(pKey)) {
+			if(tmpEntity.getUserData().equals(pKey))
 				return tmpEntity;
-			} else {
-				Log.e("Quest!","PlayerHelper: Search - No Player matches key");
-				return null;
-			}
 		}
+		Log.e("Quest!","PlayerHelper: Search - No Player matches key");
 		return null;
+	}
+	//*** Le mande Player en vez de BaseEntity por las funciones que necesito / (sino tengo que hacer "((Player) Game.getPlayerHelper().getPlayerbyIndex(0)).getUserID())", no se que es mejor.
+	public Player getPlayerbyIndex(int index) {
+		return this.mPlayers.get(index);
 	}
 
 	/**

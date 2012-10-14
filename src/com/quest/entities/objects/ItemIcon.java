@@ -43,7 +43,7 @@ public class ItemIcon extends Entity{
 	public ItemIcon(DataHandler pDataHandler,BitmapTextureAtlas pTextureAtlas,int pAtlasX,int AtlasY,int pIconX,int pIconY,Entity pEntity,Scene pScene,int pID, int pFunction) {
 		this.mID = pID;
 		this.mName = pDataHandler.getItemName(pID);
-		this.mImagePath = pDataHandler.getItemImagePath(mID);		
+		this.mImagePath = pDataHandler.getItemIconTexture(mID);		
 		this.mFunction = pFunction;
 		this.mBuyPrice = pDataHandler.getItemBuyPrice(mID);
 		this.mSellPrice = pDataHandler.getItemSellPrice(mID);
