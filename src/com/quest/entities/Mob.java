@@ -114,10 +114,10 @@ public class Mob extends BaseEntity implements ITouchArea {
 				// Animate the Character
 				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
 				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
-				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
+				//this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
 				
 				// Perform Move
-				this.moveToTile(tmxTileTo);
+				//this.moveToTile(tmxTileTo);
 			}
 		}		
 	}

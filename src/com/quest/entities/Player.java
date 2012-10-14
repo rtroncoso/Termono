@@ -104,8 +104,8 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
 				// Animate the Character
-				long frameDuration = (long) ((SPEED_MODIFIER / this.mSpeedFactor) * 1000) / 4;
-				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
+				long frameDuration = (long) ((SPEED_MODIFIER / this.mSpeedFactor) * 1000) / 5;
+				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration, frameDuration };
 				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
 				
 				// Check Tiles
