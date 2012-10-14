@@ -197,29 +197,35 @@ public class MapHelper implements IMeasureConstants {
 									// Load the map in the background
 									Game.getSceneManager().saveCurrentSceneState(true);
 									Game.getSceneManager().setLoadingScene();
-							        new AsyncTaskLoader().execute(new IAsyncCallback() {
+									Game.getInstance().runOnUiThread(new Runnable() {
+								        @Override
+								        public void run() {
+											 
+									        new AsyncTaskLoader().execute(new IAsyncCallback() {
 
-										@Override
-										public void workToDo() {
-											// TODO Auto-generated method stub
-											
-											// Load it and set new Player's position
-											MapHelper.this.loadMap(String.valueOf(nextMapNumber));
-											Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapX, 
-													(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapY);
-											
-										}
+												@Override
+												public void workToDo() {
+													// TODO Auto-generated method stub
+													
+													// Load it and set new Player's position
+													MapHelper.this.loadMap(String.valueOf(nextMapNumber));
+													Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapX, 
+															(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapY);
+													
+												}
 
-										@Override
-										public void onComplete() {
-											// TODO Auto-generated method stub
+												@Override
+												public void onComplete() {
+													// TODO Auto-generated method stub
 
-									        // Map loaded!
-											MapHelper.this.isChangingMap = false;
-											Game.getSceneManager().restoreSavedScene();
-											Game.getSceneManager().getDisplay().setZoom(1.6f);
-										}
-							        });
+											        // Map loaded!
+													MapHelper.this.isChangingMap = false;
+													Game.getSceneManager().restoreSavedScene();
+													Game.getSceneManager().getDisplay().setZoom(1.6f);
+												}
+									        });
+								        }
+									});
 								}
 							};
 							
