@@ -13,9 +13,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import android.util.Log;
 
 import com.quest.database.DataHandler;
-import com.quest.database.StaticDatabase;
 import com.quest.game.Game;
-import com.quest.scenes.GameMenuScene;
 
 public class SpellbarHud extends HUD{
 
@@ -57,7 +55,8 @@ public class SpellbarHud extends HUD{
 				
 		for(int i = 0; i < this.mSpells.length; i++) {
 			float posX = 190.0f;
-			this.mSpells[i] = new Sprite(posX + (90 * i), Game.getInstance().getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			Game.getInstance();
+			this.mSpells[i] = new Sprite(posX + (90 * i), Game.getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 
 				private Boolean mGrabbed = false;
 				@Override
