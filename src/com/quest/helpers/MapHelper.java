@@ -13,8 +13,6 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.util.debug.Debug;
 
-import android.util.Log;
-
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.IAsyncCallback;
 import com.quest.triggers.MapChangeTrigger;
@@ -270,7 +268,7 @@ public class MapHelper implements IMeasureConstants {
 	public boolean isLegalPosition(int pPositionX, int pPositionY) {
 		
 		// Check for Map Bounds
-		if(pPositionX <= 0 || pPositionY <= 0 || pPositionX > (MAP_WIDTH * TILE_SIZE) ||  pPositionY > (MAP_HEIGHT * TILE_SIZE)) return false;
+		if(pPositionX <= 0 || pPositionY <= 0 || pPositionX >= (MAP_WIDTH * TILE_SIZE) ||  pPositionY >= (MAP_HEIGHT * TILE_SIZE)) return false;
 
 		// Get the Tile
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(pPositionX, pPositionY);
