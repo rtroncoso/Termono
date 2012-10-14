@@ -92,16 +92,16 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		if(restartAnimation && !BaseEntity.this.mBodySprite.isAnimationRunning()) return this;
 		switch(pFacingDirection) {
 		case DIRECTION_EAST:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 8, 11, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 10, 14, false);
 			break;
 		case DIRECTION_WEST:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 4, 7, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 5, 9, false);
 			break;
 		case DIRECTION_SOUTH:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 0, 3, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 0, 4, false);
 			break;
 		case DIRECTION_NORTH:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 12, 15, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 15, 19, false);
 			break;		
 		}
 		return this;
@@ -344,6 +344,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.currMana = currMana;
 	}
 	
+	
 	public int[] getAttributes(){
 		return new int[]{getPower(),getIntelligence(),getDefense(),getEndurance()};
 	}
@@ -362,24 +363,55 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.setEndurance(pAttributes[3]);
 	}
 	
-	
-	public void setModifiers(int[] Modifiers){
-		setModifiers(Modifiers[0], Modifiers[1], Modifiers[2], Modifiers[3], Modifiers[4], Modifiers[5]);
-		updateHPMana(Modifiers[6], Modifiers[7]);
+	public int[] getModifiers(){
+		return new int[]{getModPower(),getModIntelligence(),getModDefense(),getModEndurance(),getModHP(),getModMana()};
 	}
 	
-	public void setModifiers(int pPower,int pIntelligence,int pDefense,int pEndurance,int pTotalHP,int pTotalMana){
+	public void setModifiers(int[] Modifiers){
+		setModifiers(Modifiers[0], Modifiers[1], Modifiers[2], Modifiers[3]);
+	}
+	
+	public void setModifiers(int pPower,int pIntelligence,int pDefense,int pEndurance){
 		this.setModEndurance(pEndurance);
 		this.setModIntelligence(pIntelligence);
 		this.setModPower(pPower);
 		this.setModDefense(pDefense);
-		this.setModHP(pTotalHP);
-		this.setModMana(pTotalMana);
+		this.setModHP(pEndurance*10);
+		this.setModMana(pIntelligence*10);
+	}
+	
+	public void addModifiers(int[] pModifiers){
+		int[] mods = this.getModifiers();
+		this.setModPower(mods[0]+pModifiers[0]);
+		this.setModIntelligence(mods[1]+pModifiers[1]);
+		this.setModDefense(mods[2]+pModifiers[2]);
+		this.setModEndurance(mods[3]+pModifiers[3]);
+		this.setModHP(mods[4]+(pModifiers[3]*10));
+		this.setModMana(mods[5]+(pModifiers[1]*10));
+	}
+	
+	public void substractModifiers(int[] pModifiers){
+		int[] mods = this.getModifiers();
+		this.setModPower(mods[0]-pModifiers[0]);
+		this.setModIntelligence(mods[1]-pModifiers[1]);
+		this.setModDefense(mods[2]-pModifiers[2]);
+		this.setModEndurance(mods[3]-pModifiers[3]);
+		this.setModHP(mods[4]-(pModifiers[3]*10));
+		this.setModMana(mods[5]-(pModifiers[1]*10));
 	}
 	
 	public void updateHPMana(int currHP,int currMana){
 		this.setCurrHP(currHP);
 		this.setCurrMana(currMana);
+	}
+	
+	public void updateHPMana(int[] currHPMP){
+		this.setCurrHP(currHPMP[0]);
+		this.setCurrMana(currHPMP[1]);
+	}
+	
+	public int[] getCurrHPMP(){
+		return new int[]{this.currHP,this.currMana};
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces

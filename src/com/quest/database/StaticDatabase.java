@@ -307,19 +307,29 @@ public class StaticDatabase extends SQLiteOpenHelper {
 		                
 		                */
 		                		                
-                 cv.put(fItemID, 0);//-------Cypress Stick-----------
+                 cv.put(fItemID, 1);//-------Cypress Stick-----------
           		 cv.put(fItemName, "Cypress Stick");
           		 cv.put(fItemIconTexture, "Paladin/Swords/CypressStick.png");
           		 cv.put(fItemAnimationTexture, "Paladin/Swords/CypressStick.png");
           		 cv.put(fItemType, 5);
+          		 cv.put(fItemStackable, 0);
           		 cv.put(fItemDescription, "A reliable wooden stick");
           		 cv.put(fItemBuyPrice, 15);
           		 cv.put(fItemSellPrice, 8);
           		 cv.put(fItemClass,1);
-          		 cv.put(fItemModifierID,0);
           		 db.insert(tItem, null, cv);
           		 
           		 cv.clear();
+          		 
+                 cv.put(fItemModifierID, 1);//-------Cypress Stick-----------
+          		 cv.put(fItemModifierEndurance, 1);
+          		 cv.put(fItemModifierIntelligence, 1);
+          		 cv.put(fItemModifierPower, 4);
+          		 cv.put(fItemModifierDefense, 1);
+          		 cv.put(fItemID, 1);
+          		 db.insert(tItemModifiers, null, cv);
+          		 
+          		 cv.clear();                 
           		 
           		cv.put(fClassID, 1);
           		cv.put(fClassIconTexture,"Players/Icons/Paladin.png");

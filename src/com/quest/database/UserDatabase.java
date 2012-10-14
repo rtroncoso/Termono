@@ -39,6 +39,8 @@ public class UserDatabase extends SQLiteOpenHelper {
     	static final String fPlayerID = "PlayerID";
     	static final String fPlayerLevel = "Level";
     	static final String fPlayerExperience = "Experience";
+	    static final String fPlayerCurrentHP = "HP";
+	    static final String fPlayerCurrentMana = "Mana";
     	static final String fPlayerPosition = "Position";
     	static final String fPlayerClass = "Class";
     	static final String fPlayerHeadID = "Head";
@@ -63,17 +65,6 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    static final String fAttributesDefense = "Defense";
 	    //PlayerID
 	    
-	static final String tModifiers = "Modifiers";
-		static final String fModifiersID = "ModifiersID";
-		static final String fModifiersHitPoints = "HitPoints";
-		static final String fModifiersManaPoints = "ManaPoints";
-	    static final String fModifiersEndurance = "Endurance";
-	    static final String fModifiersIntelligence = "Intelligence";
-	    static final String fModifiersPower = "Power";
-	    static final String fModifiersDefense = "Defense";
-	    static final String fModifiersCurrentHP = "HP";
-	    static final String fModifiersCurrentMana = "Mana";
-	    //PlayerID
 	    
     static final String tSpellBook = "SpellBook";
 	    static final String fSpellBookID = "SpellBookID";
@@ -129,6 +120,8 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fPlayerID+" INTEGER PRIMARY KEY , "+
     			fProfileID +" INTEGER , "+
     			fPlayerLevel+" INTEGER , "+
+    			fPlayerCurrentHP+" INTEGER ,"+
+    			fPlayerCurrentMana+" INTEGER ,"+
     			fPlayerExperience+" INTEGER , "+
     			fPlayerPosition +" INTEGER , "+
     			fPlayerHeadID +" INTEGER , "+
@@ -155,21 +148,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fAttributesPower+" INTEGER ,"+
     			fAttributesDefense+" INTEGER ,"+
 	     		fPlayerID+" INTEGER)"
-	             );	     
-
-    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tModifiers+" ("+
-    			fModifiersID+" INTEGER PRIMARY KEY , "+
-    			fModifiersHitPoints+" INTEGER , "+
-    			fModifiersManaPoints+" INTEGER ,"+
-    			fModifiersEndurance+" INTEGER ,"+
-    			fModifiersIntelligence+" INTEGER ,"+
-    			fModifiersPower+" INTEGER ,"+
-    			fModifiersDefense+" INTEGER ,"+
-    			fModifiersCurrentHP+" INTEGER ,"+
-    			fModifiersCurrentMana+" INTEGER ,"+
-	     		fPlayerID+" INTEGER)"
-	             );	     
-        
+	             );	        
         
 		 
 		 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellBook+" ("+
@@ -437,7 +416,6 @@ public class UserDatabase extends SQLiteOpenHelper {
 		  cv.clear();
 		  cv.put(fPlayerID, myAnswer);
 		  this.getWritableDatabase().insert(tAttributes, fAttributesID, cv);
-		  this.getWritableDatabase().insert(tModifiers, fModifiersID, cv);
 		  this.getWritableDatabase().insert(tInventory, fInventoryID, cv);
 		  this.getWritableDatabase().insert(tSpellBook, fSpellBookID, cv);
 	      this.close();
@@ -518,6 +496,28 @@ public class UserDatabase extends SQLiteOpenHelper {
         cv.clear();
         this.close();
       }
+    
+    public void setPlayerMPHP(int pPlayerID, int currHP, int currMP){
+    	ContentValues cv = new ContentValues();
+    	cv.put(fPlayerCurrentHP,currHP);
+    	cv.put(fPlayerCurrentMana,currMP);
+        this.getWritableDatabase().update(tPlayer, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+    }
+    
+    public int[] getPlayerHPMP(int pPlayerID){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT * FROM "+tPlayer+" where " +fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+    	int[] myAnswer = new int[2];
+    	myCursor.moveToFirst();
+    	int index = myCursor.getColumnIndex(fPlayerCurrentHP);
+   		myAnswer[0] = myCursor.getInt(index);
+   		index = myCursor.getColumnIndex(fPlayerCurrentMana);
+   		myAnswer[1] = myCursor.getInt(index);
+   		myCursor.close();
+   		this.close();
+   		return myAnswer;
+    }
 
     //Atributtes
     public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
@@ -547,47 +547,6 @@ public class UserDatabase extends SQLiteOpenHelper {
   	  this.close();
   	  return myAnswer;
      }
-    
-    //Modifiers
-    public void setModifiers(int pPlayerID,int pPower,int pIntelligence,int pDefense,int pEndurance,int currHP,int currMP){
-    	ContentValues cv = new ContentValues();
-        cv.put(fModifiersPower,pPower);
-        cv.put(fModifiersIntelligence, pIntelligence);
-        cv.put(fModifiersDefense, pDefense);
-        cv.put(fModifiersEndurance, pEndurance);
-        cv.put(fModifiersHitPoints, (pEndurance*10));
-        cv.put(fModifiersManaPoints, (pIntelligence*10));
-        cv.put(fModifiersCurrentHP, currHP);
-        cv.put(fModifiersCurrentMana, currMP);
-        this.getWritableDatabase().update(tModifiers, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
-        cv.clear();
-        this.close();
-      }
-    
-    public int[] getModifiers(int pPlayerID){
-        int[] myAnswer = new int[8];
-        Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tModifiers+".* from "+tPlayer+","+tModifiers+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tModifiers+"."+fPlayerID, new String[]{String.valueOf(pPlayerID)});
-   	  	myCursor.moveToFirst();
-   	  	int index = myCursor.getColumnIndex(fModifiersPower);
-	  	myAnswer[0]=myCursor.getInt(index);
-	  	index = myCursor.getColumnIndex(fModifiersIntelligence);
-	  	myAnswer[1]=myCursor.getInt(index);
-	  	index = myCursor.getColumnIndex(fModifiersDefense);
-	  	myAnswer[2]=myCursor.getInt(index);
-	  	index = myCursor.getColumnIndex(fModifiersEndurance);
-	  	myAnswer[3]=myCursor.getInt(index);
-	  	index = myCursor.getColumnIndex(fModifiersHitPoints);
-	  	myAnswer[4]=myCursor.getInt(index);
-	  	index = myCursor.getColumnIndex(fModifiersManaPoints);
-	  	myAnswer[5]=myCursor.getInt(index);
-	  	index = myCursor.getColumnIndex(fModifiersCurrentHP);
-	  	myAnswer[6]=myCursor.getInt(index);
-	  	index = myCursor.getColumnIndex(fModifiersCurrentMana);
-	  	myAnswer[7]=myCursor.getInt(index);
-	  	myCursor.close();
-	  	this.close();
-	  	return myAnswer;
-       }
     
     //Inventory
     public int[] getInventoryKeys(int pPlayerID){//All inventory Item Keys
@@ -664,9 +623,15 @@ public class UserDatabase extends SQLiteOpenHelper {
 	        cv.put(fInventoryItemAmount,pAmount);//updateo el amount
 	        this.getWritableDatabase().update(tInventoryItem, cv, fInventoryItemKey+" =?",new String[]{String.valueOf(myAnswer)});
 	    }else{//No tiene el item, lo agrego
+	    	myCursor.close();
+	    	myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryID+" from "+tInventory+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
+	    	myCursor.moveToFirst();
+	    	int index = myCursor.getColumnIndex(fInventoryID);
+	        int inventoryID = myCursor.getInt(index);
 	    	ContentValues cv = new ContentValues();
 	        cv.put(fInventoryItemAmount,pAmount);
 	    	cv.put(fItemID,pItemID);
+	        cv.put(fInventoryID, inventoryID);
 	    	cv.put(fInventoryIsItemEquipped,0);
 	    	this.getWritableDatabase().insert(tInventoryItem, fInventoryItemKey, cv);
 	    }
@@ -680,14 +645,20 @@ public class UserDatabase extends SQLiteOpenHelper {
     }
     
     public int addInventoryItem(int pPlayerID,int pItemID,int pAmount){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryID+" from "+tInventory+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
+    	myCursor.moveToFirst();
+        int index = myCursor.getColumnIndex(fInventoryID);
+        int inventoryID = myCursor.getInt(index);
     	ContentValues cv = new ContentValues();
         cv.put(fInventoryItemAmount,pAmount);
+        cv.put(fInventoryID, inventoryID);
     	cv.put(fItemID,pItemID);
     	cv.put(fInventoryIsItemEquipped,0);
     	this.getWritableDatabase().insert(tInventoryItem, fInventoryItemKey, cv);
-        Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryItemKey+" from "+tInventoryItem+" order by "+fInventoryItemKey+" desc limit 1", null);
-        myCursor.moveToFirst();
-        int index = myCursor.getColumnIndex(fInventoryItemKey);
+    	myCursor.close();
+    	myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryItemKey+" from "+tInventoryItem+" order by "+fInventoryItemKey+" desc limit 1", null);
+    	myCursor.moveToFirst();
+        index = myCursor.getColumnIndex(fInventoryItemKey);
         int myAnswer = myCursor.getInt(index);
         myCursor.close();
         this.close();

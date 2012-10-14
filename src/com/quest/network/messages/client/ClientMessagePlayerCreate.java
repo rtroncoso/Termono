@@ -14,7 +14,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	// ===========================================================
 	// Fields
 	// ===========================================================
-
+	private String mUserID;
 	private int mClass;
 	private int mEndurance,mIntelligence,mPower,mDefense;
 	private int mHeadID;
@@ -27,7 +27,8 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	public ClientMessagePlayerCreate() {
 	}
 
-	public ClientMessagePlayerCreate(final int[] pChoices){
+	public ClientMessagePlayerCreate(final int[] pChoices,String pUserID){
+		this.mUserID = pUserID;
 		this.mClass = pChoices[0];
 		this.mHeadID = pChoices[1];
 		this.mPower = pChoices[2];
@@ -60,6 +61,13 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 		return this.mHeadID;
 	}
 
+	public String getUserID() {
+		return mUserID;
+	}
+
+	public void setUserID(String mUserID) {
+		this.mUserID = mUserID;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -72,6 +80,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
+		 this.mUserID = pDataInputStream.readUTF();
 		 this.mClass = pDataInputStream.readInt();
 		 this.mPower = pDataInputStream.readInt();
 		 this.mIntelligence = pDataInputStream.readInt();
@@ -82,6 +91,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
+		pDataOutputStream.writeUTF(this.mUserID);
 		pDataOutputStream.writeInt(this.mClass);
 		pDataOutputStream.writeInt(this.mPower);
 		pDataOutputStream.writeInt(this.mIntelligence);

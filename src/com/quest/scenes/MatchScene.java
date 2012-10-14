@@ -64,13 +64,12 @@ public class MatchScene extends Scene {
 
 	
 	//Scene
-	private Entity mScrollEntity;
 	private Entity mCurrentEntity;
 		private BitmapTextureAtlas mSceneTextureAtlas;
-		private ITextureRegion mScrollBackTextureRegion;
+		private ITextureRegion mBackgroundTextureRegion;
 		private ITextureRegion mUpperBarTextureRegion;
 		private ITextureRegion mLowerBarTextureRegion;
-		private Sprite mScrollBackSprite;
+		private Sprite mBackgroundSprite;
 		private Sprite mUpperBarSprite;
 		private Sprite mLowerBarSprite;
 	//comunes
@@ -177,7 +176,6 @@ public class MatchScene extends Scene {
 	// Constructors
 	// ===========================================================
 	public MatchScene(){
-		this.mScrollEntity = new Entity(0,0);
 		this.mMatchesEntity = new Entity(0,0);
 		this.mOwnMatchesEntity = new Entity(0,0);
 		this.mLoadMatchEntity = new Entity(0,0);
@@ -188,7 +186,7 @@ public class MatchScene extends Scene {
 		this.mCharactersEntity = new Entity((Game.getSceneManager().getDisplay().getCameraWidth()/2)-30,(Game.getSceneManager().getDisplay().getCameraHeight()/2));
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
 		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2036,2036, TextureOptions.BILINEAR);
-		this.mScrollBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "scroll.png", 0, 0);
+		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);
 		this.mUpperBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "upperbar.png", 0, 768);
 		this.mLowerBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lowerbar.png", 0, 880);
 		this.mNewGameTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "new.png", 0, 985);
@@ -218,13 +216,13 @@ public class MatchScene extends Scene {
 		
 		
 		//Background
-		this.mScrollBackSprite = new Sprite(0, 0, mScrollBackTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
-		this.attachChild(this.mScrollBackSprite);
+		this.mBackgroundSprite = new Sprite(0, 0, mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
+		this.attachChild(this.mBackgroundSprite);
 		
 		this.mUpperBarSprite = new Sprite(0, 0, mUpperBarTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mUpperBarSprite);
 		
-		this.mLowerBarSprite = new Sprite(0,this.mScrollBackSprite.getHeight()- 66,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
+		this.mLowerBarSprite = new Sprite(0,this.mBackgroundSprite.getHeight()- 66,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mLowerBarSprite);
 		
 		
@@ -273,7 +271,7 @@ public class MatchScene extends Scene {
 			}
 		};
 		
-		this.mNewGameSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mNewGameSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -293,7 +291,7 @@ public class MatchScene extends Scene {
 			}
 		};
 		
-		this.mRefreshSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mRefreshTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		this.mRefreshSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mRefreshTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -315,7 +313,7 @@ public class MatchScene extends Scene {
 			}
 		};
 		
-		this.mDirectConnectSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mDirectConnectTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mDirectConnectSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,	this.mBackgroundSprite.getHeight()-45-10, this.mDirectConnectTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -344,7 +342,7 @@ public class MatchScene extends Scene {
 			}		
 		};
 		
-		this.mLowbarSprite = new Sprite(115,this.mScrollBackSprite.getHeight()- 41,mLowbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mLowbarSprite = new Sprite(115,this.mBackgroundSprite.getHeight()- 41,mLowbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				//nada, tengo que registrar para blockear el touch de los matches
@@ -404,7 +402,7 @@ public class MatchScene extends Scene {
 			}
 		};
 		
-		this.mNewGameSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mNewGameSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -425,7 +423,7 @@ public class MatchScene extends Scene {
 		};
 	
 		//Delete match
-		this.mCancelSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		this.mCancelSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -462,7 +460,7 @@ public class MatchScene extends Scene {
 		};
 		
 		
-		this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,	this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mOkSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,	this.mBackgroundSprite.getHeight()-45-10, this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -494,7 +492,7 @@ public class MatchScene extends Scene {
 			}		
 		};
 		
-		this.mLowbarSprite = new Sprite(115,this.mScrollBackSprite.getHeight()- 41,mLowbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mLowbarSprite = new Sprite(115,this.mBackgroundSprite.getHeight()- 41,mLowbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				//nada, tengo que registrar para blockear el touch de los matches
@@ -568,7 +566,7 @@ public class MatchScene extends Scene {
 			ShowLowerBar(false);
 		}else{
 			//Start Match
-			this.mOkSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			this.mOkSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -580,8 +578,8 @@ public class MatchScene extends Scene {
 						if(mGrabbed) {
 							mGrabbed = false;
 							Game.getTextHelper().FlushText("MatchScene");
-							//Game.getSceneManager().setGameScene();
-							Game.getSceneManager().setTestScene();
+							Game.getSceneManager().setGameScene();
+							//Game.getSceneManager().setTestScene();
 						}
 						break;
 					}
@@ -592,7 +590,7 @@ public class MatchScene extends Scene {
 			this.registerTouchArea(this.mOkSprite);
 			
 			//Kick player
-			this.mCancelSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			this.mCancelSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -684,7 +682,7 @@ public class MatchScene extends Scene {
 			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopLeftSprite);
 			this.registerTouchArea(mLoadMatchTopLeftSprite);
 			
-			this.mLoadMatchTopRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -706,12 +704,8 @@ public class MatchScene extends Scene {
 								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, mChoices[0],mChoices[1]);//*** headID
 								Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
 								Game.getDataHandler().setPlayerLevel(1, playerid);
-								int[] ModifiersArray = new int[6];//***
-								System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-2);
-								ModifiersArray[4] = ModifiersArray[3]*10;//Current Hp = endurance * 10
-								ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
-								Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
-								
+								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
+								Game.getDataHandler().addInventoryItem(1, 1, 1);//****
 								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
 								
 								if(AVD_DEBUGGING){//sacar despues
@@ -731,7 +725,7 @@ public class MatchScene extends Scene {
 
 			
 			//Previous
-			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			      boolean mGrabbed = false;
 			      @Override
 			      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -759,7 +753,7 @@ public class MatchScene extends Scene {
 
 
 	        //Next
-	        this.mLoadMatchBottomRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+	        this.mLoadMatchBottomRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,  this.mBackgroundSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 		          boolean mGrabbed = false;
 		          @Override
 		          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -832,7 +826,7 @@ public class MatchScene extends Scene {
 			this.registerTouchArea(mLoadMatchTopLeftSprite);
 			
 			//Create new character
-			this.mLoadMatchTopRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -857,7 +851,7 @@ public class MatchScene extends Scene {
 			this.registerTouchArea(this.mLoadMatchTopRightSprite);
 			
 			//Delete Character
-			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			      boolean mGrabbed = false;
 			      @Override
 			      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -882,7 +876,7 @@ public class MatchScene extends Scene {
 
 
 	        //Choose Character
-	        this.mLoadMatchBottomRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+	        this.mLoadMatchBottomRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,  this.mBackgroundSprite.getHeight()-45-10, this.mOkTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 		          boolean mGrabbed = false;
 		          @Override
 		          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -953,7 +947,7 @@ public class MatchScene extends Scene {
 			this.registerTouchArea(mLoadMatchTopLeftSprite);
 			
 			//Create new character
-			this.mLoadMatchTopRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -979,7 +973,7 @@ public class MatchScene extends Scene {
 			
 			
 			//Delete Character
-			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchBottomLeftSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mCancelTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			      boolean mGrabbed = false;
 			      @Override
 			      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -1004,7 +998,7 @@ public class MatchScene extends Scene {
 
 
 	        //Choose Character
-	        this.mLoadMatchBottomRightSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mOkTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+	        this.mLoadMatchBottomRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,  this.mBackgroundSprite.getHeight()-45-10, this.mOkTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 		          boolean mGrabbed = false;
 		          @Override
 		          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -1575,7 +1569,7 @@ public class MatchScene extends Scene {
 						this.mLoadMatchEntity.detachChild(this.mLoadMatchBottomLeftSprite);
 						this.mLoadMatchEntity.detachChild(this.mLoadMatchBottomRightSprite);
 						this.mLoadMatchEntity.detachChild(this.mLoadMatchTopRightSprite);
-						this.previousSprite = new Sprite(16, this.mScrollBackSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+						this.previousSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mPreviousTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 						      boolean mGrabbed = false;
 						      @Override
 						      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -1599,7 +1593,7 @@ public class MatchScene extends Scene {
 						      }
 						    };
 					    this.mLoadMatchEntity.attachChild(previousSprite);
-						this.nextSprite  = new Sprite(this.mScrollBackSprite.getWidth()-12-63,  this.mScrollBackSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+						this.nextSprite  = new Sprite(this.mBackgroundSprite.getWidth()-12-63,  this.mBackgroundSprite.getHeight()-45-10, this.mNextTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 						          boolean mGrabbed = false;
 						          @Override
 						          public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -1623,7 +1617,7 @@ public class MatchScene extends Scene {
 						          }
 						        };
 				        this.mLoadMatchEntity.attachChild(nextSprite);
-				        this.okSprite = new Sprite(this.mScrollBackSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+				        this.okSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 								boolean mGrabbed = false;
 								@Override
 								public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -1645,9 +1639,7 @@ public class MatchScene extends Scene {
 													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, mChoices[0], mChoices[1]);//*** headID
 													Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
 													Game.getDataHandler().setPlayerLevel(1, playerid);//***
-													int[] ModifiersArray = new int[6];System.arraycopy(mChoices, 2, ModifiersArray, 0, mChoices.length-2);ModifiersArray[4] = ModifiersArray[3]*10;ModifiersArray[5] = ModifiersArray[1]*10;//Current Mp = intelligence * 10
-													Game.getDataHandler().setPlayerModifiers(ModifiersArray, playerid);
-													
+													Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
 													if(AVD_DEBUGGING){//sacar despues
 														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
@@ -1657,7 +1649,7 @@ public class MatchScene extends Scene {
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
-													Game.getClient().sendPlayerCreate(mChoices);//*** sacar profile data y match data
+													Game.getClient().sendPlayerCreate(mChoices,Game.getDataHandler().getUserID(1));//*** sacar profile data y match data
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
 													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
 													}
@@ -2122,7 +2114,7 @@ public class MatchScene extends Scene {
 		Log.d("Quest!","Selected Match: "+this.mSelectedMatchName);
 		for(int i = 0;i<this.mOwnMatchesList.size();i++){
 			if(this.mSelectedMatchName.equals(this.mOwnMatchesList.get(i).getMatchName())){
-				this.mOwnMatchesList.get(i).changeAlpha(1f);
+				this.mOwnMatchesList.get(i).changeAlpha(0.85f);
 			}else{
 				this.mOwnMatchesList.get(i).changeAlpha(0.5f);
 			}
@@ -2134,7 +2126,7 @@ public class MatchScene extends Scene {
 		Log.d("Quest!","Selected Character: "+String.valueOf(this.mSelectedCharacterID));
 		for(int i = 0;i<this.mCharacterList.size();i++){
 			if(this.mSelectedCharacterID == this.mCharacterList.get(i).getCharacterID()){
-				this.mCharacterList.get(i).changeAlpha(1f);
+				this.mCharacterList.get(i).changeAlpha(0.85f);
 			}else{
 				this.mCharacterList.get(i).changeAlpha(0.5f);
 			}

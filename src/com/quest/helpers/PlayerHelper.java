@@ -43,6 +43,14 @@ public class PlayerHelper {
 		return this.mPlayers.get(index);
 	}
 
+	public Player getPlayerbyPlayerID(int pPlayerID){
+		for(Player tmpEntity : this.mPlayers) {
+			if(tmpEntity.getPlayerID()==pPlayerID)
+				return tmpEntity;
+		}
+		Log.e("Quest!","PlayerHelper: Search - No Player matches ID");
+		return null;
+	}
 	/**
 	 * @return the mEntities
 	 */

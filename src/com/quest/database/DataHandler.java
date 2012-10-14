@@ -159,7 +159,14 @@ public class DataHandler {
         return this.mUserDB.getPlayerProfileID(pPlayerID);
     }
 	
+	public void setPlayerCurrentHPMP(int pPlayerID,int currHP, int currMP){
+		this.mUserDB.setPlayerMPHP(pPlayerID, currHP, currMP);
+	}
 
+	public int[] getPlayerCurrentHPMP(int pPlayerID){
+		return this.mUserDB.getPlayerHPMP(pPlayerID);
+	}
+	
 	//Attributes
 	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
 		this.mUserDB.setAttributes(pPower, pIntelligence, pDefense, pEndurance, pPlayerID);
@@ -173,18 +180,6 @@ public class DataHandler {
 		return this.mUserDB.getAttributes(pPlayerID);
 	}
 	
-	//Modifiers
-	public void setPlayerModifiers(int pPlayerID,int pPower,int pIntelligence,int pDefense,int pEndurance,int currHP,int currMP){
-		this.mUserDB.setModifiers(pPlayerID,pPower,pIntelligence,pDefense,pEndurance,currHP,currMP);
-	}
-
-	public void setPlayerModifiers(int[] pModifiers,int pPlayerID){
-		this.mUserDB.setModifiers(pPlayerID,pModifiers[0], pModifiers[1], pModifiers[2], pModifiers[3], pModifiers[4],pModifiers[5]);
-	}
-	
-	public int[] getPlayerModifiers(int pPlayerID){
-		return this.mUserDB.getModifiers(pPlayerID);
-	}
 	
 	//Inventory
 	public int[] getInventoryKeys(int pPlayerID){

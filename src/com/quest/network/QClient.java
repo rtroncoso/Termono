@@ -13,6 +13,7 @@ import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 
 import android.util.Log;
 
+import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageFlags;
@@ -25,6 +26,7 @@ import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFlags;
+import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.objects.BooleanMessage;
 
 public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags {
@@ -80,7 +82,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 			});
 			
-			
+			//mando que cree un chara
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_CREATE_PLAYER, ServerMessageCreatePlayer.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
@@ -88,14 +90,24 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					Game.getSceneManager().getMatchScene().msgCreateRemoteCharacter();
 				}
 			});
-			
+			//Llego un chara que tengo
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER, ServerMessageExistingPlayer.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageExistingPlayer serverMessageExistingPlayer = (ServerMessageExistingPlayer) pServerMessage;
 					//Tiene player en la partida, lo agrego a la lista
-					Log.d("Quest!","Char");
 					Game.getSceneManager().getMatchScene().LoadOwnRemoteCharacters(serverMessageExistingPlayer.getCharacterID(), serverMessageExistingPlayer.getLevel(), serverMessageExistingPlayer.getPlayerClass());
+				}
+			});
+			
+			//Recibi un new player!
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER, ServerMessageSendPlayer.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					Log.d("Quest!", "Cliente - llego player send");
+					Game.getSceneManager().getMatchScene().attachChild(Game.getTextHelper().NewText(0, 0, "Cliente - llego player send", "1"));
+					final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) pServerMessage;
+					Game.getPlayerHelper().addPlayer(new Player(serverMessageSendPlayer.getUserID(), serverMessageSendPlayer.getPlayerID(), serverMessageSendPlayer.getPlayerClass(), serverMessageSendPlayer.getLevel(), serverMessageSendPlayer.getAttributes(), serverMessageSendPlayer.getCurrHPMP(), serverMessageSendPlayer.getHeadID(), serverMessageSendPlayer.getItemID(), serverMessageSendPlayer.getAmounts(), serverMessageSendPlayer.getIsEquipped(), serverMessageSendPlayer.getItemKeys()), serverMessageSendPlayer.getUserID());
 				}
 			});
 			
@@ -129,7 +141,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-
+		
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -163,9 +175,10 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			QClient.this.mMessagePool.recycleMessage(clientMessageConnectionRequest);
 		}
 		
-		public void sendPlayerCreate(int[] pChoices){			
+		public void sendPlayerCreate(int[] pChoices,String pUserID){			
 			final ClientMessagePlayerCreate clientMessagePlayerCreate= (ClientMessagePlayerCreate) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE);
 			clientMessagePlayerCreate.setChoices(pChoices);
+			clientMessagePlayerCreate.setUserID(pUserID);
 			try {
 				sendClientMessage(clientMessagePlayerCreate);				
 			} catch (Exception e) {
@@ -184,7 +197,17 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			}
 			QClient.this.mMessagePool.recycleMessage(clientMessageSelectedPlayer);
 		}	
-		
+		/*
+		public void sendUnequipMessage(int pItemKey){
+			final ClientMessageSelectedPlayer clientMessageSelectedPlayer= (ClientMessageSelectedPlayer) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER);
+			clientMessageSelectedPlayer.setPlayerID(pPlayerID);
+			try {
+				sendClientMessage(clientMessageSelectedPlayer);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessageSelectedPlayer);
+		}*/
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

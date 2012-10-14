@@ -63,12 +63,17 @@ public class InventoryItem extends BaseItem{
 		return false;
 	}
 	
-	public int isEqquiped() {
-		return mEquipped;
+	public boolean isEqquiped() {
+		if(mEquipped==1)return true;
+		return false;
 	}
 
-	public void Equip(int pEquipped) {
-		this.mEquipped = pEquipped;
+	public void Equip(boolean pEquip) {
+		if(pEquip==true){
+			this.mEquipped = 1;
+		}else{
+			this.mEquipped = 0;
+		}
 	}
 
 	// ===========================================================

@@ -48,7 +48,8 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mClass = pClass;
 		this.setLevel(Game.getDataHandler().getPlayerLevel(this.mPlayerID));
 		this.setAttributes(Game.getDataHandler().getPlayerAttributes(this.mPlayerID));
-		this.setModifiers(Game.getDataHandler().getPlayerModifiers(this.mPlayerID));
+		this.setModifiers(this.getAttributes());
+		this.updateHPMana(Game.getDataHandler().getPlayerCurrentHPMP(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
 		this.mUserID = Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID),Game.getDataHandler().getInventoryKeys(this.mPlayerID)));
@@ -56,13 +57,17 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	}
 	
 	
-	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int[] pAttributes,int pHeadID){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
+	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int[] pItemKeys){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
 		this.mLevel = pLevel;
 		this.mHeadID = pHeadID;
 		this.mUserID = pUserID;
+		this.setAttributes(pAttributes);
+		this.setModifiers(pAttributes);
+		this.updateHPMana(currHPMP);
+		this.setInventory(LoadInventory(pItemIDs, pAmounts, isEquipped, pItemKeys));
 		this.mEntityType = "Player";
 	}
 
@@ -70,9 +75,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// Methods
 	// ===========================================================
 	private InventoryItemHelper LoadInventory(int[] pItemIDs,int[] pAmounts,int[] isEquipped,int[] pItemKeys){
-		InventoryItemHelper pInventory = new InventoryItemHelper();
+		InventoryItemHelper pInventory = new InventoryItemHelper(mUserID);
 		if(pItemIDs.length!=pItemKeys.length)Log.e("Quest!","InventoryHelper - Array leghts don't match");
-		for(int i : pItemKeys){
+		for(int i = 0;i<pItemKeys.length;i++){
 			pInventory.addItem(new InventoryItem(pItemIDs[i], pAmounts[i], isEquipped[i]), pItemKeys[i]);
 		}
 		return pInventory;
@@ -122,6 +127,10 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public int getPlayerID() {
+		return mPlayerID;
+	}
+	
 	public int getPlayerClass() {
 		return mClass;
 	}

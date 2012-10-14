@@ -48,7 +48,7 @@ public class ClientMessageSelectedPlayer extends ClientMessage implements Client
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_CLIENT_PLAYER_CREATE;
+		return FLAG_MESSAGE_CLIENT_SELECTED_PLAYER;
 	}
 
 	@Override
