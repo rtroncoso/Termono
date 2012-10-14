@@ -92,16 +92,16 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		if(restartAnimation && !BaseEntity.this.mBodySprite.isAnimationRunning()) return this;
 		switch(pFacingDirection) {
 		case DIRECTION_EAST:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 8, 11, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 10, 14, false);
 			break;
 		case DIRECTION_WEST:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 4, 7, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 5, 9, false);
 			break;
 		case DIRECTION_SOUTH:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 0, 3, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 0, 4, false);
 			break;
 		case DIRECTION_NORTH:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 12, 15, false);
+			BaseEntity.this.mBodySprite.animate(pFrameDuration, 15, 19, false);
 			break;		
 		}
 		return this;
