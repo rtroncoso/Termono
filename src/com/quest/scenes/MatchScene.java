@@ -2151,7 +2151,7 @@ public class MatchScene extends Scene {
 				alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {//*** que checkee que no deje en blanco
-						if(editText.getText().toString().equals(null)||editText.getText().toString().equals("")||editText.getText().toString().equals(" ")){
+						if(editText.getText().toString().equals(null)||editText.getText().toString().equals("")||editText.getText().toString().equals(" ")||editText.getText().toString().equals("***Player***")){
 							showUsernameInput();
 						}else{
 							Game.getDataHandler().setUsername(1,editText.getText().toString());

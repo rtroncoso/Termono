@@ -18,13 +18,14 @@ import org.andengine.util.debug.Debug;
 
 import android.util.Log;
 
+import com.quest.constants.ClientMessageFlags;
+import com.quest.constants.ServerMessageFlags;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
 import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
-import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
@@ -33,7 +34,6 @@ import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
-import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.util.constants.IGameConstants;
 
@@ -190,21 +190,10 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				//Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),connectedClientProfileData.getUserID());//*** poner el userID donde sea que corresponda
 				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),clientMessagePlayerCreate.getUserID());
 				
-				Log.d("Quest!", "Server - llego player create");
-				Game.getSceneManager().getMatchScene().attachChild(Game.getTextHelper().NewText(0,60, "Server - llego player create", "4"));
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(playerid), Game.getDataHandler().getInventoryItems(playerid), Game.getDataHandler().getInventoryAmounts(playerid), Game.getDataHandler().getInventoryEquipStatus(playerid), Game.getDataHandler().getInventoryKeys(playerid));
-				sendBroadcast(serverMessageSendPlayer);
 				
-				Log.d("Quest!", "Server - Mande el mensaje");
-				Game.getSceneManager().getMatchScene().attachChild(Game.getTextHelper().NewText(0,90, "Server - Mande el mensaje", "5"));
-				/*
-				try {
-					pClientConnector.sendServerMessage(serverMessageSendPlayer);
-				} catch (IOException e) {
-					Debug.e(e);
-				}
-				QServer.this.mMessagePool.recycleMessage(serverMessageSendPlayer);*/
+				sendBroadcast(serverMessageSendPlayer);
 				
 			}
 		});
@@ -216,22 +205,11 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				final ClientMessageSelectedPlayer clientMessageSelectedPlayer = (ClientMessageSelectedPlayer) pClientMessage;
 				Game.getPlayerHelper().addPlayer(new Player(clientMessageSelectedPlayer.getPlayerID(), Game.getDataHandler().getPlayerClass(clientMessageSelectedPlayer.getPlayerID())),Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(clientMessageSelectedPlayer.getPlayerID())));
 			
-				Log.d("Quest!", "Server - llego player select");
-				Game.getSceneManager().getMatchScene().attachChild(Game.getTextHelper().NewText(0, 0, "Server - llego player select", "1"));
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryItems(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryAmounts(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryKeys(clientMessageSelectedPlayer.getPlayerID()));
+			
 				sendBroadcast(serverMessageSendPlayer);
-				
-				Log.d("Quest!", "Server - Mande el mensaje");
-				Game.getSceneManager().getMatchScene().attachChild(Game.getTextHelper().NewText(0, 30, "Server - Mande el mensaje", "3"));
-				/*
-				try {
-					pClientConnector.sendServerMessage(serverMessageSendPlayer);
-				} catch (IOException e) {
-					Debug.e(e);
-				}
-				QServer.this.mMessagePool.recycleMessage(serverMessageSendPlayer);
-				*/
+			
 			}
 		});
 		
@@ -271,8 +249,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // ===========================================================
 public void sendBroadcast(IServerMessage pServerMessage){
 	try {
-		Log.d("Quest!", "Broadcast - Mande el mensaje");
-		Game.getSceneManager().getMatchScene().attachChild(Game.getTextHelper().NewText(0, 400, "Broadcast - Mande el mensaje", "2"));
 		this.sendBroadcastServerMessage(pServerMessage);
 	} catch (IOException e) {
 		// TODO Auto-generated catch block

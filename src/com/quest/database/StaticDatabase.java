@@ -75,6 +75,44 @@ public class StaticDatabase extends SQLiteOpenHelper {
         static final String fEffectSpellLevel4 = "Effect4";
         static final String fEffectSpellLevel5 = "Effect5";
         
+        //Mobs   ***attack texture y eso
+        static final String tMob = "Mobs";
+        static final String fMobID = "MobID";
+        static final String fMobIconTexture = "IconTexture";
+        static final String fMobAnimationTexture = "AnimationTexture";
+        static final String fMobAnimationRows = "AnimationRows";
+        static final String fMobAnimationCols = "AnimationCols";
+        static final String fMobFrameWidth = "FrameWidth";
+        static final String fMobFrameHeight = "FrameHeight";
+        static final String fMobType = "Type";//Aggressive - etc, no se
+        static final String fMobDescription = "Description";
+        //attributes
+        //droptable
+        //spawns
+        
+        //Mob Attributes
+        static final String tMobAttributes = "MobAttributes";
+        static final String fMobAttributesID = "MobAttributesID";
+        //mobID
+	    static final String fMobPower = "Power";
+	    static final String fMobIntelligence = "Intelligence";
+	    static final String fMobDefense = "Defense";
+	    static final String fMobEndurance = "Endurance";
+	    static final String fMobLevel = "Level";
+	    
+	    //Mob Droptable
+	    static final String tMobDroptable = "MobDroptable";
+	    static final String fMobDroptableID = "MobDroptableID";
+	    static final String fMobDropExperience = "Experience";
+	    static final String fMobDropMoney = "Money";
+	    static final String fMobDropItemIDs = "ItemIDs";
+	    static final String fMobDropRates = "DropRates";
+	    //mobID
+	    
+	    //Mob Spawn
+	    static final String tMobSpawns = "MobSpawns";
+	    //mobID
+	    //NOSE
         
         public StaticDatabase(Context context) {
 // THE VALUE OF 1 ON THE NEXT LINE REPRESENTS THE VERSION NUMBER OF THE DATABASE
@@ -153,9 +191,39 @@ public class StaticDatabase extends SQLiteOpenHelper {
                         );                
                 
                 
+	            db.execSQL("CREATE TABLE IF NOT EXISTS "+tMob+" ("+
+	            		fMobID+" INTEGER PRIMARY KEY , "+
+	            		fMobIconTexture+" TEXT ,"+
+	            		fMobAnimationTexture+" TEXT ,"+
+	            		fMobAnimationRows+" INTEGER ,"+
+	            		fMobAnimationCols+" INTEGER ,"+
+	            		fMobFrameWidth+" INTEGER ,"+
+	            		fMobFrameHeight+" INTEGER ,"+
+	            		fMobType+" INTEGER ,"+
+	            		fMobDescription+" TEXT)"
+	                    );
+	            
+	            
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tMobAttributes+" ("+
+                		fMobAttributesID+" INTEGER PRIMARY KEY , "+
+                		fMobID+" INTEGER, "+
+                		fMobPower+" INTEGER , "+
+                		fMobIntelligence+" INTEGER , "+
+                		fMobDefense+" INTEGER , "+
+                		fMobEndurance+" INTEGER , "+
+                		fMobLevel+" INTEGER)"
+                        );
                 
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tMobDroptable+" ("+
+                		fMobDroptableID+" INTEGER PRIMARY KEY , "+
+                		fMobDropExperience+" INTEGER, "+
+                		fMobDropMoney+" INTEGER , "+
+                		fMobDropItemIDs+" TEXT , "+
+                		fMobDropRates+" TEXT , "+
+                        fMobID+" INTEGER)"
+                        );
                 
-       
+        	    
 // OPTIONALLY PREPOPULATE THE TABLE WITH SOME VALUES   
                  ContentValues cv = new ContentValues();
                  		/*
@@ -369,7 +437,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		
           		cv.clear();
           		
-          		cv.put(fHeadID, 4);
+          		cv.put(fHeadID, 1);
           		cv.put(fHeadIconTexture,"Players/Heads/Icons/Paladin.png");
           		cv.put(fHeadAnimationTexture,"Players/Heads/Icons/Paladin.png");
           		cv.put(fHeadAnimationCols,5);
@@ -378,6 +446,43 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fHeadFrameWidth,256);
           		cv.put(fClassID,1);
           		db.insert(tHead, null, cv); 
+          		
+          		cv.clear();
+          		
+                
+          		cv.put(fMobID, 1);
+          		cv.put(fMobIconTexture,"Mobs/Icons/Bat1.png");
+          		cv.put(fMobAnimationTexture,"Mobs/Animations/Bat1.png");
+          		cv.put(fMobAnimationCols,6);
+          		cv.put(fMobAnimationRows,4);
+          		cv.put(fMobFrameWidth,256);
+          		cv.put(fMobFrameHeight,256);
+          		cv.put(fMobType,1);
+          		cv.put(fMobDescription,"A common bat.");
+          		db.insert(tMob, null, cv); 
+          		
+          		cv.clear();
+          		cv.put(fMobID, 1);
+          		cv.put(fMobPower,1);
+          		cv.put(fMobIntelligence,0);
+          		cv.put(fMobDefense,2);
+          		cv.put(fMobEndurance,3);
+          		cv.put(fMobLevel,1);
+          		db.insert(tMobAttributes, null, cv); 
+          		
+          		cv.clear();
+          		cv.put(fMobDropExperience,5);
+          		cv.put(fMobDropMoney,1);
+          		cv.put(fMobDropItemIDs,"1,2,3,4,5");
+          		cv.put(fMobDropRates,"10,8,6,4,2");
+          		cv.put(fMobID, 1);
+          		db.insert(tMobDroptable, null, cv); 
+          		
+          		cv.clear();
+	            
+                
+      
+          		
           		
 
 	            
@@ -564,4 +669,127 @@ public class StaticDatabase extends SQLiteOpenHelper {
              return stackable;
          }
          
+         
+         //Mob table
+         public String getMobIconTexture(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobIconTexture +" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobIconTexture);
+         	String myAnswer = myCursor.getString(index);
+         	myCursor.close();
+         	return myAnswer;
+         }
+         
+         public String getMobAnimationTexture(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobAnimationTexture +" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobAnimationTexture);
+         	String myAnswer = myCursor.getString(index);
+         	myCursor.close();
+         	return myAnswer;
+         }
+         
+         public int getMobAnimationRows(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobAnimationRows+" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobAnimationRows);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	return myAnswer;
+         }
+         
+         public int getMobAnimationCols(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobAnimationCols+" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobAnimationCols);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	return myAnswer;
+         }
+         
+         public int getMobFrameWidth(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobFrameWidth+" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobFrameWidth);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	return myAnswer;
+         }
+         
+         public int getMobFrameHeight(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobFrameHeight+" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobFrameHeight);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	return myAnswer;
+         }
+         
+         
+         //Mob Attributes!
+         public int[] getMobAttributes(int pID){
+        	int[] myAnswer = new int[5];
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select * from "+tMobAttributes+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobPower);
+	 		myAnswer[0]=myCursor.getInt(index);
+			index = myCursor.getColumnIndex(fMobIntelligence);
+			myAnswer[1]=myCursor.getInt(index);
+			index = myCursor.getColumnIndex(fMobDefense);
+			myAnswer[2]=myCursor.getInt(index);
+			index = myCursor.getColumnIndex(fMobEndurance);
+			myAnswer[3]=myCursor.getInt(index);
+			index = myCursor.getColumnIndex(fMobLevel);
+			myAnswer[4]=myCursor.getInt(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
+         
+         //Mob Droptable
+         public int getMobExperience(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobDropExperience+" from "+tMobDroptable+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobDropExperience);
+			int myAnswer = myCursor.getInt(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
+         
+         public int getMobMoney(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobDropMoney+" from "+tMobDroptable+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobDropMoney);
+			int myAnswer = myCursor.getInt(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
+         
+         public String getMobDroppedItems(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobDropItemIDs+" from "+tMobDroptable+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobDropItemIDs);
+			String myAnswer = myCursor.getString(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
+         
+         public String getMobDropRates(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobDropRates+" from "+tMobDroptable+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobDropRates);
+			String myAnswer = myCursor.getString(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
 }

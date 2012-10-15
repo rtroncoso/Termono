@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import com.quest.constants.ServerMessageFlags;
 import com.quest.entities.Player;
 
 	public class ServerMessageSendPlayer extends QuestServerMessage implements ServerMessageFlags {

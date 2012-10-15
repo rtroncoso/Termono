@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
 
+import com.quest.constants.ClientMessageFlags;
+
 public class ClientMessageSelectedPlayer extends ClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants

@@ -1,7 +1,5 @@
 package com.quest.database;
 
-import android.util.Log;
-
 import com.quest.game.Game;
 
 public class DataHandler {
@@ -18,7 +16,7 @@ public class DataHandler {
 	//Profile
 	public boolean CheckUsername(int pProfileID){
 		String usr = this.mUserDB.getUsername(pProfileID);
-		if(usr.equals("Player")||usr.equals("")){
+		if(usr.equals("***Player***")||usr.equals("")){
 			return false;//no tiene user
 		}else{
 			return true;//tiene user
@@ -326,6 +324,66 @@ public class DataHandler {
 	
 	public int getItemModEndurance(int pItemID){
 		return this.mStaticDB.getItemModifiers(pItemID)[3];
+	}
+	
+	
+	//Mob
+	public String getMobIconTexture(int pMobFlag){
+        return this.mStaticDB.getMobIconTexture(pMobFlag);
+    }
+	
+	public String getMobAnimationTexture(int pMobFlag){
+        return this.mStaticDB.getMobAnimationTexture(pMobFlag);
+    }
+	
+	public int getMobAnimationRows(int pMobFlag){
+        return this.mStaticDB.getMobAnimationRows(pMobFlag);
+    }
+	
+	public int getMobAnimationCols(int pMobFlag){
+        return this.mStaticDB.getMobAnimationCols(pMobFlag);
+    }
+	
+	public int getMobFrameWidth(int pMobFlag){
+        return this.mStaticDB.getMobFrameWidth(pMobFlag);
+    }
+	
+	public int getMobFrameHeight(int pMobFlag){
+        return this.mStaticDB.getMobFrameHeight(pMobFlag);
+    }
+	
+	//Mob attributes
+	public int[] getMobAttributes(int pMobFlag){
+		return this.mStaticDB.getMobAttributes(pMobFlag);
+	}
+	
+	//Mob droptable
+	public int getMobExperience(int pMobFlag){
+		return this.mStaticDB.getMobExperience(pMobFlag);
+	}
+	
+	public int getMobMoney(int pMobFlag){
+		return this.mStaticDB.getMobMoney(pMobFlag);
+	}
+	
+	public int[] getMobDroppedItems(int pMobFlag){
+		String[] tmpArray;
+		tmpArray = this.mStaticDB.getMobDroppedItems(pMobFlag).split(",");
+		int[] intArray = new int[tmpArray.length];
+		for(int i = 0;i<tmpArray.length;i++){
+			intArray[i] = Integer.parseInt(tmpArray[i]);
+		}
+		return intArray;
+	}
+
+	public int[] getMobDropRates(int pMobFlag){
+		String[] tmpArray;
+		tmpArray = this.mStaticDB.getMobDropRates(pMobFlag).split(",");
+		int[] intArray = new int[tmpArray.length];
+		for(int i = 0;i<tmpArray.length;i++){
+			intArray[i] = Integer.parseInt(tmpArray[i]);
+		}
+		return intArray;
 	}
 	
 }

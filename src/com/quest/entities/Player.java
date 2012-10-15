@@ -40,9 +40,6 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	}
 	
 	public Player(int pPlayerID,int pClass) {
-		// TODO Auto-generated constructor stub
-		//aca lo ideal seria pasarle solo playerID que se ejecute lo de abajo y pasarle mClass al constructor, pero me cago en java que no me deja...
-		//this.mClass = Game.getDataHandler().getPlayerClass(pPlayerID);
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;

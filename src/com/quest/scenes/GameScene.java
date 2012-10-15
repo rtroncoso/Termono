@@ -67,14 +67,14 @@ public class GameScene extends Scene {
 			    			//Game.getPlayerHelper().addPlayer(new Player(20, 20, "Players/Animations/Paladin.png", 128, 256, 0, 0, 4, 4), "Player");
 			    			Game.getPlayerHelper().getPlayerbyIndex(0).setTileAt(20, 20);
 			    			//Enemies
-			    			GameScene.this.mEnemy = new Mob("Mob.png", 128, 256, 0, 0, 4, 4);
-			    			GameScene.this.mMob2 = new Mob("Mob2.png", 128, 256, 0, 0, 4, 4);
-			    			GameScene.this.mEnemy.setTileAt(15, 15);
-			    			GameScene.this.mMob2.setTileAt(25, 15);
+			    		//	GameScene.this.mEnemy = new Mob("Players/Animations/Paladin.png", 256, 256, 0, 0, 5, 4);
+			    		//	GameScene.this.mMob2 = new Mob("Players/Animations/Archer.png", 256, 256, 0, 0, 5, 4);
+			    		//	GameScene.this.mEnemy.setTileAt(15, 15);
+			    		//	GameScene.this.mMob2.setTileAt(25, 15);
 			    			
 			    			//Timer
-			    			GameScene.this.mTimers = new Timers(mEnemy, mMob2);
-			    			GameScene.this.mTimers.createMobMovementTimeHandler();
+			    		//	GameScene.this.mTimers = new Timers(mEnemy, mMob2);
+			    	//		GameScene.this.mTimers.createMobMovementTimeHandler();
 			    			
 			    			GameScene.this.mHud = new HUD();
 			    			GameScene.this.mStatsHud = new StatsHud();
@@ -87,8 +87,8 @@ public class GameScene extends Scene {
 			    			
 			    			// Players
 			    			GameScene.this.attachChild(Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
-			    			GameScene.this.attachChild(GameScene.this.mEnemy);
-			    			GameScene.this.attachChild(GameScene.this.mMob2);
+			    	//		GameScene.this.attachChild(GameScene.this.mEnemy);
+			    	//		GameScene.this.attachChild(GameScene.this.mMob2);
 			    			
 			    			// HUD 
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpellBar());
@@ -99,8 +99,8 @@ public class GameScene extends Scene {
 			    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
 			    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
 
-			    			GameScene.this.registerTouchArea(GameScene.this.mEnemy.getBodySprite());
-			    			GameScene.this.registerTouchArea(GameScene.this.mMob2.getBodySprite());
+			    	//		GameScene.this.registerTouchArea(GameScene.this.mEnemy.getBodySprite());
+			    	//		GameScene.this.registerTouchArea(GameScene.this.mMob2.getBodySprite());
 			            }
 
 			            @Override

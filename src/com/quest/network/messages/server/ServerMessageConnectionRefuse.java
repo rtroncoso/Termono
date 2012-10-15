@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
 
+import com.quest.constants.ServerMessageFlags;
+
 public class ServerMessageConnectionRefuse extends ServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants

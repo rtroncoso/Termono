@@ -21,10 +21,11 @@ import org.andengine.util.modifier.ease.EaseLinear;
 import com.quest.entities.interfaces.IEntityCallbacks;
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
+import com.quest.helpers.interfaces.BaseEntityActions;
 import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
 
-public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea, IEntityCallbacks {
+public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea, IEntityCallbacks,BaseEntityActions {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -50,7 +51,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	//a ordenar
 	protected int mLevel;
 	protected int currHP,currMana;
-	protected int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana;
+	protected int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana = 0;
 	protected int mEndurance,mIntelligence,mPower,mDefense;
 	
 	// ===========================================================
@@ -332,8 +333,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return currHP;
 	}
 
-	public void setCurrHP(int currHP) {
-		this.currHP = currHP;
+	public void setCurrHP(int pcurrHP) {
+		this.currHP = pcurrHP;//*** Hacer el onDeath			
 	}
 
 	public int getCurrMana() {
@@ -413,6 +414,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	public int[] getCurrHPMP(){
 		return new int[]{this.currHP,this.currMana};
 	}
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -484,6 +486,12 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		}
 		
 		super.onManagedUpdate(pSecondsElapsed);
+	}
+
+	@Override
+	public void onDeath(IEntity pKillerEntity) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	// ===========================================================

@@ -1,4 +1,4 @@
-package com.quest.network.messages.server;
+package com.quest.constants;
 
 public interface ServerMessageFlags {
 

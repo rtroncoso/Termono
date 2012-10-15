@@ -3,6 +3,7 @@
  */
 package com.quest.entities;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.andengine.entity.scene.ITouchArea;
@@ -27,16 +28,26 @@ public class Mob extends BaseEntity implements ITouchArea {
 	// Fields
 	// ===========================================================
 	private Random rand;
-	
+	private int mMobFlag;
+	private int[] mDroppedItems,mDropRates;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public Mob(String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		// TODO Auto-generated constructor stub
-		super(pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);
-		
+		super(pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);		
 		this.mEntityType = "Mob";
 	}
+	
+	public Mob(int pMobFlag){
+		super(Game.getDataHandler().getMobAnimationTexture(pMobFlag), Game.getDataHandler().getMobFrameWidth(pMobFlag), Game.getDataHandler().getMobFrameHeight(pMobFlag), 0, 0, Game.getDataHandler().getMobAnimationCols(pMobFlag), Game.getDataHandler().getMobAnimationRows(pMobFlag));
+		this.mMobFlag = pMobFlag;
+		this.setModifiers(Game.getDataHandler().getMobAttributes(mMobFlag));
+		this.mDroppedItems = Game.getDataHandler().getMobDroppedItems(mMobFlag);
+		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
+		this.mEntityType = "Mob";
+	}
+
 
 	// ===========================================================
 	// Methods
@@ -139,6 +150,12 @@ public class Mob extends BaseEntity implements ITouchArea {
 				pTouchAreaLocalY);
 	}
 	
+	@Override
+	public void setModifiers(int[] Modifiers) {
+		this.addModifiers(Modifiers);
+		this.updateHPMana(Modifiers[3]*10, Modifiers[1]*10);
+		this.setLevel(Modifiers[4]);
+	};
 	
 
 	// ===========================================================
@@ -148,7 +165,9 @@ public class Mob extends BaseEntity implements ITouchArea {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-
+	public int getMobFlag(){
+		return this.mMobFlag;
+	}
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

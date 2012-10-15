@@ -13,10 +13,11 @@ import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 
 import android.util.Log;
 
+import com.quest.constants.ClientMessageFlags;
+import com.quest.constants.ServerMessageFlags;
 import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
-import com.quest.network.messages.client.ClientMessageFlags;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
@@ -25,7 +26,6 @@ import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
-import com.quest.network.messages.server.ServerMessageFlags;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.objects.BooleanMessage;
 
@@ -104,8 +104,6 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER, ServerMessageSendPlayer.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					Log.d("Quest!", "Cliente - llego player send");
-					Game.getSceneManager().getMatchScene().attachChild(Game.getTextHelper().NewText(0, 0, "Cliente - llego player send", "1"));
 					final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) pServerMessage;
 					Game.getPlayerHelper().addPlayer(new Player(serverMessageSendPlayer.getUserID(), serverMessageSendPlayer.getPlayerID(), serverMessageSendPlayer.getPlayerClass(), serverMessageSendPlayer.getLevel(), serverMessageSendPlayer.getAttributes(), serverMessageSendPlayer.getCurrHPMP(), serverMessageSendPlayer.getHeadID(), serverMessageSendPlayer.getItemID(), serverMessageSendPlayer.getAmounts(), serverMessageSendPlayer.getIsEquipped(), serverMessageSendPlayer.getItemKeys()), serverMessageSendPlayer.getUserID());
 				}

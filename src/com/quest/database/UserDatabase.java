@@ -167,7 +167,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 		 ContentValues cv = new ContentValues();
 		 cv.put(fUserID,Game.getUserID());
 		// cv.put(fUserID,"00:00:00:00:00:00");
-		 cv.put(fUsername, "Player");
+		 cv.put(fUsername, "***Player***");
 		 db.insert(tProfile, null, cv);	                    
          cv.clear();
          
