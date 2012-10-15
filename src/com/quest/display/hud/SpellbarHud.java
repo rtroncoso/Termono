@@ -10,12 +10,11 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import android.util.Log;
-
+import com.quest.constants.MobFlags;
 import com.quest.database.DataHandler;
 import com.quest.game.Game;
 
-public class SpellbarHud extends HUD{
+public class SpellbarHud extends HUD implements MobFlags{
 
 
 	// ===========================================================
@@ -63,15 +62,49 @@ public class SpellbarHud extends HUD{
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
+							switch ((Integer)(this.getUserData())) {
+							case 0:
+								Game.getPlayerHelper().getPlayerbyIndex(0).setSpeedFactor(2.0f);
+								break;
+							case 1:
+								
+								break;
+							case 2:
+								
+								break;
+							case 3:
+								
+								break;
+							case 4:
+								
+								break;
+							}
 							this.setScale(2.5f);
-							Game.getPlayerHelper().getPlayer("Player").setSpeedFactor(2.0f);
 							this.mGrabbed = true;
 							break;
 						case TouchEvent.ACTION_UP:
 							if(this.mGrabbed == true){
 								this.setScale(2.0f);
-								Game.getPlayerHelper().getPlayer("Player").setSpeedFactor(1.0f);
 								this.mGrabbed= false;
+								switch ((Integer)(this.getUserData())) {
+								case 0:
+									Game.getPlayerHelper().getPlayerbyIndex(0).setSpeedFactor(1.0f);
+									break;
+								case 1:
+									Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT);
+									break;
+								case 2:
+									Game.getSceneManager().getGameScene().DeleteMob(0);//la key no se usa por ahora
+									break;
+								case 3:
+									for(int i =0;i<10;i++){
+										Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,i);
+									}
+									break;
+								case 4:
+									Game.getSceneManager().getGameScene().DeleteMobs(0);
+									break;
+								}
 							}
 							break;
 					}
@@ -81,6 +114,7 @@ public class SpellbarHud extends HUD{
 			
 			this.mHud.registerTouchArea(this.mSpells[i]);
 			this.mSpells[i].setAlpha(0.6f);
+			this.mSpells[i].setUserData(i);
 			this.mSpells[i].setScale(2.0f); 
 		}
 		

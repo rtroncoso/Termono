@@ -32,18 +32,35 @@ public class MobPool{
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
-	public void registerMob(final int pMobID, final Mob pMob) {
-		this.mMobMultiPool.registerPool(pMobID,
+	public void registerMob(final int MOB_FLAG) {
+		this.mMobMultiPool.registerPool(MOB_FLAG,
 				new GenericPool<Mob>() {
 					@Override
 					protected Mob onAllocatePoolItem() {
 						try {
-							return pMob;
+							//return pMob;
+							return new Mob(MOB_FLAG);
 						} catch (final Throwable t) {
 							Debug.e(t);
 							return null;
 						}
 					}
+					
+					@Override
+					protected void onHandleRecycleItem(final Mob pMob) {
+						pMob.Heal();
+						pMob.setVisible(false);
+						pMob.setUserData(null);
+						pMob.setIgnoreUpdate(true);
+						pMob.detachSelf();
+						//TODO fijarse como eliminarlo bien
+					}
+					
+					@Override
+					protected void onHandleObtainItem(Mob pMob) {
+						pMob.setVisible(true);
+						pMob.setIgnoreUpdate(false);
+					};
 				}
 		);
 	}
@@ -77,6 +94,7 @@ public class MobPool{
 		}
 	}
 
+	
 	// ===========================================================
 	// Methods
 	// ===========================================================

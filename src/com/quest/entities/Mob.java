@@ -10,6 +10,8 @@ import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 
+import android.util.Log;
+
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
 
@@ -144,8 +146,9 @@ public class Mob extends BaseEntity implements ITouchArea {
 	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 			float pTouchAreaLocalX, float pTouchAreaLocalY) {
 		// TODO Auto-generated method stub
-		this.mSpellsLayer.add(new Spell(0));
-		
+		//this.mSpellsLayer.add(new Spell(0));
+		this.mModHP=-5;
+		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.mModHP);
 		return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX,
 				pTouchAreaLocalY);
 	}

@@ -125,9 +125,8 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) pServerMessage;
-					//serverMessageUpdateEntityPosition.getPlayerDirection();
-					//serverMessageUpdateEntityPosition.getPlayerKey();
-					mover los players con esos datos
+					//mover los players con esos datos
+					Game.getPlayerHelper().getPlayer(serverMessageUpdateEntityPosition.getPlayerKey()).moveInDirection(serverMessageUpdateEntityPosition.getPlayerDirection());
 				}
 			});
 		

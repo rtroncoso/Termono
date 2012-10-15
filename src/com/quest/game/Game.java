@@ -17,6 +17,7 @@ import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
 import com.quest.helpers.MapHelper;
+import com.quest.helpers.MobHelper;
 import com.quest.helpers.PlayerHelper;
 import com.quest.helpers.SceneHelper;
 import com.quest.helpers.TextHelper;
@@ -40,6 +41,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static DataHandler mDataHandler;
 	private static TextHelper mTextHelper;
 	private static PlayerHelper mPlayerHelper;
+	private static MobHelper mMobHelper;
 	private static MatchData mMatchData;
 	private static ProfileData mProfileData;
 	// ===========================================================
@@ -192,6 +194,14 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mPlayerHelper = mPlayerHelper;
 	}
 	
+	public static MobHelper getMobHelper() {
+		return mMobHelper;
+	}
+
+	public static void setMobHelper(MobHelper mMobHelper) {
+		Game.mMobHelper = mMobHelper;
+	}
+	
 	public static void setMatchData(MatchData pMatchData){
 		Game.mMatchData = pMatchData;
 	}
@@ -210,6 +220,8 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Methods
 	// ===========================================================
+
+
 
 
 

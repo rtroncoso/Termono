@@ -111,6 +111,7 @@ public class CharacterObject extends Entity{
 				return true;
 			}					
 		};
+		this.mCharacterSprite.setScale(2.0f);
 		this.mCharacterEntity.attachChild(this.mCharacterSprite);
 		
 

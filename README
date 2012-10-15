@@ -36,10 +36,10 @@
 (_) Separar server/client en inventoryhelper y player helper
 
  _
-(_)
+(_) Poner la inicializacion del MobHelper donde corresponde 
 
  _
-(_)
+(_) Ver como gestionar la carga de los mobs
 
  _
 (_)

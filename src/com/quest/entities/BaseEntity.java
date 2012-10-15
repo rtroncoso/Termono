@@ -18,6 +18,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.modifier.ease.EaseLinear;
 
+import android.util.Log;
+
 import com.quest.entities.interfaces.IEntityCallbacks;
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
@@ -78,6 +80,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				// TODO Auto-generated method stub
+				Log.d("Quest!", "Base entity touched");
 				return BaseEntity.this.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
 			}
 		};
@@ -122,6 +125,13 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		if(BaseEntity.this.getY() - pTileTo.getTileY() > 0)
 			return DIRECTION_NORTH;
 		return 0;
+	}
+	
+	public BaseEntity moveInDirection(byte pDirection) {
+		
+		
+		return this;
+		
 	}
 	
 	public BaseEntity moveToTile(final TMXTile pTileTo) {
@@ -415,6 +425,10 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return new int[]{this.currHP,this.currMana};
 	}
 	
+	public void Heal(){
+		setCurrHP(this.mEndurance*10);
+		setCurrMana(this.mIntelligence*10);
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================

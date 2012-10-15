@@ -10,6 +10,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.quest.game.Game;
+import com.quest.helpers.MobHelper;
 import com.quest.helpers.TextHelper;
 
 public class MainMenuScene extends Scene {
@@ -40,6 +41,8 @@ public class MainMenuScene extends Scene {
 	public MainMenuScene(){
 		this.mTextHelper = new TextHelper();
 		Game.setTextHelper(mTextHelper);
+		Game.setMobHelper(new MobHelper());
+		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MainMenu/");
 		this.mMainMenuTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMainMenuTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);

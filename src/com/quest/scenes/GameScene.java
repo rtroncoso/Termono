@@ -34,6 +34,8 @@ public class GameScene extends Scene {
 		private StatsHud mStatsHud;
 		private Entity mMapLayer;
 		
+		
+		private int tempInt=-1;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
@@ -158,8 +160,31 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Methods
 		// ===========================================================
-		
+		public void CreateMob(int MOB_FLAG){
+			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
+			tmpMob.setTileAt(Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow());
+			GameScene.this.attachChild(tmpMob);
+			GameScene.this.registerTouchArea(tmpMob);
+			tempInt+=1;
+		}
 
+		public void CreateMob(int MOB_FLAG,int i){
+			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
+			tmpMob.setTileAt(Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn()+i,Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow()+i);
+			GameScene.this.attachChild(tmpMob);
+			GameScene.this.registerTouchArea(tmpMob);
+			tempInt+=1;
+		}
+		
+		public void DeleteMob(int pMobKey){
+			Game.getMobHelper().deleteMob(tempInt);
+			tempInt-=1;
+		}
+		
+		public void DeleteMobs(int pMobKey){
+			Game.getMobHelper().deleteMobs(tempInt);
+			tempInt-=1;
+		}
 		// ===========================================================
 		// Inner and Anonymous Classes
 		// ===========================================================

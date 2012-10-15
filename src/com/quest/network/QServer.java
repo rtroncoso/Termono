@@ -238,9 +238,10 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageMovePlayer clientMessageMovePlayer = (ClientMessageMovePlayer) pClientMessage;
-				//clientMessageMovePlayer.getPlayerDirection();
-				//clientMessageMovePlayer.getPlayerKey();
-				Mover el player con esos datos
+				//Mover el player con esos datos
+				Game.getPlayerHelper().getPlayer(clientMessageMovePlayer.getPlayerKey()).moveInDirection(clientMessageMovePlayer.getPlayerDirection());
+			
+				
 				sendUpdateEntityPositionMessage(clientMessageMovePlayer.getPlayerKey(), clientMessageMovePlayer.getPlayerDirection());
 			}
 		});
