@@ -111,12 +111,13 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				
 				// Perform Move
 				this.moveToTile(tmxTileTo);
-				/*try {
-					Game.getClient().sendClientMessage(new ClientMessageMovePlayer(Game.getDataHandler().getUsername(1), this.getFacingDirectionToTile(tmxTileTo)));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
+				
+				if(Game.getServer().equals(null)){
+					Game.getClient().sendMovePlayerMessage(this.mUserID, this.getFacingDirectionToTile(tmxTileTo));
+				}else{
+					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, this.getFacingDirectionToTile(tmxTileTo));
+				}
+				
 			}
 		}
 	}

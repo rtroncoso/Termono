@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
 
-import com.quest.util.constants.IGameConstants;
+import com.quest.constants.ServerMessageFlags;
 
 /**
  * (c) 2010 Nicolas Gramlich 
@@ -15,7 +15,7 @@ import com.quest.util.constants.IGameConstants;
  * @author Nicolas Gramlich
  * @since 19:48:32 - 28.02.2011
  */
-public class UpdateEntityPositionServerMessage extends ServerMessage implements IGameConstants {
+public class ServerMessageUpdateEntityPosition extends ServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -24,30 +24,36 @@ public class UpdateEntityPositionServerMessage extends ServerMessage implements 
 	// Fields
 	// ===========================================================
 
-	private int mEntityID;
-	private int mEntityDirection;
+	private String mPlayerKey;
+	private byte mPlayerDirection;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
-	public UpdateEntityPositionServerMessage() {
-		this.mEntityID = 0;
-		this.mEntityDirection = 0;
+	@Deprecated
+	public ServerMessageUpdateEntityPosition() {
 	}
 
-	public UpdateEntityPositionServerMessage(int pEntityID, int pEntityDirection) {
-		this.mEntityID = pEntityID;
-		this.mEntityDirection = pEntityDirection;
+	public ServerMessageUpdateEntityPosition(String pPlayerKey, byte pPlayerDirection) {
+		this.mPlayerKey = pPlayerKey;
+		this.mPlayerDirection = pPlayerDirection;
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 
-	public void set(int pEntityID, int pEntityDirection) {
-		this.mEntityID = pEntityID;
-		this.mEntityDirection = pEntityDirection;
+	public void set(String pPlayerKey, byte pPlayerDirection) {
+		this.mPlayerKey = pPlayerKey;
+		this.mPlayerDirection = pPlayerDirection;
+	}
+	
+	public String getPlayerKey() {
+		return mPlayerKey;
+	}
+
+	public byte getPlayerDirection() {
+		return mPlayerDirection;
 	}
 
 	// ===========================================================
@@ -56,20 +62,19 @@ public class UpdateEntityPositionServerMessage extends ServerMessage implements 
 
 	@Override
 	protected void onReadTransmissionData(DataInputStream pDataInputStream) throws IOException {
-		this.mEntityID = pDataInputStream.readInt();
-		this.mEntityDirection = pDataInputStream.readInt();
+		this.mPlayerKey = pDataInputStream.readUTF();
+		this.mPlayerDirection  = pDataInputStream.readByte();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		pDataOutputStream.writeInt(this.mEntityID);
-		pDataOutputStream.writeInt(this.mEntityDirection);
+		pDataOutputStream.writeUTF(this.mPlayerKey);
+		pDataOutputStream.writeByte(this.mPlayerDirection);
 	}
 
 	@Override
 	public short getFlag() {
-		// TODO Auto-generated method stub
-		return 0;
+		return FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION;
 	}
 
 	// ===========================================================

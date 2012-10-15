@@ -30,11 +30,9 @@ public class ClientMessageMovePlayer extends ClientMessage implements ClientMess
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
-	public ClientMessageMovePlayer() {
-		this.mPlayerKey = "";
-		this.mPlayerDirection = 0;
-		
+	
+	@Deprecated
+	public ClientMessageMovePlayer() {		
 	}
 	
 	public ClientMessageMovePlayer(String pPlayerKey, byte pPlayerDirection) {
@@ -53,10 +51,18 @@ public class ClientMessageMovePlayer extends ClientMessage implements ClientMess
 	public void setPlayerDirection(byte mPlayerDirection) {
 		this.mPlayerDirection = mPlayerDirection;
 	}
-	
+
+	public String getPlayerKey() {
+		return mPlayerKey;
+	}
+
+	public byte getPlayerDirection() {
+		return mPlayerDirection;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
+
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
@@ -71,9 +77,8 @@ public class ClientMessageMovePlayer extends ClientMessage implements ClientMess
 	}
 
 	@Override
-	public short getFlag() {
-		// TODO Auto-generated method stub
-		return 0;
+	public short getFlag() {		
+		return FLAG_MESSAGE_CLIENT_MOVE_PLAYER;
 	}
 
 	// ===========================================================

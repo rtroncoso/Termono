@@ -18,6 +18,7 @@ import com.quest.constants.ServerMessageFlags;
 import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
+import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
@@ -27,6 +28,7 @@ import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
+import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.objects.BooleanMessage;
 
 public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags {
@@ -47,6 +49,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_CONNECTION_REQUEST, ClientMessageConnectionRequest.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE, ClientMessagePlayerCreate.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER, ClientMessageSelectedPlayer.class);
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER, ClientMessageMovePlayer.class);
 			}
 	
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
@@ -117,20 +120,19 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					Log.d("Quest!","CLIENT Ping: " + roundtripMilliseconds + "ms");					
 				}
 			});
-			
-			
-			
-			
-			/*
-			this.registerServerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class, new IServerMessageHandler<SocketConnection>() {
+
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, ServerMessageUpdateEntityPosition.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					final UpdateEntityPositionServerMessage updateEntityPosition = (UpdateEntityPositionServerMessage) pServerMessage;
-					// mandarle nueva posicion a todos
-					// final long roundtripMilliseconds = System.currentTimeMillis() - connectionPongServerMessage.getTimestamp();
-					//Log.d("Quest!","Ping: " + roundtripMilliseconds / 2 + "ms"); 
+					final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) pServerMessage;
+					//serverMessageUpdateEntityPosition.getPlayerDirection();
+					//serverMessageUpdateEntityPosition.getPlayerKey();
+					mover los players con esos datos
 				}
-			});*/
+			});
+		
+			
+			
 			
 		this.initMessagePool();
 	}
@@ -206,6 +208,17 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			}
 			QClient.this.mMessagePool.recycleMessage(clientMessageSelectedPlayer);
 		}*/
+		
+		public void sendMovePlayerMessage(String pPlayerKey, byte pPlayerDirection){			
+			final ClientMessageMovePlayer clientMessageMovePlayer = (ClientMessageMovePlayer) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER);
+			try {
+				sendClientMessage(clientMessageMovePlayer);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessageMovePlayer);
+		}
+		
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

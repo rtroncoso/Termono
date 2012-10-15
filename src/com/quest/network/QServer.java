@@ -26,6 +26,7 @@ import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
+import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
@@ -35,6 +36,7 @@ import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
+import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.util.constants.IGameConstants;
 
 
@@ -68,7 +70,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CREATE_PLAYER, ServerMessageCreatePlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER, ServerMessageExistingPlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER, ServerMessageSendPlayer.class);
-		//this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, UpdateEntityPositionServerMessage.class);		
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, ServerMessageUpdateEntityPosition.class);		
 	}
 
 // ===========================================================
@@ -230,13 +232,18 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				QServer.this.mMessagePool.recycleMessage(connectionPongServerMessage);
 			}
 		});
-		/*
+		
+		
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER, ClientMessageMovePlayer.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
-				// TODO: Forwardear el mensaje de que se movio a todos los players
+				final ClientMessageMovePlayer clientMessageMovePlayer = (ClientMessageMovePlayer) pClientMessage;
+				//clientMessageMovePlayer.getPlayerDirection();
+				//clientMessageMovePlayer.getPlayerKey();
+				Mover el player con esos datos
+				sendUpdateEntityPositionMessage(clientMessageMovePlayer.getPlayerKey(), clientMessageMovePlayer.getPlayerDirection());
 			}
-		});*/
+		});
 		
 		return clientConnector;
 	}
@@ -257,6 +264,12 @@ public void sendBroadcast(IServerMessage pServerMessage){
 	this.mMessagePool.recycleMessage(pServerMessage);
 }
 
+
+public void sendUpdateEntityPositionMessage(String pPlayerKey, byte pPlayerDirection){			
+	final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION);
+	serverMessageUpdateEntityPosition.set(pPlayerKey,pPlayerDirection);
+	sendBroadcast(serverMessageUpdateEntityPosition);				
+}
 // ===========================================================
 // Inner and Anonymous Classes
 // ===========================================================
