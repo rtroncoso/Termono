@@ -90,34 +90,23 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 		if(pValueX != 0.0f || pValueY != 0.0f) {
 			if(!this.isWalking && !Game.getMapManager().isChangingMap()) {
-				// Gets the new Tile
-				float moveToXTile = this.getX() + (TILE_SIZE * pValueX);
-				float moveToYTile = this.getY() + (TILE_SIZE * pValueY);
-				
-				// Is it a legal position?
-				if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return;
 
-				// Get the new Tile
-				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+				// Stores the player Position
+				byte pDirection = DIRECTION_DEFAULT;
 				
-				// Animate the Character
-				long frameDuration = (long) ((SPEED_MODIFIER / this.mSpeedFactor) * 1000) / 5;
-				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration, frameDuration };
-				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
+				// Check where it is heading
+				if(pValueY == 1.0f) pDirection = DIRECTION_NORTH;
+				if(pValueY == -1.0f) pDirection = DIRECTION_SOUTH;
+				if(pValueX == 1.0f) pDirection = DIRECTION_EAST;
+				if(pValueX == -1.0f) pDirection = DIRECTION_WEST;
 				
-				// Check Tiles
-				Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
-				if(tmpTrigger != null) { tmpTrigger.onHandleTriggerAction(); return; } // Hacer cambio de mapa
-				
-				// Perform Move
-				this.moveToTile(tmxTileTo);
-				
+				// Performs the move
+				this.moveInDirection(pDirection);
 				if(Game.getServer().equals(null)){
-					Game.getClient().sendMovePlayerMessage(this.mUserID, this.getFacingDirectionToTile(tmxTileTo));
+					Game.getClient().sendMovePlayerMessage(this.mUserID, pDirection);
 				}else{
-					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, this.getFacingDirectionToTile(tmxTileTo));
+					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, pDirection);
 				}
-				
 			}
 		}
 	}

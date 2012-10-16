@@ -24,6 +24,7 @@ import com.quest.entities.interfaces.IEntityCallbacks;
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.BaseEntityActions;
+import com.quest.triggers.Trigger;
 import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
 
@@ -129,9 +130,43 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	
 	public BaseEntity moveInDirection(byte pDirection) {
 		
+		float moveToXTile = this.getX();
+		float moveToYTile = this.getY();
+		
+		switch(pDirection) {
+		case DIRECTION_NORTH:
+			moveToYTile = this.getY() + (TILE_SIZE);
+			break;
+		case DIRECTION_SOUTH:
+			moveToYTile = this.getY() - (TILE_SIZE);
+			break;
+		case DIRECTION_EAST:
+			moveToXTile = this.getX() + (TILE_SIZE);
+			break;
+		case DIRECTION_WEST:
+			moveToXTile = this.getX() - (TILE_SIZE);
+			break;
+		}
+		
+		// Is it a legal position?
+		if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return this;
+
+		// Get the new Tile
+		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+		
+		// Animate the Character
+		long frameDuration = (long) ((SPEED_MODIFIER / this.mSpeedFactor) * 1000) / 5;
+		long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration, frameDuration };
+		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
+		
+		// Check Tiles
+		Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
+		if(tmpTrigger != null) { tmpTrigger.onHandleTriggerAction(); return this; } // Hacer cambio de mapa
+		
+		// Perform Move
+		this.moveToTile(tmxTileTo);
 		
 		return this;
-		
 	}
 	
 	public BaseEntity moveToTile(final TMXTile pTileTo) {
