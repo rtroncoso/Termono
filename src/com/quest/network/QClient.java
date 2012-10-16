@@ -29,6 +29,7 @@ import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
+import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.objects.BooleanMessage;
@@ -111,7 +112,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) pServerMessage;
-					Game.getPlayerHelper().addPlayer(new Player(serverMessageSendPlayer.getUserID(), serverMessageSendPlayer.getPlayerID(), serverMessageSendPlayer.getPlayerClass(), serverMessageSendPlayer.getLevel(), serverMessageSendPlayer.getAttributes(), serverMessageSendPlayer.getCurrHPMP(), serverMessageSendPlayer.getHeadID(), serverMessageSendPlayer.getItemID(), serverMessageSendPlayer.getAmounts(), serverMessageSendPlayer.getIsEquipped(), serverMessageSendPlayer.getItemKeys()), serverMessageSendPlayer.getUserID());
+					Game.getPlayerHelper().addPlayer(new Player(serverMessageSendPlayer.getUserID(), serverMessageSendPlayer.getPlayerID(), serverMessageSendPlayer.getPlayerClass(), serverMessageSendPlayer.getLevel(), serverMessageSendPlayer.getAttributes(), serverMessageSendPlayer.getCurrHPMP(), serverMessageSendPlayer.getHeadID(), serverMessageSendPlayer.getItemID(), serverMessageSendPlayer.getAmounts(), serverMessageSendPlayer.getIsEquipped()),serverMessageSendPlayer.getUserID());
 				}
 			});
 			
@@ -146,7 +147,16 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 			});
 			
-			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_MOB_DIED, ServerMessageMobDied.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageMobDied serverMessageMobDied = (ServerMessageMobDied) pServerMessage;
+					//simular la muerte
+					
+					Game.getBattleHelper().killMob(Game.getMobHelper().getMob(serverMessageMobDied.getMobEntityUserData()), serverMessageMobDied.getDroppedItem(),serverMessageMobDied.getDroppedAmount(), serverMessageMobDied.getExperience(), serverMessageMobDied.getMoney(), (Player)(Game.getPlayerHelper().getPlayer(serverMessageMobDied.getPlayerKey())));
+					
+				}
+			});
 			
 		this.initMessagePool();
 	}

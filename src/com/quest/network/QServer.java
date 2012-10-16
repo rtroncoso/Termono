@@ -37,6 +37,7 @@ import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
+import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.util.constants.IGameConstants;
@@ -74,6 +75,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER, ServerMessageSendPlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, ServerMessageUpdateEntityPosition.class);		
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA, ServerMessageFixedAttackData.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOB_DIED, ServerMessageMobDied.class);
 	}
 
 // ===========================================================
@@ -196,7 +198,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),clientMessagePlayerCreate.getUserID());
 				
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
-				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(playerid), Game.getDataHandler().getInventoryItems(playerid), Game.getDataHandler().getInventoryAmounts(playerid), Game.getDataHandler().getInventoryEquipStatus(playerid), Game.getDataHandler().getInventoryKeys(playerid));
+				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(playerid), Game.getDataHandler().getInventoryItems(playerid), Game.getDataHandler().getInventoryAmounts(playerid), Game.getDataHandler().getInventoryEquipStatus(playerid));
 				
 				sendBroadcast(serverMessageSendPlayer);
 				
@@ -211,7 +213,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Game.getPlayerHelper().addPlayer(new Player(clientMessageSelectedPlayer.getPlayerID(), Game.getDataHandler().getPlayerClass(clientMessageSelectedPlayer.getPlayerID())),Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(clientMessageSelectedPlayer.getPlayerID())));
 			
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
-				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryItems(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryAmounts(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryKeys(clientMessageSelectedPlayer.getPlayerID()));
+				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryItems(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryAmounts(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(clientMessageSelectedPlayer.getPlayerID()));
 			
 				sendBroadcast(serverMessageSendPlayer);
 			
@@ -293,6 +295,17 @@ public void sendFixedAttackData(int pMobEntityUserData,int pAttackID,int pDamage
 	serverMessageFixedAttackData.setAttackID(pAttackID);
 	serverMessageFixedAttackData.setMonsterAttacking(ismonsterAttacking);
 	sendBroadcast(serverMessageFixedAttackData);
+}
+
+public void sendMobDiedMessage(int pMobEntityUserData,int pExperience,int pMoney,int pDroppedItem,int pDroppedAmount,String pPlayerKey){
+	final ServerMessageMobDied serverMessageMobDied = (ServerMessageMobDied) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MOB_DIED);
+	serverMessageMobDied.setMobEntityUserData(pMobEntityUserData);
+	serverMessageMobDied.setExperience(pExperience);
+	serverMessageMobDied.setMoney(pMoney);
+	serverMessageMobDied.setDroppedItem(pDroppedItem);
+	serverMessageMobDied.setDroppedAmount(pDroppedAmount);
+	serverMessageMobDied.setPlayerKey(pPlayerKey);
+	sendBroadcast(serverMessageMobDied);
 }
 // ===========================================================
 // Inner and Anonymous Classes

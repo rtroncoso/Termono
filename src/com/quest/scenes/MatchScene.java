@@ -705,7 +705,6 @@ public class MatchScene extends Scene {
 								Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
 								Game.getDataHandler().setPlayerLevel(1, playerid);
 								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
-								Game.getDataHandler().addInventoryItem(1, 1, 1);//****
 								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
 								
 								if(AVD_DEBUGGING){//sacar despues

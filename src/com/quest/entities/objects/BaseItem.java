@@ -26,16 +26,20 @@ public class BaseItem extends Entity{
 	// Constructors
 	// ===========================================================
 	public BaseItem(int pItemID) {
-		this.mEntityType = "BaseEntity";
-		this.mItemID = pItemID;
-		this.mItemName = Game.getDataHandler().getItemName(this.mItemID);
-		this.mItemClass = Game.getDataHandler().getItemClass(this.mItemID);
-		this.mItemType = Game.getDataHandler().getItemType(this.mItemID);
-		this.mItemDescription = Game.getDataHandler().getItemDescription(this.mItemID);
-		this.mItemBuyPrice = Game.getDataHandler().getItemBuyPrice(this.mItemID);	
-		this.mItemSellPrice = Game.getDataHandler().getItemSellPrice(this.mItemID);
-		this.mModifiers = Game.getDataHandler().getItemModifiers(this.mItemID);
-		this.mStackable = Game.getDataHandler().isItemStackable(this.mItemID);
+		if(pItemID!=0){
+			this.mEntityType = "BaseItem";
+			this.mItemID = pItemID;
+			this.mItemName = Game.getDataHandler().getItemName(this.mItemID);
+			this.mItemClass = Game.getDataHandler().getItemClass(this.mItemID);
+			this.mItemType = Game.getDataHandler().getItemType(this.mItemID);
+			this.mItemDescription = Game.getDataHandler().getItemDescription(this.mItemID);
+			this.mItemBuyPrice = Game.getDataHandler().getItemBuyPrice(this.mItemID);	
+			this.mItemSellPrice = Game.getDataHandler().getItemSellPrice(this.mItemID);
+			this.mModifiers = Game.getDataHandler().getItemModifiers(this.mItemID);
+			this.mStackable = Game.getDataHandler().isItemStackable(this.mItemID);
+		}else{
+			this.mEntityType = "NullItem";
+		}
 	}
 
 

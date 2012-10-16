@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
+import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.scenes.MatchScene;
 
 /**
@@ -32,7 +33,8 @@ public class Mob extends BaseEntity implements ITouchArea {
 	// ===========================================================
 	private Random rand;
 	private int mMobFlag;
-	private int[] mDroppedItems,mDropRates;
+	private int mMoney,mExperience;
+	private int[] mDroppedItems,mDropRates,mDropAmounts;
 	private boolean mGrabbed = false;
 	// ===========================================================
 	// Constructors
@@ -47,8 +49,11 @@ public class Mob extends BaseEntity implements ITouchArea {
 		super(Game.getDataHandler().getMobAnimationTexture(pMobFlag), Game.getDataHandler().getMobFrameWidth(pMobFlag), Game.getDataHandler().getMobFrameHeight(pMobFlag), 0, 0, Game.getDataHandler().getMobAnimationCols(pMobFlag), Game.getDataHandler().getMobAnimationRows(pMobFlag));
 		this.mMobFlag = pMobFlag;
 		this.setModifiers(Game.getDataHandler().getMobAttributes(mMobFlag));
+		this.mMoney = Game.getDataHandler().getMobMoney(pMobFlag);
+		this.mExperience= Game.getDataHandler().getMobExperience(pMobFlag);
 		this.mDroppedItems = Game.getDataHandler().getMobDroppedItems(mMobFlag);
 		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
+		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mEntityType = "Mob";
 	}
 
@@ -153,8 +158,6 @@ public class Mob extends BaseEntity implements ITouchArea {
 		case TouchEvent.ACTION_UP:
 			if(mGrabbed) {
 				mGrabbed = false;
-				this.mSpellsLayer.add(new Spell(0));
-				this.getAttacked(Game.getPlayerHelper().getPlayerbyIndex(0), 5);
 				Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);
 				if(Game.getServer().equals(null)){
 				Game.getClient().sendAttackMessage((Integer)(this.getUserData()), 0);
@@ -180,13 +183,9 @@ public class Mob extends BaseEntity implements ITouchArea {
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
-		if(Game.getServer().equals(null)){
-		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
-		simular muerte y dejar item
-		}else{
-		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
-		mandar mensaje de que murio(y mostrarlo) y mandar experiencia
-		}
+			int dropItem = 0;
+			if(getRandom(0, 3)==2)dropItem=1;//Calcular bien el amount y el item 
+			Game.getBattleHelper().killMob(this, dropItem,1, this.getExperience(), this.getMoney(),(Player) (pKillerEntity));
 	}
 
 	@Override
@@ -202,7 +201,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		Mostrar la animacion de ataque
+		this.mSpellsLayer.add(new Spell(0));	//Mostrar la animacion de ataque
 		Llamar al battle helper si soy server
 	};
 	
@@ -216,8 +215,25 @@ public class Mob extends BaseEntity implements ITouchArea {
 	public int getMobFlag(){
 		return this.mMobFlag;
 	}
+	
+	public int getMoney() {
+		return mMoney;
+	}
+
+	public void setMoney(int mMoney) {
+		this.mMoney = mMoney;
+	}
+
+	public int getExperience() {
+		return mExperience;
+	}
+
+	public void setExperience(int mExperience) {
+		this.mExperience = mExperience;
+	}
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
+
 	
 }

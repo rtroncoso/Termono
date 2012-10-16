@@ -549,20 +549,8 @@ public class UserDatabase extends SQLiteOpenHelper {
      }
     
     //Inventory
-    public int[] getInventoryKeys(int pPlayerID){//All inventory Item Keys
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fInventoryItemKey+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
-    	int index = myCursor.getColumnIndex(fInventoryItemKey);
-        int myAnswer[] = new int[myCursor.getCount()];
-        for(int i = 0; i < myCursor.getCount(); i++){
-        	myCursor.moveToPosition(i);
-        	myAnswer[i] = myCursor.getInt(index);
-        }
-    	 myCursor.close();
-    	 return myAnswer;
-    }
-    
     public int[] getInventoryItems(int pPlayerID){//All inventory Item IDs
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fInventoryItemKey+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
     	int index = myCursor.getColumnIndex(fItemID);
         int myAnswer[] = new int[myCursor.getCount()];
         for(int i = 0; i < myCursor.getCount(); i++){
@@ -611,72 +599,43 @@ public class UserDatabase extends SQLiteOpenHelper {
     	 return myAnswer;
     }
     
-    
-    public int increaseItemAmount(int pPlayerID,int pItemID,int pAmount){
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tInventoryItem+"."+fItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tInventoryItem+"."+fInventoryID+" = "+tInventory+"."+fInventoryID+" and "+tInventory+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tPlayer+"."+fPlayerID+" =? and "+tInventoryItem+"."+fItemID+" =?", new String[]{String.valueOf(pPlayerID),String.valueOf(pItemID)});
-    	this.close();
-    	int count = myCursor.getCount();
-    	if(count>0){//Ya tiene el item, updateo el amount
-           	int index = myCursor.getColumnIndex(fInventoryItemKey);
-      		int myAnswer = myCursor.getInt(index);//consigo el InventoryItemKey
-	    	ContentValues cv = new ContentValues();
-	        cv.put(fInventoryItemAmount,pAmount);//updateo el amount
-	        this.getWritableDatabase().update(tInventoryItem, cv, fInventoryItemKey+" =?",new String[]{String.valueOf(myAnswer)});
-	    }else{//No tiene el item, lo agrego
-	    	myCursor.close();
-	    	myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryID+" from "+tInventory+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
-	    	myCursor.moveToFirst();
-	    	int index = myCursor.getColumnIndex(fInventoryID);
-	        int inventoryID = myCursor.getInt(index);
-	    	ContentValues cv = new ContentValues();
-	        cv.put(fInventoryItemAmount,pAmount);
-	    	cv.put(fItemID,pItemID);
-	        cv.put(fInventoryID, inventoryID);
-	    	cv.put(fInventoryIsItemEquipped,0);
-	    	this.getWritableDatabase().insert(tInventoryItem, fInventoryItemKey, cv);
-	    }
-	    myCursor.close();
-	    myCursor = this.getReadableDatabase().rawQuery("Select "+tInventoryItem+"."+fInventoryItemKey+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tInventoryItem+"."+fInventoryID+" = "+tInventory+"."+fInventoryID+" and "+tInventory+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tPlayer+"."+fPlayerID+" =? and "+tInventoryItem+"."+fItemID+" =?", new String[]{String.valueOf(pPlayerID),String.valueOf(pItemID)});
-	    int index = myCursor.getColumnIndex(fInventoryItemKey);
-        int myAnswer = myCursor.getInt(index);
-        myCursor.close();
-        this.close();
-        return myAnswer;
+    public int[] getInventoryItemKeys(int pPlayerID){//All inventory Item Keys
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fInventoryItemKey+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
+    	int index = myCursor.getColumnIndex(fInventoryItemKey);
+        int myAnswer[] = new int[myCursor.getCount()];
+        for(int i = 0; i < myCursor.getCount(); i++){
+        	myCursor.moveToPosition(i);
+        	myAnswer[i] = myCursor.getInt(index);
+        }
+    	 myCursor.close();
+    	 return myAnswer;
     }
     
-    public int addInventoryItem(int pPlayerID,int pItemID,int pAmount){
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryID+" from "+tInventory+" where "+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
-    	myCursor.moveToFirst();
-        int index = myCursor.getColumnIndex(fInventoryID);
-        int inventoryID = myCursor.getInt(index);
-    	ContentValues cv = new ContentValues();
-        cv.put(fInventoryItemAmount,pAmount);
-        cv.put(fInventoryID, inventoryID);
-    	cv.put(fItemID,pItemID);
-    	cv.put(fInventoryIsItemEquipped,0);
-    	this.getWritableDatabase().insert(tInventoryItem, fInventoryItemKey, cv);
-    	myCursor.close();
-    	myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryItemKey+" from "+tInventoryItem+" order by "+fInventoryItemKey+" desc limit 1", null);
-    	myCursor.moveToFirst();
-        index = myCursor.getColumnIndex(fInventoryItemKey);
-        int myAnswer = myCursor.getInt(index);
-        myCursor.close();
-        this.close();
-        return myAnswer;
+    public void deleteInventory(int[] inventoryItemsKeys){
+    	SQLiteDatabase myDB = this.getWritableDatabase();
+    	for(int i = 0;i<inventoryItemsKeys.length;i++){
+    		myDB.delete(tInventoryItem, fInventoryItemKey+" =?", new String[]{String.valueOf(inventoryItemsKeys[i])});
+    	}
     }
     
-    public int getInventoryItemAmount(int pPlayerID,int pInventoryItemKey){
-       	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tInventoryItem+"."+fInventoryItemAmount+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tInventoryItem+"."+fInventoryID+" = "+tInventory+"."+fInventoryID+" and "+tInventory+"."+fPlayerID+" = "+tPlayer+"."+fPlayerID+" and "+tPlayer+"."+fPlayerID+" =? and "+tInventoryItem+"."+fInventoryItemKey+" =?", new String[]{String.valueOf(pPlayerID),String.valueOf(pInventoryItemKey)});
-       	int index = myCursor.getColumnIndex(fInventoryItemAmount);
-  		int myAnswer = myCursor.getInt(index);
-  		myCursor.close();
-        this.close();
-        return myAnswer;
+    public void addInventoryItems(int pPlayerID,int[] pItemID,int[] pAmount, int[] pEqquiped){
+      Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tInventory+"."+fInventoryID+" from "+tInventory+","+tPlayer+" on "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fInventoryID+" and "+tPlayer+"."+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
+      myCursor.moveToFirst();
+      int index = myCursor.getColumnIndex(fInventoryID);
+      int invID = myCursor.getInt(index);
+      myCursor.close();
+      ContentValues cv = new ContentValues();
+      for(int i = 0;i<pItemID.length;i++){
+    	cv.put(fInventoryID, invID);
+   	  	cv.put(fItemID,pItemID[i]);
+   	  	cv.put(fInventoryItemAmount,pAmount[i]);
+   	  	cv.put(fInventoryIsItemEquipped, pEqquiped[i]);
+   	  	this.getWritableDatabase().insert(tInventoryItem, fInventoryItemKey, cv);
+   	  	cv.clear();
+      }
+      this.close();
     }
     
-    public void removeInventoryItem(int pPlayerID, int pInventoryItemKey){
-    	this.getWritableDatabase().delete(tInventoryItem, tInventoryItem+"."+fInventoryItemKey+" =?",new String[]{String.valueOf(pInventoryItemKey)});
-    }
         
 
 }

@@ -12,7 +12,6 @@ public class InventoryItem extends BaseItem{
 	// ===========================================================
 	private int mAmount;
 	private int mEquipped;//1 - 0, SQLite no maneja booleans
-	
 	// ===========================================================
 	// Constructors
 	// ===========================================================

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.util.Log;
 
 import com.quest.entities.BaseEntity;
+import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.InventoryItem;
 import com.quest.game.Game;
@@ -13,28 +14,35 @@ public class InventoryItemHelper {
 
 	private ArrayList<InventoryItem> mItems;
 	private String mOwnerID;//ID del owner
+	private InventoryItem nullItem; 
+	
 	public InventoryItemHelper(String pOwnerID) {
 		this.mItems = new ArrayList<InventoryItem>();
 		this.mOwnerID = pOwnerID;
+		nullItem = new InventoryItem(0, 0, 0);
 	}
 	
-	public void addItem(InventoryItem pInventoryItem,int pItemKey){
-		boolean add = true;
-		if(pInventoryItem.isStackable()){
-			if(!getItembyID(pInventoryItem.getItemID()).equals(null)){
-				getItembyID(pInventoryItem.getItemID()).IncreaseAmount(pInventoryItem.getAmount());
-				add = false;
+	public void addItem(InventoryItem pInventoryItem){
+			boolean add = true;
+			if(pInventoryItem.isStackable()){
+				if(!getItembyID(pInventoryItem.getItemID()).equals(null)){
+					getItembyID(pInventoryItem.getItemID()).IncreaseAmount(pInventoryItem.getAmount());
+					add = false;
+				}
 			}
-		}
-		if(add){
-			pInventoryItem.setUserData(pItemKey);
-			this.mItems.add(pInventoryItem);
-			if(pInventoryItem.isEqquiped())Game.getPlayerHelper().getPlayer(this.mOwnerID).addModifiers(pInventoryItem.getItemModifiers());
-		}
-		
+			if(add){
+				if(mItems.contains(this.nullItem)){
+					this.mItems.set(mItems.indexOf(nullItem),pInventoryItem);
+				}else{
+					this.mItems.add(pInventoryItem);
+				}
+				pInventoryItem.setUserData(this.mItems.indexOf(pInventoryItem));
+				
+				if(pInventoryItem.isEqquiped())Game.getPlayerHelper().getPlayer(this.mOwnerID).addModifiers(pInventoryItem.getItemModifiers());
+			}		
 	}
 	
-
+		
 	
 	public void decreaseItem(int pItemKey,int pAmount){//Le resta pAmount al amount que tiene el item, si el resultado es 0 borra el item. (si se quiere borrar de una usar .getItemAmount() como paramentro
 		if(!this.getItem(pItemKey).equals(null)) {
@@ -84,6 +92,21 @@ public class InventoryItemHelper {
 		return null;
 	}
 	
+	public void writeInventorytoDB(int pPlayerID){
+		Game.getDataHandler().deleteInventory(pPlayerID);
+		int[] ItemIDs,Amounts,Equipped;
+		ItemIDs = Amounts = Equipped = new int[]{};
+		for(int i = 0;i<this.mItems.size();i++){
+			InventoryItem tmpItem = this.mItems.get(i);
+			if(!tmpItem.equals(nullItem)){
+				ItemIDs[i] = tmpItem.getItemID();
+				Amounts[i] = tmpItem.getAmount();
+				Equipped[i] = 0;
+				if(tmpItem.isEqquiped())Equipped[i] = 1;
+			}
+		}
+		Game.getDataHandler().addInventoryItems(pPlayerID, ItemIDs, Amounts, Equipped);
+	}
 	
 
 	/**
@@ -99,4 +122,6 @@ public class InventoryItemHelper {
 	public void setEntities(ArrayList<InventoryItem> pItems) {
 		this.mItems = pItems;
 	}
+
+
 }

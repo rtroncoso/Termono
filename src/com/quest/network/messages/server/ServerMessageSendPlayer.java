@@ -22,7 +22,7 @@ import com.quest.entities.Player;
 		private int mHeadID;		
 	//	private int tileX,tileY;  *** Implementar cuando este
 		private String mAttributes,currHPMP; 
-		private String mItemID, mAmounts,isEquipped,mItemKeys;
+		private String mItemID, mAmounts,isEquipped;
 				
 		// ===========================================================
 		// Constructors
@@ -31,14 +31,14 @@ import com.quest.entities.Player;
 		public ServerMessageSendPlayer() {
 		}
 
-		public ServerMessageSendPlayer(final Player pPlayer,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int[] pItemKeys) {
-			LoadPlayer(pPlayer, pItemIDs, pAmounts, isEquipped, pItemKeys);
+		public ServerMessageSendPlayer(final Player pPlayer,int[] pItemIDs,int[] pAmounts,int[] isEquipped) {
+			LoadPlayer(pPlayer, pItemIDs, pAmounts, isEquipped);
 		}
 		
 		// ===========================================================
 		// Getter & Setter
 		// ===========================================================
-		public void LoadPlayer(final Player pPlayer,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int[] pItemKeys) {//No puedo usar los constructors
+		public void LoadPlayer(final Player pPlayer,int[] pItemIDs,int[] pAmounts,int[] isEquipped) {//No puedo usar los constructors
 			this.setUserID(pPlayer.getUserID());
 			this.setPlayerID(pPlayer.getPlayerID());
 			this.setLevel(pPlayer.getLevel());
@@ -51,7 +51,6 @@ import com.quest.entities.Player;
 			this.setItemID(pItemIDs);
 			this.setAmounts(pAmounts);
 			this.setIsEquipped(isEquipped);
-			this.setItemKeys(pItemKeys);
 		}
 
 		public String getUserID() {
@@ -141,14 +140,6 @@ import com.quest.entities.Player;
 		public void setIsEquipped(int[] isEquipped) {
 			this.isEquipped = intArraytoString(isEquipped);
 		}
-
-		public int[] getItemKeys() {
-			return stringArraytoInt(mItemKeys);
-		}
-
-		public void setItemKeys(int[] mItemKeys) {
-			this.mItemKeys = intArraytoString(mItemKeys);
-		}
 		
 		public int getHeadID() {
 			return mHeadID;
@@ -178,7 +169,6 @@ import com.quest.entities.Player;
 			this.mAttributes = pDataInputStream.readUTF();
 			this.currHPMP = pDataInputStream.readUTF();
 			this.mItemID = pDataInputStream.readUTF();
-			this.mItemKeys = pDataInputStream.readUTF();
 			this.isEquipped = pDataInputStream.readUTF();
 			this.mAmounts = pDataInputStream.readUTF();		
 		}
@@ -195,7 +185,6 @@ import com.quest.entities.Player;
 			pDataOutputStream.writeUTF(this.mAttributes);
 			pDataOutputStream.writeUTF(this.currHPMP);
 			pDataOutputStream.writeUTF(this.mItemID);
-			pDataOutputStream.writeUTF(this.mItemKeys);
 			pDataOutputStream.writeUTF(this.isEquipped);
 			pDataOutputStream.writeUTF(this.mAmounts);
 		}

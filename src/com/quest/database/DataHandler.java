@@ -179,11 +179,7 @@ public class DataHandler {
 	}
 	
 	
-	//Inventory
-	public int[] getInventoryKeys(int pPlayerID){
-		return this.mUserDB.getInventoryKeys(pPlayerID);
-	}
-	
+	//Inventory	
 	public int[] getInventoryItems(int pPlayerID){
 		return this.mUserDB.getInventoryItems(pPlayerID);
 	}
@@ -204,25 +200,16 @@ public class DataHandler {
 		return this.mUserDB.getInventoryItemsbyEquipStatus(pPlayerID, false);
 	}
 	
-	public int addInventoryItem(int pPlayerID,int pItemID, int pAmount){
-		int inventoryitemKey;
-		if(this.mStaticDB.isItemStackable(pItemID)){
-			inventoryitemKey = this.mUserDB.increaseItemAmount(pPlayerID, pItemID, pAmount);
-		}else{
-			inventoryitemKey = this.mUserDB.addInventoryItem(pPlayerID,pItemID,pAmount);
-		}
-		return inventoryitemKey;
+	private int[] getInventoryItemsKeys(int pPlayerID){
+		return this.mUserDB.getInventoryItemKeys(pPlayerID);
 	}
 	
-	
-	public void InventoryItemDecreaseAmount(int pPlayerID,int pItemKey){
-		this.mUserDB.addInventoryItem(pPlayerID, pItemKey, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)-1);
-		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)<1)this.mUserDB.removeInventoryItem(pPlayerID,pItemKey);
+	public void deleteInventory(int pPlayerID){
+		this.mUserDB.deleteInventory(getInventoryItemsKeys(pPlayerID));
 	}
-
-	public void InventoryItemDecreaseAmountby(int pPlayerID,int pItemKey,int pAmount){
-		this.mUserDB.addInventoryItem(pPlayerID, pItemKey, this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)-pAmount);
-		if(this.mUserDB.getInventoryItemAmount(pPlayerID, pItemKey)<1)this.mUserDB.removeInventoryItem(pPlayerID,pItemKey);
+	
+	public void addInventoryItems(int pPlayerID,int[] pItemID, int[] pAmount, int[] pEquipped){
+			this.mUserDB.addInventoryItems(pPlayerID,pItemID,pAmount,pEquipped);
 	}
 	
 	
@@ -379,6 +366,16 @@ public class DataHandler {
 	public int[] getMobDropRates(int pMobFlag){
 		String[] tmpArray;
 		tmpArray = this.mStaticDB.getMobDropRates(pMobFlag).split(",");
+		int[] intArray = new int[tmpArray.length];
+		for(int i = 0;i<tmpArray.length;i++){
+			intArray[i] = Integer.parseInt(tmpArray[i]);
+		}
+		return intArray;
+	}
+	
+	public int[] getMobDropAmounts(int pMobFlag){
+		String[] tmpArray;
+		tmpArray = this.mStaticDB.getMobDropAmounts(pMobFlag).split(",");
 		int[] intArray = new int[tmpArray.length];
 		for(int i = 0;i<tmpArray.length;i++){
 			intArray[i] = Integer.parseInt(tmpArray[i]);

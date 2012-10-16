@@ -29,6 +29,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private int mPositionID;
 	private String mUserID;
 	private InventoryItemHelper mInventory;
+	private int mMoney,mExperience;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -49,12 +50,12 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.updateHPMana(Game.getDataHandler().getPlayerCurrentHPMP(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
 		this.mUserID = Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
-		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID),Game.getDataHandler().getInventoryKeys(this.mPlayerID)));
+		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
 		this.mEntityType = "Player";
 	}
 	
 	
-	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int[] pItemKeys){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
+	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
@@ -64,18 +65,17 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setAttributes(pAttributes);
 		this.setModifiers(pAttributes);
 		this.updateHPMana(currHPMP);
-		this.setInventory(LoadInventory(pItemIDs, pAmounts, isEquipped, pItemKeys));
+		this.setInventory(LoadInventory(pItemIDs, pAmounts, isEquipped));
 		this.mEntityType = "Player";
 	}
 
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	private InventoryItemHelper LoadInventory(int[] pItemIDs,int[] pAmounts,int[] isEquipped,int[] pItemKeys){
+	private InventoryItemHelper LoadInventory(int[] pItemIDs,int[] pAmounts,int[] isEquipped){
 		InventoryItemHelper pInventory = new InventoryItemHelper(mUserID);
-		if(pItemIDs.length!=pItemKeys.length)Log.e("Quest!","InventoryHelper - Array leghts don't match");
-		for(int i = 0;i<pItemKeys.length;i++){
-			pInventory.addItem(new InventoryItem(pItemIDs[i], pAmounts[i], isEquipped[i]), pItemKeys[i]);
+		for(int i = 0;i<pItemIDs.length;i++){
+			pInventory.addItem(new InventoryItem(pItemIDs[i], pAmounts[i], isEquipped[i]));
 		}
 		return pInventory;
 	}
@@ -90,34 +90,23 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 		if(pValueX != 0.0f || pValueY != 0.0f) {
 			if(!this.isWalking && !Game.getMapManager().isChangingMap()) {
-				// Gets the new Tile
-				float moveToXTile = this.getX() + (TILE_SIZE * pValueX);
-				float moveToYTile = this.getY() + (TILE_SIZE * pValueY);
-				
-				// Is it a legal position?
-				if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return;
 
-				// Get the new Tile
-				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
+				// Stores the player Position
+				byte pDirection = DIRECTION_DEFAULT;
 				
-				// Animate the Character
-				long frameDuration = (long) ((SPEED_MODIFIER / this.mSpeedFactor) * 1000) / 5;
-				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration, frameDuration };
-				this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
+				// Check where it is heading
+				if(pValueY == 1.0f) pDirection = DIRECTION_NORTH;
+				if(pValueY == -1.0f) pDirection = DIRECTION_SOUTH;
+				if(pValueX == 1.0f) pDirection = DIRECTION_EAST;
+				if(pValueX == -1.0f) pDirection = DIRECTION_WEST;
 				
-				// Check Tiles
-				Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
-				if(tmpTrigger != null) { tmpTrigger.onHandleTriggerAction(); return; } // Hacer cambio de mapa
-				
-				// Perform Move
-				this.moveToTile(tmxTileTo);
-				
+				// Performs the move
+				this.moveInDirection(pDirection);
 				if(Game.getServer().equals(null)){
-					Game.getClient().sendMovePlayerMessage(this.mUserID, this.getFacingDirectionToTile(tmxTileTo));
+					Game.getClient().sendMovePlayerMessage(this.mUserID, pDirection);
 				}else{
-					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, this.getFacingDirectionToTile(tmxTileTo));
+					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, pDirection);
 				}
-				
 			}
 		}
 	}
@@ -198,8 +187,32 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 	public void setInventory(InventoryItemHelper mInventory) {
 		this.mInventory = mInventory;
+	}
+
+	public int getMoney() {
+		return mMoney;
+	}
+
+	public void setMoney(int mMoney) {
+		this.mMoney = mMoney;
+	}
+
+	public void addMoney(int mMoney) {
+		this.mMoney += mMoney;
+	}
+
+	
+	public int getExperience() {
+		return mExperience;
+	}
+
+	public void setExperience(int mExperience) {
+		this.mExperience = mExperience;
 	} 
 
+	public void addExperience(int mExperience) {
+		this.mExperience += mExperience;
+	} 
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

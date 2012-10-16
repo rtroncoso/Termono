@@ -107,6 +107,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
 	    static final String fMobDropMoney = "Money";
 	    static final String fMobDropItemIDs = "ItemIDs";
 	    static final String fMobDropRates = "DropRates";
+	    static final String fMobDropAmounts = "DropAmounts";
 	    //mobID
 	    
 	    //Mob Spawn
@@ -220,6 +221,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
                 		fMobDropMoney+" INTEGER , "+
                 		fMobDropItemIDs+" TEXT , "+
                 		fMobDropRates+" TEXT , "+
+                		fMobDropAmounts+" TEXT , "+
                         fMobID+" INTEGER)"
                         );
                 
@@ -475,6 +477,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fMobDropMoney,1);
           		cv.put(fMobDropItemIDs,"1,2,3,4,5");
           		cv.put(fMobDropRates,"10,8,6,4,2");
+          		cv.put(fMobDropAmounts,"1,1,1,1,1");
           		cv.put(fMobID, 1);
           		db.insert(tMobDroptable, null, cv); 
           		
@@ -787,6 +790,16 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobDropRates+" from "+tMobDroptable+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
         	myCursor.moveToFirst();
         	int index = myCursor.getColumnIndex(fMobDropRates);
+			String myAnswer = myCursor.getString(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
+         
+         public String getMobDropAmounts(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobDropAmounts+" from "+tMobDroptable+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobDropAmounts);
 			String myAnswer = myCursor.getString(index);
 			myCursor.close();
 			this.close();
