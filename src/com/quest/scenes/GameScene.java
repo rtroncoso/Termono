@@ -24,6 +24,11 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Fields
 		// ===========================================================
+<<<<<<< HEAD
+=======
+		private Mob mMob2;
+		private Mob mEnemy;
+>>>>>>> branch 'master' of https://github.com/rtroncoso/Termono.git
 		private Timer mTimers;
 		private MenuHud mMenuHud;
 		private HUD mHud;

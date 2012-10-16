@@ -40,6 +40,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	private TiledTextureRegion mTiledTextureRegion;
 	private PathModifier mPathModifier;
 	private Path mPath;
+	private int mBodyColumns;
+	private int mBodyRows;
 	
 	protected String mEntityType;
 	protected Spell tmpSpell;
@@ -61,9 +63,13 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	// Constructors
 	// ===========================================================
 	public BaseEntity(String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
+		
+		// Init class objects
 		this.mEntityType = "BaseEntity";
 		this.mSpeedFactor = 1.0f;
-
+		this.mBodyColumns = pCols;
+		this.mBodyRows = pRows;
+		
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
@@ -93,20 +99,21 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	// Methods
 	// ===========================================================
 	public BaseEntity setAnimationDirection(byte pFacingDirection, long[] pFrameDuration, boolean restartAnimation) {
-		if(restartAnimation && !BaseEntity.this.mBodySprite.isAnimationRunning()) return this;
+		if(restartAnimation && !this.mBodySprite.isAnimationRunning()) return this;
+		
 		switch(pFacingDirection) {
-		case DIRECTION_EAST:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 10, 14, false);
-			break;
-		case DIRECTION_WEST:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 5, 9, false);
-			break;
 		case DIRECTION_SOUTH:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 0, 4, false);
+			this.mBodySprite.animate(pFrameDuration, 0, (this.mBodyColumns - 1), false);
 			break;
 		case DIRECTION_NORTH:
-			BaseEntity.this.mBodySprite.animate(pFrameDuration, 15, 19, false);
-			break;		
+			this.mBodySprite.animate(pFrameDuration, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - 1, false);
+			break;	
+		case DIRECTION_EAST:
+			this.mBodySprite.animate(pFrameDuration, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - 1, false);
+			break;
+		case DIRECTION_WEST:
+			this.mBodySprite.animate(pFrameDuration, this.mBodyColumns, (this.mBodyColumns * 2) - 1, false);
+			break;	
 		}
 		return this;
 	}

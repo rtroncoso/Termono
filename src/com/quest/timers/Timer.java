@@ -5,11 +5,12 @@ import org.andengine.engine.handler.timer.TimerHandler;
 
 import com.quest.entities.Mob;
 import com.quest.game.Game;
+import com.quest.timers.interfaces.ITimerAction;
 
 // TODO Mover a una clase principal que los demás timers hereden de esto
 // 		usando un updatehandler
 
-public class Timers {
+public class Timer {
 		// ===========================================================
 		// Constants
 		// ===========================================================
@@ -18,25 +19,37 @@ public class Timers {
 		// ===========================================================
 		// Fields
 		// ===========================================================
-		private Mob mEnemy;
-		private Mob mMob2;
+		private ITimerCallback mTimerCallback;
+	
 		// ===========================================================
 		// Constructors
 		// ===========================================================
 	
-		public Timers(Mob pEnemy, Mob pMob2) {
-			this.mEnemy = pEnemy;		
-			this.mMob2 = pMob2;
-			// TODO Auto-generated constructor stub
+		public Timer(int pTimePerTick, ITimerCallback mTimerCallback) {
+			
+			Game.getInstance().getEngine().registerUpdateHandler(new TimerHandler(pTimePerTick, true, mTimerCallback));
 		}
-		
-		
 	
 	
 		// ===========================================================
 		// Getter & Setter
 		// ===========================================================
+		/**
+		 * @return the mTimerCallback
+		 */
+		public ITimerCallback getTimerCallback() {
+			return mTimerCallback;
+		}
 
+
+		/**
+		 * @param mTimerCallback the mTimerCallback to set
+		 */
+		public void setTimerCallback(ITimerCallback mTimerCallback) {
+			this.mTimerCallback = mTimerCallback;
+		}
+
+		
 		// ===========================================================
 		// Methods for/from SuperClass/Interfaces
 		// ===========================================================
@@ -44,25 +57,6 @@ public class Timers {
 		// ===========================================================
 		// Methods
 		// ===========================================================
-		public void createMobMovementTimeHandler()
-		{
-		        //TimerHandler MobMovementTimerHandler;
-		        
-		        //this.mGame.getEngine().registerUpdateHandler(MobMovementTimerHandler = new TimerHandler(1 / 20.0f,true, new ITimerCallback()
-				//this.mGame.getEngine().registerUpdateHandler(new TimerHandler(1 / 20.0f,true, new ITimerCallback()
-				Game.getInstance().getEngine().registerUpdateHandler(new TimerHandler(3,true, new ITimerCallback()
-		        {                      
-		            
-		        	@Override
-		            public void onTimePassed(final TimerHandler pTimerHandler)
-		            {
-		        		Timers.this.mEnemy.randomPath();
-		        		Timers.this.mMob2.randomPath();
-		            }
-		            
-		            
-		        }));
-		}
 
 		// ===========================================================
 		// Inner and Anonymous Classes

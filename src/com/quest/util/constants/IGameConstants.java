@@ -34,9 +34,9 @@ public interface IGameConstants {
 	public static final int SERVER_PORT = 4444;
 
 	public static final byte DIRECTION_DEFAULT = 0;
-	public static final byte DIRECTION_EAST = 1;
+	public static final byte DIRECTION_SOUTH = 1;
 	public static final byte DIRECTION_WEST = 2;
-	public static final byte DIRECTION_SOUTH = 3;
+	public static final byte DIRECTION_EAST = 3;
 	public static final byte DIRECTION_NORTH = 4;
 	
 	// ===========================================================

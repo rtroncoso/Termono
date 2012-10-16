@@ -15,6 +15,10 @@ import android.util.Log;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
+<<<<<<< HEAD
+=======
+import com.quest.timers.Timer;
+>>>>>>> branch 'master' of https://github.com/rtroncoso/Termono.git
 
 /**
  * @author raccoon
