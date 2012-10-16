@@ -153,7 +153,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 		case TouchEvent.ACTION_UP:
 			if(mGrabbed) {
 				mGrabbed = false;
-				//this.mSpellsLayer.add(new Spell(0));
+				this.mSpellsLayer.add(new Spell(0));
 				this.getAttacked(Game.getPlayerHelper().getPlayerbyIndex(0), 5);
 				Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);
 				if(Game.getServer().equals(null)){
@@ -177,17 +177,35 @@ public class Mob extends BaseEntity implements ITouchArea {
 	};
 	
 	@Override
-	public void onDeathAction(IEntity pKillerEntity) {
+	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
+		if(Game.getServer().equals(null)){
 		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
-	}
-
-	public void getAttacked(IEntity pAttackingEntity,int damage){//****despues hacerlo bien
-		if(decreaseHP(damage)){
-			onDeathAction(pAttackingEntity);
+		simular muerte y dejar item
+		}else{
+		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
+		mandar mensaje de que murio(y mostrarlo) y mandar experiencia
 		}
 	}
+
+	@Override
+	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
+		if(decreaseHP(pDamage)){
+			if(!Game.getServer().equals(null)){
+				onDeathAction(pAttackingEntity);	
+			}
+		}
+		Cambiar la barrita de hp
+		Mostrar el ataque 
+	};
+	
+	@Override
+	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
+		Mostrar la animacion de ataque
+		Llamar al battle helper si soy server
+	};
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================

@@ -434,6 +434,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		if(currHP<1)return true;
 		return false;
 	}
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -508,7 +509,19 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 
 	@Override
-	public void onDeathAction(IEntity pKillerEntity) {
+	public void onDeathAction(BaseEntity pKillerEntity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
 		// TODO Auto-generated method stub
 		
 	}

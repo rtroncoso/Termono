@@ -24,6 +24,10 @@ public class MobHelper implements MobFlags{
 			this.mMobPool.registerMob(FLAG_MOB_BAT);		
 		}
 		
+		public Mob getMob(int pMobID){
+			return this.mMobs.get(pMobID);
+		}
+		
 		public Mob addNewMob(int MOB_FLAG){
 			final Mob mob = (Mob) (MobHelper.this.mMobPool.obtainMob(MOB_FLAG));
 			if(mMobs.contains(this.nullMob)){
