@@ -23,14 +23,10 @@ import android.util.Log;
 import com.quest.entities.interfaces.IEntityCallbacks;
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
-<<<<<<< HEAD
-import com.quest.helpers.interfaces.BaseEntityActions;
-import com.quest.triggers.Trigger;
-=======
 import com.quest.helpers.interfaces.IBaseEntityActions;
->>>>>>> branch 'master' of https://rtroncoso@github.com/rtroncoso/Termono.git
 import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
+import com.quest.triggers.Trigger;
 
 public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea, IEntityCallbacks,IBaseEntityActions {
 	// ===========================================================
