@@ -12,10 +12,12 @@ import com.quest.pools.MobPool;
 public class MobHelper implements MobFlags{		
 		private ArrayList<Mob> mMobs;
 		private final MobPool mMobPool = new MobPool();
+		private Mob nullMob;
 		
 		public MobHelper() {
 			this.mMobs = new ArrayList<Mob>();
 			this.initMobPool();
+			this.nullMob = new Mob(1);
 		}
 		
 		private void initMobPool() {
@@ -24,17 +26,24 @@ public class MobHelper implements MobFlags{
 		
 		public Mob addNewMob(int MOB_FLAG){
 			final Mob mob = (Mob) (MobHelper.this.mMobPool.obtainMob(MOB_FLAG));
-			this.mMobs.add(mob);
-			mob.setUserData(this.mMobs.size()-1);
+			if(mMobs.contains(this.nullMob)){
+				this.mMobs.set(mMobs.indexOf(nullMob),mob);
+			}else{
+				this.mMobs.add(mob);
+			}
+			mob.setUserData(this.mMobs.indexOf(mob));
 			return mob;
 		}
 		
 		public void deleteMob(int pMobID){
 			this.mMobPool.recycleMob(this.mMobs.get(pMobID));
+			this.mMobs.set(pMobID,this.nullMob);
 		}
 		
 		public void deleteMobs(int pMobID){
 			this.mMobPool.recycleMobs(this.mMobs);
+			this.mMobs.clear();
 		}
+
 
 }

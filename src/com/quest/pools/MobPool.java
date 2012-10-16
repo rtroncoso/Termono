@@ -48,7 +48,7 @@ public class MobPool{
 					
 					@Override
 					protected void onHandleRecycleItem(final Mob pMob) {
-						pMob.Heal();
+						pMob.setPosition(-10, -10);
 						pMob.setVisible(false);
 						pMob.setUserData(null);
 						pMob.setIgnoreUpdate(true);
@@ -60,6 +60,7 @@ public class MobPool{
 					protected void onHandleObtainItem(Mob pMob) {
 						pMob.setVisible(true);
 						pMob.setIgnoreUpdate(false);
+						pMob.Heal();
 					};
 				}
 		);

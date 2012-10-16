@@ -2,7 +2,7 @@ package com.quest.helpers.interfaces;
 
 import org.andengine.entity.IEntity;
 
-public interface BaseEntityActions {
+public interface IBaseEntityActions {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -11,7 +11,7 @@ public interface BaseEntityActions {
 	// Methods
 	// ===========================================================
 
-	public void onDeath(IEntity pKillerEntity);
+	public void onDeathAction(IEntity pKillerEntity);
 	
 	// ===========================================================
 	// Inner and Anonymous Classes

@@ -103,6 +103,8 @@ public class GameScene extends Scene {
 
 			    	//		GameScene.this.registerTouchArea(GameScene.this.mEnemy.getBodySprite());
 			    	//		GameScene.this.registerTouchArea(GameScene.this.mMob2.getBodySprite());
+			    			
+			    			GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
 			            }
 
 			            @Override
@@ -164,15 +166,15 @@ public class GameScene extends Scene {
 			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
 			tmpMob.setTileAt(Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow());
 			GameScene.this.attachChild(tmpMob);
-			GameScene.this.registerTouchArea(tmpMob);
+			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
 			tempInt+=1;
 		}
 
 		public void CreateMob(int MOB_FLAG,int i){
 			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
-			tmpMob.setTileAt(Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn()+i,Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow()+i);
+			tmpMob.setTileAt(Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn()+i,Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow());
 			GameScene.this.attachChild(tmpMob);
-			GameScene.this.registerTouchArea(tmpMob);
+			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
 			tempInt+=1;
 		}
 		

@@ -17,6 +17,7 @@ import com.quest.constants.ClientMessageFlags;
 import com.quest.constants.ServerMessageFlags;
 import com.quest.entities.Player;
 import com.quest.game.Game;
+import com.quest.network.messages.client.ClientMessageAttackMessage;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
@@ -50,6 +51,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE, ClientMessagePlayerCreate.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER, ClientMessageSelectedPlayer.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER, ClientMessageMovePlayer.class);
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE, ClientMessageAttackMessage.class);
 			}
 	
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
@@ -210,6 +212,8 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 		
 		public void sendMovePlayerMessage(String pPlayerKey, byte pPlayerDirection){			
 			final ClientMessageMovePlayer clientMessageMovePlayer = (ClientMessageMovePlayer) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER);
+			clientMessageMovePlayer.setPlayerKey(pPlayerKey);
+			clientMessageMovePlayer.setPlayerDirection(pPlayerDirection);
 			try {
 				sendClientMessage(clientMessageMovePlayer);				
 			} catch (Exception e) {
@@ -218,6 +222,17 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			QClient.this.mMessagePool.recycleMessage(clientMessageMovePlayer);
 		}
 		
+		public void sendAttackMessage(int pAttackedMobID, int pAttackID){			
+			final ClientMessageAttackMessage clientMessageAttackMessage = (ClientMessageAttackMessage) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE);
+			clientMessageAttackMessage.setAttackedMobID(pAttackedMobID);
+			clientMessageAttackMessage.setAttackID(pAttackID);
+			try {
+				sendClientMessage(clientMessageAttackMessage);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessageAttackMessage);
+		}
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

@@ -23,11 +23,11 @@ import android.util.Log;
 import com.quest.entities.interfaces.IEntityCallbacks;
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
-import com.quest.helpers.interfaces.BaseEntityActions;
+import com.quest.helpers.interfaces.IBaseEntityActions;
 import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
 
-public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea, IEntityCallbacks,BaseEntityActions {
+public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea, IEntityCallbacks,IBaseEntityActions {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -80,12 +80,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				// TODO Auto-generated method stub
-				Log.d("Quest!", "Base entity touched");
 				return BaseEntity.this.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
 			}
 		};
 		this.attachChild(this.mBodySprite);
-		
+		this.mBodySprite.setCullingEnabled(true);
 		this.mSpellsLayer = new ArrayList<Spell>();
 	}
 
@@ -344,9 +343,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 
 	public void setCurrHP(int pcurrHP) {
-		this.currHP = pcurrHP;//*** Hacer el onDeath			
+		this.currHP = pcurrHP;			
 	}
-
+	
 	public int getCurrMana() {
 		return currMana;
 	}
@@ -426,8 +425,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 	
 	public void Heal(){
-		setCurrHP(this.mEndurance*10);
-		setCurrMana(this.mIntelligence*10);
+		setCurrHP(this.mModEndurance*10);
+		setCurrMana(this.mModIntelligence*10);
+	}
+	
+	public boolean decreaseHP(int damage){
+		setCurrHP(currHP-damage);
+		if(currHP<1)return true;
+		return false;
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -503,7 +508,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 
 	@Override
-	public void onDeath(IEntity pKillerEntity) {
+	public void onDeathAction(IEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		
 	}
