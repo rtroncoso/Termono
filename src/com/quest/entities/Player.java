@@ -111,6 +111,37 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		}
 	}
 	
+	
+	@Override
+	public void onDeathAction(BaseEntity pKillerEntity) {
+		// TODO Auto-generated method stub
+		super.onDeathAction(pKillerEntity);
+		if(Game.getServer().equals(null)){
+		aparecer donde sea
+		}else{
+		aparecer donde sea
+		mandar mensaje de que murio y en donde aparece
+		}
+	}
+
+	@Override
+	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
+		if(decreaseHP(pDamage)){
+			if(!Game.getServer().equals(null)){
+				onDeathAction(pAttackingEntity);	
+			}
+		}
+		Cambiar la barrita de hp
+		Mostrar el ataque 
+	};
+	
+	@Override
+	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
+		Mostrar la animacion de ataque
+		Llamar al battle helper si soy server, sino mando mensaje de attack
+	};
+	
+	
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================

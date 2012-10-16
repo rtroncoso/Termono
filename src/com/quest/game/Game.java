@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
+import com.quest.helpers.BattleHelper;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.MobHelper;
 import com.quest.helpers.PlayerHelper;
@@ -42,6 +43,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static TextHelper mTextHelper;
 	private static PlayerHelper mPlayerHelper;
 	private static MobHelper mMobHelper;
+	private static BattleHelper mBattleHelper;
 	private static MatchData mMatchData;
 	private static ProfileData mProfileData;
 	// ===========================================================
@@ -66,6 +68,8 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mSceneManager = new SceneHelper();
 		Game.mDataHandler = new DataHandler();
 		Game.mPlayerHelper = new PlayerHelper();
+		//Game.mMobHelper = new MobHelper(); NO TEXTURE MANAGER TO INITIALIZE THE POOL ***
+		//Game.setBattleHelper(new BattleHelper());
 		
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInf = wifiMan.getConnectionInfo();
@@ -217,9 +221,20 @@ public class Game extends SimpleBaseGameActivity {
 	public static void setProfileData(ProfileData mProfileData) {
 		Game.mProfileData = mProfileData;
 	}
+	
+	public static BattleHelper getBattleHelper() {
+		return mBattleHelper;
+	}
+
+	public static void setBattleHelper(BattleHelper mBattleHelper) {
+		Game.mBattleHelper = mBattleHelper;
+	}
+	
+	
 	// ===========================================================
 	// Methods
 	// ===========================================================
+
 
 
 

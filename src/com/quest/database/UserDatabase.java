@@ -44,7 +44,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	static final String fPlayerPosition = "Position";
     	static final String fPlayerClass = "Class";
     	static final String fPlayerHeadID = "Head";
-    	//ProfileID (el profile del que lo creo, no creo que esto este bien asi pero sino no se vincular los players de una partida con el profile que los creo)
+    	//ProfileID 
     	
     static final String tInventory = "Inventory";	
 	    static final String fInventoryID = "InventoryID";

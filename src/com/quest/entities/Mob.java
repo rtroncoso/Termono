@@ -3,9 +3,9 @@
  */
 package com.quest.entities;
 
-import java.util.ArrayList;
 import java.util.Random;
 
+import org.andengine.entity.IEntity;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
+import com.quest.scenes.MatchScene;
 
 /**
  * @author raccoon
@@ -32,6 +33,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 	private Random rand;
 	private int mMobFlag;
 	private int[] mDroppedItems,mDropRates;
+	private boolean mGrabbed = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -143,12 +145,26 @@ public class Mob extends BaseEntity implements ITouchArea {
 	}
 	
 	@Override
-	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
-			float pTouchAreaLocalX, float pTouchAreaLocalY) {
-		// TODO Auto-generated method stub
-		//this.mSpellsLayer.add(new Spell(0));
-		this.mModHP=-5;
-		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.mModHP);
+	public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+		switch(pSceneTouchEvent.getAction()) {
+		case TouchEvent.ACTION_DOWN:
+			mGrabbed = true;					
+			break;
+		case TouchEvent.ACTION_UP:
+			if(mGrabbed) {
+				mGrabbed = false;
+				this.mSpellsLayer.add(new Spell(0));
+				this.getAttacked(Game.getPlayerHelper().getPlayerbyIndex(0), 5);
+				Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);
+				if(Game.getServer().equals(null)){
+				Game.getClient().sendAttackMessage((Integer)(this.getUserData()), 0);
+				}else{
+					Log.d("Quest!","ServerMessage");
+				}
+			}
+			break;
+		}
+	
 		return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX,
 				pTouchAreaLocalY);
 	}
@@ -160,7 +176,36 @@ public class Mob extends BaseEntity implements ITouchArea {
 		this.setLevel(Modifiers[4]);
 	};
 	
+	@Override
+	public void onDeathAction(BaseEntity pKillerEntity) {
+		// TODO Auto-generated method stub
+		super.onDeathAction(pKillerEntity);
+		if(Game.getServer().equals(null)){
+		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
+		simular muerte y dejar item
+		}else{
+		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
+		mandar mensaje de que murio(y mostrarlo) y mandar experiencia
+		}
+	}
 
+	@Override
+	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
+		if(decreaseHP(pDamage)){
+			if(!Game.getServer().equals(null)){
+				onDeathAction(pAttackingEntity);	
+			}
+		}
+		Cambiar la barrita de hp
+		Mostrar el ataque 
+	};
+	
+	@Override
+	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
+		Mostrar la animacion de ataque
+		Llamar al battle helper si soy server
+	};
+	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================

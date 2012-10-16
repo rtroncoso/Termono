@@ -209,9 +209,11 @@ public class MapHelper implements IMeasureConstants {
 													
 													// Load it and set new Player's position
 													MapHelper.this.loadMap(String.valueOf(nextMapNumber));
-													Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapX, 
-															(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapY);
-													
+													//Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapX,
+															//(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapY);
+													Game.getPlayerHelper().getPlayerbyIndex(0).setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn() : nextMapX,
+															(nextMapY == 0) ? Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow() : nextMapY);
+													Game.getSceneManager().getGameScene().CreateMob(1);
 												}
 
 												@Override

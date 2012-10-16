@@ -25,6 +25,7 @@ import com.quest.data.ProfileData;
 import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
+import com.quest.network.messages.client.ClientMessageAttackMessage;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
@@ -35,6 +36,7 @@ import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
+import com.quest.network.messages.server.ServerMessageFixedAttackData;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.util.constants.IGameConstants;
@@ -71,6 +73,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER, ServerMessageExistingPlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER, ServerMessageSendPlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, ServerMessageUpdateEntityPosition.class);		
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA, ServerMessageFixedAttackData.class);
 	}
 
 // ===========================================================
@@ -246,6 +249,16 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			}
 		});
 		
+		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE, ClientMessageAttackMessage.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessageAttackMessage clientMessageAttackMessage = (ClientMessageAttackMessage) pClientMessage;
+				Game.getBattleHelper().manageAttack(Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()), clientMessageAttackMessage.getAttackID(), Game.getMobHelper().getMob(clientMessageAttackMessage.getAttackedMobID()));
+			}
+		});
+		
+		
 		return clientConnector;
 	}
 // ===========================================================
@@ -270,6 +283,16 @@ public void sendUpdateEntityPositionMessage(String pPlayerKey, byte pPlayerDirec
 	final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION);
 	serverMessageUpdateEntityPosition.set(pPlayerKey,pPlayerDirection);
 	sendBroadcast(serverMessageUpdateEntityPosition);				
+}
+
+public void sendFixedAttackData(int pMobEntityUserData,int pAttackID,int pDamage,String pPlayerEntityUserData,boolean ismonsterAttacking){
+	final ServerMessageFixedAttackData serverMessageFixedAttackData = (ServerMessageFixedAttackData) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA);
+	serverMessageFixedAttackData.setMobEntityUserData(pMobEntityUserData);
+	serverMessageFixedAttackData.setPlayerEntityUserData(pPlayerEntityUserData);
+	serverMessageFixedAttackData.setDamage(pDamage);
+	serverMessageFixedAttackData.setAttackID(pAttackID);
+	serverMessageFixedAttackData.setMonsterAttacking(ismonsterAttacking);
+	sendBroadcast(serverMessageFixedAttackData);
 }
 // ===========================================================
 // Inner and Anonymous Classes
