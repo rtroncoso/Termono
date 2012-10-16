@@ -22,6 +22,7 @@ import com.quest.helpers.MobHelper;
 import com.quest.helpers.PlayerHelper;
 import com.quest.helpers.SceneHelper;
 import com.quest.helpers.TextHelper;
+import com.quest.helpers.TimerHelper;
 import com.quest.network.QClient;
 import com.quest.network.QServer;
 
@@ -46,6 +47,8 @@ public class Game extends SimpleBaseGameActivity {
 	private static BattleHelper mBattleHelper;
 	private static MatchData mMatchData;
 	private static ProfileData mProfileData;
+	private static TimerHelper mTimerHelper;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -68,6 +71,7 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mSceneManager = new SceneHelper();
 		Game.mDataHandler = new DataHandler();
 		Game.mPlayerHelper = new PlayerHelper();
+		Game.mTimerHelper = new TimerHelper();
 		//Game.mMobHelper = new MobHelper(); NO TEXTURE MANAGER TO INITIALIZE THE POOL ***
 		//Game.setBattleHelper(new BattleHelper());
 		
@@ -228,6 +232,20 @@ public class Game extends SimpleBaseGameActivity {
 
 	public static void setBattleHelper(BattleHelper mBattleHelper) {
 		Game.mBattleHelper = mBattleHelper;
+	}
+
+	/**
+	 * @return the mTimerHelper
+	 */
+	public static TimerHelper getTimerHelper() {
+		return mTimerHelper;
+	}
+
+	/**
+	 * @param mTimerHelper the mTimerHelper to set
+	 */
+	public static void setTimerHelper(TimerHelper mTimerHelper) {
+		Game.mTimerHelper = mTimerHelper;
 	}
 	
 	

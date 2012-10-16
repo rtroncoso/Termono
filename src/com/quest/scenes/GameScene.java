@@ -14,7 +14,7 @@ import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.helpers.AsyncTaskLoader;
 import com.quest.helpers.interfaces.IAsyncCallback;
-import com.quest.timers.Timers;
+import com.quest.timers.Timer;
 
 public class GameScene extends Scene {
 		// ===========================================================
@@ -26,7 +26,7 @@ public class GameScene extends Scene {
 		// ===========================================================
 		private Mob mMob2;
 		private Mob mEnemy;
-		private Timers mTimers;
+		private Timer mTimers;
 		private MenuHud mMenuHud;
 		private HUD mHud;
 		private ControlsHud mControlsHud;
