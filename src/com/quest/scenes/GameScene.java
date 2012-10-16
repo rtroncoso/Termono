@@ -65,15 +65,11 @@ public class GameScene extends Scene {
 			    			GameScene.this.attachChild(GameScene.this.mMapLayer);
 			    			
 			    			// Create the Player and insert in helper
-			    			//Game.getPlayerHelper().addPlayer(new Player(20, 20, "Mage.png", 128, 256, 0, 0, 4, 4), "Player");
-			    			//Game.getPlayerHelper().addPlayer(new Player(20, 20, "Players/Animations/Paladin.png", 128, 256, 0, 0, 4, 4), "Player");
-			    			Game.getPlayerHelper().getPlayerbyIndex(0).setTileAt(20, 20);
-			    			//Enemies
-			    		//	GameScene.this.mEnemy = new Mob("Players/Animations/Paladin.png", 256, 256, 0, 0, 5, 4);
-			    		//	GameScene.this.mMob2 = new Mob("Players/Animations/Archer.png", 256, 256, 0, 0, 5, 4);
-			    		//	GameScene.this.mEnemy.setTileAt(15, 15);
-			    		//	GameScene.this.mMob2.setTileAt(25, 15);
+			    			for(int i = 0;i<Game.getPlayerHelper().getEntities().size();i++){
+			    				Game.getPlayerHelper().getPlayerbyIndex(i).setTileAt(20+(5*i), 20);	
+			    			}
 			    			
+		
 			    			//Timer
 			    		//	GameScene.this.mTimers = new Timers(mEnemy, mMob2);
 			    	//		GameScene.this.mTimers.createMobMovementTimeHandler();
@@ -81,16 +77,18 @@ public class GameScene extends Scene {
 			    			GameScene.this.mHud = new HUD();
 			    			GameScene.this.mStatsHud = new StatsHud();
 			    			GameScene.this.mSpellbarHud = new SpellbarHud(GameScene.this.mHud);
-			    			GameScene.this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
+			    			GameScene.this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getOwnPlayer().getUserID()));
 			    			GameScene.this.mMenuHud = new MenuHud(mHud);
 			    			
 			    			GameScene.this.mHud.setChildScene(GameScene.this.mControlsHud.getDigitalOnScreenControl());
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpellBar());
 			    			
 			    			// Players
-			    			GameScene.this.attachChild(Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
-			    	//		GameScene.this.attachChild(GameScene.this.mEnemy);
-			    	//		GameScene.this.attachChild(GameScene.this.mMob2);
+			    			for(int i = 0;i<Game.getPlayerHelper().getEntities().size();i++){
+			    				GameScene.this.attachChild(Game.getPlayerHelper().getPlayerbyIndex(i));	
+			    			}
+			    			
+
 			    			
 			    			// HUD 
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpellBar());
@@ -99,11 +97,9 @@ public class GameScene extends Scene {
 			    			GameScene.this.mHud.attachChild(GameScene.this.mMenuHud.getMenuSprite());
 			    			
 			    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
-			    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()));
+			    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getPlayer(Game.getPlayerHelper().getOwnPlayer().getUserID()));
 
-			    	//		GameScene.this.registerTouchArea(GameScene.this.mEnemy.getBodySprite());
-			    	//		GameScene.this.registerTouchArea(GameScene.this.mMob2.getBodySprite());
-			    			
+			    	
 			    			GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
 			            }
 
@@ -162,9 +158,10 @@ public class GameScene extends Scene {
 		// ===========================================================
 		// Methods
 		// ===========================================================
-		public void CreateMob(int MOB_FLAG){
+		public void CreateMob(int MOB_FLAG,int tileX,int tileY,int map){
+			if(!Game.getServer().equals(null))Game.getServer().sendSpawnMobMessage(MOB_FLAG, tileX, tileY, map);
 			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
-			tmpMob.setTileAt(Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow());
+			tmpMob.setTileAt(tileX,tileY);
 			GameScene.this.attachChild(tmpMob);
 			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
 			tempInt+=1;
@@ -172,7 +169,7 @@ public class GameScene extends Scene {
 
 		public void CreateMob(int MOB_FLAG,int i){
 			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
-			tmpMob.setTileAt(Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileColumn()+i,Game.getPlayerHelper().getPlayerbyIndex(0).getTMXTileAt().getTileRow());
+			tmpMob.setTileAt(Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn()+i,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow());
 			GameScene.this.attachChild(tmpMob);
 			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
 			tempInt+=1;

@@ -37,8 +37,10 @@ import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
+import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
+import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.util.constants.IGameConstants;
 
@@ -73,9 +75,12 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_CREATE_PLAYER, ServerMessageCreatePlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER, ServerMessageExistingPlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER, ServerMessageSendPlayer.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED, ServerMessageMatchStarted.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, ServerMessageUpdateEntityPosition.class);		
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA, ServerMessageFixedAttackData.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOB_DIED, ServerMessageMobDied.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SPAWN_MOB, ServerMessageSpawnMob.class);
+		
 	}
 
 // ===========================================================
@@ -130,6 +135,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 						//agrego el ProfileID a profileData
 						connectedClientProfileData.setProfileID(Game.getDataHandler().getProfileID(connectedClientProfileData.getUserID()));
 						//levanto un array con las IDs de los personajes del cliente
+						
 						final int[] IDArray = Game.getDataHandler().getPlayerIDifExists(connectedClientProfileData.getProfileID(), clientMessageConnectionRequest.getMatchName());
 						if(IDArray.length>0){
 							//mando mensajes con charas
@@ -157,6 +163,11 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 							}
 							QServer.this.mMessagePool.recycleMessage(serverMessageCreatePlayer);
 						}
+						
+						final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
+						serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getOwnPlayer(), Game.getDataHandler().getInventoryItems(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryAmounts(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(Game.getPlayerHelper().getOwnPlayer().getPlayerID()));
+						
+						sendBroadcast(serverMessageSendPlayer);
 					}else{//No conocia el perfil(ya se agrega cuando se checkea),osea que no tiene chara pido que haga uno
 						//agrego el ProfileID a profileData
 						connectedClientProfileData.setProfileID(Game.getDataHandler().getProfileID(connectedClientProfileData.getUserID()));//agrego el ProfileID a playerData
@@ -280,6 +291,10 @@ public void sendBroadcast(IServerMessage pServerMessage){
 	this.mMessagePool.recycleMessage(pServerMessage);
 }
 
+public void sendMatchStartedMessage(){
+	final ServerMessageMatchStarted serverMessageMatchStarted = (ServerMessageMatchStarted) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED);
+	sendBroadcast(serverMessageMatchStarted);
+}
 
 public void sendUpdateEntityPositionMessage(String pPlayerKey, byte pPlayerDirection){			
 	final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION);
@@ -306,6 +321,15 @@ public void sendMobDiedMessage(int pMobEntityUserData,int pExperience,int pMoney
 	serverMessageMobDied.setDroppedAmount(pDroppedAmount);
 	serverMessageMobDied.setPlayerKey(pPlayerKey);
 	sendBroadcast(serverMessageMobDied);
+}
+
+public void sendSpawnMobMessage(int MOB_FLAG,int tileX,int tileY,int map){
+	final ServerMessageSpawnMob serverMessageSpawnMob = (ServerMessageSpawnMob) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SPAWN_MOB);
+	serverMessageSpawnMob.setMOB_FLAG(MOB_FLAG);
+	serverMessageSpawnMob.setTileX(tileX);
+	serverMessageSpawnMob.setTileY(tileY);
+	serverMessageSpawnMob.setMap(map);
+	sendBroadcast(serverMessageSpawnMob);
 }
 // ===========================================================
 // Inner and Anonymous Classes

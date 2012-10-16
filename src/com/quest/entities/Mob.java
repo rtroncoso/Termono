@@ -158,12 +158,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 		case TouchEvent.ACTION_UP:
 			if(mGrabbed) {
 				mGrabbed = false;
-				Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);
-				if(Game.getServer().equals(null)){
-				Game.getClient().sendAttackMessage((Integer)(this.getUserData()), 0);
-				}else{
-					Log.d("Quest!","ServerMessage");
-				}
+				Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, 1);
 			}
 			break;
 		}
@@ -195,14 +190,18 @@ public class Mob extends BaseEntity implements ITouchArea {
 				onDeathAction(pAttackingEntity);	
 			}
 		}
-		Cambiar la barrita de hp
-		Mostrar el ataque 
+		this.mSpellsLayer.add(new Spell(0));	//Mostrar la animacion de ataque
+		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp 
 	};
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		this.mSpellsLayer.add(new Spell(0));	//Mostrar la animacion de ataque
-		Llamar al battle helper si soy server
+		if(Game.getServer().equals(null)){
+			//muestro el mob atacando
+		}else{
+			//muestro el mob atacando
+			//Mando mensaje de que el mob ataco (el mensaje llama este metodo del lado cliente)
+		}
 	};
 	
 	// ===========================================================

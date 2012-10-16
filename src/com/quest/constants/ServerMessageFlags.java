@@ -14,6 +14,7 @@ public interface ServerMessageFlags {
 	public static final short FLAG_MESSAGE_SERVER_CREATE_PLAYER = 103;
 	public static final short FLAG_MESSAGE_SERVER_EXISTING_PLAYER = 104;
 	public static final short FLAG_MESSAGE_SERVER_SEND_PLAYER = 105;
+	public static final short FLAG_MESSAGE_SERVER_MATCH_STARTED = 106;
 	
 	//Movement
 	public static final short FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION = 120;
@@ -21,5 +22,6 @@ public interface ServerMessageFlags {
 	//Battle
 	public static final short FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA = 130;
 	public static final short FLAG_MESSAGE_SERVER_MOB_DIED = 131;
+	public static final short FLAG_MESSAGE_SERVER_SPAWN_MOB = 132;
 	
 }

@@ -45,13 +45,13 @@ public class BattleHelper implements MobFlags{
 		}
 		Game.getServer().sendFixedAttackData(MobUserData, pAttackID, damage, PlayerUserData, isMobAttacking);
 		
-		displayAttack(pAttackingEntity, pAttackID, damage, pAttackedEntity);
+		displayAttack(pAttackingEntity, pAttackID, damage, pAttackedEntity, isMobAttacking);
 	}
 	
 	
-	public void displayAttack(BaseEntity pAttackingEntity,int pAttackID,int pDamage, BaseEntity pAttackedEntity){//display grafico del attack, llamado por mensaje
+	public void displayAttack(BaseEntity pAttackingEntity,int pAttackID,int pDamage, BaseEntity pAttackedEntity, boolean ismobAttacking){//display grafico del attack, llamado por mensaje
+		if(ismobAttacking)pAttackingEntity.onAttackAction(pAttackedEntity, 1);
 		pAttackedEntity.onAttackedAction(pAttackingEntity, pDamage, pAttackID);
-		pAttackingEntity.onAttackAction(pAttackedEntity, pAttackID);
 	}
 	
 	public void killMob(Mob mob,int pdroppeditem,int pdroppedItemAmount,int pexperience, int pmoney,Player player){
@@ -62,7 +62,7 @@ public class BattleHelper implements MobFlags{
 			Game.getServer().sendMobDiedMessage((Integer)(mob.getUserData()), pexperience, pmoney, pdroppeditem, pdroppedItemAmount,player.getUserData().toString());
 		}
 		//*** playerbyindex, asegurarme de que sea el propio SIEMPRE
-		if(player.getUserID()==Game.getPlayerHelper().getPlayerbyIndex(0).getUserID()){
+		if(player.getUserID()==Game.getPlayerHelper().getOwnPlayer().getUserID()){
 			//muestro graficamente que gane exp y que gano el item
 			//dejar tirado el item?
 		}		

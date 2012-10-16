@@ -8,7 +8,7 @@ import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMes
 
 import com.quest.constants.ServerMessageFlags;
 
-public class ServerMessageCreatePlayer extends ServerMessage implements ServerMessageFlags {
+public class ServerMessageMatchStarted extends ServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -16,16 +16,17 @@ public class ServerMessageCreatePlayer extends ServerMessage implements ServerMe
 	// ===========================================================
 	// Fields
 	// ===========================================================
-
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	@Deprecated
-	public ServerMessageCreatePlayer() {
-		//Mensaje para indicar que tiene que crear un player nue
+	public ServerMessageMatchStarted() {
+
 	}
-	
+
+
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
@@ -36,17 +37,17 @@ public class ServerMessageCreatePlayer extends ServerMessage implements ServerMe
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_SERVER_CREATE_PLAYER;
+		return FLAG_MESSAGE_SERVER_MATCH_STARTED;
 	}
 
 	@Override
-	protected void onReadTransmissionData(DataInputStream pDataInputStream)throws IOException {
-		//dududuuu
+	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
+		
 	}
 
 	@Override
-	protected void onWriteTransmissionData(DataOutputStream pDataOutputStream)throws IOException {
-		//nein
+	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
+		
 	}
 
 	// ===========================================================
@@ -56,4 +57,5 @@ public class ServerMessageCreatePlayer extends ServerMessage implements ServerMe
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
+
 }

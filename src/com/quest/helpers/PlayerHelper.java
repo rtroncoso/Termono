@@ -31,16 +31,22 @@ public class PlayerHelper {
 	}
 	
 	public BaseEntity getPlayer(String pKey) {		
-		for(Player tmpEntity : this.mPlayers) {
+		Player tmpEntity = null;
+		for(int i = 0;i<this.mPlayers.size();i++) {
+			tmpEntity = this.mPlayers.get(i);
 			if(tmpEntity.getUserData().equals(pKey))
 				return tmpEntity;
 		}
 		Log.e("Quest!","PlayerHelper: Search - No Player matches key");
 		return null;
 	}
-	//*** Le mande Player en vez de BaseEntity por las funciones que necesito / (sino tengo que hacer "((Player) Game.getPlayerHelper().getPlayerbyIndex(0)).getUserID())", no se que es mejor.
+	
 	public Player getPlayerbyIndex(int index) {
 		return this.mPlayers.get(index);
+	}
+	
+	public Player getOwnPlayer(){
+		return (Player)(getPlayer(Game.getUserID()));
 	}
 
 	public Player getPlayerbyPlayerID(int pPlayerID){

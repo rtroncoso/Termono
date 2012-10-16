@@ -8,7 +8,7 @@ import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMes
 
 import com.quest.constants.ServerMessageFlags;
 
-public class ServerMessageCreatePlayer extends ServerMessage implements ServerMessageFlags {
+public class ServerMessageSpawnMob extends ServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -16,37 +16,76 @@ public class ServerMessageCreatePlayer extends ServerMessage implements ServerMe
 	// ===========================================================
 	// Fields
 	// ===========================================================
-
+	private int MOB_FLAG;
+	private int tileX,tileY;
+	private int Map;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	@Deprecated
-	public ServerMessageCreatePlayer() {
-		//Mensaje para indicar que tiene que crear un player nue
+	public ServerMessageSpawnMob() {
 	}
 	
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	
+	public int getMOB_FLAG() {
+		return MOB_FLAG;
+	}
+
+	public void setMOB_FLAG(int pMOB_FLAG) {
+		MOB_FLAG = pMOB_FLAG;
+	}
+
+	public int getTileX() {
+		return tileX;
+	}
+
+	public void setTileX(int tileX) {
+		this.tileX = tileX;
+	}
+
+	public int getTileY() {
+		return tileY;
+	}
+
+	public void setTileY(int tileY) {
+		this.tileY = tileY;
+	}
+
+	public int getMap() {
+		return Map;
+	}
+
+	public void setMap(int map) {
+		Map = map;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
+	
+
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_SERVER_CREATE_PLAYER;
+		return FLAG_MESSAGE_SERVER_SPAWN_MOB;
 	}
 
 	@Override
 	protected void onReadTransmissionData(DataInputStream pDataInputStream)throws IOException {
-		//dududuuu
+		this.MOB_FLAG = pDataInputStream.readInt();
+		this.tileX = pDataInputStream.readInt();
+		this.tileY = pDataInputStream.readInt();
+		this.Map = pDataInputStream.readInt();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(DataOutputStream pDataOutputStream)throws IOException {
-		//nein
+		pDataOutputStream.writeInt(this.MOB_FLAG);
+		pDataOutputStream.writeInt(this.tileX);
+		pDataOutputStream.writeInt(this.tileY);
+		pDataOutputStream.writeInt(this.Map);
 	}
 
 	// ===========================================================

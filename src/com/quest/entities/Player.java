@@ -8,7 +8,9 @@ import org.andengine.extension.tmx.TMXTile;
 import android.util.Log;
 
 import com.quest.entities.objects.InventoryItem;
+import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
+import com.quest.helpers.BattleHelper;
 import com.quest.helpers.InventoryItemHelper;
 import com.quest.triggers.Trigger;
 
@@ -117,10 +119,10 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
 		if(Game.getServer().equals(null)){
-		aparecer donde sea
+			//Mostrar que murio el player
 		}else{
-		aparecer donde sea
-		mandar mensaje de que murio y en donde aparece
+			//Mostrar que murio el player
+		    //mandar mensaje de que murio y en donde aparece (el mensaje llama este metodo del lado cliente)
 		}
 	}
 
@@ -131,14 +133,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				onDeathAction(pAttackingEntity);	
 			}
 		}
-		Cambiar la barrita de hp
-		Mostrar el ataque 
+		Log.d("Quest!", "Player: "+this.getUserData()+" hp: "+this.currHP);
+		this.mSpellsLayer.add(new Spell(0));
 	};
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		Mostrar la animacion de ataque
-		Llamar al battle helper si soy server, sino mando mensaje de attack
+		Game.getBattleHelper().startAttack(this, 1, pAttackedEntity);
+		Log.d("Quest!", "Player: "+this.getUserData()+" exp: "+this.mExperience);
 	};
 	
 	

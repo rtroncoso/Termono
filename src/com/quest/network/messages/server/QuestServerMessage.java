@@ -2,6 +2,8 @@ package com.quest.network.messages.server;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
 
+import android.util.Log;
+
 
 	public abstract class QuestServerMessage extends ServerMessage{
 		// ===========================================================
@@ -39,6 +41,7 @@ import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMes
 		
 		public int[] stringArraytoInt(String stringarray){
 			String[] tmpArray;
+			Log.d("Quest!","Stringarray: "+stringarray);
 			tmpArray = stringarray.split(",");
 			int[] intArray = new int[tmpArray.length];
 			for(int i = 0;i<tmpArray.length;i++){

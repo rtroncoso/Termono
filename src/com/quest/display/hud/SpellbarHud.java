@@ -64,7 +64,7 @@ public class SpellbarHud extends HUD implements MobFlags{
 						case TouchEvent.ACTION_DOWN:
 							switch ((Integer)(this.getUserData())) {
 							case 0:
-								Game.getPlayerHelper().getPlayerbyIndex(0).setSpeedFactor(2.0f);
+								Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(2.0f);
 								break;
 							case 1:
 								
@@ -88,10 +88,12 @@ public class SpellbarHud extends HUD implements MobFlags{
 								this.mGrabbed= false;
 								switch ((Integer)(this.getUserData())) {
 								case 0:
-									Game.getPlayerHelper().getPlayerbyIndex(0).setSpeedFactor(1.0f);
+									Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(1.0f);
 									break;
 								case 1:
-									Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT);
+									if(!Game.getServer().equals(null)){
+										Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow(),1);
+									}
 									break;
 								case 2:
 									Game.getSceneManager().getGameScene().DeleteMob(0);//la key no se usa por ahora

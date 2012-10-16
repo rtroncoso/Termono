@@ -509,6 +509,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	int index = myCursor.getColumnIndex(fClassIconTexture);
         	String myAnswer = myCursor.getString(index);
         	myCursor.close();
+        	myDB.close();
         	return myAnswer;
         }
         
@@ -519,6 +520,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	int index = myCursor.getColumnIndex(fClassAnimationTexture);
         	String myAnswer = myCursor.getString(index);
         	myCursor.close();
+        	myDB.close();
         	return myAnswer;
         }
         
@@ -529,6 +531,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	int index = myCursor.getColumnIndex(fClassAnimationRows);
         	int myAnswer = myCursor.getInt(index);
         	myCursor.close();
+        	myDB.close();
         	return myAnswer;
         }
         
@@ -539,6 +542,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	int index = myCursor.getColumnIndex(fClassAnimationCols);
         	int myAnswer = myCursor.getInt(index);
         	myCursor.close();
+        	myDB.close();
         	return myAnswer;
         }
         
@@ -549,6 +553,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	int index = myCursor.getColumnIndex(fClassFrameWidth);
         	int myAnswer = myCursor.getInt(index);
         	myCursor.close();
+        	myDB.close();
         	return myAnswer;
         }
         
@@ -559,6 +564,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	int index = myCursor.getColumnIndex(fClassFrameHeight);
         	int myAnswer = myCursor.getInt(index);
         	myCursor.close();
+        	myDB.close();
         	return myAnswer;
         }
         
@@ -571,6 +577,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
              int index = myCursor.getColumnIndex(fItemName);
              String myAnswer = myCursor.getString(index);
              myCursor.close();
+             myDB.close();
              return myAnswer;
          }         
          
@@ -581,6 +588,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
              int index = myCursor.getColumnIndex(fItemIconTexture);
              String myAnswer = myCursor.getString(index);
              myCursor.close();
+         		myDB.close();
              return myAnswer;
          }         
          
@@ -591,6 +599,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
              int index = myCursor.getColumnIndex(fItemAnimationTexture);
              String myAnswer = myCursor.getString(index);
              myCursor.close();
+         		myDB.close();
              return myAnswer;
          }
          
@@ -601,6 +610,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
              int index = myCursor.getColumnIndex(fItemType);
              int myAnswer = myCursor.getInt(index);
              myCursor.close();
+         	myDB.close();
              return myAnswer;
          }
          
@@ -611,6 +621,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	 int index = myCursor.getColumnIndex(fItemBuyPrice);
         	 int myAnswer = myCursor.getInt(index);
         	 myCursor.close();
+         	myDB.close();
         	 return myAnswer;
          }
          
@@ -621,6 +632,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
         	 int index = myCursor.getColumnIndex(fItemSellPrice);
         	 int myAnswer = myCursor.getInt(index);
         	 myCursor.close();
+         	myDB.close();
         	 return myAnswer;
          }
         
@@ -631,6 +643,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
              int index = myCursor.getColumnIndex(fItemDescription);
              String myAnswer = myCursor.getString(index);
              myCursor.close();
+         	myDB.close();
              return myAnswer;
          }      
          
@@ -641,6 +654,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
              int index = myCursor.getColumnIndex(fItemClass);
              int myAnswer = myCursor.getInt(index);
              myCursor.close();
+         	myDB.close();
              return myAnswer;
          }
          
@@ -658,6 +672,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           	 index = myCursor.getColumnIndex(fItemModifierEndurance);
           	 myAnswer[3]=myCursor.getInt(index);
           	 myCursor.close();
+         	myDB.close();
              return myAnswer;
          }
  
@@ -669,6 +684,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
              boolean stackable = false;
              if(myCursor.getInt(index)==1)stackable=true;
              myCursor.close();
+         	myDB.close();
              return stackable;
          }
          
@@ -681,6 +697,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
          	int index = myCursor.getColumnIndex(fMobIconTexture);
          	String myAnswer = myCursor.getString(index);
          	myCursor.close();
+        	myDB.close();
          	return myAnswer;
          }
          
@@ -701,6 +718,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
          	int index = myCursor.getColumnIndex(fMobAnimationRows);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
+        	myDB.close();
          	return myAnswer;
          }
          
@@ -711,6 +729,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
          	int index = myCursor.getColumnIndex(fMobAnimationCols);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
+        	myDB.close();
          	return myAnswer;
          }
          
@@ -721,6 +740,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
          	int index = myCursor.getColumnIndex(fMobFrameWidth);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
+        	myDB.close();
          	return myAnswer;
          }
          
@@ -731,6 +751,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
          	int index = myCursor.getColumnIndex(fMobFrameHeight);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
+        	myDB.close();
          	return myAnswer;
          }
          
