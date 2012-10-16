@@ -91,7 +91,7 @@ public class SpellbarHud extends HUD implements MobFlags{
 									Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(1.0f);
 									break;
 								case 1:
-									if(!Game.getServer().equals(null)){
+									if(Game.isServer()){
 										Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow(),1);
 									}
 									break;

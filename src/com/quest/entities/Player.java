@@ -42,7 +42,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mEntityType = "Player";
 	}
 	
-	public Player(int pPlayerID,int pClass) {
+	public Player(int pPlayerID,int pClass,String pUserID) {
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
@@ -51,7 +51,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setModifiers(this.getAttributes());
 		this.updateHPMana(Game.getDataHandler().getPlayerCurrentHPMP(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
-		this.mUserID = Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
+		this.mUserID = pUserID;//Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
 		this.mEntityType = "Player";
 	}
@@ -104,7 +104,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				
 				// Performs the move
 				this.moveInDirection(pDirection);
-				if(Game.getServer().equals(null)){
+				if(!Game.isServer()){
 					Game.getClient().sendMovePlayerMessage(this.mUserID, pDirection);
 				}else{
 					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, pDirection);
@@ -118,7 +118,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
-		if(Game.getServer().equals(null)){
+		if(!Game.isServer()){
 			//Mostrar que murio el player
 		}else{
 			//Mostrar que murio el player
@@ -129,7 +129,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
 		if(decreaseHP(pDamage)){
-			if(!Game.getServer().equals(null)){
+			if(Game.isServer()){
 				onDeathAction(pAttackingEntity);	
 			}
 		}

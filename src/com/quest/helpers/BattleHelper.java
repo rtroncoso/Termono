@@ -17,7 +17,7 @@ public class BattleHelper implements MobFlags{
 	
 	
 	public void startAttack(BaseEntity pAttackingEntity,int pAttackID, BaseEntity pAttackedEntity){
-		if(Game.getServer().equals(null)){
+		if(!Game.isServer()){
 			Game.getClient().sendAttackMessage((Integer)(pAttackedEntity.getUserData()), pAttackID);
 		}else{
 			manageAttack(pAttackingEntity, pAttackID, pAttackedEntity);
@@ -55,7 +55,7 @@ public class BattleHelper implements MobFlags{
 	}
 	
 	public void killMob(Mob mob,int pdroppeditem,int pdroppedItemAmount,int pexperience, int pmoney,Player player){
-		if(!Game.getServer().equals(null)){
+		if(Game.isServer()){
 			player.addExperience(pexperience);
 			player.addMoney(pmoney);
 			player.getInventory().addItem(new InventoryItem(pdroppeditem, pdroppedItemAmount, 0));

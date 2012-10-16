@@ -4,18 +4,17 @@
 package com.quest.entities;
 
 import java.util.Random;
+import java.util.Timer;
 
-import org.andengine.entity.IEntity;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.ITouchArea;
-import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 
 import android.util.Log;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
-import com.quest.network.messages.server.ServerMessageMobDied;
-import com.quest.scenes.MatchScene;
 
 /**
  * @author raccoon
@@ -55,89 +54,60 @@ public class Mob extends BaseEntity implements ITouchArea {
 		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mEntityType = "Mob";
+		
+		Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {
+			
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				// TODO Auto-generated method stub
+				Mob.this.doRandomPath();
+			}
+		}), (String) this.getUserData());
 	}
 
 
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void randomPath() 
+	public void doRandomPath() 
 	{		
 		if(!this.isWalking) 
-		{	boolean move = false;
-			float moveToXTile = this.getX();
-			float moveToYTile = this.getY();
-			switch(this.getRandom(1, 10))
+		{	
+			boolean move = false;
+			byte movingDirection = DIRECTION_DEFAULT;
+			switch(this.getRandom(1, 5))
 			{
 			case 1://Arriba
-				 moveToXTile = this.getX();
-				 moveToYTile = this.getY() - 32;
-				 move = true;
+				movingDirection = DIRECTION_NORTH;
+				move = true;
 				break;
 			case 2://Abajo
-				 moveToXTile = this.getX();
-				 moveToYTile = this.getY() + 32;
-				 move = true;
+				movingDirection = DIRECTION_SOUTH;
+				move = true;
 				break;
 			case 3://Derecha
-				 moveToXTile = this.getX() + 32;
-				 moveToYTile = this.getY();
-				 move = true;
+				movingDirection = DIRECTION_EAST;
+				move = true;
 				break;
 			case 4://Izquierda
-				 moveToXTile = this.getX() - 32;
-				 moveToYTile = this.getY();
-				 move = true;
-				break;			
-			case 5://Arriba 2
-				 moveToXTile = this.getX();
-				 moveToYTile = this.getY() - 64;
-				 move = true;
+				movingDirection = DIRECTION_WEST;
+				move = true;
 				break;
-			case 6://Abajo 2
-				 moveToXTile = this.getX();
-				 moveToYTile = this.getY() + 64;
-				 move = true;
-				 break;
-			case 7://Derecha 2
-				 moveToXTile = this.getX() + 64;
-				 moveToYTile = this.getY();
-				 move = true;
-				 break;
-			case 8://Izquierda 2
-				 moveToXTile = this.getX() - 32;
-				 moveToYTile = this.getY();
-				 move = true;
-				 break;
-			case 9:
-				//nada, se queda en el lugar
-				 moveToXTile = this.getX();
-				 moveToYTile = this.getY();
-				 move = false;
-				 break;
-			case 10:
-				//nada, se queda en el lugar
-				 moveToXTile = this.getX();
-				 moveToYTile = this.getY();
-				 move = false;
+			case 5:
+				movingDirection = DIRECTION_DEFAULT;
+				move = false;
 				break;
 			}		
-			if(move == true)
+			if(move == true && movingDirection != DIRECTION_DEFAULT)
 			{
-
-				// Is it a legal position?
-				if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return;
-				
-				// Gets the Tile
-				final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 				
 				// Animate the Character
 				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
 				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
-				//this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
+				this.setAnimationDirection(movingDirection, frameDurations, false);
 				
 				// Perform Move
-				//this.moveToTile(tmxTileTo);
+				this.moveInDirection(movingDirection);
 			}
 		}		
 	}
@@ -186,7 +156,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
 		if(decreaseHP(pDamage)){
-			if(!Game.getServer().equals(null)){
+			if(Game.isServer()){
 				onDeathAction(pAttackingEntity);	
 			}
 		}
@@ -196,7 +166,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		if(Game.getServer().equals(null)){
+		if(!Game.isServer()){
 			//muestro el mob atacando
 		}else{
 			//muestro el mob atacando

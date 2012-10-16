@@ -129,7 +129,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 						Debug.e(e);
 					}
 					QServer.this.mMessagePool.recycleMessage(serverMessageConnectionAcknowledge);
-					
 					//checkeo si tiene conosco el profile y lo agrego si no lo tengo
 					if(Game.getDataHandler().CheckAndAddProfile(connectedClientProfileData.getUserID(),connectedClientProfileData.getUsername())){//Agrega el perfil, checkeo si existe
 						//agrego el ProfileID a profileData
@@ -164,10 +163,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 							QServer.this.mMessagePool.recycleMessage(serverMessageCreatePlayer);
 						}
 						
-						final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
-						serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getOwnPlayer(), Game.getDataHandler().getInventoryItems(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryAmounts(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(Game.getPlayerHelper().getOwnPlayer().getPlayerID()));
-						
-						sendBroadcast(serverMessageSendPlayer);
 					}else{//No conocia el perfil(ya se agrega cuando se checkea),osea que no tiene chara pido que haga uno
 						//agrego el ProfileID a profileData
 						connectedClientProfileData.setProfileID(Game.getDataHandler().getProfileID(connectedClientProfileData.getUserID()));//agrego el ProfileID a playerData
@@ -182,6 +177,14 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 						QServer.this.mMessagePool.recycleMessage(serverMessageCreatePlayer);
 					}
 					
+					final ServerMessageSendPlayer serverMessageSendPlayerown = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
+					serverMessageSendPlayerown.LoadPlayer(Game.getPlayerHelper().getOwnPlayer(), Game.getDataHandler().getInventoryItems(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryAmounts(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(Game.getPlayerHelper().getOwnPlayer().getPlayerID()));
+					try {
+						pClientConnector.sendServerMessage(serverMessageSendPlayerown);
+					} catch (IOException e) {
+						Debug.e(e);
+					}
+					QServer.this.mMessagePool.recycleMessage(serverMessageSendPlayerown);
 				}else{//la contraseña esta mal
 					final ServerMessageConnectionRefuse serverMessageConnectionRefuse = (ServerMessageConnectionRefuse) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_REFUSE);
 					serverMessageConnectionRefuse.setMatchName(clientMessageConnectionRequest.getMatchName());
@@ -206,7 +209,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Game.getDataHandler().setPlayerLevel(1, playerid);
 				Game.getDataHandler().setPlayerCurrentHPMP(playerid, (clientMessagePlayerCreate.getAttributes()[3]*10), (clientMessagePlayerCreate.getAttributes()[1]*10));
 				//Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),connectedClientProfileData.getUserID());//*** poner el userID donde sea que corresponda
-				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),clientMessagePlayerCreate.getUserID());
+				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),clientMessagePlayerCreate.getUserID()));
 				
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(playerid), Game.getDataHandler().getInventoryItems(playerid), Game.getDataHandler().getInventoryAmounts(playerid), Game.getDataHandler().getInventoryEquipStatus(playerid));
@@ -221,7 +224,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageSelectedPlayer clientMessageSelectedPlayer = (ClientMessageSelectedPlayer) pClientMessage;
-				Game.getPlayerHelper().addPlayer(new Player(clientMessageSelectedPlayer.getPlayerID(), Game.getDataHandler().getPlayerClass(clientMessageSelectedPlayer.getPlayerID())),Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(clientMessageSelectedPlayer.getPlayerID())));
+				Game.getPlayerHelper().addPlayer(new Player(clientMessageSelectedPlayer.getPlayerID(), Game.getDataHandler().getPlayerClass(clientMessageSelectedPlayer.getPlayerID()),connectedClientProfileData.getUserID()));
 			
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryItems(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryAmounts(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(clientMessageSelectedPlayer.getPlayerID()));

@@ -634,6 +634,7 @@ public class MatchScene extends Scene {
 		}
 		try {
 			this.mLobbyEntity.attachChild(Game.getTextHelper().NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "MatchScene;OwnIP"));
+			this.mLobbyEntity.attachChild(Game.getTextHelper().NewText(150, 180, "userID: "+Game.getUserID(), "MatchScene;OwnIP"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -706,7 +707,7 @@ public class MatchScene extends Scene {
 								Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
 								Game.getDataHandler().setPlayerLevel(1, playerid);
 								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
-								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
+								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 								
 								if(AVD_DEBUGGING){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
@@ -895,7 +896,7 @@ public class MatchScene extends Scene {
 		                			  pIndex = i;   
 		                		  }
 		                	  }
-		                	 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID)),Game.getDataHandler().getUserID(1));
+		                	 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID),Game.getDataHandler().getUserID(1)));
 			            	 MatchScene.this.clearTouchAreas();
 			            	 if(AVD_DEBUGGING){
 			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), "00:00:00:00:00:00"));
@@ -1640,7 +1641,7 @@ public class MatchScene extends Scene {
 													Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
 													Game.getDataHandler().setPlayerLevel(1, playerid);//***
 													Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
-													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),Game.getDataHandler().getUserID(1));
+													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 													if(AVD_DEBUGGING){//sacar despues
 														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 													}else{

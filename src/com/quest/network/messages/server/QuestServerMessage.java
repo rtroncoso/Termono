@@ -34,18 +34,16 @@ import android.util.Log;
 			for(int i = 0;i<pArray.length;i++){
 				stringarray+=(pArray[i]+",");
 			}
-			stringarray+="]";
-			stringarray.replace(",]","");
+			stringarray+="*";
 			return stringarray;
 		}
 		
 		public int[] stringArraytoInt(String stringarray){
 			String[] tmpArray;
-			Log.d("Quest!","Stringarray: "+stringarray);
 			tmpArray = stringarray.split(",");
-			int[] intArray = new int[tmpArray.length];
+			int[] intArray = new int[tmpArray.length-1];
 			for(int i = 0;i<tmpArray.length;i++){
-				intArray[i] = Integer.parseInt(tmpArray[i]);
+				if(tmpArray[i].equals("*")==false)intArray[i] = Integer.parseInt(tmpArray[i]);
 			}
 			return intArray;
 		}

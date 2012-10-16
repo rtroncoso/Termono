@@ -17,8 +17,8 @@ public class PlayerHelper {
 		this.mPlayers = new ArrayList<Player>();
 	}
 	
-	public void addPlayer(Player pPlayer, String pKey) {
-		pPlayer.setUserData(pKey);
+	public void addPlayer(Player pPlayer) {
+		pPlayer.setUserData(pPlayer.getUserID());
 		this.mPlayers.add(pPlayer);
 	}
 	
@@ -37,7 +37,7 @@ public class PlayerHelper {
 			if(tmpEntity.getUserData().equals(pKey))
 				return tmpEntity;
 		}
-		Log.e("Quest!","PlayerHelper: Search - No Player matches key");
+		Log.e("Quest!","PlayerHelper: Base Search - No Player matches key: "+pKey);
 		return null;
 	}
 	
@@ -54,7 +54,7 @@ public class PlayerHelper {
 			if(tmpEntity.getPlayerID()==pPlayerID)
 				return tmpEntity;
 		}
-		Log.e("Quest!","PlayerHelper: Search - No Player matches ID");
+		Log.e("Quest!","PlayerHelper: IDSearch - No Player matches ID");
 		return null;
 	}
 	/**
