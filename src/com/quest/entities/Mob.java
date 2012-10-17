@@ -4,7 +4,6 @@
 package com.quest.entities;
 
 import java.util.Random;
-import java.util.Timer;
 
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -15,10 +14,7 @@ import android.util.Log;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
-<<<<<<< HEAD
-=======
 import com.quest.timers.Timer;
->>>>>>> branch 'master' of https://github.com/rtroncoso/Termono.git
 
 /**
  * @author raccoon
@@ -106,9 +102,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 			{
 				
 				// Animate the Character
-				long frameDuration = (long) ((1.0f / SPEED_MODIFIER) * 1000) / 4;
-				long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration };
-				this.setAnimationDirection(movingDirection, frameDurations, false);
+				this.setAnimationDirection(movingDirection, false);
 				
 				// Perform Move
 				this.moveInDirection(movingDirection);

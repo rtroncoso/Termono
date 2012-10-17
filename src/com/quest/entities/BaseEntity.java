@@ -40,8 +40,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	private TiledTextureRegion mTiledTextureRegion;
 	private PathModifier mPathModifier;
 	private Path mPath;
-	private int mBodyColumns;
-	private int mBodyRows;
 	
 	protected String mEntityType;
 	protected Spell tmpSpell;
@@ -50,6 +48,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected ArrayList<Spell> mSpellsLayer;
 	protected boolean isWalking;
 	protected float mSpeedFactor;
+	protected int mBodyColumns;
+	protected int mBodyRows;
 	
 	
 	
@@ -98,21 +98,30 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public BaseEntity setAnimationDirection(byte pFacingDirection, long[] pFrameDuration, boolean restartAnimation) {
-		if(restartAnimation && !this.mBodySprite.isAnimationRunning()) return this;
+	public BaseEntity setAnimationDirection(byte pFacingDirection, boolean restartAnimation) {
 		
+		// Check if not already animating
+		if(restartAnimation && !this.mBodySprite.isAnimationRunning()) return this;
+
+		// Calculate frame durations
+		long[] frameDurations = new long[this.mBodyColumns];
+		for(int i = 0; i < this.mBodyColumns; i++) {
+			frameDurations[i] = 50;
+		}
+		
+		// Animate it
 		switch(pFacingDirection) {
 		case DIRECTION_SOUTH:
-			this.mBodySprite.animate(pFrameDuration, 0, (this.mBodyColumns - 1), false);
+			this.mBodySprite.animate(frameDurations, 0, (this.mBodyColumns - 1), false);
 			break;
 		case DIRECTION_NORTH:
-			this.mBodySprite.animate(pFrameDuration, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - 1, false);
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - 1, false);
 			break;	
 		case DIRECTION_EAST:
-			this.mBodySprite.animate(pFrameDuration, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - 1, false);
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - 1, false);
 			break;
 		case DIRECTION_WEST:
-			this.mBodySprite.animate(pFrameDuration, this.mBodyColumns, (this.mBodyColumns * 2) - 1, false);
+			this.mBodySprite.animate(frameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - 1, false);
 			break;	
 		}
 		return this;
@@ -161,9 +170,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 		
 		// Animate the Character
-		long frameDuration = (long) ((SPEED_MODIFIER / this.mSpeedFactor) * 1000) / 5;
-		long[] frameDurations = { frameDuration, frameDuration, frameDuration, frameDuration, frameDuration };
-		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), frameDurations, false);
+		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), false);
 		
 		// Check Tiles
 		Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
