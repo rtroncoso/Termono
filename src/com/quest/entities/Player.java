@@ -139,7 +139,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			}
 		}
 		Log.d("Quest!", "Player: "+this.getUserData()+" hp: "+this.currHP);
-		this.mSpellsLayer.add(new Spell(getSpellattackid()));
+		this.mSpellsLayer.add(new Spell(pAttackID));
 	};
 	
 	@Override

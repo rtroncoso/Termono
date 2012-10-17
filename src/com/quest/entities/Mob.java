@@ -132,6 +132,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 					Game.getMobHelper().clearMobsAlpha();
 					this.getBodySprite().setAlpha(0.70f);
 				}
+				Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
 				
 			}
 			break;
@@ -159,14 +160,13 @@ public class Mob extends BaseEntity implements ITouchArea {
 
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
-		this.mSpellsLayer.add(new Spell(((Player)(pAttackingEntity)).getSpellattackid()));	//Mostrar la animacion de ataque
+		this.mSpellsLayer.add(new Spell(pAttackID));	//Mostrar la animacion de ataque
 		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp 
 		if(decreaseHP(pDamage)){
 			if(Game.isServer()){
 				onDeathAction(pAttackingEntity);	
 			}
 		}
-		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
 	};
 	
 	@Override
