@@ -5,19 +5,18 @@ package com.quest.entities;
 
 import java.util.Random;
 
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.input.touch.TouchEvent;
 
 import android.util.Log;
 
 import com.quest.entities.objects.Spell;
-<<<<<<< HEAD
 import com.quest.game.Game;
 import com.quest.timers.Timer;
-=======
-import com.quest.game.Game;
 
->>>>>>> branch 'master' of https://rtroncoso@github.com/rtroncoso/Termono.git
+
 
 /**
  * @author raccoon
@@ -58,15 +57,15 @@ public class Mob extends BaseEntity implements ITouchArea {
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mEntityType = "Mob";
 	
-		/*
-		Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
-			@Override
-			public void onTimePassed(TimerHandler pTimerHandler) {
-				// TODO Auto-generated method stub
-				Mob.this.doRandomPath();
-			}
-		}), (String) this.getUserData());*/
-		
+		if(Game.isServer()){	
+			Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) {
+					// TODO Auto-generated method stub
+					Mob.this.doRandomPath();
+				}
+			}), (String) this.getUserData());
+		}
 	}
 
 
@@ -110,6 +109,10 @@ public class Mob extends BaseEntity implements ITouchArea {
 				
 				// Perform Move
 				this.moveInDirection(movingDirection);
+				
+				if(Game.isServer()){
+					Game.getServer().sendMessageMoveMob((Integer)(this.getUserData()), movingDirection);
+				}
 			}
 		}		
 	}
@@ -135,10 +138,9 @@ public class Mob extends BaseEntity implements ITouchArea {
 					Game.getMobHelper().clearMobsAlpha();
 					this.getBodySprite().setAlpha(0.70f);
 				}
-<<<<<<< HEAD
-=======
+
 				Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
->>>>>>> branch 'master' of https://rtroncoso@github.com/rtroncoso/Termono.git
+
 				
 			}
 			break;
@@ -166,21 +168,18 @@ public class Mob extends BaseEntity implements ITouchArea {
 
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
-<<<<<<< HEAD
-		this.mSpellsLayer.add(new Spell(((Player)(pAttackingEntity)).getSpellattackid()));	//Mostrar la animacion de ataque
-=======
+
+		
 		this.mSpellsLayer.add(new Spell(pAttackID));	//Mostrar la animacion de ataque
->>>>>>> branch 'master' of https://rtroncoso@github.com/rtroncoso/Termono.git
+
 		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp 
 		if(decreaseHP(pDamage)){
 			if(Game.isServer()){
 				onDeathAction(pAttackingEntity);	
 			}
 		}
-<<<<<<< HEAD
 		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
-=======
->>>>>>> branch 'master' of https://rtroncoso@github.com/rtroncoso/Termono.git
+
 	};
 	
 	@Override

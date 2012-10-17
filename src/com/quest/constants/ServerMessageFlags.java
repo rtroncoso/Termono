@@ -23,5 +23,6 @@ public interface ServerMessageFlags {
 	public static final short FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA = 130;
 	public static final short FLAG_MESSAGE_SERVER_MOB_DIED = 131;
 	public static final short FLAG_MESSAGE_SERVER_SPAWN_MOB = 132;
-	
+	public static final short FLAG_MESSAGE_SERVER_MOVE_MOB = 133;	
 }
+

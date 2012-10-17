@@ -39,6 +39,7 @@ import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
+import com.quest.network.messages.server.ServerMessageMoveMob;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
@@ -80,6 +81,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA, ServerMessageFixedAttackData.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOB_DIED, ServerMessageMobDied.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SPAWN_MOB, ServerMessageSpawnMob.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOVE_MOB, ServerMessageMoveMob.class);
 		
 	}
 
@@ -176,15 +178,16 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 						}
 						QServer.this.mMessagePool.recycleMessage(serverMessageCreatePlayer);
 					}
-					
-					final ServerMessageSendPlayer serverMessageSendPlayerown = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
-					serverMessageSendPlayerown.LoadPlayer(Game.getPlayerHelper().getOwnPlayer(), Game.getDataHandler().getInventoryItems(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryAmounts(Game.getPlayerHelper().getOwnPlayer().getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(Game.getPlayerHelper().getOwnPlayer().getPlayerID()));
-					try {
-						pClientConnector.sendServerMessage(serverMessageSendPlayerown);
-					} catch (IOException e) {
-						Debug.e(e);
-					}
+					for(int i = 0;i<Game.getPlayerHelper().getEntities().size();i++){
+						final ServerMessageSendPlayer serverMessageSendPlayerown = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
+						serverMessageSendPlayerown.LoadPlayer(Game.getPlayerHelper().getPlayerbyIndex(i), Game.getDataHandler().getInventoryItems(Game.getPlayerHelper().getPlayerbyIndex(i).getPlayerID()), Game.getDataHandler().getInventoryAmounts(Game.getPlayerHelper().getPlayerbyIndex(i).getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(Game.getPlayerHelper().getPlayerbyIndex(i).getPlayerID()));
+						try {
+							pClientConnector.sendServerMessage(serverMessageSendPlayerown);
+						} catch (IOException e) {
+							Debug.e(e);
+						}
 					QServer.this.mMessagePool.recycleMessage(serverMessageSendPlayerown);
+					}
 				}else{//la contraseña esta mal
 					final ServerMessageConnectionRefuse serverMessageConnectionRefuse = (ServerMessageConnectionRefuse) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_CONNECTION_REFUSE);
 					serverMessageConnectionRefuse.setMatchName(clientMessageConnectionRequest.getMatchName());
@@ -333,6 +336,12 @@ public void sendSpawnMobMessage(int MOB_FLAG,int tileX,int tileY,int map){
 	serverMessageSpawnMob.setTileY(tileY);
 	serverMessageSpawnMob.setMap(map);
 	sendBroadcast(serverMessageSpawnMob);
+}
+
+public void sendMessageMoveMob(int pMobKey, byte pDirection){
+	final ServerMessageMoveMob serverMessageMoveMob = (ServerMessageMoveMob) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MOVE_MOB);
+	serverMessageMoveMob.set(pMobKey, pDirection);
+	sendBroadcast(serverMessageMoveMob);
 }
 // ===========================================================
 // Inner and Anonymous Classes

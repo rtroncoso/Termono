@@ -31,6 +31,7 @@ import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
+import com.quest.network.messages.server.ServerMessageMoveMob;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
@@ -145,6 +146,15 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) pServerMessage;
 					//mover los players con esos datos
 					Game.getPlayerHelper().getPlayer(serverMessageUpdateEntityPosition.getPlayerKey()).moveInDirection(serverMessageUpdateEntityPosition.getPlayerDirection());
+				}
+			});
+			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_MOVE_MOB, ServerMessageMoveMob.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageMoveMob serverMessageMoveMob = (ServerMessageMoveMob) pServerMessage;
+					//mover los mobs con esos datos
+					Game.getMobHelper().getMob(serverMessageMoveMob.getMobKey()).moveInDirection(serverMessageMoveMob.getMobDirection());
 				}
 			});
 		

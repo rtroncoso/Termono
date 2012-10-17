@@ -463,7 +463,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fMobID, 1);
           		cv.put(fMobIconTexture,"Mobs/Icons/Bat1.png");
           		cv.put(fMobAnimationTexture,"Mobs/Animations/Bat1.png");
-          		cv.put(fMobAnimationCols,6);
+          		cv.put(fMobAnimationCols,4);
           		cv.put(fMobAnimationRows,4);
           		cv.put(fMobFrameWidth,256);
           		cv.put(fMobFrameHeight,256);
