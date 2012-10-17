@@ -471,6 +471,20 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		setCurrMana(this.mModIntelligence*10);
 	}
 	
+	/**
+	 * @return the mSpellsLayer
+	 */
+	public ArrayList<Spell> getSpellsLayer() {
+		return mSpellsLayer;
+	}
+
+	/**
+	 * @param mSpellsLayer the mSpellsLayer to set
+	 */
+	public void setSpellsLayer(ArrayList<Spell> mSpellsLayer) {
+		this.mSpellsLayer = mSpellsLayer;
+	}
+
 	public boolean decreaseHP(int damage){
 		setCurrHP(currHP-damage);
 		if(currHP<1)return true;
@@ -514,7 +528,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		Iterator<Spell> it = this.mSpellsLayer.iterator();
 		while(it.hasNext()) {
 			final Spell mSpellToDraw = it.next();
-			if(!mSpellToDraw.getSpellAnimation().isAnimationRunning()) this.attachChild(mSpellToDraw.getSpellAnimation());
+			if(!mSpellToDraw.getSpellAnimation().isAnimationRunning()){
+			this.attachChild(mSpellToDraw.getSpellAnimation());
 			
 			mSpellToDraw.getSpellAnimation().animate(100, false, new IAnimationListener() {
 				
@@ -542,11 +557,15 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 				@Override
 				public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
 					// TODO Auto-generated method stub
-					BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
-				}
+					BaseEntity.this.detachChild(mSpellToDraw.getSpellAnimation());
+					}
+			
 			});
-		}
 		
+			BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
+		  }
+			
+		}
 		super.onManagedUpdate(pSecondsElapsed);
 	}
 

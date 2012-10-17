@@ -21,7 +21,8 @@ public class MobHelper implements MobFlags{
 		}
 		
 		private void initMobPool() {
-			this.mMobPool.registerMob(FLAG_MOB_BAT);		
+			this.mMobPool.registerMob(FLAG_MOB_BAT);
+			this.mMobPool.registerMob(FLAG_MOB_BEE);
 		}
 		
 		public Mob getMob(int pMobID){
@@ -47,6 +48,20 @@ public class MobHelper implements MobFlags{
 		public void deleteMobs(int pMobID){
 			this.mMobPool.recycleMobs(this.mMobs);
 			this.mMobs.clear();
+		}
+		
+		
+		public void clearMobsAlpha(){
+			for(int i = 0;i<this.mMobs.size();i++){
+				mMobs.get(i).getBodySprite().setAlpha(1f);
+			}
+		}
+
+		/**
+		 * @return the mMobs
+		 */
+		public ArrayList<Mob> getMobs() {
+			return mMobs;
 		}
 
 

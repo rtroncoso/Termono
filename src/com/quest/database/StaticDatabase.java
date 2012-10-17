@@ -60,6 +60,10 @@ public class StaticDatabase extends SQLiteOpenHelper {
         static final String fSpellName = "Name";
         static final String fSpellIconTexture = "IconTexture";
         static final String fSpellAnimationTexture = "AnimationTexture";
+        static final String fSpellAnimationRows = "AnimationRows";
+        static final String fSpellAnimationCols = "AnimationCols";
+        static final String fSpellFrameWidth = "FrameWidth";
+        static final String fSpellFrameHeight = "FrameHeight";
         static final String fSpellType = "Type";
         static final String fSpellDescription = "Description";
         static final String fSpellLevels = "Levels";
@@ -174,13 +178,17 @@ public class StaticDatabase extends SQLiteOpenHelper {
                         fSpellName+" TEXT , "+
                         fSpellIconTexture+" TEXT , "+
                         fSpellAnimationTexture+" TEXT , "+
+                        fSpellAnimationRows+" INTEGER ,"+
+                        fSpellAnimationCols+" INTEGER ,"+
+                        fSpellFrameWidth+" INTEGER ,"+
+                        fSpellFrameHeight+" INTEGER ,"+
                         fSpellType+" INTEGER , "+
                         fSpellDescription+" TEXT , "+
                         fSpellLevels+" INTEGER, "+
                         fSpellClass+" INTEGER, "+
                         fSpellEffectID+" INTEGER)"
                         );
-                
+
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellEffect+" ("+
                 		fEffectSpellID+" INTEGER PRIMARY KEY , "+
@@ -413,7 +421,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fClassID, 2);
           		cv.put(fClassIconTexture,"Players/Icons/Mage.png");
           		cv.put(fClassAnimationTexture,"Players/Animations/Mage.png");
-          		cv.put(fClassAnimationCols,4);
+          		cv.put(fClassAnimationCols,5);
           		cv.put(fClassAnimationRows,4);
           		cv.put(fClassFrameHeight,256);
           		cv.put(fClassFrameWidth,256);
@@ -468,7 +476,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fMobPower,1);
           		cv.put(fMobIntelligence,0);
           		cv.put(fMobDefense,2);
-          		cv.put(fMobEndurance,3);
+          		cv.put(fMobEndurance,10);
           		cv.put(fMobLevel,1);
           		db.insert(tMobAttributes, null, cv); 
           		
@@ -483,12 +491,69 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		
           		cv.clear();
 	            
+          		
+          		//Bee
+         		cv.put(fMobID, 2);
+          		cv.put(fMobIconTexture,"Mobs/Icons/Bee1.png");
+          		cv.put(fMobAnimationTexture,"Mobs/Animations/Bee1.png");
+          		cv.put(fMobAnimationCols,4);
+          		cv.put(fMobAnimationRows,4);
+          		cv.put(fMobFrameWidth,256);
+          		cv.put(fMobFrameHeight,256);
+          		cv.put(fMobType,1);
+          		cv.put(fMobDescription,"A common bee.");
+          		db.insert(tMob, null, cv); 
+          		
+          		cv.clear();
+          		cv.put(fMobID, 2);
+          		cv.put(fMobPower,4);
+          		cv.put(fMobIntelligence,0);
+          		cv.put(fMobDefense,6);
+          		cv.put(fMobEndurance,20);
+          		cv.put(fMobLevel,5);
+          		db.insert(tMobAttributes, null, cv); 
+          		
+          		cv.clear();
+          		cv.put(fMobDropExperience,20);
+          		cv.put(fMobDropMoney,6);
+          		cv.put(fMobDropItemIDs,"1,2,3,4,5");
+          		cv.put(fMobDropRates,"12,10,8,6,4");
+          		cv.put(fMobDropAmounts,"1,1,1,1,1");
+          		cv.put(fMobID, 2);
+          		db.insert(tMobDroptable, null, cv); 
+          		
+          		cv.clear();
+          		
+                cv.put(fSpellID,1);
+                cv.put(fSpellIconTexture, "Spells/Icons/Spell1.png");
+                cv.put(fSpellAnimationTexture,"Spells/Animations/Spell1.png");
+                cv.put(fSpellAnimationRows, 1);
+                cv.put(fSpellAnimationCols, 5);
+                cv.put(fSpellFrameWidth, 960);
+                cv.put(fSpellFrameHeight, 192);
+                db.insert(tSpells, null, cv); 
+                cv.clear();
                 
-      
-          		
-          		
-
-	            
+                cv.put(fSpellID,2);
+                cv.put(fSpellIconTexture, "Spells/Icons/Spell2.png");
+                cv.put(fSpellAnimationTexture,"Spells/Animations/Spell2.png");
+                cv.put(fSpellAnimationRows, 1);
+                cv.put(fSpellAnimationCols, 5);
+                cv.put(fSpellFrameWidth, 960);
+                cv.put(fSpellFrameHeight, 192);
+                db.insert(tSpells, null, cv); 
+                cv.clear();
+                
+                cv.put(fSpellID,3);
+                cv.put(fSpellIconTexture, "Spells/Icons/Spell3.png");
+                cv.put(fSpellAnimationTexture,"Spells/Animations/Spell3.png");
+                cv.put(fSpellAnimationRows, 3);
+                cv.put(fSpellAnimationCols, 5);
+                cv.put(fSpellFrameWidth, 960);
+                cv.put(fSpellFrameHeight, 576);
+                db.insert(tSpells, null, cv); 
+                cv.clear();
+                
         }
         
  
@@ -826,4 +891,75 @@ public class StaticDatabase extends SQLiteOpenHelper {
 			this.close();
 			return myAnswer;
           }
+         
+         
+         
+         //Spells
+         public String getSpellIconTexture(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellIconTexture +" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fSpellIconTexture);
+         	String myAnswer = myCursor.getString(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
+         
+         public String getSpellAnimationTexture(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellAnimationTexture +" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fSpellAnimationTexture);
+         	String myAnswer = myCursor.getString(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getSpellAnimationRows(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellAnimationRows+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fSpellAnimationRows);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getSpellAnimationCols(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellAnimationCols+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fSpellAnimationCols);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getSpellFrameWidth(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellFrameWidth+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fSpellFrameWidth);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getSpellFrameHeight(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellFrameHeight+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fSpellFrameHeight);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
+         
+         
 }

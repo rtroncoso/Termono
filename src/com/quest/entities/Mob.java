@@ -4,10 +4,7 @@
 package com.quest.entities;
 
 import java.util.Random;
-import java.util.Timer;
 
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.input.touch.TouchEvent;
 
@@ -15,10 +12,7 @@ import android.util.Log;
 
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
-<<<<<<< HEAD
-=======
-import com.quest.timers.Timer;
->>>>>>> branch 'master' of https://github.com/rtroncoso/Termono.git
+
 
 /**
  * @author raccoon
@@ -58,15 +52,16 @@ public class Mob extends BaseEntity implements ITouchArea {
 		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mEntityType = "Mob";
-		
-		Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {
-			
+	
+		/*
+		Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
 				// TODO Auto-generated method stub
 				Mob.this.doRandomPath();
 			}
-		}), (String) this.getUserData());
+		}), (String) this.getUserData());*/
+		
 	}
 
 
@@ -132,7 +127,12 @@ public class Mob extends BaseEntity implements ITouchArea {
 		case TouchEvent.ACTION_UP:
 			if(mGrabbed) {
 				mGrabbed = false;
-				Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, 1);
+				Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, Game.getPlayerHelper().getOwnPlayer().getSpellattackid());
+				if(this.getAlpha()==1f){
+					Game.getMobHelper().clearMobsAlpha();
+					this.getBodySprite().setAlpha(0.70f);
+				}
+				
 			}
 			break;
 		}
@@ -159,13 +159,14 @@ public class Mob extends BaseEntity implements ITouchArea {
 
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
+		this.mSpellsLayer.add(new Spell(((Player)(pAttackingEntity)).getSpellattackid()));	//Mostrar la animacion de ataque
+		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp 
 		if(decreaseHP(pDamage)){
 			if(Game.isServer()){
 				onDeathAction(pAttackingEntity);	
 			}
 		}
-		this.mSpellsLayer.add(new Spell(0));	//Mostrar la animacion de ataque
-		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp 
+		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
 	};
 	
 	@Override

@@ -32,6 +32,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private String mUserID;
 	private InventoryItemHelper mInventory;
 	private int mMoney,mExperience;
+	
+	
+	private int spellattackid;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -53,6 +56,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
 		this.mUserID = pUserID;//Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
+		setSpellattackid(1);
 		this.mEntityType = "Player";
 	}
 	
@@ -68,6 +72,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setModifiers(pAttributes);
 		this.updateHPMana(currHPMP);
 		this.setInventory(LoadInventory(pItemIDs, pAmounts, isEquipped));
+		setSpellattackid(1);
 		this.mEntityType = "Player";
 	}
 
@@ -134,12 +139,12 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			}
 		}
 		Log.d("Quest!", "Player: "+this.getUserData()+" hp: "+this.currHP);
-		this.mSpellsLayer.add(new Spell(0));
+		this.mSpellsLayer.add(new Spell(getSpellattackid()));
 	};
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		Game.getBattleHelper().startAttack(this, 1, pAttackedEntity);
+		Game.getBattleHelper().startAttack(this, pAttackID, pAttackedEntity);
 		Log.d("Quest!", "Player: "+this.getUserData()+" exp: "+this.mExperience);
 	};
 	
@@ -218,6 +223,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
+
+	public int getSpellattackid() {
+		return spellattackid;
+	}
+
+	public void setSpellattackid(int spellattackid) {
+		this.spellattackid = spellattackid;
+	}
 	
 
 }

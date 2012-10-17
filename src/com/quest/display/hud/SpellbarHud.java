@@ -12,7 +12,9 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.quest.constants.MobFlags;
 import com.quest.database.DataHandler;
+import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
+import com.quest.scenes.GameScene;
 
 public class SpellbarHud extends HUD implements MobFlags{
 
@@ -22,7 +24,7 @@ public class SpellbarHud extends HUD implements MobFlags{
 	// ===========================================================
 	private final int CANT_SPELLS = 5;
 	private final Sprite[] mSpells = new Sprite[CANT_SPELLS];
-	
+	private final Spell[] mSpellIcons = new Spell[5];
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -30,9 +32,6 @@ public class SpellbarHud extends HUD implements MobFlags{
 	private BitmapTextureAtlas mSpellTextureAtlas;
 	private ITextureRegion mSpellTextureRegion;
 	private SpriteBatch mSpellBatch;
-	private Sprite mConsultarSprite;
-	private Sprite mSetearSprite;
-	private DataHandler mDataHandler;
 	
 	// ===========================================================
 	// Constructors
@@ -41,7 +40,6 @@ public class SpellbarHud extends HUD implements MobFlags{
 
 		// Init local Variables
 		this.mHud = pHud;
-		this.mDataHandler = new DataHandler();
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
@@ -54,7 +52,10 @@ public class SpellbarHud extends HUD implements MobFlags{
 				
 		for(int i = 0; i < this.mSpells.length; i++) {
 			float posX = 190.0f;
-			Game.getInstance();
+			Game.getInstance();//****??
+			
+			
+			
 			this.mSpells[i] = new Sprite(posX + (90 * i), Game.getSceneManager().getDisplay().getCameraHeight() - 71, this.mSpellTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 
 				private Boolean mGrabbed = false;
@@ -64,7 +65,7 @@ public class SpellbarHud extends HUD implements MobFlags{
 						case TouchEvent.ACTION_DOWN:
 							switch ((Integer)(this.getUserData())) {
 							case 0:
-								Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(2.0f);
+								//Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(2.0f);
 								break;
 							case 1:
 								
@@ -88,23 +89,23 @@ public class SpellbarHud extends HUD implements MobFlags{
 								this.mGrabbed= false;
 								switch ((Integer)(this.getUserData())) {
 								case 0:
-									Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(1.0f);
+									//Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(1.0f);
 									break;
 								case 1:
-									if(Game.isServer()){
+									/*if(Game.isServer()){
 										Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow(),1);
-									}
+									}*/
 									break;
 								case 2:
-									Game.getSceneManager().getGameScene().DeleteMob(0);//la key no se usa por ahora
+									//Game.getSceneManager().getGameScene().DeleteMob(0);//la key no se usa por ahora
 									break;
 								case 3:
-									for(int i =0;i<10;i++){
-										Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,i);
-									}
+									//if(Game.isServer()){
+									//	Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow(),1);
+									//}
 									break;
 								case 4:
-									Game.getSceneManager().getGameScene().DeleteMobs(0);
+									//Game.getSceneManager().getGameScene().DeleteMobs(0);
 									break;
 								}
 							}
@@ -114,10 +115,17 @@ public class SpellbarHud extends HUD implements MobFlags{
 				}
 			};
 			
-			this.mHud.registerTouchArea(this.mSpells[i]);
 			this.mSpells[i].setAlpha(0.6f);
 			this.mSpells[i].setUserData(i);
-			this.mSpells[i].setScale(2.0f); 
+			this.mSpells[i].setScale(2.0f);
+			
+			if(i>0 && i<4){
+			mSpellIcons[i] = new Spell(i);
+			mSpellIcons[i].getSpellIcon().setPosition(this.mSpells[i-1].getX()+6, this.mSpells[i].getY()+6);
+			}
+			if(i==4||i==3){
+				this.mHud.registerTouchArea(this.mSpells[i]);
+			}
 		}
 		
 		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, Game.getInstance().getVertexBufferObjectManager()) {
@@ -132,6 +140,7 @@ public class SpellbarHud extends HUD implements MobFlags{
 		};
 		
 	}
+	
 
 
     
@@ -154,6 +163,9 @@ public class SpellbarHud extends HUD implements MobFlags{
 		this.mSpellBatch = pSpellBatch;
 	}
 
+	public Sprite getSpells(int spell){
+		return mSpellIcons[spell].getSpellIcon();
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
