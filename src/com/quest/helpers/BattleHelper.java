@@ -32,6 +32,7 @@ public class BattleHelper implements MobFlags{
 		damage = (pAttackingEntity.getModPower()*4)-(pAttackedEntity.getModDefense()*3);
 		if(damage<1)damage=0;
 		damage+=pAttackingEntity.getModPower();
+		damage = damage*pAttackID;
 	//	Multiplicar damage por el bonus del ataque y esou
 		
 		if(pAttackingEntity.getEntityType().equals("Mob")){
@@ -50,7 +51,7 @@ public class BattleHelper implements MobFlags{
 	
 	
 	public void displayAttack(BaseEntity pAttackingEntity,int pAttackID,int pDamage, BaseEntity pAttackedEntity, boolean ismobAttacking){//display grafico del attack, llamado por mensaje
-		if(ismobAttacking)pAttackingEntity.onAttackAction(pAttackedEntity, 1);
+		if(ismobAttacking)pAttackingEntity.onAttackAction(pAttackedEntity, pAttackID);
 		pAttackedEntity.onAttackedAction(pAttackingEntity, pDamage, pAttackID);
 	}
 	

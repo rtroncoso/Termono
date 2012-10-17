@@ -38,7 +38,6 @@ public class MobPool{
 					@Override
 					protected Mob onAllocatePoolItem() {
 						try {
-							//return pMob;
 							return new Mob(MOB_FLAG);
 						} catch (final Throwable t) {
 							Debug.e(t);
@@ -48,8 +47,13 @@ public class MobPool{
 					
 					@Override
 					protected void onHandleRecycleItem(final Mob pMob) {
+						for(int i = 0;i<pMob.getSpellsLayer().size();i++){
+							pMob.getSpellsLayer().get(i).getSpellAnimation().reset();
+						}
+						pMob.getSpellsLayer().clear();
 						pMob.setPosition(-10, -10);
 						pMob.setVisible(false);
+						pMob.setAlpha(1f);
 						pMob.setUserData(null);
 						pMob.setIgnoreUpdate(true);
 						pMob.detachSelf();

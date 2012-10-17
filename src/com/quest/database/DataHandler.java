@@ -383,4 +383,30 @@ public class DataHandler {
 		return intArray;
 	}
 	
+	
+	//Spells
+	public String getSpellIconTexture(int pSpell){
+        return this.mStaticDB.getSpellIconTexture(pSpell);
+    }
+	
+	public String getSpellAnimationTexture(int pSpell){
+        return this.mStaticDB.getSpellAnimationTexture(pSpell);
+    }
+	
+	public int getSpellAnimationRows(int pSpell){
+        return this.mStaticDB.getSpellAnimationRows(pSpell);
+    }
+	
+	public int getSpellAnimationCols(int pSpell){
+        return this.mStaticDB.getSpellAnimationCols(pSpell);
+    }
+	
+	public int getSpellFrameWidth(int pSpell){
+        return this.mStaticDB.getSpellFrameWidth(pSpell);
+    }
+	
+	public int getSpellFrameHeight(int pSpell){
+        return this.mStaticDB.getSpellFrameHeight(pSpell);
+    }
+	
 }

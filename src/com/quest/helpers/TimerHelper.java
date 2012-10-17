@@ -1,6 +1,5 @@
 package com.quest.helpers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.util.Log;
@@ -55,8 +54,8 @@ public class TimerHelper {
 	// ===========================================================
 
 	
-	public void addTimer(Timer pTimer, String pKey) {
-		this.mTimersList.put(pTimer, pKey);
+	public void addTimer(Timer timer, String pKey) {
+		this.mTimersList.put(timer, pKey);
 	}
 	
 	public void deleteTimer(String pKey) {
@@ -75,6 +74,7 @@ public class TimerHelper {
 		Log.e("Quest!", "PlayerHelper: Search - No Timer matches key");
 		return null;
 	}
+
 
 	// ===========================================================
 	// Inner and Anonymous Classes
