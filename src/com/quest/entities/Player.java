@@ -107,12 +107,12 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				if(pValueX == 1.0f) pDirection = DIRECTION_EAST;
 				if(pValueX == -1.0f) pDirection = DIRECTION_WEST;
 				
-				// Performs the move
-				this.moveInDirection(pDirection);
+				// Sends the move
 				if(!Game.isServer()){
 					Game.getClient().sendMovePlayerMessage(this.mUserID, pDirection);
 				}else{
 					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, pDirection);
+					this.moveInDirection(pDirection);
 				}
 			}
 		}

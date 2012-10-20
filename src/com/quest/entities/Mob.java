@@ -107,11 +107,10 @@ public class Mob extends BaseEntity implements ITouchArea {
 				// Animate the Character
 				this.setAnimationDirection(movingDirection, false);
 				
-				// Perform Move
-				this.moveInDirection(movingDirection);
-				
+				// Sends Move
 				if(Game.isServer()){
 					Game.getServer().sendMessageMoveMob((Integer)(this.getUserData()), movingDirection);
+					this.moveInDirection(movingDirection);
 				}
 			}
 		}		
