@@ -165,13 +165,21 @@ public class DataHandler {
 		return this.mUserDB.getPlayerHPMP(pPlayerID);
 	}
 	
+	public int getPlayerExperience(int pPlayerID){
+		return this.mUserDB.getPlayerExperience(pPlayerID);
+	}
+	
+	public void setPlayerExperience(int pPlayerID, int pExperience){
+		this.mUserDB.setPlayerExperience(pPlayerID, pExperience);
+	}
+	
 	//Attributes
-	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
-		this.mUserDB.setAttributes(pPower, pIntelligence, pDefense, pEndurance, pPlayerID);
+	public void setPlayerAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pUnassigned,int pPlayerID){
+		this.mUserDB.setAttributes(pPower, pIntelligence, pDefense, pEndurance, pUnassigned, pPlayerID);
 	}
 	
 	public void setPlayerAttributes(int[] pAttributes,int pPlayerID){
-		this.mUserDB.setAttributes(pAttributes[0], pAttributes[1], pAttributes[2], pAttributes[3], pPlayerID);
+		this.mUserDB.setAttributes(pAttributes[0], pAttributes[1], pAttributes[2], pAttributes[3],pAttributes[4], pPlayerID);
 	}
 	
 	public int[] getPlayerAttributes(int pPlayerID){
@@ -212,7 +220,13 @@ public class DataHandler {
 			this.mUserDB.addInventoryItems(pPlayerID,pItemID,pAmount,pEquipped);
 	}
 	
+	public int getPlayerMoney(int pPlayerID){
+		return this.mUserDB.getPlayerMoney(pPlayerID);
+	}
 	
+	public void setPlayerMoney(int pPlayerID, int pMoney){
+		this.mUserDB.setPlayerMoney(pPlayerID, pMoney);
+	}
 	
 	
 /*

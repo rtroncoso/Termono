@@ -13,6 +13,7 @@ public class MobHelper implements GameFlags{
 		private ArrayList<Mob> mMobs;
 		private final MobPool mMobPool = new MobPool();
 		private Mob nullMob;
+		private int MobCount = 0;
 		
 		public MobHelper() {
 			this.mMobs = new ArrayList<Mob>();

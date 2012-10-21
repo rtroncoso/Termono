@@ -39,7 +39,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	static final String fPlayerID = "PlayerID";
     	static final String fPlayerLevel = "Level";
     	static final String fPlayerExperience = "Experience";
-	    static final String fPlayerCurrentHP = "HP";
+    	static final String fPlayerCurrentHP = "HP";
 	    static final String fPlayerCurrentMana = "Mana";
     	static final String fPlayerPosition = "Position";
     	static final String fPlayerClass = "Class";
@@ -48,6 +48,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	
     static final String tInventory = "Inventory";	
 	    static final String fInventoryID = "InventoryID";
+	    static final String fInventoryMoney = "Money";
 	    //PlayerID
 	    
     static final String tInventoryItem = "InventoryItem";
@@ -63,6 +64,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    static final String fAttributesIntelligence = "Intelligence";
 	    static final String fAttributesPower = "Power";
 	    static final String fAttributesDefense = "Defense";
+	    static final String fAttributesUnassigned = "Unassigned";
 	    //PlayerID
 	    
 	    
@@ -120,8 +122,8 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fPlayerID+" INTEGER PRIMARY KEY , "+
     			fProfileID +" INTEGER , "+
     			fPlayerLevel+" INTEGER , "+
-    			fPlayerCurrentHP+" INTEGER ,"+
-    			fPlayerCurrentMana+" INTEGER ,"+
+    			fPlayerCurrentHP+" INTEGER , "+
+    			fPlayerCurrentMana+" INTEGER , "+
     			fPlayerExperience+" INTEGER , "+
     			fPlayerPosition +" INTEGER , "+
     			fPlayerHeadID +" INTEGER , "+
@@ -130,6 +132,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	  
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
     			fInventoryID+" INTEGER PRIMARY KEY , "+
+    			fInventoryMoney+" INTEGER , "+
     			fPlayerID+" INTEGER)"
                 );     	
     	
@@ -147,6 +150,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fAttributesIntelligence+" INTEGER ,"+
     			fAttributesPower+" INTEGER ,"+
     			fAttributesDefense+" INTEGER ,"+
+    			fAttributesUnassigned+" INTEGER ,"+
 	     		fPlayerID+" INTEGER)"
 	             );	        
         
@@ -165,8 +169,11 @@ public class UserDatabase extends SQLiteOpenHelper {
 				 
 		 
 		 ContentValues cv = new ContentValues();
-		 cv.put(fUserID,Game.getUserID());
-		// cv.put(fUserID,"00:00:00:00:00:00");
+		 if(Game.isAVD_DEBUGGING()){
+			 cv.put(fUserID,"00:00:00:00:00:00");
+		 }else {
+			 cv.put(fUserID,Game.getUserID());
+		 }
 		 cv.put(fUsername, "***Player***");
 		 db.insert(tProfile, null, cv);	                    
          cv.clear();
@@ -518,21 +525,40 @@ public class UserDatabase extends SQLiteOpenHelper {
    		this.close();
    		return myAnswer;
     }
+    
+    public int getPlayerExperience(int pPlayerID){
+   	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerExperience+" from "+tPlayer+" where "+fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+   	myCursor.moveToFirst();
+   	int index = myCursor.getColumnIndex(fPlayerExperience);
+		int myAnswer = myCursor.getInt(index);
+		myCursor.close();
+		this.close();
+		return myAnswer;
+     }
+    
+    public void setPlayerExperience(int pPlayerID, int pExperience){
+    	ContentValues cv = new ContentValues();
+    	cv.put(fPlayerExperience,pExperience);
+        this.getWritableDatabase().update(tPlayer, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+    }
 
     //Atributtes
-    public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance,int pPlayerID){
+    public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance, int pUnassigned,int pPlayerID){
   	  ContentValues cv = new ContentValues();
       cv.put(fAttributesPower,pPower);
       cv.put(fAttributesIntelligence, pIntelligence);
       cv.put(fAttributesDefense, pDefense);
       cv.put(fAttributesEndurance, pEndurance);
+      cv.put(fAttributesUnassigned, pUnassigned);
       this.getWritableDatabase().update(tAttributes, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
       cv.clear();
       this.close();
     }
     
     public int[] getAttributes(int pPlayerID){
-      int[] myAnswer = new int[4];
+      int[] myAnswer = new int[5];
 	  Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tAttributes+".* from "+tPlayer+","+tAttributes+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tAttributes+"."+fPlayerID, new String[]{String.valueOf(pPlayerID)});
  	  myCursor.moveToFirst();
   	  int index = myCursor.getColumnIndex(fAttributesPower);
@@ -543,6 +569,8 @@ public class UserDatabase extends SQLiteOpenHelper {
   	  myAnswer[2]=myCursor.getInt(index);
   	  index = myCursor.getColumnIndex(fAttributesEndurance);
   	  myAnswer[3]=myCursor.getInt(index);
+  	  index = myCursor.getColumnIndex(fAttributesUnassigned);
+	  myAnswer[4]=myCursor.getInt(index);
   	  myCursor.close();
   	  this.close();
   	  return myAnswer;
@@ -636,6 +664,22 @@ public class UserDatabase extends SQLiteOpenHelper {
       this.close();
     }
     
-        
+    public int getPlayerMoney(int pPlayerID){
+   		Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fInventoryMoney+" from "+tInventory+" where "+fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+  	 	myCursor.moveToFirst();
+   		int index = myCursor.getColumnIndex(fInventoryMoney);
+   		int myAnswer = myCursor.getInt(index);
+   		myCursor.close();
+		this.close();
+		return myAnswer;
+     }   
+    
+    public void setPlayerMoney(int pPlayerID, int pMoney){
+    	ContentValues cv = new ContentValues();
+    	cv.put(fInventoryMoney,pMoney);
+        this.getWritableDatabase().update(tInventory, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+    }
 
 }

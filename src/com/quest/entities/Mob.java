@@ -34,7 +34,6 @@ public class Mob extends BaseEntity implements ITouchArea {
 	// ===========================================================
 	private Random rand;
 	private int mMobFlag;
-	private int mMoney,mExperience;
 	private int[] mDroppedItems,mDropRates,mDropAmounts;
 	private boolean mGrabbed = false;
 	// ===========================================================
@@ -200,22 +199,6 @@ public class Mob extends BaseEntity implements ITouchArea {
 	// ===========================================================
 	public int getMobFlag(){
 		return this.mMobFlag;
-	}
-	
-	public int getMoney() {
-		return mMoney;
-	}
-
-	public void setMoney(int mMoney) {
-		this.mMoney = mMoney;
-	}
-
-	public int getExperience() {
-		return mExperience;
-	}
-
-	public void setExperience(int mExperience) {
-		this.mExperience = mExperience;
 	}
 	// ===========================================================
 	// Inner and Anonymous Classes

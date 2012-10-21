@@ -23,6 +23,7 @@ import com.quest.entities.Player;
 	//	private int tileX,tileY;  *** Implementar cuando este
 		private String mAttributes,currHPMP; 
 		private String mItemID, mAmounts,isEquipped;
+		private int mMoney,mExperience;
 				
 		// ===========================================================
 		// Constructors
@@ -42,6 +43,8 @@ import com.quest.entities.Player;
 			this.setUserID(pPlayer.getUserID());
 			this.setPlayerID(pPlayer.getPlayerID());
 			this.setLevel(pPlayer.getLevel());
+			this.setMoney(pPlayer.getMoney());
+			this.setExperience(pPlayer.getExperience());
 			this.setPlayerClass(pPlayer.getPlayerClass());
 			this.setHeadID(pPlayer.getHeadID());
 			//this.setTileX();
@@ -141,6 +144,22 @@ import com.quest.entities.Player;
 			this.isEquipped = intArraytoString(isEquipped);
 		}
 		
+		public int getMoney() {
+			return mMoney;
+		}
+
+		public void setMoney(int mMoney) {
+			this.mMoney = mMoney;
+		}
+
+		public int getExperience() {
+			return mExperience;
+		}
+
+		public void setExperience(int mExperience) {
+			this.mExperience = mExperience;
+		}
+
 		public int getHeadID() {
 			return mHeadID;
 		}
@@ -164,6 +183,8 @@ import com.quest.entities.Player;
 			this.mLevel = pDataInputStream.readInt();
 			this.mClass = pDataInputStream.readInt();
 			this.mHeadID = pDataInputStream.readInt();
+			this.mMoney = pDataInputStream.readInt();
+			this.mExperience = pDataInputStream.readInt();
 	//		this.tileX = pDataInputStream.readInt();
 	//		this.tileY = pDataInputStream.readInt();
 			this.mAttributes = pDataInputStream.readUTF();
@@ -180,6 +201,8 @@ import com.quest.entities.Player;
 			pDataOutputStream.writeInt(this.mLevel);
 			pDataOutputStream.writeInt(this.mClass);
 			pDataOutputStream.writeInt(this.mHeadID);
+			pDataOutputStream.writeInt(this.mMoney);
+			pDataOutputStream.writeInt(this.mExperience);
 		//	pDataOutputStream.writeInt(this.tileX);
 	//		pDataOutputStream.writeInt(this.tileY);
 			pDataOutputStream.writeUTF(this.mAttributes);

@@ -18,7 +18,7 @@ public class Spell extends Entity implements IMeasureConstants {
 	private BitmapTextureAtlas mSpellTextureAtlas;
 	private TiledTextureRegion mSpellTextureRegion;
 	private AnimatedSprite mSpellAnimation;
-	private boolean isBeingAnimated;
+	private int animationStatus = 0;
 	private Sprite mSpellIcon;
 	private ITextureRegion mIconTextureRegion;
 	
@@ -84,22 +84,15 @@ public class Spell extends Entity implements IMeasureConstants {
 	public void setSpellAnimation(AnimatedSprite pSpellAnimation) {
 		this.mSpellAnimation = pSpellAnimation;
 	}
-
-	/**
-	 * @return the isBeingAnimated
-	 */
-	public boolean isBeingAnimated() {
-		return isBeingAnimated;
-	}
-
-	/**
-	 * @param isBeingAnimated the isBeingAnimated to set
-	 */
-	public void setBeingAnimated(boolean isBeingAnimated) {
-		this.isBeingAnimated = isBeingAnimated;
-	}
-
 	
+	public int getAnimationStatus() {
+		return animationStatus;
+	}
+
+	public void setAnimationStatus(int animationStatus) {
+		this.animationStatus = animationStatus;
+	}
+
 	public int getFrameWidth() {
 		return FrameWidth;
 	}

@@ -212,6 +212,8 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Game.getDataHandler().setPlayerAttributes(clientMessagePlayerCreate.getAttributes(), playerid);
 				Game.getDataHandler().setPlayerLevel(1, playerid);
 				Game.getDataHandler().setPlayerCurrentHPMP(playerid, (clientMessagePlayerCreate.getAttributes()[3]*10), (clientMessagePlayerCreate.getAttributes()[1]*10));
+				Game.getDataHandler().setPlayerExperience(playerid, 0);
+				Game.getDataHandler().setPlayerMoney(playerid, 0);
 				//Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),connectedClientProfileData.getUserID());//*** poner el userID donde sea que corresponda
 				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),clientMessagePlayerCreate.getUserID()));
 				

@@ -55,7 +55,6 @@ public class MatchScene extends Scene implements GameFlags {
 	// ===========================================================
 	private static final int SERVER_PORT = 4444;
 	private static final int DISCOVERY_PORT = 4445;
-	protected static final boolean AVD_DEBUGGING = false;//CAMBIAR A FALSE PARA EL CELU***
 	final byte[] wifiIPv4Address = WifiUtils.getWifiIPv4AddressRaw(Game.getInstance());
 	
 	// ===========================================================
@@ -705,12 +704,14 @@ public class MatchScene extends Scene implements GameFlags {
 								int matchid = Game.getDataHandler().AddNewMatch(1,MatchScene.this.mMatchNameInput.getText(),MatchScene.this.mMatchPasswordInput.getText(),false);
 								Game.setMatchData(new MatchData(matchid, MatchScene.this.mMatchNameInput.getText()));
 								int playerid = Game.getDataHandler().AddNewPlayer(matchid,1, mChoices[0],mChoices[1]);//*** headID
-								Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
+								Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5],0, playerid);
 								Game.getDataHandler().setPlayerLevel(1, playerid);
 								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
+								Game.getDataHandler().setPlayerExperience(playerid, 0);
+								Game.getDataHandler().setPlayerMoney(playerid, 0);
 								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 								
-								if(AVD_DEBUGGING){//sacar despues
+								if(Game.isAVD_DEBUGGING()){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 								}else{
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
@@ -898,7 +899,7 @@ public class MatchScene extends Scene implements GameFlags {
 		                	  }
 		                	 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID),Game.getDataHandler().getUserID(1)));
 			            	 MatchScene.this.clearTouchAreas();
-			            	 if(AVD_DEBUGGING){
+			            	 if(Game.isAVD_DEBUGGING()){
 			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), "00:00:00:00:00:00"));
 			            	 }else{
 			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), Game.getUserID()));
@@ -1014,7 +1015,7 @@ public class MatchScene extends Scene implements GameFlags {
 		                  if(MatchScene.this.mSelectedCharacterID!=0){
 			            	  //Mandar mensaje de con el char elegido chara
 		                	  Game.getClient().sendSelectedPlayer(mSelectedCharacterID);
-				            	 if(AVD_DEBUGGING){
+				            	 if(Game.isAVD_DEBUGGING()){
 				            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(true,null,null));
 				            	 }else{
 				            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(true,null,null));
@@ -1044,7 +1045,7 @@ public class MatchScene extends Scene implements GameFlags {
 		int[] IDArray = Game.getDataHandler().getPlayerIDifExists(1, Game.getMatchData().getMatchName());
 		if(IDArray.length>0){	
 			for(int i = 0;i<IDArray.length;i++){
-				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(Game.getDataHandler().getPlayerClass(IDArray[i])),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]),Game.getDataHandler().getPlayerAttributes(IDArray[i]),Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mCharacterList.size())));
+				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(Game.getDataHandler().getPlayerClass(IDArray[i])),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]),Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mCharacterList.size())));
 			}
 		}else{//No tiene chara pido que se haga uno
 			this.mCharactersEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,0, 0, "You have no characters in this match, please create one.", "MatchScene;NoCharasAlert"));
@@ -1628,11 +1629,13 @@ public class MatchScene extends Scene implements GameFlags {
 													MatchScene.this.clearTouchAreas();
 													
 													int playerid = Game.getDataHandler().AddNewPlayer(Game.getMatchData().getMatchID(),1, mChoices[0], mChoices[1]);//*** headID
-													Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5], playerid);
+													Game.getDataHandler().setPlayerAttributes(mChoices[2],mChoices[3],mChoices[4],mChoices[5],0, playerid);
 													Game.getDataHandler().setPlayerLevel(1, playerid);//***
 													Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
+													Game.getDataHandler().setPlayerExperience(playerid, 0);
+													Game.getDataHandler().setPlayerMoney(playerid, 0);
 													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
-													if(AVD_DEBUGGING){//sacar despues
+													if(Game.isAVD_DEBUGGING()){//sacar despues
 														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 													}else{
 														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
@@ -1644,7 +1647,7 @@ public class MatchScene extends Scene implements GameFlags {
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
 													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
 													}
-													if(AVD_DEBUGGING){//sacar despues
+													if(Game.isAVD_DEBUGGING()){//sacar despues
 														SwitchEntity(LoadLobbyEntity(true, null,null));
 													}else{
 														SwitchEntity(LoadLobbyEntity(true, null,null));
@@ -2006,7 +2009,7 @@ public class MatchScene extends Scene implements GameFlags {
 		initClient(pIP);
 		Game.setProfileData(new ProfileData(pUserID,Game.getDataHandler().getUsername(pUserID)));
 		Game.setMatchData(new MatchData(pMatchName,pPassword));//****Cambiar a client
-		if(AVD_DEBUGGING){
+		if(Game.isAVD_DEBUGGING()){
 			Game.getClient().sendConnectionRequestMessage("11:11:11:11:11:11","Username2",pPassword,pMatchName);
 		}else{
 			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(1),pPassword,pMatchName);

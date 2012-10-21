@@ -31,8 +31,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private int mPositionID;
 	private String mUserID;
 	private InventoryItemHelper mInventory;
-	private int mMoney,mExperience;
-	
+	private int mUnassignedPoints;
 	
 	private int spellattackid;
 	// ===========================================================
@@ -41,7 +40,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	public Player(int pInitialPosX, int pInitialPosY, String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
 		// TODO Auto-generated constructor stub
 		super(pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);
-
+		
 		this.mEntityType = "Player";
 	}
 	
@@ -50,23 +49,29 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
 		this.setLevel(Game.getDataHandler().getPlayerLevel(this.mPlayerID));
-		this.setAttributes(Game.getDataHandler().getPlayerAttributes(this.mPlayerID));
+		int[] tAttributes =Game.getDataHandler().getPlayerAttributes(this.mPlayerID); 
+		this.setAttributes(tAttributes);
+		this.setUnassignedPoints(tAttributes[4]);
 		this.setModifiers(this.getAttributes());
 		this.updateHPMana(Game.getDataHandler().getPlayerCurrentHPMP(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
 		this.mUserID = pUserID;//Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
+		this.mExperience = Game.getDataHandler().getPlayerExperience(this.mPlayerID);
+		this.mMoney = Game.getDataHandler().getPlayerMoney(this.mPlayerID);
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
 		setSpellattackid(1);
 		this.mEntityType = "Player";
 	}
 	
 	
-	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
+	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int pExperience, int pMoney,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
 		this.mLevel = pLevel;
 		this.mHeadID = pHeadID;
+		this.mExperience = pExperience;
+		this.mMoney = pMoney;
 		this.mUserID = pUserID;
 		this.setAttributes(pAttributes);
 		this.setModifiers(pAttributes);
@@ -223,6 +228,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
+
+	public int getUnassignedPoints() {
+		return mUnassignedPoints;
+	}
+
+	public void setUnassignedPoints(int mUnassignedPoints) {
+		this.mUnassignedPoints = mUnassignedPoints;
+	}
 
 	public int getSpellattackid() {
 		return spellattackid;

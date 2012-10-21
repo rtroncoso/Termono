@@ -18,7 +18,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	// ===========================================================
 	private String mUserID;
 	private int mClass;
-	private int mEndurance,mIntelligence,mPower,mDefense;
+	private int mEndurance,mIntelligence,mPower,mDefense,mUnassigned;
 	private int mHeadID;
 	
 	// ===========================================================
@@ -36,7 +36,8 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 		this.mPower = pChoices[2];
 		this.mIntelligence = pChoices[3];
 		this.mDefense = pChoices[4];
-		this.mEndurance = pChoices[5];	
+		this.mEndurance = pChoices[5];		
+		this.mUnassigned = pChoices[6];
 	}
 	// ===========================================================
 	// Getter & Setter
@@ -49,6 +50,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 		this.mIntelligence = pChoices[3];
 		this.mDefense = pChoices[4];
 		this.mEndurance = pChoices[5];		
+		this.mUnassigned = pChoices[6];
 	}
 	
 	public int getPlayerClass(){
@@ -61,6 +63,14 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	
 	public int getPlayerHeadID(){
 		return this.mHeadID;
+	}
+
+	public int getUnassigned() {
+		return mUnassigned;
+	}
+
+	public void setUnassigned(int mUnassigned) {
+		this.mUnassigned = mUnassigned;
 	}
 
 	public String getUserID() {
@@ -88,6 +98,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 		 this.mIntelligence = pDataInputStream.readInt();
 		 this.mDefense = pDataInputStream.readInt();
 		 this.mEndurance = pDataInputStream.readInt();
+		 this.mUnassigned = pDataInputStream.readInt();
 		 this.mHeadID = pDataInputStream.readInt();
 	}
 
@@ -99,6 +110,7 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 		pDataOutputStream.writeInt(this.mIntelligence);
 		pDataOutputStream.writeInt(this.mDefense);
 		pDataOutputStream.writeInt(this.mEndurance);
+		pDataOutputStream.writeInt(this.mUnassigned);
 		pDataOutputStream.writeInt(this.mHeadID);		
 	}
 

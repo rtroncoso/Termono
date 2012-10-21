@@ -35,7 +35,6 @@ public class CharacterObject extends Entity implements GameFlags{
 	private Text mText;
 	private TimerHandler tempTimer;
 	private int mClass;
-	private int[] mAttributes;
 	private int mLevel;
 	//slide
 	private float lastX;
@@ -57,7 +56,7 @@ public class CharacterObject extends Entity implements GameFlags{
 		createObject(pTextureRegion, pScene, pEntity, pLevel, pKey);
 	}
 	
-	public CharacterObject(ITextureRegion pTextureRegion,final int pX,int pY,MatchScene pScene,final Entity pEntity,int pCharacterID,int pLevel,int[] pAttributes,int pClass,String pKey) {
+	public CharacterObject(ITextureRegion pTextureRegion,final int pX,int pY,MatchScene pScene,final Entity pEntity,int pCharacterID,int pLevel,int pClass,String pKey) {
 		int Y = pY;
 		this.mClass = pClass;
 		if(mClass==3)Y = pY+8;//Ajusto diferencia de tamaño con el orco
@@ -65,7 +64,6 @@ public class CharacterObject extends Entity implements GameFlags{
 		this.mMatchScene = pScene;
 		this.mCharacterID = pCharacterID;
 		this.mEntity = pEntity;
-		this.mAttributes = pAttributes;
 		this.mLevel = pLevel;
 		createObject(pTextureRegion, pScene, pEntity, pLevel, pKey);
 	}
@@ -136,10 +134,6 @@ public class CharacterObject extends Entity implements GameFlags{
 
 	public int getCharacterClass(){
 		return this.mClass;
-	}
-
-	public int[] getCharacterAttributes(){
-		return this.mAttributes;
 	}
 	
 	public int getCharacterLevel(){

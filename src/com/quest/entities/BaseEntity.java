@@ -58,7 +58,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected int currHP,currMana;
 	protected int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana = 0;
 	protected int mEndurance,mIntelligence,mPower,mDefense;
-	
+	protected int mMoney,mExperience;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -478,6 +478,22 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		setCurrMana(this.mModIntelligence*10);
 	}
 	
+	public int getMoney() {
+		return mMoney;
+	}
+
+	public void setMoney(int mMoney) {
+		this.mMoney = mMoney;
+	}
+
+	public int getExperience() {
+		return mExperience;
+	}
+
+	public void setExperience(int mExperience) {
+		this.mExperience = mExperience;
+	}
+	
 	/**
 	 * @return the mSpellsLayer
 	 */
@@ -532,48 +548,105 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected void onManagedUpdate(float pSecondsElapsed) {
 		// TODO Auto-generated method stub
 		
-		Iterator<Spell> it = this.mSpellsLayer.iterator();
-		while(it.hasNext()) {
-			final Spell mSpellToDraw = it.next();
-			if(!mSpellToDraw.getSpellAnimation().isAnimationRunning()){
-			this.attachChild(mSpellToDraw.getSpellAnimation());
-			
-			mSpellToDraw.getSpellAnimation().animate(100, false, new IAnimationListener() {
-				
-				@Override
-				public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
-						int pInitialLoopCount) {
-					// TODO Auto-generated method stub
+		while(this.mSpellsLayer.size()>0){
+			Log.d("Quest!","en el while "+mSpellsLayer.size());
+			for(int i = this.mSpellsLayer.size()-1;i>=0; i--){
+				final Spell mSpellToDraw = this.mSpellsLayer.get(i);
+				Log.d("Quest!","en el for "+i+"  "+mSpellToDraw.getAnimationStatus());
+				switch (mSpellToDraw.getAnimationStatus()) {
+				case 0:
+					mSpellToDraw.setAnimationStatus(1);
+					this.attachChild(mSpellToDraw.getSpellAnimation());					
+					mSpellToDraw.getSpellAnimation().animate(100,false,new IAnimationListener() {
+						
+						@Override
+						public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
+								int pInitialLoopCount) {
+							mSpellToDraw.setAnimationStatus(1);			
+							Log.d("Quest!","Animation started");
+						}
+						
+						@Override
+						public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
+								int pRemainingLoopCount, int pInitialLoopCount) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
+								int pOldFrameIndex, int pNewFrameIndex) {
+							// TODO Auto-generated method stub
+							Log.d("Quest!","frame");
+							
+						}
+						
+						@Override
+						public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+							mSpellToDraw.setAnimationStatus(2);
+							BaseEntity.this.detachChild(mSpellToDraw.getSpellAnimation());
+							Log.d("Quest!","Animation ended");
+							//BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
+							}
 					
+					});
+					break;
+				case 1:
+					Log.d("Quest!","entro al 1");
+					mSpellToDraw.setAnimationStatus(2);
+					break;
+				case 2:
+					Log.d("Quest!","removed");
+					this.mSpellsLayer.remove(i);
+					break;
 				}
-				
-				@Override
-				public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
-						int pRemainingLoopCount, int pInitialLoopCount) {
-					// TODO Auto-generated method stub
+			/*	if(this.mSpellsLayer.get(i).getAnimationStatus()==0){
+					final Spell mSpellToDraw = this.mSpellsLayer.get(i);
+					mSpellToDraw.setAnimationStatus(1);
+					this.attachChild(mSpellToDraw.getSpellAnimation());
+					mSpellToDraw.getSpellAnimation().animate(100,false,new IAnimationListener() {
+						
+						@Override
+						public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
+								int pInitialLoopCount) {
+							mSpellToDraw.setAnimationStatus(1);			
+							Log.d("Quest!","Animation started");
+						}
+						
+						@Override
+						public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
+								int pRemainingLoopCount, int pInitialLoopCount) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
+								int pOldFrameIndex, int pNewFrameIndex) {
+							// TODO Auto-generated method stub
+							Log.d("Quest!","frame");
+							
+						}
+						
+						@Override
+						public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+							mSpellToDraw.setAnimationStatus(2);
+							BaseEntity.this.detachChild(mSpellToDraw.getSpellAnimation());
+							Log.d("Quest!","Animation ended");
+							//BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
+							}
 					
-				}
-				
-				@Override
-				public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
-						int pOldFrameIndex, int pNewFrameIndex) {
-					// TODO Auto-generated method stub
+					});
 					
-				}
-				
-				@Override
-				public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
-					// TODO Auto-generated method stub
-					BaseEntity.this.detachChild(mSpellToDraw.getSpellAnimation());
-					BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
-					}
+				}else if(this.mSpellsLayer.get(i).getAnimationStatus()==2){
+					this.mSpellsLayer.remove(i);
+				}*/
+			}
 			
-			});
-		
 			
-		  }
 			
 		}
+		
 		super.onManagedUpdate(pSecondsElapsed);
 	}
 

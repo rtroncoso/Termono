@@ -79,7 +79,7 @@ public class GameScene extends Scene implements GameFlags{
 				    				@Override
 				    				public void onTimePassed(TimerHandler pTimerHandler) {
 				    					// TODO Auto-generated method stub
-				    					if(Game.getMobHelper().getMobs().size()<40){
+				    					if(Game.getMobHelper().getMobs().size()<10){
 				    						if(Game.getMobHelper().getMobs().size()%2==0){
 				    							Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn()+getRandom(-10, 10),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow()+getRandom(-10, 10),1);
 				    						}else{

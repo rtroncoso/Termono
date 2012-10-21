@@ -30,7 +30,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	
+	private static boolean AVD_DEBUGGING = true;
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -253,7 +253,11 @@ public class Game extends SimpleBaseGameActivity {
 	public static boolean isServer(){
 		return isServer;
 	}
-	
+
+	public static boolean isAVD_DEBUGGING() {
+		return AVD_DEBUGGING;
+	}
+
 	// ===========================================================
 	// Methods
 	// ===========================================================
