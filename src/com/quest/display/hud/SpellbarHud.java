@@ -11,10 +11,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.quest.constants.GameFlags;
-import com.quest.database.DataHandler;
-import com.quest.entities.objects.Spell;
+import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
-import com.quest.scenes.GameScene;
 
 public class SpellbarHud extends HUD implements GameFlags{
 
@@ -24,7 +22,7 @@ public class SpellbarHud extends HUD implements GameFlags{
 	// ===========================================================
 	private final int CANT_SPELLS = 5;
 	private final Sprite[] mSpells = new Sprite[CANT_SPELLS];
-	private final Spell[] mSpellIcons = new Spell[5];
+	private final Attack[] mSpellIcons = new Attack[5];
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -120,8 +118,8 @@ public class SpellbarHud extends HUD implements GameFlags{
 			this.mSpells[i].setScale(2.0f);
 			
 			if(i>0 && i<4){
-			mSpellIcons[i] = new Spell(i);
-			mSpellIcons[i].getSpellIcon().setPosition(this.mSpells[i-1].getX()+6, this.mSpells[i].getY()+6);
+			mSpellIcons[i] = new Attack(i);
+			mSpellIcons[i].getAttackIcon().setPosition(this.mSpells[i-1].getX()+6, this.mSpells[i].getY()+6);
 			}
 			if(i==4||i==3){
 				this.mHud.registerTouchArea(this.mSpells[i]);
@@ -164,7 +162,7 @@ public class SpellbarHud extends HUD implements GameFlags{
 	}
 
 	public Sprite getSpells(int spell){
-		return mSpellIcons[spell].getSpellIcon();
+		return mSpellIcons[spell].getAttackIcon();
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces

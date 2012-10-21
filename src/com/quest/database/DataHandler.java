@@ -398,29 +398,32 @@ public class DataHandler {
 	}
 	
 	
-	//Spells
-	public String getSpellIconTexture(int pSpell){
-        return this.mStaticDB.getSpellIconTexture(pSpell);
+	//Attacks
+	public String getAttackIconTexture(int pAttack){
+        return this.mStaticDB.getAttackIconTexture(pAttack);
     }
 	
-	public String getSpellAnimationTexture(int pSpell){
-        return this.mStaticDB.getSpellAnimationTexture(pSpell);
+	public String getAttackAnimationTexture(int pAttack){
+        return this.mStaticDB.getAttackAnimationTexture(pAttack);
     }
 	
-	public int getSpellAnimationRows(int pSpell){
-        return this.mStaticDB.getSpellAnimationRows(pSpell);
+	public int getAttackAnimationRows(int pAttack){
+        return this.mStaticDB.getAttackAnimationRows(pAttack);
     }
 	
-	public int getSpellAnimationCols(int pSpell){
-        return this.mStaticDB.getSpellAnimationCols(pSpell);
+	public int getAttackAnimationCols(int pAttack){
+        return this.mStaticDB.getAttackAnimationCols(pAttack);
     }
 	
-	public int getSpellFrameWidth(int pSpell){
-        return this.mStaticDB.getSpellFrameWidth(pSpell);
+	public int getAttackFrameWidth(int pAttack){
+        return this.mStaticDB.getAttackFrameWidth(pAttack);
     }
 	
-	public int getSpellFrameHeight(int pSpell){
-        return this.mStaticDB.getSpellFrameHeight(pSpell);
+	public int getAttackFrameHeight(int pAttack){
+        return this.mStaticDB.getAttackFrameHeight(pAttack);
     }
 	
+	public int getAttackType(int pAttack){
+        return this.mStaticDB.getAttackType(pAttack);
+    }
 }

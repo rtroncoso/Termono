@@ -1,7 +1,6 @@
 package com.quest.entities;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
@@ -21,12 +20,12 @@ import org.andengine.util.modifier.ease.EaseLinear;
 import android.util.Log;
 
 import com.quest.entities.interfaces.IEntityCallbacks;
-import com.quest.entities.objects.Spell;
+import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.IBaseEntityActions;
+import com.quest.triggers.Trigger;
 import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
-import com.quest.triggers.Trigger;
 
 public class BaseEntity extends Entity implements IMeasureConstants, IGameConstants, ITouchArea, IEntityCallbacks,IBaseEntityActions {
 	// ===========================================================
@@ -42,10 +41,10 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	private Path mPath;
 	
 	protected String mEntityType;
-	protected Spell tmpSpell;
+	protected Attack tmpAttack;
 	protected AnimatedSprite mBodySprite;
 	protected TMXTile mTMXTileAt;
-	protected ArrayList<Spell> mSpellsLayer;
+	protected ArrayList<Attack> mAttackLayer;
 	protected boolean isWalking;
 	protected float mSpeedFactor;
 	protected int mBodyColumns;
@@ -92,7 +91,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		};
 		this.attachChild(this.mBodySprite);
 		this.mBodySprite.setCullingEnabled(true);
-		this.mSpellsLayer = new ArrayList<Spell>();
+		this.mAttackLayer = new ArrayList<Attack>();
 	}
 
 	// ===========================================================
@@ -495,17 +494,17 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 	
 	/**
-	 * @return the mSpellsLayer
+	 * @return the mAttackLayer
 	 */
-	public ArrayList<Spell> getSpellsLayer() {
-		return mSpellsLayer;
+	public ArrayList<Attack> getAttackLayer() {
+		return mAttackLayer;
 	}
 
 	/**
-	 * @param mSpellsLayer the mSpellsLayer to set
+	 * @param mAttackLayer the mAttacksLayer to set
 	 */
-	public void setSpellsLayer(ArrayList<Spell> mSpellsLayer) {
-		this.mSpellsLayer = mSpellsLayer;
+	public void setAttackLayer(ArrayList<Attack> mAttacksLayer) {
+		this.mAttackLayer = mAttacksLayer;
 	}
 
 	public boolean decreaseHP(int damage){
@@ -548,21 +547,21 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected void onManagedUpdate(float pSecondsElapsed) {
 		// TODO Auto-generated method stub
 		
-		while(this.mSpellsLayer.size()>0){
-			Log.d("Quest!","en el while "+mSpellsLayer.size());
-			for(int i = this.mSpellsLayer.size()-1;i>=0; i--){
-				final Spell mSpellToDraw = this.mSpellsLayer.get(i);
-				Log.d("Quest!","en el for "+i+"  "+mSpellToDraw.getAnimationStatus());
-				switch (mSpellToDraw.getAnimationStatus()) {
+		while(this.mAttackLayer.size()>0){
+			Log.d("Quest!","en el while "+mAttackLayer.size());
+			for(int i = this.mAttackLayer.size()-1;i>=0; i--){
+				final Attack mAttackToDraw = this.mAttackLayer.get(i);
+				Log.d("Quest!","en el for "+i+"  "+mAttackToDraw.getAnimationStatus());
+				switch (mAttackToDraw.getAnimationStatus()) {
 				case 0:
-					mSpellToDraw.setAnimationStatus(1);
-					this.attachChild(mSpellToDraw.getSpellAnimation());					
-					mSpellToDraw.getSpellAnimation().animate(100,false,new IAnimationListener() {
+					mAttackToDraw.setAnimationStatus(1);
+					this.attachChild(mAttackToDraw.getAttackAnimation());					
+					mAttackToDraw.getAttackAnimation().animate(100,false,new IAnimationListener() {
 						
 						@Override
 						public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
 								int pInitialLoopCount) {
-							mSpellToDraw.setAnimationStatus(1);			
+							mAttackToDraw.setAnimationStatus(1);			
 							Log.d("Quest!","Animation started");
 						}
 						
@@ -583,33 +582,34 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 						
 						@Override
 						public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
-							mSpellToDraw.setAnimationStatus(2);
-							BaseEntity.this.detachChild(mSpellToDraw.getSpellAnimation());
+							mAttackToDraw.setAnimationStatus(2);
+							BaseEntity.this.detachChild(mAttackToDraw.getAttackAnimation());
 							Log.d("Quest!","Animation ended");
-							//BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
+							//BaseEntity.this.mAttackLayer.remove(mAttackToDraw);
 							}
 					
 					});
 					break;
 				case 1:
 					Log.d("Quest!","entro al 1");
-					mSpellToDraw.setAnimationStatus(2);
+					mAttackToDraw.setAnimationStatus(2);
 					break;
 				case 2:
 					Log.d("Quest!","removed");
-					this.mSpellsLayer.remove(i);
+					this.mAttackLayer.remove(i);
+					Game.getAttacksHelper().recycleAttack(mAttackToDraw);
 					break;
 				}
-			/*	if(this.mSpellsLayer.get(i).getAnimationStatus()==0){
-					final Spell mSpellToDraw = this.mSpellsLayer.get(i);
-					mSpellToDraw.setAnimationStatus(1);
-					this.attachChild(mSpellToDraw.getSpellAnimation());
-					mSpellToDraw.getSpellAnimation().animate(100,false,new IAnimationListener() {
+			/*	if(this.mAttackLayer.get(i).getAnimationStatus()==0){
+					final Attack mAttackToDraw = this.mAttackLayer.get(i);
+					mAttackToDraw.setAnimationStatus(1);
+					this.attachChild(mAttackToDraw.getAttackAnimation());
+					mAttackToDraw.getAttackAnimation().animate(100,false,new IAnimationListener() {
 						
 						@Override
 						public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
 								int pInitialLoopCount) {
-							mSpellToDraw.setAnimationStatus(1);			
+							mAttackToDraw.setAnimationStatus(1);			
 							Log.d("Quest!","Animation started");
 						}
 						
@@ -630,16 +630,16 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 						
 						@Override
 						public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
-							mSpellToDraw.setAnimationStatus(2);
-							BaseEntity.this.detachChild(mSpellToDraw.getSpellAnimation());
+							mAttackToDraw.setAnimationStatus(2);
+							BaseEntity.this.detachChild(mAttackToDraw.getAttackAnimation());
 							Log.d("Quest!","Animation ended");
-							//BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
+							//BaseEntity.this.mAttackLayer.remove(mAttackToDraw);
 							}
 					
 					});
 					
-				}else if(this.mSpellsLayer.get(i).getAnimationStatus()==2){
-					this.mSpellsLayer.remove(i);
+				}else if(this.mAttackLayer.get(i).getAnimationStatus()==2){
+					this.mAttackLayer.remove(i);
 				}*/
 			}
 			

@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
+import com.quest.helpers.AttacksHelper;
 import com.quest.helpers.BattleHelper;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.MobHelper;
@@ -49,6 +50,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static ProfileData mProfileData;
 	private static boolean isServer = false;
 	private static TimerHelper mTimerHelper;
+	private static AttacksHelper mAttacksHelper;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -250,6 +252,14 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mTimerHelper = mTimerHelper;
 	}
 	
+	public static AttacksHelper getAttacksHelper() {
+		return mAttacksHelper;
+	}
+
+	public static void setAttacksHelper(AttacksHelper mAttacksHelper) {
+		Game.mAttacksHelper = mAttacksHelper;
+	}
+
 	public static boolean isServer(){
 		return isServer;
 	}

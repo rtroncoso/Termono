@@ -47,10 +47,10 @@ public class MobPool{
 					
 					@Override
 					protected void onHandleRecycleItem(final Mob pMob) {
-						for(int i = 0;i<pMob.getSpellsLayer().size();i++){
-							pMob.getSpellsLayer().get(i).getSpellAnimation().reset();
+						for(int i = 0;i<pMob.getAttackLayer().size();i++){
+							pMob.getAttackLayer().get(i).getAttackAnimation().reset();
 						}
-						pMob.getSpellsLayer().clear();
+						pMob.getAttackLayer().clear();
 						pMob.setPosition(-10, -10);
 						pMob.setVisible(false);
 						pMob.setAlpha(1f);

@@ -17,7 +17,6 @@ import com.quest.display.hud.SpellbarHud;
 import com.quest.display.hud.StatsHud;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
-import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
 import com.quest.helpers.AsyncTaskLoader;
 import com.quest.helpers.interfaces.IAsyncCallback;

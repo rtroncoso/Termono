@@ -12,7 +12,7 @@ import org.andengine.input.touch.TouchEvent;
 
 import android.util.Log;
 
-import com.quest.entities.objects.Spell;
+import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 import com.quest.timers.Timer;
 
@@ -23,7 +23,7 @@ import com.quest.timers.Timer;
  *
  */
 //public class Enemy extends Entity implements IOnScreenControlListener{
-public class Mob extends BaseEntity implements ITouchArea {
+public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	// ===========================================================
 	// Constants
@@ -39,11 +39,6 @@ public class Mob extends BaseEntity implements ITouchArea {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public Mob(String pTextureName, int pFrameWidth, int pFrameHeight, int pFramePosX, int pFramePosY, int pCols, int pRows) {
-		// TODO Auto-generated constructor stub
-		super(pTextureName, pFrameWidth, pFrameHeight, pFramePosX, pFramePosY, pCols, pRows);		
-		this.mEntityType = "Mob";
-	}
 	
 	public Mob(int pMobFlag){
 		super(Game.getDataHandler().getMobAnimationTexture(pMobFlag), Game.getDataHandler().getMobFrameWidth(pMobFlag), Game.getDataHandler().getMobFrameHeight(pMobFlag), 0, 0, Game.getDataHandler().getMobAnimationCols(pMobFlag), Game.getDataHandler().getMobAnimationRows(pMobFlag));
@@ -115,11 +110,16 @@ public class Mob extends BaseEntity implements ITouchArea {
 		}		
 	}
 	
-	private int getRandom(int min, int max)
+	public int getRandom(int min, int max)
 	{
 		rand = new Random();	
 		int RandomNum = rand.nextInt(max - min + 1) + min;
 		return RandomNum;
+	}
+	
+	public int[] getMobDrop(){
+		//HACER EL CALCULO DE QUE ITEM TIENE QUE DROPPEAR
+		return new int[]{0,0};
 	}
 	
 	@Override
@@ -131,7 +131,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 		case TouchEvent.ACTION_UP:
 			if(mGrabbed) {
 				mGrabbed = false;
-				Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, Game.getPlayerHelper().getOwnPlayer().getSpellattackid());
+				Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, Game.getPlayerHelper().getOwnPlayer().getAttack_Flag());
 				if(this.getAlpha()==1f){
 					Game.getMobHelper().clearMobsAlpha();
 					this.getBodySprite().setAlpha(0.70f);
@@ -159,21 +159,27 @@ public class Mob extends BaseEntity implements ITouchArea {
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
-			int dropItem = 0;
-			if(getRandom(0, 3)==2)dropItem=1;//Calcular bien el amount y el item 
-			Game.getBattleHelper().killMob(this, dropItem,1, this.getExperience(), this.getMoney(),(Player) (pKillerEntity));
+		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
+		//Hacer un wait?
+		try {
+			wait(400);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
 	}
 
+	
 	@Override
-	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
-
-		
-		this.mSpellsLayer.add(new Spell(pAttackID));	//Mostrar la animacion de ataque
+	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int ATTACK_FLAG){
+		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(ATTACK_FLAG));	//Mostrar la animacion de ataque
 
 		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp 
 		if(decreaseHP(pDamage)){
 			if(Game.isServer()){
-				onDeathAction(pAttackingEntity);	
+				int[] drop = this.getMobDrop();
+				Game.getBattleHelper().killMob(this,drop[0],drop[1], this.getExperience(), this.getMoney(),(Player) (pAttackingEntity));
 			}
 		}
 		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
@@ -181,7 +187,7 @@ public class Mob extends BaseEntity implements ITouchArea {
 	};
 	
 	@Override
-	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
+	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
 		if(!Game.isServer()){
 			//muestro el mob atacando
 		}else{

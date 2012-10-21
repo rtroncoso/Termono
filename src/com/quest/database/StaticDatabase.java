@@ -1,12 +1,14 @@
 package com.quest.database;
 
+import com.quest.constants.GameFlags;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
  
-public class StaticDatabase extends SQLiteOpenHelper {
+public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String dbName = "Static";
         
         //Class
@@ -54,30 +56,30 @@ public class StaticDatabase extends SQLiteOpenHelper {
 	    static final String fItemModifierDefense = "Defense";
         
 	    
-        //spells 
-	    static final String tSpells = "Spells";
-        static final String fSpellID = "SpellID";
-        static final String fSpellName = "Name";
-        static final String fSpellIconTexture = "IconTexture";
-        static final String fSpellAnimationTexture = "AnimationTexture";
-        static final String fSpellAnimationRows = "AnimationRows";
-        static final String fSpellAnimationCols = "AnimationCols";
-        static final String fSpellFrameWidth = "FrameWidth";
-        static final String fSpellFrameHeight = "FrameHeight";
-        static final String fSpellType = "Type";
-        static final String fSpellDescription = "Description";
-        static final String fSpellLevels = "Levels";
-        static final String fSpellClass = "Class";
-        static final String fSpellEffectID = "EffectID";
+        //Attacks 
+	    static final String tAttacks = "Attacks";
+        static final String fAttackID = "AttackID";
+        static final String fAttackName = "Name";
+        static final String fAttackIconTexture = "IconTexture";
+        static final String fAttackAnimationTexture = "AnimationTexture";
+        static final String fAttackAnimationRows = "AnimationRows";
+        static final String fAttackAnimationCols = "AnimationCols";
+        static final String fAttackFrameWidth = "FrameWidth";
+        static final String fAttackFrameHeight = "FrameHeight";
+        static final String fAttackType = "Type";
+        static final String fAttackDescription = "Description";
+        static final String fAttackLevels = "Levels";
+        static final String fAttackClass = "Class";
+        static final String fAttackEffectID = "EffectID";
         
-        //SpellEffect table
-        static final String tSpellEffect = "SpellEffect";
-        static final String fEffectSpellID = "SpellID";
-        static final String fEffectSpellLevel1 = "Effect1";
-        static final String fEffectSpellLevel2 = "Effect2";
-        static final String fEffectSpellLevel3 = "Effect3";
-        static final String fEffectSpellLevel4 = "Effect4";
-        static final String fEffectSpellLevel5 = "Effect5";
+        //AttackEffect table
+        static final String tAttackEffect = "AttackEffect";
+        static final String fEffectAttackID = "AttackID";
+        static final String fEffectAttackLevel1 = "Effect1";
+        static final String fEffectAttackLevel2 = "Effect2";
+        static final String fEffectAttackLevel3 = "Effect3";
+        static final String fEffectAttackLevel4 = "Effect4";
+        static final String fEffectAttackLevel5 = "Effect5";
         
         //Mobs   ***attack texture y eso
         static final String tMob = "Mobs";
@@ -173,30 +175,30 @@ public class StaticDatabase extends SQLiteOpenHelper {
                         );
                 
                 
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpells+" ("+
-                        fSpellID+" INTEGER PRIMARY KEY , "+
-                        fSpellName+" TEXT , "+
-                        fSpellIconTexture+" TEXT , "+
-                        fSpellAnimationTexture+" TEXT , "+
-                        fSpellAnimationRows+" INTEGER ,"+
-                        fSpellAnimationCols+" INTEGER ,"+
-                        fSpellFrameWidth+" INTEGER ,"+
-                        fSpellFrameHeight+" INTEGER ,"+
-                        fSpellType+" INTEGER , "+
-                        fSpellDescription+" TEXT , "+
-                        fSpellLevels+" INTEGER, "+
-                        fSpellClass+" INTEGER, "+
-                        fSpellEffectID+" INTEGER)"
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttacks+" ("+
+                        fAttackID+" INTEGER PRIMARY KEY , "+
+                        fAttackName+" TEXT , "+
+                        fAttackIconTexture+" TEXT , "+
+                        fAttackAnimationTexture+" TEXT , "+
+                        fAttackAnimationRows+" INTEGER ,"+
+                        fAttackAnimationCols+" INTEGER ,"+
+                        fAttackFrameWidth+" INTEGER ,"+
+                        fAttackFrameHeight+" INTEGER ,"+
+                        fAttackType+" INTEGER , "+
+                        fAttackDescription+" TEXT , "+
+                        fAttackLevels+" INTEGER, "+
+                        fAttackClass+" INTEGER, "+
+                        fAttackEffectID+" INTEGER)"
                         );
 
 
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tSpellEffect+" ("+
-                		fEffectSpellID+" INTEGER PRIMARY KEY , "+
-                		fEffectSpellLevel1+" TEXT ,"+//Como definir los datos aca adentro? los encapsulo en un string por ahora
-                		fEffectSpellLevel2+" TEXT ,"+
-                		fEffectSpellLevel3+" TEXT ,"+
-                		fEffectSpellLevel4+" TEXT ,"+
-                		fEffectSpellLevel5+" TEXT)"
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttackEffect+" ("+
+                		fEffectAttackID+" INTEGER PRIMARY KEY , "+
+                		fEffectAttackLevel1+" TEXT ,"+//Como definir los datos aca adentro? los encapsulo en un string por ahora
+                		fEffectAttackLevel2+" TEXT ,"+
+                		fEffectAttackLevel3+" TEXT ,"+
+                		fEffectAttackLevel4+" TEXT ,"+
+                		fEffectAttackLevel5+" TEXT)"
                         );                
                 
                 
@@ -460,7 +462,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.clear();
           		
                 
-          		cv.put(fMobID, 1);
+          		cv.put(fMobID, FLAG_MOB_BAT);
           		cv.put(fMobIconTexture,"Mobs/Icons/Bat1.png");
           		cv.put(fMobAnimationTexture,"Mobs/Animations/Bat1.png");
           		cv.put(fMobAnimationCols,4);
@@ -472,7 +474,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		db.insert(tMob, null, cv); 
           		
           		cv.clear();
-          		cv.put(fMobID, 1);
+          		cv.put(fMobID, FLAG_MOB_BAT);
           		cv.put(fMobPower,1);
           		cv.put(fMobIntelligence,0);
           		cv.put(fMobDefense,2);
@@ -486,14 +488,14 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fMobDropItemIDs,"1,2,3,4,5");
           		cv.put(fMobDropRates,"10,8,6,4,2");
           		cv.put(fMobDropAmounts,"1,1,1,1,1");
-          		cv.put(fMobID, 1);
+          		cv.put(fMobID, FLAG_MOB_BAT);
           		db.insert(tMobDroptable, null, cv); 
           		
           		cv.clear();
 	            
           		
           		//Bee
-         		cv.put(fMobID, 2);
+         		cv.put(fMobID, FLAG_MOB_BEE);
           		cv.put(fMobIconTexture,"Mobs/Icons/Bee1.png");
           		cv.put(fMobAnimationTexture,"Mobs/Animations/Bee1.png");
           		cv.put(fMobAnimationCols,4);
@@ -505,7 +507,7 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		db.insert(tMob, null, cv); 
           		
           		cv.clear();
-          		cv.put(fMobID, 2);
+          		cv.put(fMobID, FLAG_MOB_BEE);
           		cv.put(fMobPower,4);
           		cv.put(fMobIntelligence,0);
           		cv.put(fMobDefense,6);
@@ -519,39 +521,53 @@ public class StaticDatabase extends SQLiteOpenHelper {
           		cv.put(fMobDropItemIDs,"1,2,3,4,5");
           		cv.put(fMobDropRates,"12,10,8,6,4");
           		cv.put(fMobDropAmounts,"1,1,1,1,1");
-          		cv.put(fMobID, 2);
+          		cv.put(fMobID, FLAG_MOB_BEE);
           		db.insert(tMobDroptable, null, cv); 
           		
           		cv.clear();
           		
-                cv.put(fSpellID,1);
-                cv.put(fSpellIconTexture, "Spells/Icons/Spell1.png");
-                cv.put(fSpellAnimationTexture,"Spells/Animations/Spell1.png");
-                cv.put(fSpellAnimationRows, 1);
-                cv.put(fSpellAnimationCols, 5);
-                cv.put(fSpellFrameWidth, 960);
-                cv.put(fSpellFrameHeight, 192);
-                db.insert(tSpells, null, cv); 
+                cv.put(fAttackID,FLAG_ATTACK_SPELL_FIREBALL);
+                cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell1.png");
+                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell1.png");
+                cv.put(fAttackType, 1);
+                cv.put(fAttackAnimationRows, 1);
+                cv.put(fAttackAnimationCols, 5);
+                cv.put(fAttackFrameWidth, 960);
+                cv.put(fAttackFrameHeight, 192);
+                db.insert(tAttacks, null, cv); 
                 cv.clear();
                 
-                cv.put(fSpellID,2);
-                cv.put(fSpellIconTexture, "Spells/Icons/Spell2.png");
-                cv.put(fSpellAnimationTexture,"Spells/Animations/Spell2.png");
-                cv.put(fSpellAnimationRows, 1);
-                cv.put(fSpellAnimationCols, 5);
-                cv.put(fSpellFrameWidth, 960);
-                cv.put(fSpellFrameHeight, 192);
-                db.insert(tSpells, null, cv); 
+                cv.put(fAttackID,FLAG_ATTACK_SPELL_BLAST);
+                cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell2.png");
+                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell2.png");
+                cv.put(fAttackType, 1);
+                cv.put(fAttackAnimationRows, 1);
+                cv.put(fAttackAnimationCols, 5);
+                cv.put(fAttackFrameWidth, 960);
+                cv.put(fAttackFrameHeight, 192);
+                db.insert(tAttacks, null, cv); 
                 cv.clear();
                 
-                cv.put(fSpellID,3);
-                cv.put(fSpellIconTexture, "Spells/Icons/Spell3.png");
-                cv.put(fSpellAnimationTexture,"Spells/Animations/Spell3.png");
-                cv.put(fSpellAnimationRows, 3);
-                cv.put(fSpellAnimationCols, 5);
-                cv.put(fSpellFrameWidth, 960);
-                cv.put(fSpellFrameHeight, 576);
-                db.insert(tSpells, null, cv); 
+                cv.put(fAttackID,FLAG_ATTACK_SPELL_THUNDER);
+                cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell3.png");
+                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell3.png");
+                cv.put(fAttackType, 1);
+                cv.put(fAttackAnimationRows, 3);
+                cv.put(fAttackAnimationCols, 5);
+                cv.put(fAttackFrameWidth, 960);
+                cv.put(fAttackFrameHeight, 576);
+                db.insert(tAttacks, null, cv); 
+                cv.clear();
+                
+                cv.put(fAttackID,FLAG_ATTACK_MOB_DEATH);
+                cv.put(fAttackIconTexture, "null");
+                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell3.png");
+                cv.put(fAttackType, 2);
+                cv.put(fAttackAnimationRows, 1);
+                cv.put(fAttackAnimationCols, 5);
+                cv.put(fAttackFrameWidth, 960);
+                cv.put(fAttackFrameHeight, 192);
+                db.insert(tAttacks, null, cv); 
                 cv.clear();
                 
         }
@@ -894,67 +910,78 @@ public class StaticDatabase extends SQLiteOpenHelper {
          
          
          
-         //Spells
-         public String getSpellIconTexture(int pID){
+         //Attacks
+         public String getAttackIconTexture(int pID){
     	 	SQLiteDatabase myDB = this.getReadableDatabase();
-    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellIconTexture +" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackIconTexture +" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
          	myCursor.moveToFirst();
-         	int index = myCursor.getColumnIndex(fSpellIconTexture);
+         	int index = myCursor.getColumnIndex(fAttackIconTexture);
          	String myAnswer = myCursor.getString(index);
          	myCursor.close();
          	myDB.close();
          	return myAnswer;
          }
          
-         public String getSpellAnimationTexture(int pID){
+         public String getAttackAnimationTexture(int pID){
     	 	SQLiteDatabase myDB = this.getReadableDatabase();
-    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellAnimationTexture +" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackAnimationTexture +" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
          	myCursor.moveToFirst();
-         	int index = myCursor.getColumnIndex(fSpellAnimationTexture);
+         	int index = myCursor.getColumnIndex(fAttackAnimationTexture);
          	String myAnswer = myCursor.getString(index);
          	myCursor.close();
          	myDB.close();
          	return myAnswer;
          }
          
-         public int getSpellAnimationRows(int pID){
+         public int getAttackAnimationRows(int pID){
     	 	SQLiteDatabase myDB = this.getReadableDatabase();
-    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellAnimationRows+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackAnimationRows+" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
          	myCursor.moveToFirst();
-         	int index = myCursor.getColumnIndex(fSpellAnimationRows);
+         	int index = myCursor.getColumnIndex(fAttackAnimationRows);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
          	myDB.close();
          	return myAnswer;
          }
          
-         public int getSpellAnimationCols(int pID){
+         public int getAttackAnimationCols(int pID){
     	 	SQLiteDatabase myDB = this.getReadableDatabase();
-    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellAnimationCols+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackAnimationCols+" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
          	myCursor.moveToFirst();
-         	int index = myCursor.getColumnIndex(fSpellAnimationCols);
+         	int index = myCursor.getColumnIndex(fAttackAnimationCols);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
          	myDB.close();
          	return myAnswer;
          }
          
-         public int getSpellFrameWidth(int pID){
+         public int getAttackFrameWidth(int pID){
     	 	SQLiteDatabase myDB = this.getReadableDatabase();
-    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellFrameWidth+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackFrameWidth+" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
          	myCursor.moveToFirst();
-         	int index = myCursor.getColumnIndex(fSpellFrameWidth);
+         	int index = myCursor.getColumnIndex(fAttackFrameWidth);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
          	myDB.close();
          	return myAnswer;
          }
          
-         public int getSpellFrameHeight(int pID){
+         public int getAttackFrameHeight(int pID){
     	 	SQLiteDatabase myDB = this.getReadableDatabase();
-    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fSpellFrameHeight+" FROM "+ tSpells+" WHERE "+ fSpellID +"=?",new String[]{String.valueOf(pID)});
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackFrameHeight+" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
          	myCursor.moveToFirst();
-         	int index = myCursor.getColumnIndex(fSpellFrameHeight);
+         	int index = myCursor.getColumnIndex(fAttackFrameHeight);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getAttackType(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackType+" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fAttackType);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
          	myDB.close();

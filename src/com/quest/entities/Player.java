@@ -3,19 +3,17 @@ package com.quest.entities;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.entity.scene.ITouchArea;
-import org.andengine.extension.tmx.TMXTile;
 
 import android.util.Log;
 
+import com.quest.constants.GameFlags;
+import com.quest.entities.objects.Attack;
 import com.quest.entities.objects.InventoryItem;
-import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
-import com.quest.helpers.BattleHelper;
 import com.quest.helpers.InventoryItemHelper;
-import com.quest.triggers.Trigger;
 
 
-public class Player extends BaseEntity implements IOnScreenControlListener, ITouchArea {
+public class Player extends BaseEntity implements IOnScreenControlListener, ITouchArea, GameFlags {
 
 
 	// ===========================================================
@@ -33,7 +31,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private InventoryItemHelper mInventory;
 	private int mUnassignedPoints;
 	
-	private int spellattackid;
+	private int Attack_Flag;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -59,7 +57,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mExperience = Game.getDataHandler().getPlayerExperience(this.mPlayerID);
 		this.mMoney = Game.getDataHandler().getPlayerMoney(this.mPlayerID);
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
-		setSpellattackid(1);
+		setAttack_Flag(FLAG_ATTACK_SPELL_FIREBALL);
 		this.mEntityType = "Player";
 	}
 	
@@ -77,7 +75,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setModifiers(pAttributes);
 		this.updateHPMana(currHPMP);
 		this.setInventory(LoadInventory(pItemIDs, pAmounts, isEquipped));
-		setSpellattackid(1);
+		setAttack_Flag(FLAG_ATTACK_SPELL_FIREBALL);
 		this.mEntityType = "Player";
 	}
 
@@ -144,7 +142,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			}
 		}
 		Log.d("Quest!", "Player: "+this.getUserData()+" hp: "+this.currHP);
-		this.mSpellsLayer.add(new Spell(pAttackID));
+		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(pAttackID));
 	};
 	
 	@Override
@@ -237,12 +235,12 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mUnassignedPoints = mUnassignedPoints;
 	}
 
-	public int getSpellattackid() {
-		return spellattackid;
+	public int getAttack_Flag() {
+		return Attack_Flag;
 	}
 
-	public void setSpellattackid(int spellattackid) {
-		this.spellattackid = spellattackid;
+	public void setAttack_Flag(int pAttack_Flag) {
+		this.Attack_Flag = pAttack_Flag;
 	}
 	
 

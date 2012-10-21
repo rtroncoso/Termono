@@ -1,5 +1,6 @@
 package com.quest.helpers;
 
+import android.os.DropBoxManager;
 import android.util.Log;
 
 import com.quest.constants.GameFlags;
@@ -55,19 +56,28 @@ public class BattleHelper implements GameFlags{
 		pAttackedEntity.onAttackedAction(pAttackingEntity, pDamage, pAttackID);
 	}
 	
+	
+	
 	public void killMob(Mob mob,int pdroppeditem,int pdroppedItemAmount,int pexperience, int pmoney,Player player){
 		if(Game.isServer()){
 			player.addExperience(pexperience);
 			player.addMoney(pmoney);
-			player.getInventory().addItem(new InventoryItem(pdroppeditem, pdroppedItemAmount, 0));
+			if(pdroppeditem != 0){
+				player.getInventory().addItem(new InventoryItem(pdroppeditem, pdroppedItemAmount, 0));
+			}
 			Game.getServer().sendMobDiedMessage((Integer)(mob.getUserData()), pexperience, pmoney, pdroppeditem, pdroppedItemAmount,player.getUserData().toString());
+		}else{
+			if(player.getUserID()==Game.getPlayerHelper().getOwnPlayer().getUserID()){
+				//muestro graficamente que gane exp y que gano el item
+				//dejar tirado el item?
+				player.addExperience(pexperience);
+				player.addMoney(pmoney);	
+				if(pdroppeditem != 0){
+					player.getInventory().addItem(new InventoryItem(pdroppeditem, pdroppedItemAmount, 0));
+				}
+			}		
 		}
-		//*** playerbyindex, asegurarme de que sea el propio SIEMPRE
-		if(player.getUserID()==Game.getPlayerHelper().getOwnPlayer().getUserID()){
-			//muestro graficamente que gane exp y que gano el item
-			//dejar tirado el item?
-		}		
-		Game.getMobHelper().deleteMob((Integer)(mob.getUserData()));
+		mob.onDeathAction(player);
 	}
 	
 	
