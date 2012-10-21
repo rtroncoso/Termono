@@ -10,6 +10,8 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 
+import android.util.Log;
+
 import com.quest.constants.GameFlags;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
@@ -55,8 +57,7 @@ public class GameScene extends Scene implements GameFlags{
 			
 			// Loads everything in the background
 			Game.getSceneManager().setLoadingScene();
-			//Looper.myLooper().prepare();//tira ctrl shift o
-
+			
 			Game.getInstance().runOnUiThread(new Runnable() {
 		        @Override
 		        public void run() {
@@ -137,6 +138,7 @@ public class GameScene extends Scene implements GameFlags{
 
 			            @Override
 			            public void onComplete() {
+			            	Game.getSceneManager().getLoadingScene().loadingAnimation(false);
 			            	Game.getSceneManager().setSpecificGameScene(GameScene.this);
 			            }
 			        });

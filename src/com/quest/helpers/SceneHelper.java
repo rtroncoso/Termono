@@ -140,8 +140,10 @@ public class SceneHelper implements IMeasureConstants {
 	public void setLoadingScene() {
     	this.mDisplay.doFocusCamera(null);
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
+    	//No funciona el set camera center
     	this.mDisplay.setZoom(1.0f);
 		if(this.mLoadingScene == null) this.mLoadingScene = new LoadingScene();
+		this.mLoadingScene.loadingAnimation(true);
 		this.mScene = this.mLoadingScene;
 		Game.getInstance().getEngine().setScene(this.mScene);
 	}

@@ -1,6 +1,7 @@
 package com.quest.database;
 
 import com.quest.constants.GameFlags;
+import com.quest.game.Game;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -422,11 +423,19 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		
           		cv.put(fClassID, 2);
           		cv.put(fClassIconTexture,"Players/Icons/Mage.png");
-          		cv.put(fClassAnimationTexture,"Players/Animations/Mage.png");
-          		cv.put(fClassAnimationCols,5);
-          		cv.put(fClassAnimationRows,4);
-          		cv.put(fClassFrameHeight,256);
-          		cv.put(fClassFrameWidth,256);
+          		if(Game.isAVD_DEBUGGING()){
+              		cv.put(fClassAnimationTexture,"Mobs/Animations/Fairy.png");
+              		cv.put(fClassAnimationCols,4);//Low res img for avd
+              		cv.put(fClassAnimationRows,4);
+              		cv.put(fClassFrameHeight,128);
+              		cv.put(fClassFrameWidth,128);
+          		}else{
+              		cv.put(fClassAnimationTexture,"Players/Animations/Mage.png");
+              		cv.put(fClassAnimationCols,5);
+              		cv.put(fClassAnimationRows,4);
+              		cv.put(fClassFrameHeight,256);
+              		cv.put(fClassFrameWidth,256);	
+          		}
           		db.insert(tClass, null, cv);
           		
           		cv.put(fClassID, 3);

@@ -143,7 +143,7 @@ public class MainMenuScene extends Scene implements GameFlags{
 
 		//texto	
 		this.mPlayText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 90, 87,"PLAY","MainMenuScene;Play");
-		this.mOptionsText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 70, 217,"OPTIONS","MainMenuScene;Options");
+		this.mOptionsText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 60, 217,"OPTIONS","MainMenuScene;Options");
 		this.mQuitText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 90, 359,"QUIT","MainMenuScene;Quit");
 		this.attachChild(this.mPlayText);
 		this.attachChild(this.mOptionsText);
