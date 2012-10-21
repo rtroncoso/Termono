@@ -2,14 +2,14 @@ package com.quest.helpers;
 
 import android.util.Log;
 
-import com.quest.constants.MobFlags;
+import com.quest.constants.GameFlags;
 import com.quest.entities.BaseEntity;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.InventoryItem;
 import com.quest.game.Game;
 
-public class BattleHelper implements MobFlags{		
+public class BattleHelper implements GameFlags{		
 	
 	
 	public BattleHelper(){

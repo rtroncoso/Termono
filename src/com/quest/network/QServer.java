@@ -32,6 +32,7 @@ import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
+import com.quest.network.messages.server.QuestServerMessage;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
@@ -287,9 +288,15 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // ===========================================================
 // Methods
 // ===========================================================
-public void sendBroadcast(IServerMessage pServerMessage){
+public void sendBroadcast(QuestServerMessage pServerMessage){
+	//int tmpHash = pServerMessage.hashCode();
 	try {
+		//pServerMessage.setMsgHash(tmpHash); Funciones de doble envio/checkeo de mensaje
+		//pServerMessage.setMsgInstance(1);
 		this.sendBroadcastServerMessage(pServerMessage);
+		//wait(5);
+		//pServerMessage.setMsgInstance(2);
+		//this.sendBroadcastServerMessage(pServerMessage);
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

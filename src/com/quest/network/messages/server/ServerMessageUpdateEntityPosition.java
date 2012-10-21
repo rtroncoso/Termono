@@ -15,7 +15,7 @@ import com.quest.constants.ServerMessageFlags;
  * @author Nicolas Gramlich
  * @since 19:48:32 - 28.02.2011
  */
-public class ServerMessageUpdateEntityPosition extends ServerMessage implements ServerMessageFlags {
+public class ServerMessageUpdateEntityPosition extends QuestServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================

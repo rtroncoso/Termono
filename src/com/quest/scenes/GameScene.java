@@ -10,7 +10,7 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 
-import com.quest.constants.MobFlags;
+import com.quest.constants.GameFlags;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
@@ -23,7 +23,7 @@ import com.quest.helpers.AsyncTaskLoader;
 import com.quest.helpers.interfaces.IAsyncCallback;
 import com.quest.timers.Timer;
 
-public class GameScene extends Scene implements MobFlags{
+public class GameScene extends Scene implements GameFlags{
 		// ===========================================================
 		// Constants
 		// ===========================================================

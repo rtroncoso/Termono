@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.font.StrokeFont;
+import org.andengine.opengl.texture.ITexture;
+import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
@@ -13,11 +16,13 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 
+import com.quest.constants.GameFlags;
+import com.quest.entities.Mob;
 import com.quest.game.Game;
-import com.quest.objects.BooleanMessage;
 import com.quest.objects.InputText;
+import com.quest.pools.TextPool;
 
-public class TextHelper{
+public class TextHelper implements GameFlags{
 
 	// ===========================================================
 	// Constants
@@ -27,117 +32,94 @@ public class TextHelper{
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private BitmapTextureAtlas mNormalFontTexture;
+	private ArrayList<Text> mTextList;
+	private final TextPool mTextPool = new TextPool();
 	private StrokeFont mNormalFont;
-	private Text mText;
-	private ArrayList<Text> mList;
-	private Text mDeletableText;	
-	private enum FontUsed {
-		Normal,
-		Supa,
-		Custom
-	}
-	private boolean mReady = false;
+	private StrokeFont mDamageFont;
+	private StrokeFont mHealingFont;
+	private Font mFancyFont;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public TextHelper(/*FontUsed pFontUsed*/){
-			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-			this.mNormalFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256);		
-			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), this.mNormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.WHITE, 1, Color.BLACK);
-			Game.getInstance().getEngine().getTextureManager().loadTexture(this.mNormalFontTexture);
-			Game.getInstance().getEngine().getFontManager().loadFont(this.mNormalFont);
+	public TextHelper(){
+			final ITexture NormalFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+			final ITexture DamageFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+			final ITexture HealingFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+			final ITexture FancyFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 			
-		//hacer las otras fonts
-		this.mList = new ArrayList<Text>();
-		this.mDeletableText = new Text(0, 0, this.mNormalFont, "",Game.getInstance().getVertexBufferObjectManager());
+			
+			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), NormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.WHITE, 1, Color.BLACK);
+			this.mDamageFont = new StrokeFont(Game.getInstance().getFontManager(), DamageFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.rgb(157, 22, 22), 1, Color.rgb(196, 28, 28));
+			this.mHealingFont = new StrokeFont(Game.getInstance().getFontManager(), HealingFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.rgb(22, 157, 22), 1, Color.rgb(28, 196, 28));
+			this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(59, 39, 39));
+			
+
+			this.mNormalFont.load();
+			this.mDamageFont.load();
+			this.mHealingFont.load();
+			this.mFancyFont.load();
+			
+		this.mTextList = new ArrayList<Text>();
+		this.initTextPool();
 	}
 	
-	//ver que hacer para los text que cambian
-	public Text NewText(float X,float Y,String pText,String pKey/*,FontUsed pFontUsed*/){
-		/*
-		switch(pFontUsed){
-		case Normal:
-			switch para usar otras fonts
-		}
-		*/
-		Text tempText =  new Text(X, Y, this.mNormalFont, pText,Game.getInstance().getVertexBufferObjectManager());
+	private void initTextPool() {
+		this.mTextPool.registerText(FLAG_TEXT_TYPE_NORMAL, this.mNormalFont);
+		this.mTextPool.registerText(FLAG_TEXT_TYPE_DAMAGE, this.mDamageFont);
+		this.mTextPool.registerText(FLAG_TEXT_TYPE_HEALING, this.mHealingFont);
+		this.mTextPool.registerText(FLAG_TEXT_TYPE_FANCY, this.mFancyFont);
+	}
+
+	
+	public Text addNewText(int TEXT_TYPE_FLAG,float X,float Y,String pText,String pKey){
+		final Text tempText = (Text) (TextHelper.this.mTextPool.obtainText(TEXT_TYPE_FLAG));
+		this.mTextList.add(tempText);
 		tempText.setUserData(pKey);
-		if(mList.contains(this.mDeletableText)){
-			this.mList.set(mList.indexOf(mDeletableText),tempText);
-		}else{
-			this.mList.add(tempText);
-		}
+		tempText.setText(pText);
+		tempText.setX(X);
+		tempText.setY(Y);
 		return tempText;
 	}
 	
-	
-	
-	public void EraseText(String pKey){
-		boolean found = false;
-		for(int i = 0;i<mList.size();i++){
-			if(mList.get(i).getUserData() == pKey){
-				this.mList.set(i,mDeletableText);
-				found = true;
-			}else{
-				if(i==mList.size()-1 & found == false){
-					Log.d("Quest!","TextHelper: Erase - No text matches key '"+pKey+"'");
-				}
-			}	
-		}
+	public void deleteText(String pTextKey){
+		int index = this.mTextList.indexOf(this.getText(pTextKey));
+		this.mTextPool.recycleText(mTextList.get(index));
+		this.mTextList.remove(index);
 	}
 	
 	
-	public void ChangeText(String pText,String pKey,float X,float Y){
-		boolean found = false;
-		for(int i = 0;i<mList.size();i++){
-			if(mList.get(i).getUserData() == pKey){
-				Text tempText = this.mList.get(i);
-				tempText.setText(pText);
-				tempText.setX(X);
-				tempText.setY(Y);
-				found = true;
-			}else{
-				if(i==mList.size()-1 && found == false){
-					Log.d("Quest!","TextHelper: Change - No text matches key '"+pKey+"'");
-				}
-			}	
-		}
+	public void ChangeText(String pText,String pTextKey,float X,float Y){
+		Text tmpText = this.getText(pTextKey);
+		tmpText.setText(pText);
+		tmpText.setX(X);
+		tmpText.setY(Y);
+	}
+
+	public void ClearText(String pTextKey){
+		Text tmpText = this.getText(pTextKey);
+		tmpText.setText("");
+		tmpText.setX(-10);
+		tmpText.setY(-10);
 	}
 	
-	public void ClearText(String pKey){
-		boolean found = false;
-		for(int i = 0;i<mList.size();i++){
-			if(mList.get(i).getUserData() == pKey){
-				Text tempText = this.mList.get(i);
-				tempText.setText("");
-				tempText.setX(0);
-				tempText.setY(0);
-				found = true;
-			}else{
-				if(i==mList.size()-1 && found == false){
-					Log.d("Quest!","TextHelper: Clear - No text matches key '"+pKey+"'");
-				}
-			}	
+	public void FlushTexts(String pString){
+		int a = 0;
+		ArrayList<Text> deleteableTextList = new ArrayList<Text>();
+		for(int i = 0;i<mTextList.size();i++){
+			String[] temp = mTextList.get(i).getUserData().toString().split(";");
+			if(temp[0].equals(pString)){
+				a++;
+				deleteableTextList.add(this.mTextList.get(i));
+			}
 		}
+		this.mTextList.removeAll(deleteableTextList);
+		this.mTextPool.recycleTexts(deleteableTextList);
+		Log.d("Quest!","TextHelper - FlushText: Flushed "+a+" items.");
 	}
 	
 	public InputText NewInputText(float pX,float pY,final String title, final String message, TiledTextureRegion texture,int textOffsetX, int textOffsetY, boolean isPassword){
 		return new InputText(pX, pY, title, message, texture, this.mNormalFont, textOffsetX, textOffsetY, isPassword, Game.getInstance().getVertexBufferObjectManager(), Game.getInstance());
 	}
-		
-	public void FlushText(String pString){
-		int a = 0;
-		for(int i = 0;i<mList.size();i++){
-			String[] temp = mList.get(i).getUserData().toString().split(";");
-			if(temp[0].equals(pString)){
-				a++;
-				this.mList.set(i,mDeletableText);
-			}
-		}
-		Log.d("Quest!","TextHelper - FlushText: Flushed "+String.valueOf(a)+" items.");
-	}
-	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -147,15 +129,22 @@ public class TextHelper{
 	// Getter & Setter
 	// ===========================================================
 	public Text getText(String pKey){
+		boolean found = false;
 		int a=0;
-		for(int i = 0;i<mList.size();i++){
-			if(mList.get(i).getUserData() == pKey){
+		for(int i = 0;i<mTextList.size();i++){
+			if(mTextList.get(i).getUserData() == pKey){
 				a = i;
-			}	
+				found = true;
+			}else{
+				if(i==mTextList.size()-1 & found == false){
+					Log.e("Quest!","TextHelper: GetText - No text matches key '"+pKey+"'");
+				}
+			}
 		}
-		return mList.get(a);
+		return mTextList.get(a);
 	}
-
+	
+	
 	public Font getFont(){
 		return this.mNormalFont;
 	}

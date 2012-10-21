@@ -8,7 +8,7 @@ import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMes
 
 import com.quest.constants.ServerMessageFlags;
 
-public class ServerMessageCreatePlayer extends ServerMessage implements ServerMessageFlags {
+public class ServerMessageCreatePlayer extends QuestServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================

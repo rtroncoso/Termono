@@ -565,11 +565,12 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 				public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
 					// TODO Auto-generated method stub
 					BaseEntity.this.detachChild(mSpellToDraw.getSpellAnimation());
+					BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
 					}
 			
 			});
 		
-			BaseEntity.this.mSpellsLayer.remove(mSpellToDraw);
+			
 		  }
 			
 		}

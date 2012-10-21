@@ -10,13 +10,13 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import com.quest.constants.MobFlags;
+import com.quest.constants.GameFlags;
 import com.quest.database.DataHandler;
 import com.quest.entities.objects.Spell;
 import com.quest.game.Game;
 import com.quest.scenes.GameScene;
 
-public class SpellbarHud extends HUD implements MobFlags{
+public class SpellbarHud extends HUD implements GameFlags{
 
 
 	// ===========================================================

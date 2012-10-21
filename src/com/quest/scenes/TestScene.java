@@ -47,8 +47,6 @@ public class TestScene extends Scene {
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mTestTextureAtlas, Game.getInstance().getApplicationContext(), "scroll.png", 0, 45);
 		this.mTestTextureAtlas.load();
 		
-		Game.getTextHelper().NewText(0, 0, "-----------------------------------------------------------------------------------------------------------------------------------------", "answertext");
-		Game.getTextHelper().ClearText("answertext");
 		
 		this.mBackgroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager());
 		this.attachChild(mBackgroundSprite);

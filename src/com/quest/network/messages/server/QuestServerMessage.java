@@ -13,7 +13,8 @@ import android.util.Log;
 		// ===========================================================
 		// Fields
 		// ===========================================================
-
+		protected int mInstance;
+		protected int mOriginalHash;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
@@ -46,6 +47,22 @@ import android.util.Log;
 				if(tmpArray[i].equals("*")==false)intArray[i] = Integer.parseInt(tmpArray[i]);
 			}
 			return intArray;
+		}
+		
+		public void setMsgInstance(int pInstance){
+			mInstance = pInstance;
+		}
+		
+		public int getMsgInstance(){
+			return this.mInstance;
+		}
+		
+		public void setMsgHash(int pHash){
+			this.mOriginalHash = pHash; 
+		}
+		
+		public int getOriginalHash(){
+			return this.mOriginalHash;
 		}
 		// ===========================================================
 		// Inner and Anonymous Classes

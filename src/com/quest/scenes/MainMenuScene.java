@@ -9,12 +9,13 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 import com.quest.helpers.BattleHelper;
 import com.quest.helpers.MobHelper;
 import com.quest.helpers.TextHelper;
 
-public class MainMenuScene extends Scene {
+public class MainMenuScene extends Scene implements GameFlags{
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -71,7 +72,7 @@ public class MainMenuScene extends Scene {
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-						Game.getTextHelper().FlushText("MainMenuScene");
+						Game.getTextHelper().FlushTexts("MainMenuScene");
 						Game.getSceneManager().setMatchScene();
 						break;
 					}
@@ -95,7 +96,7 @@ public class MainMenuScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
-							Game.getTextHelper().FlushText("MainMenuScene");
+							Game.getTextHelper().FlushTexts("MainMenuScene");
 							Game.getSceneManager().setOptionsScene();
 							break;
 						}
@@ -136,10 +137,10 @@ public class MainMenuScene extends Scene {
 		this.registerTouchArea(this.mOptionsSprite);
 		this.registerTouchArea(this.mQuitSprite);
 
-		//texto
-		this.mPlayText = Game.getTextHelper().NewText(90, 87,"Play","MainMenuScene;Play");
-		this.mOptionsText = Game.getTextHelper().NewText(80, 217,"Options","MainMenuScene;Options");
-		this.mQuitText = Game.getTextHelper().NewText(90, 359,"Quit","MainMenuScene;Quit");
+		//texto	
+		this.mPlayText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 90, 87,"PLAY","MainMenuScene;Play");
+		this.mOptionsText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 70, 217,"OPTIONS","MainMenuScene;Options");
+		this.mQuitText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 90, 359,"QUIT","MainMenuScene;Quit");
 		this.attachChild(this.mPlayText);
 		this.attachChild(this.mOptionsText);
 		this.attachChild(this.mQuitText);

@@ -20,10 +20,11 @@ import android.view.Gravity;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 import com.quest.scenes.MatchScene;
 
-public class MatchObject extends Entity{
+public class MatchObject extends Entity implements GameFlags{
 
 	// ===========================================================
 	// Constants
@@ -138,9 +139,9 @@ public class MatchObject extends Entity{
 			
 		
 		if(mJoining){
-			this.mText = Game.getTextHelper().NewText(100, 20, "Match name: "+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(this.mUserID), pKey);
+			this.mText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 100, 20, "Match name: "+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(this.mUserID), pKey);
 		}else{
-			this.mText = Game.getTextHelper().NewText(100, 20, "Match name: "+this.mMatchName, pKey);
+			this.mText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 100, 20, "Match name: "+this.mMatchName, pKey);
 		}
 		this.mMatchEntity.attachChild(this.mText);
 		

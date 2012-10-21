@@ -17,7 +17,7 @@ import android.util.Log;
  * @author Nicolas Gramlich
  * @since 12:23:20 - 21.05.2011
  */
-public class ServerMessageConnectionAcknowledge extends ServerMessage implements ServerMessageFlags {
+public class ServerMessageConnectionAcknowledge extends QuestServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================

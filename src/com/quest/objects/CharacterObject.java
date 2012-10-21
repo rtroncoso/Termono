@@ -12,10 +12,11 @@ import org.andengine.util.modifier.ease.EaseBackOut;
 
 import android.util.Log;
 
+import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 import com.quest.scenes.MatchScene;
 
-public class CharacterObject extends Entity{
+public class CharacterObject extends Entity implements GameFlags{
 
 
 	// ===========================================================
@@ -116,7 +117,7 @@ public class CharacterObject extends Entity{
 		
 
 
-		this.mText = Game.getTextHelper().NewText(this.mCharacterSprite.getX()-15, this.mCharacterSprite.getHeight()+10, "L: "+String.valueOf(pLevel), pKey);
+		this.mText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,this.mCharacterSprite.getX()-15, this.mCharacterSprite.getHeight()+10, "L: "+String.valueOf(pLevel), pKey);
 		this.mCharacterEntity.attachChild(this.mText);
 		pScene.registerTouchArea(this.mCharacterSprite);
 		pEntity.attachChild(this.mCharacterEntity);

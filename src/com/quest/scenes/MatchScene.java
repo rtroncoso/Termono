@@ -36,6 +36,7 @@ import android.view.Gravity;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.quest.constants.GameFlags;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
 import com.quest.entities.Player;
@@ -47,7 +48,7 @@ import com.quest.objects.BooleanMessage;
 import com.quest.objects.CharacterObject;
 import com.quest.objects.InputText;
 import com.quest.objects.MatchObject;
-public class MatchScene extends Scene {
+public class MatchScene extends Scene implements GameFlags {
 
 	// ===========================================================
 	// Constants
@@ -577,7 +578,7 @@ public class MatchScene extends Scene {
 					case TouchEvent.ACTION_UP:
 						if(mGrabbed) {
 							mGrabbed = false;
-							Game.getTextHelper().FlushText("MatchScene");
+							Game.getTextHelper().FlushTexts("MatchScene");
 							Game.getSceneManager().setGameScene();
 							Game.getServer().sendMatchStartedMessage();
 							//Game.getSceneManager().setTestScene();
@@ -633,8 +634,8 @@ public class MatchScene extends Scene {
 			Log.d("Quest!","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
 		}
 		try {
-			this.mLobbyEntity.attachChild(Game.getTextHelper().NewText(150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "MatchScene;OwnIP"));
-			this.mLobbyEntity.attachChild(Game.getTextHelper().NewText(150, 180, "userID: "+Game.getUserID(), "MatchScene;OwnIP"));
+			this.mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "MatchScene;OwnIP"));
+			this.mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 180, "userID: "+Game.getUserID(), "MatchScene;OwnIP"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -770,15 +771,14 @@ public class MatchScene extends Scene {
 		                  mGrabbed = false;
 		                  if(Step==0){
 							if(MatchScene.this.mMatchNameInput.getText().equals(null)||MatchScene.this.mMatchNameInput.getText().equals("")){
-								MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(250, 350, "Please enter a valid name for the match", "MatchScene;Alert"));
+								MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, 250, 350, "Please enter a valid name for the match", "Alert;Alert1"));
 							}else{
 								if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText(),1)){
-									Game.getTextHelper().ClearText("MatchScene;Alert");
-									Game.getTextHelper().ClearText("MatchScene;Alert2");
+									Game.getTextHelper().FlushTexts("Alert");
 									Step+=1;
 									MatchScene.this.MatchCreate(false,true);
 								}else{
-									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(20, 370, "You already have a match with that name, please choose another one.", "MatchScene;Alert2"));
+									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, 20, 370, "You already have a match with that name, please choose another one.", "Alert;Alert2"));
 								}
 							}
 		                  }else{
@@ -1030,10 +1030,8 @@ public class MatchScene extends Scene {
 	        this.registerTouchArea(this.mLoadMatchBottomRightSprite);
 
 	        this.mCharactersEntity.setX(61);
-	        this.mCharactersEntity.attachChild(Game.getTextHelper().NewText(500, 500, "----------------------------------------------------------------------------------------------", "MatchScene;RetrievingCharacters"));
-	        Game.getTextHelper().ChangeText("Retrieving characters, please wait.", "MatchScene;RetrievingCharacters", 0, 0);
+	        this.mCharactersEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 0,0 ,"Retrieving characters, please wait.", "MatchScene;RetrievingCharacters"));
 	        this.mLoadMatchEntity.attachChild(mCharactersEntity);
-			
 			break;
 		}
 		
@@ -1049,13 +1047,13 @@ public class MatchScene extends Scene {
 				MatchScene.this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(Game.getDataHandler().getPlayerClass(IDArray[i])),this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, IDArray[i], Game.getDataHandler().getPlayerLevel(IDArray[i]),Game.getDataHandler().getPlayerAttributes(IDArray[i]),Game.getDataHandler().getPlayerClass(IDArray[i]), "MatchScene;"+String.valueOf(MatchScene.this.mCharacterList.size())));
 			}
 		}else{//No tiene chara pido que se haga uno
-			this.mCharactersEntity.attachChild(Game.getTextHelper().NewText(0, 0, "You have no characters in this match, please create one.", "MatchScene;NoCharasAlert"));
+			this.mCharactersEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,0, 0, "You have no characters in this match, please create one.", "MatchScene;NoCharasAlert"));
 		}
 		return this.mCharactersEntity;
 	}
 	
 	public void LoadOwnRemoteCharacters(int pCharacterID, int pLevel, int pClass){//***Ajustar para que pida la textura/loquesea correspondiente
-		if(mCharactersEntity.getChildCount()==1){Game.getTextHelper().ClearText("MatchScene;RetrievingCharacters");}
+		if(mCharactersEntity.getChildCount()==1){Game.getTextHelper().deleteText("MatchScene;RetrievingCharacters");}
 		Log.d("Quest!","id " + pCharacterID+" level "+pLevel+" class "+pClass);
 		this.mCharacterList.add(new CharacterObject(LoadCharacterTextureRegion(pClass), this.mCharacterList.size()*64, 0, MatchScene.this, this.mCharactersEntity, pCharacterID, pLevel,"MatchScene;"+String.valueOf(MatchScene.this.mCharacterList.size())));
 	}
@@ -1088,15 +1086,11 @@ public class MatchScene extends Scene {
 				this.mChoices[4] = 1;
 				this.mChoices[5] = 1;
 				this.mChoices[6] = 10;
-		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
-		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
-		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
-		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText3"));
-		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText4"));
-		      Game.getTextHelper().ClearText("MatchScene;StepText3");
-		      Game.getTextHelper().ClearText("MatchScene;StepText4");
-		      Game.getTextHelper().ClearText("MatchScene;StepText1");
-		      Game.getTextHelper().ClearText("MatchScene;StepText2");
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText1"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText2"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText3"));
+		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText4"));
 		    }
 		    this.clearTouchAreas();
 		    RegisterOldLoadMatchTouchAreas();
@@ -1558,15 +1552,11 @@ public class MatchScene extends Scene {
 						this.mChoices[4] = 1;
 						this.mChoices[5] = 1;
 						this.mChoices[6] = 10;
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText1"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText2"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText3"));
-						this.mLoadMatchEntity.attachChild(Game.getTextHelper().NewText(100, 150, "---------------------------------------------------------------------------------------", "MatchScene;StepText4"));
-						Game.getTextHelper().ClearText("MatchScene;StepText3");
-						Game.getTextHelper().ClearText("MatchScene;StepText4");
-						Game.getTextHelper().ClearText("MatchScene;StepText1");
-						Game.getTextHelper().ClearText("MatchScene;StepText2");
+						this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText"));
+					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText1"));
+					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText2"));
+					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText3"));
+					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText4"));
 						this.mLoadMatchEntity.detachChild(this.mLoadMatchBottomLeftSprite);
 						this.mLoadMatchEntity.detachChild(this.mLoadMatchBottomRightSprite);
 						this.mLoadMatchEntity.detachChild(this.mLoadMatchTopRightSprite);

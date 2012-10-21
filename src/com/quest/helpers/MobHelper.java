@@ -3,13 +3,13 @@ package com.quest.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.quest.constants.MobFlags;
+import com.quest.constants.GameFlags;
 import com.quest.entities.Mob;
 import com.quest.network.QServer;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.pools.MobPool;
 
-public class MobHelper implements MobFlags{		
+public class MobHelper implements GameFlags{		
 		private ArrayList<Mob> mMobs;
 		private final MobPool mMobPool = new MobPool();
 		private Mob nullMob;
@@ -46,6 +46,7 @@ public class MobHelper implements MobFlags{
 		}
 		
 		public void deleteMobs(int pMobID){
+			//Hacer que sea especifico por mapa, filtrando de la lista
 			this.mMobPool.recycleMobs(this.mMobs);
 			this.mMobs.clear();
 		}
