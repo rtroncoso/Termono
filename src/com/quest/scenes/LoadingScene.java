@@ -4,16 +4,16 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.AnimatedSprite.IAnimationListener;
+import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 
-import android.util.Log;
-
+import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 
-public class LoadingScene extends Scene {
+public class LoadingScene extends Scene implements GameFlags{
 
 
 	// ===========================================================
@@ -31,16 +31,19 @@ public class LoadingScene extends Scene {
 	private BitmapTextureAtlas mWalkingMageTextureAtlas;
 	private ITiledTextureRegion mWalkingMageTextureRegion;
 	private AnimatedSprite mWalkingMage;
+	private Text mLoadingText;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public LoadingScene() {
+		mLoadingText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 0, 0, "LOADING", "LoadingScene");
+		mLoadingText.setScale(2f);
+		this.attachChild(mLoadingText);
 		// Load the loading ring
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/LoadingScene/");
 	//	this.mLoadingCircleTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024, 128, TextureOptions.BILINEAR);
 	//	this.mLoadingCircleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mLoadingCircleTextureAtlas, 
 	//	Game.getInstance().getApplicationContext(), "LoadingCircle.png", 0, 0, 8, 1);
-		
 		this.mWalkingMageTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 128, 64, TextureOptions.BILINEAR);
 		this.mWalkingMageTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mWalkingMageTextureAtlas, 
 		Game.getInstance().getApplicationContext(), "WalkingMage.png", 0, 0, 4, 1);
@@ -54,7 +57,7 @@ public class LoadingScene extends Scene {
 	/*	this.mLoadingCircle = new AnimatedSprite( -(this.mLoadingCircleTextureRegion.getWidth() / 16), -(this.mLoadingCircleTextureRegion.getHeight() / 2), 
 				this.mLoadingCircleTextureRegion, Game.getInstance().getEngine().getVertexBufferObjectManager());
 	*/	
-		this.mWalkingMage= new AnimatedSprite(Game.getSceneManager().getDisplay().getCameraWidth()+20,(-1*(this.mWalkingMageTextureRegion.getHeight() / 2)), 
+		this.mWalkingMage= new AnimatedSprite(Game.getSceneManager().getDisplay().getCameraWidth()+40,(-1*(this.mWalkingMageTextureRegion.getHeight() / 2)), 
 				this.mWalkingMageTextureRegion, Game.getInstance().getEngine().getVertexBufferObjectManager());
 		this.mWalkingMage.setCullingEnabled(true);
 		this.mWalkingMage.setScale(2);
@@ -129,25 +132,29 @@ public class LoadingScene extends Scene {
 				public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
 						int pInitialLoopCount) {
 					mWalkingMage.setFlippedHorizontal(false);
-					mWalkingMage.registerEntityModifier(new MoveModifier(4f, (Game.getSceneManager().getDisplay().getCameraWidth()/2)+20, (-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-20,mWalkingMage.getY(), mWalkingMage.getY()));				
+					mWalkingMage.registerEntityModifier(new MoveModifier(4f, (Game.getSceneManager().getDisplay().getCameraWidth()/2)+40, (-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-40,mWalkingMage.getY(), mWalkingMage.getY()));				
 				}
 
 				@Override
 				public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
 						int pOldFrameIndex, int pNewFrameIndex) {
 					// TODO Auto-generated method stub
-					
+					if(mWalkingMage.isFlippedHorizontal()){
+						mLoadingText.setPosition(mWalkingMage.getX()-(mLoadingText.getWidth()*1.5f), mWalkingMage.getY()+10);
+					}else{
+						mLoadingText.setPosition(mWalkingMage.getX()+mWalkingMage.getWidthScaled()+35, mWalkingMage.getY()+10);
+					}
 				}
 
 				@Override
 				public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
 						int pRemainingLoopCount, int pInitialLoopCount) {
-					if(mWalkingMage.getX()==(-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-20){
+					if(mWalkingMage.getX()==(-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-40){
 						mWalkingMage.setFlippedHorizontal(true);
-						mWalkingMage.registerEntityModifier(new MoveModifier(4f, (-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-20, (Game.getSceneManager().getDisplay().getCameraWidth()/2)+20,mWalkingMage.getY(), mWalkingMage.getY()));
-					}else if(mWalkingMage.getX()==(Game.getSceneManager().getDisplay().getCameraWidth()/2)+20){
+						mWalkingMage.registerEntityModifier(new MoveModifier(0.7f, (-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-40, (Game.getSceneManager().getDisplay().getCameraWidth()/2)+40,mWalkingMage.getY(), mWalkingMage.getY()));
+					}else if(mWalkingMage.getX()==(Game.getSceneManager().getDisplay().getCameraWidth()/2)+40){
 						mWalkingMage.setFlippedHorizontal(false);
-						mWalkingMage.registerEntityModifier(new MoveModifier(4f, (Game.getSceneManager().getDisplay().getCameraWidth()/2)+20, (-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-20,mWalkingMage.getY(), mWalkingMage.getY()));
+						mWalkingMage.registerEntityModifier(new MoveModifier(0.7f, (Game.getSceneManager().getDisplay().getCameraWidth()/2)+40, (-1*(Game.getSceneManager().getDisplay().getCameraWidth()/2))-40,mWalkingMage.getY(), mWalkingMage.getY()));
 					}
 				}
 

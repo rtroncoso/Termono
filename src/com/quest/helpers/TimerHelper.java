@@ -70,8 +70,8 @@ public class TimerHelper {
 		/*for(Timer tmpTimer : this.mTimersList.) {
 			if(tmpTimer.getUserData().equals(pKey))
 				return tmpTimer;
-		}*/ // falta hacer el get de cada timer, sino funciona todo
-		Log.e("Quest!", "PlayerHelper: Search - No Timer matches key");
+		}*/ // falta hacer el get de cada timer, sino funciona todo // me cago en vos!! sabes cuanto estuve para darme cuenta que mierda estaba pasando ¬¬
+		Log.e("Quest!", "TimerHelper: Search - No Timer matches key");
 		return null;
 	}
 

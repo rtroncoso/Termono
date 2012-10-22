@@ -51,6 +51,13 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mEntityType = "Mob";
 	
+	}
+
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
+	public void startMoveTimer(){
 		if(Game.isServer()){	
 			Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
 				@Override
@@ -58,14 +65,10 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 					// TODO Auto-generated method stub
 					Mob.this.doRandomPath();
 				}
-			}), (String) this.getUserData());
+			}), String.valueOf(this.getUserData()));
 		}
 	}
-
-
-	// ===========================================================
-	// Methods
-	// ===========================================================
+	
 	public void doRandomPath() 
 	{		
 		if(!this.isWalking) 
@@ -136,9 +139,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 					Game.getMobHelper().clearMobsAlpha();
 					this.getBodySprite().setAlpha(0.70f);
 				}
-
 				Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
-
 				
 			}
 			break;
@@ -159,29 +160,31 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
-		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
+	/*	this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
 		//Hacer un wait?
-		try {
+		try {***************************************
 			wait(400);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
 	}
 
 	
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int ATTACK_FLAG){
-		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(ATTACK_FLAG));	//Mostrar la animacion de ataque
-
-		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp 
+		//this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(ATTACK_FLAG));	//Mostrar la animacion de ataque
+//******************
+		//logit(true);
+		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp
 		if(decreaseHP(pDamage)){
 			if(Game.isServer()){
 				int[] drop = this.getMobDrop();
 				Game.getBattleHelper().killMob(this,drop[0],drop[1], this.getExperience(), this.getMoney(),(Player) (pAttackingEntity));
 			}
 		}
+		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()));
 		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
 
 	};

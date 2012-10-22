@@ -51,6 +51,7 @@ public class TextPool {
 					@Override
 					protected void onHandleRecycleItem(final Text pText) {
 						pText.setVisible(false);
+						pText.setAlpha(1f);
 						pText.setUserData(null);
 						pText.setCullingEnabled(true);
 						pText.setPosition(-10, -10);

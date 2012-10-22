@@ -87,6 +87,10 @@ public class TextHelper implements GameFlags{
 		this.mTextList.remove(index);
 	}
 	
+	public void deleteText(Text pText){
+		this.mTextList.remove(pText);
+		this.mTextPool.recycleText(pText);
+	}	
 	
 	public void ChangeText(String pText,String pTextKey,float X,float Y){
 		Text tmpText = this.getText(pTextKey);

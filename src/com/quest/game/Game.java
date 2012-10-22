@@ -31,7 +31,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static boolean AVD_DEBUGGING = true;
+	private static boolean AVD_DEBUGGING = false;
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -74,8 +74,6 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mDataHandler = new DataHandler();
 		Game.mPlayerHelper = new PlayerHelper();
 		Game.mTimerHelper = new TimerHelper();
-		//Game.mMobHelper = new MobHelper(); NO TEXTURE MANAGER TO INITIALIZE THE POOL ***
-		//Game.setBattleHelper(new BattleHelper());
 		
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInf = wifiMan.getConnectionInfo();

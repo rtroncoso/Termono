@@ -1,12 +1,11 @@
 package com.quest.helpers;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import android.util.Log;
 
 import com.quest.constants.GameFlags;
 import com.quest.entities.Mob;
-import com.quest.network.QServer;
-import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.pools.MobPool;
 
 public class MobHelper implements GameFlags{		
@@ -38,6 +37,7 @@ public class MobHelper implements GameFlags{
 				this.mMobs.add(mob);
 			}
 			mob.setUserData(this.mMobs.indexOf(mob));
+			mob.startMoveTimer();
 			return mob;
 		}
 		

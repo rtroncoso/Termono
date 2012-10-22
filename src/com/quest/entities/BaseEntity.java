@@ -4,17 +4,22 @@ import java.util.ArrayList;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.AlphaModifier;
+import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.AnimatedSprite.IAnimationListener;
+import org.andengine.entity.text.Text;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
+import org.andengine.util.modifier.IModifier;
 import org.andengine.util.modifier.ease.EaseLinear;
 
 import android.util.Log;
@@ -231,6 +236,28 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return this;
 	}
 
+	public void popOverHead(Text pText){
+		final Text tmpText = pText;
+		this.attachChild(tmpText);
+		Log.d("Quest!","Por entrar a los modifiers");
+		tmpText.registerEntityModifier(new MoveModifier(0.7f,BaseEntity.this.getBodySprite().getX(),BaseEntity.this.getBodySprite().getX()+5,BaseEntity.this.getBodySprite().getY(),BaseEntity.this.getBodySprite().getY()-5,new IEntityModifierListener() {
+			
+			@Override
+			public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
+				Log.d("Quest!","Listener Started - Alpha starting");
+				tmpText.registerEntityModifier(new AlphaModifier(0.5f,1f,0.2f));
+				Log.d("Quest!","alpha ended");
+			}
+			
+			@Override
+			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+				// TODO Auto-generated method stub
+				BaseEntity.this.detachChild(tmpText);
+				Game.getTextHelper().deleteText(tmpText);
+			}
+		}));
+	}
+	
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
