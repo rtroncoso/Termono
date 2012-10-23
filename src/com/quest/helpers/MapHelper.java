@@ -219,7 +219,7 @@ public class MapHelper implements IMeasureConstants {
 												@Override
 												public void onComplete() {
 													// TODO Auto-generated method stub
-
+													Game.getSceneManager().getLoadingScene().loadingAnimation(false);
 											        // Map loaded!
 													MapHelper.this.isChangingMap = false;
 													Game.getSceneManager().restoreSavedScene();

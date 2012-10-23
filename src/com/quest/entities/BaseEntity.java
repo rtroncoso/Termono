@@ -56,7 +56,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected int mBodyRows;
 	
 	
-	
 	//a ordenar
 	protected int mLevel;
 	protected int currHP,currMana;
@@ -236,17 +235,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return this;
 	}
 
-	public void popOverHead(Text pText){
+	public void popOverHead(Text pText,float pScale){
 		final Text tmpText = pText;
+		tmpText.setScale(pScale);
 		this.attachChild(tmpText);
-		Log.d("Quest!","Por entrar a los modifiers");
-		tmpText.registerEntityModifier(new MoveModifier(0.7f,BaseEntity.this.getBodySprite().getX(),BaseEntity.this.getBodySprite().getX()+5,BaseEntity.this.getBodySprite().getY(),BaseEntity.this.getBodySprite().getY()-5,new IEntityModifierListener() {
-			
+		tmpText.registerEntityModifier(new MoveModifier(0.7f,BaseEntity.this.getBodySprite().getX(),BaseEntity.this.getBodySprite().getX()+5,BaseEntity.this.getBodySprite().getY(),BaseEntity.this.getBodySprite().getY()-5,new IEntityModifierListener() {		
 			@Override
 			public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
-				Log.d("Quest!","Listener Started - Alpha starting");
 				tmpText.registerEntityModifier(new AlphaModifier(0.5f,1f,0.2f));
-				Log.d("Quest!","alpha ended");
 			}
 			
 			@Override
@@ -575,60 +571,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		// TODO Auto-generated method stub
 		
 		while(this.mAttackLayer.size()>0){
-			Log.d("Quest!","en el while "+mAttackLayer.size());
 			for(int i = this.mAttackLayer.size()-1;i>=0; i--){
 				final Attack mAttackToDraw = this.mAttackLayer.get(i);
-				Log.d("Quest!","en el for "+i+"  "+mAttackToDraw.getAnimationStatus());
-				switch (mAttackToDraw.getAnimationStatus()) {
-				case 0:
-					mAttackToDraw.setAnimationStatus(1);
-					this.attachChild(mAttackToDraw.getAttackAnimation());					
-					mAttackToDraw.getAttackAnimation().animate(100,false,new IAnimationListener() {
-						
-						@Override
-						public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
-								int pInitialLoopCount) {
-							mAttackToDraw.setAnimationStatus(1);			
-							Log.d("Quest!","Animation started");
-						}
-						
-						@Override
-						public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
-								int pRemainingLoopCount, int pInitialLoopCount) {
-							// TODO Auto-generated method stub
-							
-						}
-						
-						@Override
-						public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
-								int pOldFrameIndex, int pNewFrameIndex) {
-							// TODO Auto-generated method stub
-							Log.d("Quest!","frame");
-							
-						}
-						
-						@Override
-						public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
-							mAttackToDraw.setAnimationStatus(2);
-							BaseEntity.this.detachChild(mAttackToDraw.getAttackAnimation());
-							Log.d("Quest!","Animation ended");
-							//BaseEntity.this.mAttackLayer.remove(mAttackToDraw);
-							}
-					
-					});
-					break;
-				case 1:
-					Log.d("Quest!","entro al 1");
-					mAttackToDraw.setAnimationStatus(2);
-					break;
-				case 2:
-					Log.d("Quest!","removed");
-					this.mAttackLayer.remove(i);
-					Game.getAttacksHelper().recycleAttack(mAttackToDraw);
-					break;
-				}
-			/*	if(this.mAttackLayer.get(i).getAnimationStatus()==0){
-					final Attack mAttackToDraw = this.mAttackLayer.get(i);
 					mAttackToDraw.setAnimationStatus(1);
 					this.attachChild(mAttackToDraw.getAttackAnimation());
 					mAttackToDraw.getAttackAnimation().animate(100,false,new IAnimationListener() {
@@ -637,7 +581,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 						public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
 								int pInitialLoopCount) {
 							mAttackToDraw.setAnimationStatus(1);			
-							Log.d("Quest!","Animation started");
 						}
 						
 						@Override
@@ -651,27 +594,18 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 						public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
 								int pOldFrameIndex, int pNewFrameIndex) {
 							// TODO Auto-generated method stub
-							Log.d("Quest!","frame");
-							
 						}
 						
 						@Override
 						public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
 							mAttackToDraw.setAnimationStatus(2);
 							BaseEntity.this.detachChild(mAttackToDraw.getAttackAnimation());
-							Log.d("Quest!","Animation ended");
-							//BaseEntity.this.mAttackLayer.remove(mAttackToDraw);
+							Game.getAttacksHelper().recycleAttack(mAttackToDraw);
 							}
 					
 					});
-					
-				}else if(this.mAttackLayer.get(i).getAnimationStatus()==2){
-					this.mAttackLayer.remove(i);
-				}*/
+					this.mAttackLayer.remove(mAttackToDraw);
 			}
-			
-			
-			
 		}
 		
 		super.onManagedUpdate(pSecondsElapsed);

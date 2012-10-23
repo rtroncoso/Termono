@@ -773,6 +773,7 @@ public class MatchScene extends Scene implements GameFlags {
 		                  if(Step==0){
 							if(MatchScene.this.mMatchNameInput.getText().equals(null)||MatchScene.this.mMatchNameInput.getText().equals("")){
 								MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, 250, 350, "Please enter a valid name for the match", "Alert;Alert1"));
+								Game.getTextHelper().getText("Alert;Alert1").setScale(2f);
 							}else{
 								if(!HasMatches || !Game.getDataHandler().MatchExists(MatchScene.this.mMatchNameInput.getText(),1)){
 									Game.getTextHelper().FlushTexts("Alert");
@@ -780,6 +781,7 @@ public class MatchScene extends Scene implements GameFlags {
 									MatchScene.this.MatchCreate(false,true);
 								}else{
 									MatchScene.this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, 20, 370, "You already have a match with that name, please choose another one.", "Alert;Alert2"));
+									Game.getTextHelper().getText("Alert;Alert2").setScale(2f);
 								}
 							}
 		                  }else{

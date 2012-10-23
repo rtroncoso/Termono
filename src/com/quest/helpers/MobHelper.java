@@ -37,7 +37,7 @@ public class MobHelper implements GameFlags{
 				this.mMobs.add(mob);
 			}
 			mob.setUserData(this.mMobs.indexOf(mob));
-			mob.startMoveTimer();
+			//mob.startMoveTimer();
 			return mob;
 		}
 		

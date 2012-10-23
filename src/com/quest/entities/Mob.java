@@ -174,9 +174,8 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int ATTACK_FLAG){
-		//this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(ATTACK_FLAG));	//Mostrar la animacion de ataque
-//******************
-		//logit(true);
+		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(ATTACK_FLAG));	//Mostrar la animacion de ataque
+
 		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp
 		if(decreaseHP(pDamage)){
 			if(Game.isServer()){
@@ -184,7 +183,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 				Game.getBattleHelper().killMob(this,drop[0],drop[1], this.getExperience(), this.getMoney(),(Player) (pAttackingEntity));
 			}
 		}
-		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()));
+		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()),1+(float)((float)(pDamage)/(float)(mModHP)));
 		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
 
 	};

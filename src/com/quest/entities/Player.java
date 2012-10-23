@@ -147,7 +147,10 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "Eye'm the strongest!", "asd"));
+		if(Game.isAVD_DEBUGGING()){
+			//checkear stack de entidades de player, agregar una animacion
+			popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "Eye'm the strongest!", "asd"),1.5f);
+		}
 		Game.getBattleHelper().startAttack(this, pAttackID, pAttackedEntity);
 		Log.d("Quest!", "Player: "+this.getUserData()+" exp: "+this.mExperience);
 	};

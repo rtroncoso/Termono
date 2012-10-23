@@ -7,8 +7,10 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
+import org.andengine.input.touch.TouchEvent;
 
 import android.util.Log;
 
@@ -24,7 +26,7 @@ import com.quest.helpers.AsyncTaskLoader;
 import com.quest.helpers.interfaces.IAsyncCallback;
 import com.quest.timers.Timer;
 
-public class GameScene extends Scene implements GameFlags{
+public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		// ===========================================================
 		// Constants
 		// ===========================================================
@@ -65,6 +67,8 @@ public class GameScene extends Scene implements GameFlags{
 
 			            @Override
 			            public void workToDo() {
+			            	GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
+			            	GameScene.this.setOnSceneTouchListener(GameScene.this);
 			            	// Load the Map and Attach it
 			    			Game.getMapManager().loadMap(pMapName);
 			    			GameScene.this.attachChild(GameScene.this.mMapLayer);
@@ -235,6 +239,24 @@ public class GameScene extends Scene implements GameFlags{
 		// ===========================================================
 		// Inner and Anonymous Classes
 		// ===========================================================
+		@Override
+		public boolean onSceneTouchEvent(Scene pScene,
+				TouchEvent pSceneTouchEvent) {
+			Log.d("Quest!", "Touch Event");
+			switch (pSceneTouchEvent.getAction()) {
+			case TouchEvent.ACTION_DOWN:
+				Log.d("Quest!","Action DOWN x: "+pSceneTouchEvent.getX()+" y: "+pSceneTouchEvent.getY());
+				break;
+		
+			case TouchEvent.ACTION_UP:
+				Log.d("Quest!","Action UP x: "+pSceneTouchEvent.getX()+" y: "+pSceneTouchEvent.getY());
+				break;
+		}
+			return true;
+		}
+		
+		
+		
 }
 
 

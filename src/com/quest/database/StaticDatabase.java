@@ -61,6 +61,8 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
 	    static final String tAttacks = "Attacks";
         static final String fAttackID = "AttackID";
         static final String fAttackName = "Name";
+        static final String fAttackManaCost = "ManaCost";
+        static final String fAttackEffect = "AttackEffect";
         static final String fAttackIconTexture = "IconTexture";
         static final String fAttackAnimationTexture = "AnimationTexture";
         static final String fAttackAnimationRows = "AnimationRows";
@@ -72,15 +74,6 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fAttackLevels = "Levels";
         static final String fAttackClass = "Class";
         static final String fAttackEffectID = "EffectID";
-        
-        //AttackEffect table
-        static final String tAttackEffect = "AttackEffect";
-        static final String fEffectAttackID = "AttackID";
-        static final String fEffectAttackLevel1 = "Effect1";
-        static final String fEffectAttackLevel2 = "Effect2";
-        static final String fEffectAttackLevel3 = "Effect3";
-        static final String fEffectAttackLevel4 = "Effect4";
-        static final String fEffectAttackLevel5 = "Effect5";
         
         //Mobs   ***attack texture y eso
         static final String tMob = "Mobs";
@@ -179,6 +172,8 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttacks+" ("+
                         fAttackID+" INTEGER PRIMARY KEY , "+
                         fAttackName+" TEXT , "+
+                        fAttackManaCost+" INTEGER ,"+
+                        fAttackEffect+" TEXT ,"+
                         fAttackIconTexture+" TEXT , "+
                         fAttackAnimationTexture+" TEXT , "+
                         fAttackAnimationRows+" INTEGER ,"+
@@ -188,19 +183,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                         fAttackType+" INTEGER , "+
                         fAttackDescription+" TEXT , "+
                         fAttackLevels+" INTEGER, "+
-                        fAttackClass+" INTEGER, "+
-                        fAttackEffectID+" INTEGER)"
+                        fAttackClass+" INTEGER)"
                         );
 
-
-                db.execSQL("CREATE TABLE IF NOT EXISTS "+tAttackEffect+" ("+
-                		fEffectAttackID+" INTEGER PRIMARY KEY , "+
-                		fEffectAttackLevel1+" TEXT ,"+//Como definir los datos aca adentro? los encapsulo en un string por ahora
-                		fEffectAttackLevel2+" TEXT ,"+
-                		fEffectAttackLevel3+" TEXT ,"+
-                		fEffectAttackLevel4+" TEXT ,"+
-                		fEffectAttackLevel5+" TEXT)"
-                        );                
                 
                 
 	            db.execSQL("CREATE TABLE IF NOT EXISTS "+tMob+" ("+
@@ -538,6 +523,8 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackID,FLAG_ATTACK_SPELL_FIREBALL);
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell1.png");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell1.png");
+                cv.put(fAttackEffect, "1;");
+                cv.put(fAttackManaCost, 5);
                 cv.put(fAttackType, 1);
                 cv.put(fAttackAnimationRows, 1);
                 cv.put(fAttackAnimationCols, 5);
@@ -550,6 +537,8 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell2.png");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell2.png");
                 cv.put(fAttackType, 1);
+                cv.put(fAttackEffect, "1.5;");
+                cv.put(fAttackManaCost, 10);
                 cv.put(fAttackAnimationRows, 1);
                 cv.put(fAttackAnimationCols, 5);
                 cv.put(fAttackFrameWidth, 960);
@@ -561,6 +550,8 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell3.png");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell3.png");
                 cv.put(fAttackType, 1);
+                cv.put(fAttackEffect, "2;");
+                cv.put(fAttackManaCost, 15);
                 cv.put(fAttackAnimationRows, 3);
                 cv.put(fAttackAnimationCols, 5);
                 cv.put(fAttackFrameWidth, 960);
