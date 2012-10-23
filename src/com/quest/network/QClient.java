@@ -16,7 +16,9 @@ import android.util.Log;
 import com.quest.constants.ClientMessageFlags;
 import com.quest.constants.ServerMessageFlags;
 import com.quest.entities.Player;
+import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
+import com.quest.network.messages.client.ClientMessageAreaAttack;
 import com.quest.network.messages.client.ClientMessageAttackMessage;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
@@ -27,6 +29,7 @@ import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
+import com.quest.network.messages.server.ServerMessageDisplayAreaAttack;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
@@ -57,6 +60,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER, ClientMessageSelectedPlayer.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER, ClientMessageMovePlayer.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE, ClientMessageAttackMessage.class);
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE, ClientMessageAreaAttack.class);
 			}
 	
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
@@ -189,6 +193,16 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 			});
 			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK, ServerMessageDisplayAreaAttack.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageDisplayAreaAttack serverMessageDisplayAreaAttack = (ServerMessageDisplayAreaAttack) pServerMessage;
+					Attack tmpAttack = Game.getAttacksHelper().addNewAttack(serverMessageDisplayAreaAttack.getAttack_Flag());
+					tmpAttack.setAnimationAtCenter(serverMessageDisplayAreaAttack.getTileX(),serverMessageDisplayAreaAttack.getTileY());
+					Game.getSceneManager().getGameScene().getAttackLayer().add(tmpAttack);
+				}
+			});
+			
 		this.initMessagePool();
 	}
 	
@@ -286,6 +300,20 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				// TODO: handle exception
 			}
 			QClient.this.mMessagePool.recycleMessage(clientMessageAttackMessage);
+		}
+		
+		
+		public void sendAreaAttackMessage(int pAttack_Flag, int pX,int pY){
+				final ClientMessageAreaAttack clientMessageAreaAttack = (ClientMessageAreaAttack) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE);
+				clientMessageAreaAttack.setAttack_Flag(pAttack_Flag);
+				clientMessageAreaAttack.setTileX(pX);
+				clientMessageAreaAttack.setTileY(pY);
+				try {
+					sendClientMessage(clientMessageAreaAttack);				
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				QClient.this.mMessagePool.recycleMessage(clientMessageAreaAttack);	
 		}
 	// ===========================================================
 	// Inner and Anonymous Classes

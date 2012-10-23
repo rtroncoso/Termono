@@ -426,4 +426,13 @@ public class DataHandler {
 	public int getAttackType(int pAttack){
         return this.mStaticDB.getAttackType(pAttack);
     }
+	
+	public float[] getAttackEffect(int pAttack){
+        String[] tmpString = this.mStaticDB.getAttackEffect(pAttack).split(";");
+		float[] floatArray = new float[tmpString.length];
+		for(int i = 0;i<tmpString.length;i++){
+			floatArray[i] = Float.parseFloat(tmpString[i]);
+		}
+		return floatArray;
+    }
 }

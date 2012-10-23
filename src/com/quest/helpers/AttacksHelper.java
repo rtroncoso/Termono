@@ -26,6 +26,7 @@ public class AttacksHelper implements GameFlags{
 		this.mAttackPool.registerAttack(FLAG_ATTACK_SPELL_FIREBALL);
 		this.mAttackPool.registerAttack(FLAG_ATTACK_SPELL_BLAST);
 		this.mAttackPool.registerAttack(FLAG_ATTACK_SPELL_THUNDER);
+		this.mAttackPool.registerAttack(FLAG_ATTACK_SPELL_ICE_RING);
 		this.mAttackPool.registerAttack(FLAG_ATTACK_MOB_DEATH);
 	}
 	

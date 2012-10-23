@@ -51,8 +51,8 @@ public class TextHelper implements GameFlags{
 			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), NormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.WHITE, 1, Color.BLACK);
 			this.mDamageFont = new StrokeFont(Game.getInstance().getFontManager(), DamageFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(157, 22, 22), 1, Color.rgb(196, 28, 28));
 			this.mHealingFont = new StrokeFont(Game.getInstance().getFontManager(), HealingFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(22, 157, 22), 1, Color.rgb(28, 196, 28));
-			this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(59, 39, 39));
-			
+			//this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(59, 39, 39));
+			this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(214, 192, 167));
 
 			this.mNormalFont.load();
 			this.mDamageFont.load();

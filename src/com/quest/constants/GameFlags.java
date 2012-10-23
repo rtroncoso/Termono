@@ -24,6 +24,7 @@ public interface GameFlags {
 	public static final int FLAG_ATTACK_SPELL_FIREBALL = 1;
 	public static final int FLAG_ATTACK_SPELL_BLAST = 2;
 	public static final int FLAG_ATTACK_SPELL_THUNDER = 3;
+	public static final int FLAG_ATTACK_SPELL_ICE_RING = 4;
 	
 	//Other animations
 	public static final int FLAG_ATTACK_MOB_DEATH = 20;

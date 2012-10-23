@@ -22,7 +22,7 @@ public class SpellbarHud extends HUD implements GameFlags{
 	// ===========================================================
 	private final int CANT_SPELLS = 5;
 	private final Sprite[] mSpells = new Sprite[CANT_SPELLS];
-	private final Attack[] mSpellIcons = new Attack[5];
+	private final Attack[] mSpellIcons = new Attack[6];
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -117,13 +117,11 @@ public class SpellbarHud extends HUD implements GameFlags{
 			this.mSpells[i].setUserData(i);
 			this.mSpells[i].setScale(2.0f);
 			
-			if(i>0 && i<4){
+			if(i>0 && i<5){
 			mSpellIcons[i] = new Attack(i);
-			mSpellIcons[i].getAttackIcon().setPosition(this.mSpells[i-1].getX()+6, this.mSpells[i].getY()+6);
+			mSpellIcons[i].getAttackIcon().setPosition(this.mSpells[i-1].getX()+6, this.mSpells[i-1].getY()+6);
 			}
-			if(i==4||i==3){
-				this.mHud.registerTouchArea(this.mSpells[i]);
-			}
+		
 		}
 		
 		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, Game.getInstance().getVertexBufferObjectManager()) {

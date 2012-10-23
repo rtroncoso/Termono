@@ -28,7 +28,7 @@ public class Attack extends Entity implements IMeasureConstants {
 	private String mIconTexturePath;
 	private int FrameHeight,FrameWidth;
 	private int mCols,mRows;
-	
+	private float[] mEffect;
 	public Attack(int ATTACK_FLAG) {;
 		
 		this.mAttack_Flag = ATTACK_FLAG;
@@ -38,16 +38,16 @@ public class Attack extends Entity implements IMeasureConstants {
 		this.setFrameWidth(Game.getDataHandler().getAttackFrameWidth(mAttack_Flag));
 		this.mCols = Game.getDataHandler().getAttackAnimationCols(mAttack_Flag);
 		this.mRows = Game.getDataHandler().getAttackAnimationRows(mAttack_Flag);
-	
-	
+		this.mEffect = Game.getDataHandler().getAttackEffect(mAttack_Flag);
+		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.mAttackTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024, 1024);
 		this.mAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mAttackTextureAtlas, Game.getInstance().getApplicationContext(), mAnimatedTexturePath, 0, 0, mCols, mRows);
 		this.mAttackTextureAtlas.load();
-		this.mAttackAnimation = new AnimatedSprite((TILE_SIZE / 2) - (this.mAttackTextureRegion.getWidth() / 2), (TILE_SIZE / 2) - (this.mAttackTextureRegion.getWidth() / 2), this.mAttackTextureRegion, Game.getInstance().getVertexBufferObjectManager());
+		this.mAttackAnimation = new AnimatedSprite((TILE_SIZE / 2) - (this.mAttackTextureRegion.getWidth()/2), (TILE_SIZE / 2) - (this.mAttackTextureRegion.getWidth()/ 2), this.mAttackTextureRegion, Game.getInstance().getVertexBufferObjectManager());
 		this.mAttackAnimation.setCullingEnabled(true);
 		
-		if(mAttackType==1){//Si es ataque de player tiene icono, sino no
+		if(mAttackType!=0){//Si es ataque de player tiene icono, sino no
 			this.mIconTexturePath = Game.getDataHandler().getAttackIconTexture(mAttack_Flag);
 			
 			this.mIconTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mAttackTextureAtlas, Game.getInstance().getApplicationContext(), mIconTexturePath, 0, FrameHeight);
@@ -202,5 +202,36 @@ public class Attack extends Entity implements IMeasureConstants {
 	public void setRows(int mRows) {
 		this.mRows = mRows;
 	}
+
+	/**
+	 * @return the mEffect
+	 */
+	public float[] getEffect() {
+		return mEffect;
+	}
+	/**
+	 * @param mEffect the mEffect to set
+	 */
+	public void setEffect(float[] mEffect) {
+		this.mEffect = mEffect;
+	}
+	/**
+	 * @return the mAttackType
+	 */
+	public int getAttackType() {
+		return mAttackType;
+	}
+	/**
+	 * @param mAttackType the mAttackType to set
+	 */
+	public void setAttackType(int mAttackType) {
+		this.mAttackType = mAttackType;
+	}
+	
+	public void setAnimationAtCenter(int X, int Y){
+		this.mAttackAnimation.setPosition(X - (this.mAttackTextureRegion.getWidth()/2), Y - (this.mAttackTextureRegion.getWidth() / 2));
+	}
+	
+	
 
 }

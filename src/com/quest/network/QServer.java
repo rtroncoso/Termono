@@ -1,11 +1,11 @@
 package com.quest.network;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.extension.multiplayer.protocol.adt.message.IMessage;
 import org.andengine.extension.multiplayer.protocol.adt.message.client.IClientMessage;
-import org.andengine.extension.multiplayer.protocol.adt.message.server.IServerMessage;
 import org.andengine.extension.multiplayer.protocol.server.IClientMessageHandler;
 import org.andengine.extension.multiplayer.protocol.server.SocketServer;
 import org.andengine.extension.multiplayer.protocol.server.SocketServer.ISocketServerListener.DefaultSocketServerListener;
@@ -14,6 +14,7 @@ import org.andengine.extension.multiplayer.protocol.server.connector.SocketConne
 import org.andengine.extension.multiplayer.protocol.server.connector.SocketConnectionClientConnector.ISocketConnectionClientConnectorListener;
 import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.MessagePool;
+import org.andengine.extension.tmx.TMXTile;
 import org.andengine.util.debug.Debug;
 
 import android.util.Log;
@@ -22,9 +23,12 @@ import com.quest.constants.ClientMessageFlags;
 import com.quest.constants.ServerMessageFlags;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
+import com.quest.entities.Mob;
 import com.quest.entities.Player;
+import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
+import com.quest.network.messages.client.ClientMessageAreaAttack;
 import com.quest.network.messages.client.ClientMessageAttackMessage;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
@@ -36,6 +40,7 @@ import com.quest.network.messages.server.QuestServerMessage;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
+import com.quest.network.messages.server.ServerMessageDisplayAreaAttack;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
@@ -83,6 +88,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOB_DIED, ServerMessageMobDied.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SPAWN_MOB, ServerMessageSpawnMob.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOVE_MOB, ServerMessageMoveMob.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK, ServerMessageDisplayAreaAttack.class);
 		
 	}
 
@@ -280,6 +286,25 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			}
 		});
 		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE, ClientMessageAreaAttack.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessageAreaAttack clientMessageAreaAttack = (ClientMessageAreaAttack) pClientMessage;
+				Attack tmpAtt = Game.getAttacksHelper().addNewAttack(clientMessageAreaAttack.getAttack_Flag());
+				TMXTile tmpTile = Game.getMapManager().getTMXTileAt(clientMessageAreaAttack.getTileX(), clientMessageAreaAttack.getTileY());
+			
+				tmpAtt.setAnimationAtCenter(tmpTile.getTileX()+16,tmpTile.getTileY()+16);
+				
+				ArrayList<Mob> tmpMobsinArea = Game.getMobHelper().getMobsInArea(clientMessageAreaAttack.getTileX(), clientMessageAreaAttack.getTileY(), (int)(tmpAtt.getEffect()[1]));
+				for(int i = tmpMobsinArea.size()-1;i>=0;i--){
+					Game.getBattleHelper().startAttack(Game.getPlayerHelper().getOwnPlayer(), tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
+				}
+				sendMessageDisplayAreaAttack(clientMessageAreaAttack.getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16);
+				Game.getSceneManager().getGameScene().getAttackLayer().add(tmpAtt);
+				
+			}
+		});
+		
 		
 		return clientConnector;
 	}
@@ -351,6 +376,14 @@ public void sendMessageMoveMob(int pMobKey, byte pDirection){
 	final ServerMessageMoveMob serverMessageMoveMob = (ServerMessageMoveMob) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MOVE_MOB);
 	serverMessageMoveMob.set(pMobKey, pDirection);
 	sendBroadcast(serverMessageMoveMob);
+}
+
+public void sendMessageDisplayAreaAttack(int pAttack_Flag, int pX,int pY){
+	final ServerMessageDisplayAreaAttack serverMessageDisplayAreaAttack = (ServerMessageDisplayAreaAttack) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK);
+	serverMessageDisplayAreaAttack.setAttack_Flag(pAttack_Flag);
+	serverMessageDisplayAreaAttack.setTileX(pX);
+	serverMessageDisplayAreaAttack.setTileY(pY);
+	sendBroadcast(serverMessageDisplayAreaAttack);
 }
 // ===========================================================
 // Inner and Anonymous Classes

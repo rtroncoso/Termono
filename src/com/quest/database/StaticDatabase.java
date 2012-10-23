@@ -73,7 +73,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fAttackDescription = "Description";
         static final String fAttackLevels = "Levels";
         static final String fAttackClass = "Class";
-        static final String fAttackEffectID = "EffectID";
+        
         
         //Mobs   ***attack texture y eso
         static final String tMob = "Mobs";
@@ -559,10 +559,23 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 db.insert(tAttacks, null, cv); 
                 cv.clear();
                 
+                cv.put(fAttackID,FLAG_ATTACK_SPELL_ICE_RING);
+                cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell4.png");
+                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell4.png");
+                cv.put(fAttackType, 2);
+                cv.put(fAttackEffect, "1.2;3");
+                cv.put(fAttackManaCost, 25);
+                cv.put(fAttackAnimationRows, 2);
+                cv.put(fAttackAnimationCols, 5);
+                cv.put(fAttackFrameWidth, 960);
+                cv.put(fAttackFrameHeight, 384);
+                db.insert(tAttacks, null, cv); 
+                cv.clear();
+                
                 cv.put(fAttackID,FLAG_ATTACK_MOB_DEATH);
                 cv.put(fAttackIconTexture, "null");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell3.png");
-                cv.put(fAttackType, 2);
+                cv.put(fAttackType, 0);
                 cv.put(fAttackAnimationRows, 1);
                 cv.put(fAttackAnimationCols, 5);
                 cv.put(fAttackFrameWidth, 960);
@@ -988,5 +1001,15 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
          	return myAnswer;
          }
          
+         public String getAttackEffect(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackEffect+" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fAttackEffect);
+         	String myAnswer = myCursor.getString(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
          
 }

@@ -239,10 +239,10 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		final Text tmpText = pText;
 		tmpText.setScale(pScale);
 		this.attachChild(tmpText);
-		tmpText.registerEntityModifier(new MoveModifier(0.7f,BaseEntity.this.getBodySprite().getX(),BaseEntity.this.getBodySprite().getX()+5,BaseEntity.this.getBodySprite().getY(),BaseEntity.this.getBodySprite().getY()-5,new IEntityModifierListener() {		
+		tmpText.registerEntityModifier(new MoveModifier(1f,BaseEntity.this.getBodySprite().getX(),BaseEntity.this.getBodySprite().getX()+5,BaseEntity.this.getBodySprite().getY(),BaseEntity.this.getBodySprite().getY()-5,new IEntityModifierListener() {		
 			@Override
 			public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
-				tmpText.registerEntityModifier(new AlphaModifier(0.5f,1f,0.2f));
+				tmpText.registerEntityModifier(new AlphaModifier(1f,1f,0.2f));
 			}
 			
 			@Override

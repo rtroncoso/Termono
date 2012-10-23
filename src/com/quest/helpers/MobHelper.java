@@ -59,6 +59,21 @@ public class MobHelper implements GameFlags{
 			}
 		}
 
+		public ArrayList<Mob> getMobsInArea(int tileX, int tileY, int range){
+			ArrayList<Mob> tmpMobs = new ArrayList<Mob>();
+			for(int i = mMobs.size()-1;i>=0;i--){
+				if(!mMobs.get(i).equals(nullMob)){
+					if(mMobs.get(i).getTMXTileAt().getTileColumn()>=(tileX-range)&&mMobs.get(i).getTMXTileAt().getTileColumn()<=(tileX+range)){
+						if(mMobs.get(i).getTMXTileAt().getTileRow()>=(tileY-range)&&mMobs.get(i).getTMXTileAt().getTileRow()<=(tileY+range)){
+							tmpMobs.add(mMobs.get(i));
+						}
+					}
+				}
+			}
+			return tmpMobs;
+		}
+		
+		
 		/**
 		 * @return the mMobs
 		 */

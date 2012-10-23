@@ -18,4 +18,5 @@ public interface ClientMessageFlags {
 
 	//Battle flags
 	public static final short FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE = 220;
+	public static final short FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE = 221;
 }

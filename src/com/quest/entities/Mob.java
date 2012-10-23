@@ -13,6 +13,7 @@ import org.andengine.input.touch.TouchEvent;
 import android.util.Log;
 
 import com.quest.constants.GameFlags;
+import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
 import com.quest.timers.Timer;
 
@@ -174,8 +175,10 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int ATTACK_FLAG){
-		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(ATTACK_FLAG));	//Mostrar la animacion de ataque
-
+		Attack tmpAtt = Game.getAttacksHelper().addNewAttack(ATTACK_FLAG);
+		if(tmpAtt.getAttackType()!=2){
+			this.mAttackLayer.add(tmpAtt);	//Mostrar la animacion de ataque
+		}
 		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp
 		if(decreaseHP(pDamage)){
 			if(Game.isServer()){
