@@ -58,19 +58,11 @@ public class ClientMessagePlayerCreate extends ClientMessage implements ClientMe
 	}
 	
 	public int[] getAttributes(){
-		return new int[]{this.mPower,this.mIntelligence,this.mDefense,this.mEndurance};
+		return new int[]{this.mPower,this.mIntelligence,this.mDefense,this.mEndurance,this.mUnassigned};
 	}
 	
 	public int getPlayerHeadID(){
 		return this.mHeadID;
-	}
-
-	public int getUnassigned() {
-		return mUnassigned;
-	}
-
-	public void setUnassigned(int mUnassigned) {
-		this.mUnassigned = mUnassigned;
 	}
 
 	public String getUserID() {

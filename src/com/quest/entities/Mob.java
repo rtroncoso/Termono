@@ -8,6 +8,7 @@ import java.util.Random;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.ITouchArea;
+import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 
 import android.util.Log;
@@ -101,15 +102,14 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 			}		
 			if(move == true && movingDirection != DIRECTION_DEFAULT)
 			{
-				
-				// Animate the Character
-				this.setAnimationDirection(movingDirection, false);
+
+				// Store the new Tile
+				final TMXTile tmpNewTile = this.moveInDirection(movingDirection);
+				if(tmpNewTile == null) return;
 				
 				// Sends Move
-				if(Game.isServer()){
-					Game.getServer().sendMessageMoveMob((Integer)(this.getUserData()), movingDirection);
-					this.moveInDirection(movingDirection);
-				}
+				Game.getServer().sendMessageMoveMob((Integer)(this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+				this.moveToTile(tmpNewTile);
 			}
 		}		
 	}
@@ -161,15 +161,18 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
-	/*	this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
-		//Hacer un wait?
-		try {***************************************
-			wait(400);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		Game.getMobHelper().deleteMob((Integer)(this.getUserData()));
+		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
+		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
+		Game.getMobHelper().deleteMob((Integer)(Mob.this.getUserData()));
+		/*Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) {
+					// TODO Auto-generated method stub
+					Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()));
+					Game.getMobHelper().deleteMob((Integer)(Mob.this.getUserData()));
+				}
+			}), String.valueOf(this.getUserData()));*/
+		
 	}
 
 	

@@ -25,7 +25,8 @@ public class ServerMessageUpdateEntityPosition extends QuestServerMessage implem
 	// ===========================================================
 
 	private String mPlayerKey;
-	private byte mPlayerDirection;
+	private int mX;
+	private int mY;
 
 	// ===========================================================
 	// Constructors
@@ -36,24 +37,36 @@ public class ServerMessageUpdateEntityPosition extends QuestServerMessage implem
 
 	public ServerMessageUpdateEntityPosition(String pPlayerKey, byte pPlayerDirection) {
 		this.mPlayerKey = pPlayerKey;
-		this.mPlayerDirection = pPlayerDirection;
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 
-	public void set(String pPlayerKey, byte pPlayerDirection) {
+	public void set(String pPlayerKey, int pX, int pY) {
 		this.mPlayerKey = pPlayerKey;
-		this.mPlayerDirection = pPlayerDirection;
+		this.setX(pX);
+		this.setY(pY);
 	}
 	
 	public String getPlayerKey() {
 		return mPlayerKey;
 	}
 
-	public byte getPlayerDirection() {
-		return mPlayerDirection;
+	public int getX() {
+		return mX;
+	}
+
+	public void setX(int mX) {
+		this.mX = mX;
+	}
+
+	public int getY() {
+		return mY;
+	}
+
+	public void setY(int mY) {
+		this.mY = mY;
 	}
 
 	// ===========================================================
@@ -63,13 +76,15 @@ public class ServerMessageUpdateEntityPosition extends QuestServerMessage implem
 	@Override
 	protected void onReadTransmissionData(DataInputStream pDataInputStream) throws IOException {
 		this.mPlayerKey = pDataInputStream.readUTF();
-		this.mPlayerDirection  = pDataInputStream.readByte();
+		this.mX  = pDataInputStream.readInt();
+		this.mY  = pDataInputStream.readInt();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
 		pDataOutputStream.writeUTF(this.mPlayerKey);
-		pDataOutputStream.writeByte(this.mPlayerDirection);
+		pDataOutputStream.writeInt(this.mX);
+		pDataOutputStream.writeInt(this.mY);
 	}
 
 	@Override

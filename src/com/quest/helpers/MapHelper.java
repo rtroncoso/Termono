@@ -106,6 +106,17 @@ public class MapHelper implements IMeasureConstants {
 	// Methods
 	// ===========================================================
 	public void loadMap(String pName) {
+
+
+		// Update it's map
+		Game.getPlayerHelper().getOwnPlayer().setCurrentMap(Integer.parseInt(pName));
+		// TODO mandar por red actualizacion de cambio de mapa
+		if(Game.isServer()){
+			Game.getServer().sendMessagePlayerChangedMap(Game.getUserID(),Integer.parseInt(pName));
+		}else{
+			Game.getClient().sendPlayerChangedMap(Game.getUserID(), Integer.parseInt(pName));
+		}
+		
 		// Detach old Map Layers
 		if(this.mCurrentMap != null) {
 			for(final TMXLayer tLayer : this.mCurrentMap.getTMXLayers()) {
@@ -209,8 +220,6 @@ public class MapHelper implements IMeasureConstants {
 													
 													// Load it and set new Player's position
 													MapHelper.this.loadMap(String.valueOf(nextMapNumber));
-													//Game.getPlayerHelper().getPlayer("Player").setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileColumn() : nextMapX,
-															//(nextMapY == 0) ? Game.getPlayerHelper().getPlayer("Player").getTMXTileAt().getTileRow() : nextMapY);
 													Game.getPlayerHelper().getOwnPlayer().setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn() : nextMapX,
 															(nextMapY == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow() : nextMapY);
 
@@ -224,6 +233,7 @@ public class MapHelper implements IMeasureConstants {
 													MapHelper.this.isChangingMap = false;
 													Game.getSceneManager().restoreSavedScene();
 													Game.getSceneManager().getDisplay().setZoom(1.6f);
+													
 												}
 									        });
 								        }

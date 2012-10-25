@@ -3,11 +3,11 @@ package com.quest.entities;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.entity.scene.ITouchArea;
+import org.andengine.extension.tmx.TMXTile;
 
 import android.util.Log;
 
 import com.quest.constants.GameFlags;
-import com.quest.entities.objects.Attack;
 import com.quest.entities.objects.InventoryItem;
 import com.quest.game.Game;
 import com.quest.helpers.InventoryItemHelper;
@@ -110,12 +110,16 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 				if(pValueX == 1.0f) pDirection = DIRECTION_EAST;
 				if(pValueX == -1.0f) pDirection = DIRECTION_WEST;
 				
+				// Store the new Tile
+				final TMXTile tmpNewTile = this.moveInDirection(pDirection);
+				if(tmpNewTile == null) return;
+				
 				// Sends the move
 				if(!Game.isServer()){
-					Game.getClient().sendMovePlayerMessage(this.mUserID, pDirection);
+					Game.getClient().sendMovePlayerMessage(this.mUserID, tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
 				}else{
-					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, pDirection);
-					this.moveInDirection(pDirection);
+					Game.getServer().sendUpdateEntityPositionMessage(this.mUserID, tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+					this.moveToTile(tmpNewTile);
 				}
 			}
 		}

@@ -54,6 +54,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected float mSpeedFactor;
 	protected int mBodyColumns;
 	protected int mBodyRows;
+	protected int mCurrentMap;
+	protected byte mFacingDirection;
 	
 	
 	//a ordenar
@@ -127,6 +129,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 			this.mBodySprite.animate(frameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - 1, false);
 			break;	
 		}
+		
+		this.mFacingDirection = pFacingDirection;
+		
 		return this;
 	}
 	
@@ -146,7 +151,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return 0;
 	}
 	
-	public BaseEntity moveInDirection(byte pDirection) {
+	public TMXTile moveInDirection(byte pDirection) {
 		
 		float moveToXTile = this.getX();
 		float moveToYTile = this.getY();
@@ -167,22 +172,19 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		}
 		
 		// Is it a legal position?
-		if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return this;
+		if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return null;
 
 		// Get the new Tile
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
-		
+
 		// Animate the Character
 		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), false);
 		
 		// Check Tiles
 		Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
-		if(tmpTrigger != null) { tmpTrigger.onHandleTriggerAction(); return this; } // Hacer cambio de mapa
+		if(tmpTrigger != null) { tmpTrigger.onHandleTriggerAction(); return null; } // Hacer cambio de mapa
 		
-		// Perform Move
-		this.moveToTile(tmxTileTo);
-		
-		return this;
+		return tmxTileTo;
 	}
 	
 	public BaseEntity moveToTile(final TMXTile pTileTo) {
@@ -193,6 +195,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		// Unblock our current Tile and block our new one
 		Game.getMapManager().unregisterCollisionTile(this.mTMXTileAt);
 		Game.getMapManager().registerCollisionTile(pTileTo);
+		
+		// Animate the Character
+		this.setAnimationDirection(this.getFacingDirectionToTile(pTileTo), false);
 
 		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pTileTo.getTileX(), pTileTo.getTileY());
 
@@ -444,6 +449,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.setEndurance(pAttributes[3]);
 	}
 	
+	public int getCurrentMap() {
+		return mCurrentMap;
+	}
+
+	public void setCurrentMap(int mCurrentMap) {
+		this.mCurrentMap = mCurrentMap;
+	}
+
 	public int[] getModifiers(){
 		return new int[]{getModPower(),getModIntelligence(),getModDefense(),getModEndurance(),getModHP(),getModMana()};
 	}
@@ -627,6 +640,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public byte getFacingDirection() {
+		return mFacingDirection;
+	}
+
+	public void setFacingDirection(byte mFacingDirection) {
+		this.mFacingDirection = mFacingDirection;
 	}
 	
 	// ===========================================================

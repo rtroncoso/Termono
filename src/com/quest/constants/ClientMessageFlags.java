@@ -15,6 +15,7 @@ public interface ClientMessageFlags {
 	
 	//Movement flags
 	public static final short FLAG_MESSAGE_CLIENT_MOVE_PLAYER = 210;
+	public static final short FLAG_MESSAGE_CLIENT_PLAYER_CHANGED_MAP= 211;
 
 	//Battle flags
 	public static final short FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE = 220;

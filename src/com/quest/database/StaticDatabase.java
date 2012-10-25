@@ -576,6 +576,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackIconTexture, "null");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell3.png");
                 cv.put(fAttackType, 0);
+                cv.put(fAttackEffect, "0;0");
                 cv.put(fAttackAnimationRows, 1);
                 cv.put(fAttackAnimationCols, 5);
                 cv.put(fAttackFrameWidth, 960);

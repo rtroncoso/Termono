@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.net.Socket;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.IMessage;
+import org.andengine.extension.multiplayer.protocol.adt.message.client.IClientMessage;
 import org.andengine.extension.multiplayer.protocol.adt.message.server.IServerMessage;
 import org.andengine.extension.multiplayer.protocol.client.IServerMessageHandler;
 import org.andengine.extension.multiplayer.protocol.client.connector.ServerConnector;
 import org.andengine.extension.multiplayer.protocol.client.connector.SocketConnectionServerConnector.ISocketConnectionServerConnectorListener;
+import org.andengine.extension.multiplayer.protocol.server.IClientMessageHandler;
+import org.andengine.extension.multiplayer.protocol.server.connector.ClientConnector;
 import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 
@@ -20,6 +23,7 @@ import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
 import com.quest.network.messages.client.ClientMessageAreaAttack;
 import com.quest.network.messages.client.ClientMessageAttackMessage;
+import com.quest.network.messages.client.ClientMessageChangeMap;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
@@ -32,6 +36,7 @@ import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageDisplayAreaAttack;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
+import com.quest.network.messages.server.ServerMessageMapChanged;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
@@ -39,6 +44,7 @@ import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.objects.BooleanMessage;
+import com.quest.util.constants.IMeasureConstants;
 
 public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags {
 	// ===========================================================
@@ -59,6 +65,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_PLAYER_CREATE, ClientMessagePlayerCreate.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SELECTED_PLAYER, ClientMessageSelectedPlayer.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER, ClientMessageMovePlayer.class);
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_PLAYER_CHANGED_MAP, ClientMessageChangeMap.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE, ClientMessageAttackMessage.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE, ClientMessageAreaAttack.class);
 			}
@@ -148,17 +155,30 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) pServerMessage;
-					//mover los players con esos datos
-					Game.getPlayerHelper().getPlayer(serverMessageUpdateEntityPosition.getPlayerKey()).moveInDirection(serverMessageUpdateEntityPosition.getPlayerDirection());
+					if(!Game.getUserID().equals(serverMessageUpdateEntityPosition.getPlayerKey()) || Game.getPlayerHelper().getPlayer(serverMessageUpdateEntityPosition.getPlayerKey()).getCurrentMap()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
+						Game.getPlayerHelper().getPlayer(serverMessageUpdateEntityPosition.getPlayerKey()).moveToTile(Game.getMapManager().getTMXTileAt(serverMessageUpdateEntityPosition.getX() * IMeasureConstants.TILE_SIZE, serverMessageUpdateEntityPosition.getY() * IMeasureConstants.TILE_SIZE));
+					}
 				}
 			});
 			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_PLAYER_CHANGED_MAP, ServerMessageMapChanged.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageMapChanged serverMessageMapChanged = (ServerMessageMapChanged) pServerMessage;
+					if(!Game.getUserID().equals(serverMessageMapChanged.getPlayerKey()) && Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()).getCurrentMap()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
+						Game.getSceneManager().getGameScene().detachChild(Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()));
+						Game.getSceneManager().getGameScene().unregisterTouchArea(Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()));//checkear si funciona ***
+						Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()).setCurrentMap(serverMessageMapChanged.getMapID());
+					}
+				}
+			});
+				
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_MOVE_MOB, ServerMessageMoveMob.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageMoveMob serverMessageMoveMob = (ServerMessageMoveMob) pServerMessage;
 					//mover los mobs con esos datos
-					Game.getMobHelper().getMob(serverMessageMoveMob.getMobKey()).moveInDirection(serverMessageMoveMob.getMobDirection());
+					Game.getMobHelper().getMob(serverMessageMoveMob.getMobKey()).moveToTile(Game.getMapManager().getTMXTileAt(serverMessageMoveMob.getX() * IMeasureConstants.TILE_SIZE, serverMessageMoveMob.getY() * IMeasureConstants.TILE_SIZE));
 				}
 			});
 		
@@ -278,10 +298,11 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			QClient.this.mMessagePool.recycleMessage(clientMessageSelectedPlayer);
 		}*/
 		
-		public void sendMovePlayerMessage(String pPlayerKey, byte pPlayerDirection){			
+		public void sendMovePlayerMessage(String pPlayerKey, int pX,int pY){			
 			final ClientMessageMovePlayer clientMessageMovePlayer = (ClientMessageMovePlayer) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER);
 			clientMessageMovePlayer.setPlayerKey(pPlayerKey);
-			clientMessageMovePlayer.setPlayerDirection(pPlayerDirection);
+			clientMessageMovePlayer.setX(pX);
+			clientMessageMovePlayer.setY(pY);
 			try {
 				sendClientMessage(clientMessageMovePlayer);				
 			} catch (Exception e) {
@@ -315,6 +336,19 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 				QClient.this.mMessagePool.recycleMessage(clientMessageAreaAttack);	
 		}
+		
+		public void sendPlayerChangedMap(String pPlayerKey, int pMapID){
+			final ClientMessageChangeMap clientMessageChangeMap = (ClientMessageChangeMap) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_PLAYER_CHANGED_MAP);
+			clientMessageChangeMap.setPlayerKey(pPlayerKey);
+			clientMessageChangeMap.setMapID(pMapID);
+			try {
+				sendClientMessage(clientMessageChangeMap);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessageChangeMap);	
+	}
+		
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

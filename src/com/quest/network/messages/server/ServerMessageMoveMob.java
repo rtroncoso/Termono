@@ -18,7 +18,8 @@ public class ServerMessageMoveMob extends QuestServerMessage implements ServerMe
 	// ===========================================================
 
 	private int mMobKey;
-	private byte mMobDirection;
+	private int mX;
+	private int mY;
 
 	// ===========================================================
 	// Constructors
@@ -29,24 +30,36 @@ public class ServerMessageMoveMob extends QuestServerMessage implements ServerMe
 
 	public ServerMessageMoveMob(int pMobKey, byte pMobDirection) {
 		this.mMobKey = pMobKey;
-		this.mMobDirection = pMobDirection;
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 
-	public void set(int pMobKey, byte pMobDirection) {
+	public void set(int pMobKey, int pX, int pY) {
 		this.mMobKey = pMobKey;
-		this.mMobDirection = pMobDirection;
+		this.mX = pX;
+		this.mY = pY;
 	}
 	
 	public int getMobKey() {
 		return mMobKey;
 	}
 
-	public byte getMobDirection() {
-		return mMobDirection;
+	public int getX() {
+		return mX;
+	}
+
+	public void setX(int mX) {
+		this.mX = mX;
+	}
+
+	public int getY() {
+		return mY;
+	}
+
+	public void setY(int mY) {
+		this.mY = mY;
 	}
 
 	// ===========================================================
@@ -56,13 +69,15 @@ public class ServerMessageMoveMob extends QuestServerMessage implements ServerMe
 	@Override
 	protected void onReadTransmissionData(DataInputStream pDataInputStream) throws IOException {
 		this.mMobKey = pDataInputStream.readInt();
-		this.mMobDirection  = pDataInputStream.readByte();
+		this.mX = pDataInputStream.readInt();
+		this.mY = pDataInputStream.readInt();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
 		pDataOutputStream.writeInt(this.mMobKey);
-		pDataOutputStream.writeByte(this.mMobDirection);
+		pDataOutputStream.writeInt(this.mX);
+		pDataOutputStream.writeInt(this.mY);
 	}
 
 	@Override

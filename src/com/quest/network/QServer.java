@@ -30,6 +30,7 @@ import com.quest.game.Game;
 import com.quest.helpers.PlayerHelper;
 import com.quest.network.messages.client.ClientMessageAreaAttack;
 import com.quest.network.messages.client.ClientMessageAttackMessage;
+import com.quest.network.messages.client.ClientMessageChangeMap;
 import com.quest.network.messages.client.ClientMessageConnectionRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
@@ -43,6 +44,7 @@ import com.quest.network.messages.server.ServerMessageCreatePlayer;
 import com.quest.network.messages.server.ServerMessageDisplayAreaAttack;
 import com.quest.network.messages.server.ServerMessageExistingPlayer;
 import com.quest.network.messages.server.ServerMessageFixedAttackData;
+import com.quest.network.messages.server.ServerMessageMapChanged;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
@@ -50,6 +52,7 @@ import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.util.constants.IGameConstants;
+import com.quest.util.constants.IMeasureConstants;
 
 
 public class QServer extends SocketServer<SocketConnectionClientConnector> implements IUpdateHandler, ClientMessageFlags, ServerMessageFlags, IGameConstants {
@@ -83,7 +86,8 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_EXISTING_PLAYER, ServerMessageExistingPlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER, ServerMessageSendPlayer.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED, ServerMessageMatchStarted.class);
-		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, ServerMessageUpdateEntityPosition.class);		
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION, ServerMessageUpdateEntityPosition.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_PLAYER_CHANGED_MAP, ServerMessageMapChanged.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA, ServerMessageFixedAttackData.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOB_DIED, ServerMessageMobDied.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SPAWN_MOB, ServerMessageSpawnMob.class);
@@ -222,6 +226,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Game.getDataHandler().setPlayerMoney(playerid, 0);
 				//Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),connectedClientProfileData.getUserID());//*** poner el userID donde sea que corresponda
 				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),clientMessagePlayerCreate.getUserID()));
+				Log.d("Quest!","Mando player!");
 				
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(playerid), Game.getDataHandler().getInventoryItems(playerid), Game.getDataHandler().getInventoryAmounts(playerid), Game.getDataHandler().getInventoryEquipStatus(playerid));
@@ -270,13 +275,23 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageMovePlayer clientMessageMovePlayer = (ClientMessageMovePlayer) pClientMessage;
 				//Mover el player con esos datos
-				Game.getPlayerHelper().getPlayer(clientMessageMovePlayer.getPlayerKey()).moveInDirection(clientMessageMovePlayer.getPlayerDirection());
-			
-				
-				sendUpdateEntityPositionMessage(clientMessageMovePlayer.getPlayerKey(), clientMessageMovePlayer.getPlayerDirection());
+				Game.getPlayerHelper().getPlayer(clientMessageMovePlayer.getPlayerKey()).moveToTile(Game.getMapManager().getTMXTileAt(clientMessageMovePlayer.getX() * IMeasureConstants.TILE_SIZE, clientMessageMovePlayer.getY() * IMeasureConstants.TILE_SIZE));
+				sendUpdateEntityPositionMessage(clientMessageMovePlayer.getPlayerKey(), clientMessageMovePlayer.getX(), clientMessageMovePlayer.getY());
 			}
 		});
 		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_PLAYER_CHANGED_MAP, ClientMessageChangeMap.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessageChangeMap clientMessageChangeMap = (ClientMessageChangeMap) pClientMessage;
+				if(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()).getCurrentMap()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
+					Game.getSceneManager().getGameScene().detachChild(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()));
+					Game.getSceneManager().getGameScene().unregisterTouchArea(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()));//checkear si funciona ***
+				}
+				Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()).setCurrentMap(clientMessageChangeMap.getMapID());
+				sendMessagePlayerChangedMap(clientMessageChangeMap.getPlayerKey(), clientMessageChangeMap.getMapID());
+			}
+		});
 		
 		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE, ClientMessageAttackMessage.class, new IClientMessageHandler<SocketConnection>() {
 			@Override
@@ -336,9 +351,9 @@ public void sendMatchStartedMessage(){
 	sendBroadcast(serverMessageMatchStarted);
 }
 
-public void sendUpdateEntityPositionMessage(String pPlayerKey, byte pPlayerDirection){			
+public void sendUpdateEntityPositionMessage(String pPlayerKey, int pX, int pY){			
 	final ServerMessageUpdateEntityPosition serverMessageUpdateEntityPosition = (ServerMessageUpdateEntityPosition) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION);
-	serverMessageUpdateEntityPosition.set(pPlayerKey,pPlayerDirection);
+	serverMessageUpdateEntityPosition.set(pPlayerKey, pX, pY);
 	sendBroadcast(serverMessageUpdateEntityPosition);				
 }
 
@@ -372,9 +387,9 @@ public void sendSpawnMobMessage(int MOB_FLAG,int tileX,int tileY,int map){
 	sendBroadcast(serverMessageSpawnMob);
 }
 
-public void sendMessageMoveMob(int pMobKey, byte pDirection){
+public void sendMessageMoveMob(int pMobKey, int pX, int pY){
 	final ServerMessageMoveMob serverMessageMoveMob = (ServerMessageMoveMob) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MOVE_MOB);
-	serverMessageMoveMob.set(pMobKey, pDirection);
+	serverMessageMoveMob.set(pMobKey, pX, pY);
 	sendBroadcast(serverMessageMoveMob);
 }
 
@@ -385,6 +400,14 @@ public void sendMessageDisplayAreaAttack(int pAttack_Flag, int pX,int pY){
 	serverMessageDisplayAreaAttack.setTileY(pY);
 	sendBroadcast(serverMessageDisplayAreaAttack);
 }
+
+public void sendMessagePlayerChangedMap(String pPlayerKey, int pMapID){
+	final ServerMessageMapChanged serverMessageMapChanged = (ServerMessageMapChanged) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_PLAYER_CHANGED_MAP);
+	serverMessageMapChanged.setPlayerKey(pPlayerKey);
+	serverMessageMapChanged.setMapID(pMapID);
+	sendBroadcast(serverMessageMapChanged);
+}
+
 // ===========================================================
 // Inner and Anonymous Classes
 // ===========================================================

@@ -1,22 +1,12 @@
-package com.quest.network.messages.client;
+package com.quest.network.messages.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
+import com.quest.constants.ServerMessageFlags;
 
-import com.quest.constants.ClientMessageFlags;
-
-
-/**
- * (c) 2010 Nicolas Gramlich 
- * (c) 2011 Zynga Inc.
- * 
- * @author Nicolas Gramlich
- * @since 12:00:36 - 21.05.2011
- */
-public class ClientMessageMovePlayer extends ClientMessage implements ClientMessageFlags {
+public class ServerMessageMapChanged extends QuestServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -24,79 +14,67 @@ public class ClientMessageMovePlayer extends ClientMessage implements ClientMess
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private String mPlayerKey;
-	private int mX,mY;
 
+	private int mMapID;
+	private String mPlayerKey;
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	
 	@Deprecated
-	public ClientMessageMovePlayer() {		
+	public ServerMessageMapChanged() {
 	}
+
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
 
-	public void setPlayerKey(String mPlayerKey) {
-		this.mPlayerKey = mPlayerKey;
-	}
-
-
 	/**
-	 * @return the mX
+	 * @return the mMapID
 	 */
-	public int getX() {
-		return mX;
+	public int getMapID() {
+		return mMapID;
 	}
 
 	/**
-	 * @param mX the mX to set
+	 * @param mMapID the mMapID to set
 	 */
-	public void setX(int mX) {
-		this.mX = mX;
+	public void setMapID(int mMapID) {
+		this.mMapID = mMapID;
 	}
 
 	/**
-	 * @return the mY
+	 * @return the mPlayerKey
 	 */
-	public int getY() {
-		return mY;
-	}
-
-	/**
-	 * @param mY the mY to set
-	 */
-	public void setY(int mY) {
-		this.mY = mY;
-	}
-
 	public String getPlayerKey() {
 		return mPlayerKey;
 	}
-
+	
+	/**
+	 * @param mPlayerKey the mPlayerKey to set
+	 */
+	public void setPlayerKey(String mPlayerKey) {
+		this.mPlayerKey = mPlayerKey;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
-
 	@Override
-	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
+	protected void onReadTransmissionData(DataInputStream pDataInputStream) throws IOException {
+		this.mMapID = pDataInputStream.readInt();
 		this.mPlayerKey = pDataInputStream.readUTF();
-		this.mX = pDataInputStream.readInt();
-		this.mY = pDataInputStream.readInt();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
+		pDataOutputStream.writeInt(this.mMapID);
 		pDataOutputStream.writeUTF(this.mPlayerKey);
-		pDataOutputStream.writeInt(this.mX);
-		pDataOutputStream.writeInt(this.mY);
 	}
 
 	@Override
-	public short getFlag() {		
-		return FLAG_MESSAGE_CLIENT_MOVE_PLAYER;
+	public short getFlag() {
+		return FLAG_MESSAGE_SERVER_PLAYER_CHANGED_MAP;
 	}
 
 	// ===========================================================

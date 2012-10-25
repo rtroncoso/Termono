@@ -1,6 +1,9 @@
 package com.quest.helpers;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import android.util.Log;
 
@@ -59,7 +62,7 @@ public class TimerHelper {
 	}
 	
 	public void deleteTimer(String pKey) {
-		if(!this.getTimer(pKey).equals(null)) {
+		if(this.getTimer(pKey) != null) {
 			this.mTimersList.remove(this.getTimer(pKey));
 		} else {
 			Log.d("Quest!", "TimerHelper: Erase - No Timer matches key");
@@ -67,10 +70,12 @@ public class TimerHelper {
 	}
 	
 	public Timer getTimer(String pKey) {
-		/*for(Timer tmpTimer : this.mTimersList.) {
-			if(tmpTimer.getUserData().equals(pKey))
-				return tmpTimer;
-		}*/ // falta hacer el get de cada timer, sino funciona todo // me cago en vos!! sabes cuanto estuve para darme cuenta que mierda estaba pasando ¬¬
+		Iterator<Entry<Timer, String>> it = this.mTimersList.entrySet().iterator();
+		Log.e("Quest!", pKey);
+		while (it.hasNext()) {
+			Map.Entry e = it.next();
+			if(e.getKey() == pKey) return (Timer) e.getValue();
+		}
 		Log.e("Quest!", "TimerHelper: Search - No Timer matches key");
 		return null;
 	}

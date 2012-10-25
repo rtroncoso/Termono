@@ -237,10 +237,15 @@ public class MatchScene extends Scene implements GameFlags {
 	}
 	
 	private void CheckIfFirstTime(){
-		if(!Game.getDataHandler().CheckUsername(1)){
-			showUsernameInput();
+		if(Game.isAVD_DEBUGGING()){
+			if(!Game.getDataHandler().CheckUsername(Game.getUserID())){
+				showUsernameInput();
+			}
+		}else{
+			if(!Game.getDataHandler().CheckUsername("00:00:00:00:00:00")){
+				showUsernameInput();
+			}
 		}
-		
 	}
 	
 	//Matches entity
@@ -623,7 +628,7 @@ public class MatchScene extends Scene implements GameFlags {
 				MatchScene.this.mSocketServerDiscoveryServer = new SocketServerDiscoveryServer<MatchesDiscoveryData>(DISCOVERY_PORT, new ExampleSocketServerDiscoveryServerListener()) {
 					@Override
 					protected MatchesDiscoveryData onCreateDiscoveryResponse() {
-						return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,pUserID,Game.getDataHandler().getUsername(1),pMatchName,Game.getDataHandler().hasPassword(Game.getDataHandler().getMatchID(pMatchName, pUserID)));
+						return new MatchesDiscoveryData(wifiIPv4Address, SERVER_PORT,pUserID,Game.getDataHandler().getUsername(pUserID),pMatchName,Game.getDataHandler().hasPassword(Game.getDataHandler().getMatchID(pMatchName, pUserID)));
 					}
 				};
 				MatchScene.this.mSocketServerDiscoveryServer.start();
@@ -709,7 +714,11 @@ public class MatchScene extends Scene implements GameFlags {
 								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 								Game.getDataHandler().setPlayerExperience(playerid, 0);
 								Game.getDataHandler().setPlayerMoney(playerid, 0);
-								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
+								if(Game.isAVD_DEBUGGING()){//sacar despues
+									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
+								}else{
+									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
+								}
 								
 								if(Game.isAVD_DEBUGGING()){//sacar despues
 									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
@@ -899,8 +908,12 @@ public class MatchScene extends Scene implements GameFlags {
 		                			  pIndex = i;   
 		                		  }
 		                	  }
-		                	 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID),Game.getDataHandler().getUserID(1)));
-			            	 MatchScene.this.clearTouchAreas();
+		                	 if(Game.isAVD_DEBUGGING()){
+		                		 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID),Game.getDataHandler().getUserID(1)));
+			            	 }else{
+			            		 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID),Game.getUserID()));
+		            		 }
+		                	 MatchScene.this.clearTouchAreas();
 			            	 if(Game.isAVD_DEBUGGING()){
 			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), "00:00:00:00:00:00"));
 			            	 }else{
@@ -1636,7 +1649,11 @@ public class MatchScene extends Scene implements GameFlags {
 													Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 													Game.getDataHandler().setPlayerExperience(playerid, 0);
 													Game.getDataHandler().setPlayerMoney(playerid, 0);
-													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
+													if(Game.isAVD_DEBUGGING()){//sacar despues
+														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
+													}else{
+														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
+													}
 													if(Game.isAVD_DEBUGGING()){//sacar despues
 														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
 													}else{
@@ -1645,7 +1662,11 @@ public class MatchScene extends Scene implements GameFlags {
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
-													Game.getClient().sendPlayerCreate(mChoices,Game.getDataHandler().getUserID(1));//*** sacar profile data y match data
+													if(Game.isAVD_DEBUGGING()){//sacar despues
+														Game.getClient().sendPlayerCreate(mChoices,"11:11:11:11:11:11");//*** sacar profile data y match data
+													}else{
+														Game.getClient().sendPlayerCreate(mChoices,Game.getUserID());//*** sacar profile data y match data
+													}
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
 													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
 													}
@@ -2014,7 +2035,7 @@ public class MatchScene extends Scene implements GameFlags {
 		if(Game.isAVD_DEBUGGING()){
 			Game.getClient().sendConnectionRequestMessage("11:11:11:11:11:11","Username2",pPassword,pMatchName);
 		}else{
-			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(1),pPassword,pMatchName);
+			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(Game.getUserID()),pPassword,pMatchName);
 		}
 		Game.getClient().sendPingMessage();
 
@@ -2056,7 +2077,7 @@ public class MatchScene extends Scene implements GameFlags {
 								conts=true;
 							}
 						}
-						if(Game.getTextHelper().getText("MatchScene;OwnIP").getText().equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
+						if(IPUtils.ipAddressToString(wifiIPv4Address).equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
 							conts=true;
 						}//comentado para el AVD, sacar coment para el celu ***
 						if(conts==false){

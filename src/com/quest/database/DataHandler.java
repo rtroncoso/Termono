@@ -14,8 +14,8 @@ public class DataHandler {
 //UserDatabase
 	
 	//Profile
-	public boolean CheckUsername(int pProfileID){
-		String usr = this.mUserDB.getUsername(pProfileID);
+	public boolean CheckUsername(String pUserID){
+		String usr = this.mUserDB.getUsername(pUserID);
 		if(usr.equals("***Player***")||usr.equals("")){
 			return false;//no tiene user
 		}else{

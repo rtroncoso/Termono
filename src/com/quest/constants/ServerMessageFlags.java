@@ -18,6 +18,7 @@ public interface ServerMessageFlags {
 	
 	//Movement
 	public static final short FLAG_MESSAGE_SERVER_UPDATE_ENTITY_POSITION = 120;
+	public static final short FLAG_MESSAGE_SERVER_PLAYER_CHANGED_MAP = 121;
 	
 	//Battle
 	public static final short FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA = 130;
