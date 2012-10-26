@@ -296,6 +296,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.setPosition(tmpTMXTile.getTileX(), tmpTMXTile.getTileY());
 	}
 
+	
 	/**
 	 * @return the mTMXTileAt
 	 */

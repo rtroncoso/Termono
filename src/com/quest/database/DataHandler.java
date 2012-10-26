@@ -1,5 +1,7 @@
 package com.quest.database;
 
+import org.andengine.extension.tmx.TMXTile;
+
 import com.quest.game.Game;
 
 public class DataHandler {
@@ -156,6 +158,30 @@ public class DataHandler {
 	public int getPlayerProfileID(int pPlayerID){
         return this.mUserDB.getPlayerProfileID(pPlayerID);
     }
+	
+	public int getPlayerCurrentMap(int pPlayerID){
+		return this.mUserDB.getPlayerCurrentMap(pPlayerID);
+	}
+
+	public void setPlayerCurrentMap(int pMapID, int pPlayerID){
+		this.mUserDB.setPlayerCurrentMap(pMapID, pPlayerID);
+	}
+	
+	public int[] getPlayerPosition(int pPlayerID){
+		return this.mUserDB.getPlayerPosition(pPlayerID);
+	}
+	
+	public void setPlayerPosition(int[] position, int pPlayerID){
+		this.mUserDB.setPlayerPosition(position[0],position[1], pPlayerID);
+	}
+	
+	public void setPlayerPosition(int pColumn, int pRow, int pPlayerID){
+		this.mUserDB.setPlayerPosition(pColumn,pRow, pPlayerID);
+	}
+	
+	public void setPlayerPosition(TMXTile pTile, int pPlayerID){
+		this.mUserDB.setPlayerPosition(pTile.getTileColumn(), pTile.getTileRow(), pPlayerID);
+	}
 	
 	public void setPlayerCurrentHPMP(int pPlayerID,int currHP, int currMP){
 		this.mUserDB.setPlayerMPHP(pPlayerID, currHP, currMP);

@@ -237,7 +237,7 @@ public class MatchScene extends Scene implements GameFlags {
 	}
 	
 	private void CheckIfFirstTime(){
-		if(Game.isAVD_DEBUGGING()){
+		if(!Game.isAVD_DEBUGGING()){
 			if(!Game.getDataHandler().CheckUsername(Game.getUserID())){
 				showUsernameInput();
 			}
@@ -585,6 +585,7 @@ public class MatchScene extends Scene implements GameFlags {
 							Game.getTextHelper().FlushTexts("MatchScene");
 							Game.getSceneManager().setGameScene();
 							Game.getServer().sendMatchStartedMessage();
+							Game.getMatchData().setStarted(true);
 							//Game.getSceneManager().setTestScene();
 						}
 						break;
@@ -714,6 +715,8 @@ public class MatchScene extends Scene implements GameFlags {
 								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 								Game.getDataHandler().setPlayerExperience(playerid, 0);
 								Game.getDataHandler().setPlayerMoney(playerid, 0);
+								Game.getDataHandler().setPlayerCurrentMap(1, playerid);
+								Game.getDataHandler().setPlayerPosition(20, 20, playerid);
 								if(Game.isAVD_DEBUGGING()){//sacar despues
 									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 								}else{
@@ -1649,6 +1652,8 @@ public class MatchScene extends Scene implements GameFlags {
 													Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 													Game.getDataHandler().setPlayerExperience(playerid, 0);
 													Game.getDataHandler().setPlayerMoney(playerid, 0);
+													Game.getDataHandler().setPlayerCurrentMap(1, playerid);
+													Game.getDataHandler().setPlayerPosition(20, 20, playerid);
 													if(Game.isAVD_DEBUGGING()){//sacar despues
 														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 													}else{

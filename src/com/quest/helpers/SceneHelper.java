@@ -98,7 +98,7 @@ public class SceneHelper implements IMeasureConstants {
     	if(this.mGameScene == null) {
         	this.mGameScene = new GameScene();
     	}
-    	this.mGameScene.initGame("1");
+    	this.mGameScene.initGame(String.valueOf(Game.getPlayerHelper().getOwnPlayer().getCurrentMap()));
     }
     
     //############MISC

@@ -46,6 +46,13 @@ public class UserDatabase extends SQLiteOpenHelper {
     	static final String fPlayerHeadID = "Head";
     	//ProfileID 
     	
+    static final String tPosition = "Position";
+    	static final String fPositionID = "PositionID";
+    	//playerID
+    	static final String fCurrentMap = "CurrentMap";
+    	static final String fTileColumn = "TileColumn";
+    	static final String fTileRow = "TileRow";
+    
     static final String tInventory = "Inventory";	
 	    static final String fInventoryID = "InventoryID";
 	    static final String fInventoryMoney = "Money";
@@ -129,7 +136,15 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fPlayerHeadID +" INTEGER , "+
     			fPlayerClass +" INTEGER)" 
                 );  
-    	  
+
+    	db.execSQL("CREATE TABLE IF NOT EXISTS "+tPosition+" ("+
+    			fPositionID+" INTEGER PRIMARY KEY , "+
+    			fPlayerID+" INTEGER , "+
+    			fCurrentMap+" INTEGER , "+
+    			fTileColumn+" INTEGER , "+
+    			fTileRow+" INTEGER)"
+                );
+    	
     	db.execSQL("CREATE TABLE IF NOT EXISTS "+tInventory+" ("+
     			fInventoryID+" INTEGER PRIMARY KEY , "+
     			fInventoryMoney+" INTEGER , "+
@@ -423,6 +438,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 		  cv.clear();
 		  cv.put(fPlayerID, myAnswer);
 		  this.getWritableDatabase().insert(tAttributes, fAttributesID, cv);
+		  this.getWritableDatabase().insert(tPosition, fPositionID, cv);
 		  this.getWritableDatabase().insert(tInventory, fInventoryID, cv);
 		  this.getWritableDatabase().insert(tSpellBook, fSpellBookID, cv);
 	      this.close();
@@ -544,6 +560,47 @@ public class UserDatabase extends SQLiteOpenHelper {
         this.close();
     }
 
+    //Position
+    public int getPlayerCurrentMap(int pPlayerID){
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fCurrentMap+" from "+tPosition+" where "+fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+   		myCursor.moveToFirst();
+   		int index = myCursor.getColumnIndex(fCurrentMap);
+   		int myAnswer = myCursor.getInt(index);
+		myCursor.close();
+		this.close();
+		return myAnswer;
+    }
+    
+    public void setPlayerCurrentMap(int pMapID,int pPlayerID){
+    	ContentValues cv = new ContentValues();
+        cv.put(fCurrentMap,pMapID);
+        this.getWritableDatabase().update(tPosition, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+      }
+
+    public int[] getPlayerPosition(int pPlayerID){
+    	int[] myAnswer = new int[2];
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("Select * from "+tPosition+" where "+fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+   		myCursor.moveToFirst();
+   		int index = myCursor.getColumnIndex(fTileColumn);
+   		myAnswer[0] = myCursor.getInt(index);
+   		index = myCursor.getColumnIndex(fTileRow);
+   		myAnswer[1] = myCursor.getInt(index);
+		myCursor.close();
+		this.close();
+		return myAnswer;
+    }
+    
+    public void setPlayerPosition(int pTileColumn, int pTileRow,int pPlayerID){
+    	ContentValues cv = new ContentValues();
+        cv.put(fTileColumn,pTileColumn);
+        cv.put(fTileRow,pTileRow);
+        this.getWritableDatabase().update(tPosition, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+      }
+    
     //Atributtes
     public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance, int pUnassigned,int pPlayerID){
   	  ContentValues cv = new ContentValues();

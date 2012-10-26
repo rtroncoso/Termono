@@ -224,14 +224,25 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Game.getDataHandler().setPlayerCurrentHPMP(playerid, (clientMessagePlayerCreate.getAttributes()[3]*10), (clientMessagePlayerCreate.getAttributes()[1]*10));
 				Game.getDataHandler().setPlayerExperience(playerid, 0);
 				Game.getDataHandler().setPlayerMoney(playerid, 0);
+				Game.getDataHandler().setPlayerCurrentMap(1, playerid);
+				Game.getDataHandler().setPlayerPosition(20+Game.getPlayerHelper().getEntities().size(), 20, playerid);
 				//Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid)),connectedClientProfileData.getUserID());//*** poner el userID donde sea que corresponda
 				Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),clientMessagePlayerCreate.getUserID()));
-				Log.d("Quest!","Mando player!");
 				
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(playerid), Game.getDataHandler().getInventoryItems(playerid), Game.getDataHandler().getInventoryAmounts(playerid), Game.getDataHandler().getInventoryEquipStatus(playerid));
 				
 				sendBroadcast(serverMessageSendPlayer);
+				
+				if(Game.getMatchData().isStarted()){
+					final ServerMessageMatchStarted serverMessageMatchStarted = (ServerMessageMatchStarted) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED);
+					try {
+						pClientConnector.sendServerMessage(serverMessageMatchStarted);
+					} catch (IOException e) {
+						Debug.e(e);
+					}
+					QServer.this.mMessagePool.recycleMessage(serverMessageMatchStarted);
+				}
 				
 			}
 		});
@@ -245,9 +256,17 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryItems(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryAmounts(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(clientMessageSelectedPlayer.getPlayerID()));
-			
 				sendBroadcast(serverMessageSendPlayer);
-			
+				
+				if(Game.getMatchData().isStarted()){
+					final ServerMessageMatchStarted serverMessageMatchStarted = (ServerMessageMatchStarted) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED);
+					try {
+						pClientConnector.sendServerMessage(serverMessageMatchStarted);
+					} catch (IOException e) {
+						Debug.e(e);
+					}
+					QServer.this.mMessagePool.recycleMessage(serverMessageMatchStarted);
+				}
 			}
 		});
 		
@@ -287,9 +306,15 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				if(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()).getCurrentMap()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
 					Game.getSceneManager().getGameScene().detachChild(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()));
 					Game.getSceneManager().getGameScene().unregisterTouchArea(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()));//checkear si funciona ***
+				}else{
+					if(clientMessageChangeMap.getMapID()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
+						Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()).setTileAt(clientMessageChangeMap.getX(), clientMessageChangeMap.getY());
+						Game.getSceneManager().getGameScene().attachChild(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()));
+						Game.getSceneManager().getGameScene().registerTouchArea(Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()));
+					}
 				}
 				Game.getPlayerHelper().getPlayer(clientMessageChangeMap.getPlayerKey()).setCurrentMap(clientMessageChangeMap.getMapID());
-				sendMessagePlayerChangedMap(clientMessageChangeMap.getPlayerKey(), clientMessageChangeMap.getMapID());
+				sendMessagePlayerChangedMap(clientMessageChangeMap.getPlayerKey(), clientMessageChangeMap.getMapID(),clientMessageChangeMap.getX(),clientMessageChangeMap.getY());
 			}
 		});
 		
@@ -401,10 +426,11 @@ public void sendMessageDisplayAreaAttack(int pAttack_Flag, int pX,int pY){
 	sendBroadcast(serverMessageDisplayAreaAttack);
 }
 
-public void sendMessagePlayerChangedMap(String pPlayerKey, int pMapID){
+public void sendMessagePlayerChangedMap(String pPlayerKey, int pMapID, int pX, int pY){
 	final ServerMessageMapChanged serverMessageMapChanged = (ServerMessageMapChanged) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_PLAYER_CHANGED_MAP);
 	serverMessageMapChanged.setPlayerKey(pPlayerKey);
 	serverMessageMapChanged.setMapID(pMapID);
+	serverMessageMapChanged.setPos(pX, pY);
 	sendBroadcast(serverMessageMapChanged);
 }
 

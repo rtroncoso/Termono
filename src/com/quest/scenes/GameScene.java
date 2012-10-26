@@ -80,11 +80,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			Game.getMapManager().loadMap(pMapName);
 			    			GameScene.this.attachChild(GameScene.this.mMapLayer);
 			    			
-			    			// Create the Player and insert in helper
-			    			for(int i = 0;i<Game.getPlayerHelper().getEntities().size();i++){
-			    				Game.getPlayerHelper().getPlayerbyIndex(i).setTileAt(20+(1*i), 20);	
-			    			}
-			    			
+
 			    			if(Game.isServer()){
 				    			Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
 				    				@Override
@@ -122,7 +118,12 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			
 			    			// Players
 			    			for(int i = 0;i<Game.getPlayerHelper().getEntities().size();i++){
-			    				GameScene.this.attachChild(Game.getPlayerHelper().getPlayerbyIndex(i));	
+			    				//si esta en mi mapa
+			    				if(Game.getPlayerHelper().getPlayerbyIndex(i).getCurrentMap() == Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
+			    					Player tmpPlayer = Game.getPlayerHelper().getPlayerbyIndex(i);
+			    					tmpPlayer.setTileAt(tmpPlayer.getCoords()[0], tmpPlayer.getCoords()[1]);
+			    					GameScene.this.attachChild(tmpPlayer);
+			    				}
 			    			}
 			    			
 

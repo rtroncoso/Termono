@@ -30,8 +30,8 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private String mUserID;
 	private InventoryItemHelper mInventory;
 	private int mUnassignedPoints;
-	
 	private int Attack_Flag;
+	private int[] mCoords;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -58,11 +58,13 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mMoney = Game.getDataHandler().getPlayerMoney(this.mPlayerID);
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
 		setAttack_Flag(FLAG_ATTACK_SPELL_FIREBALL);
+		this.setCurrentMap(Game.getDataHandler().getPlayerCurrentMap(this.mPlayerID));
+		this.setCoords(Game.getDataHandler().getPlayerPosition(this.mPlayerID));
 		this.mEntityType = "Player";
 	}
 	
 	
-	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int pExperience, int pMoney,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
+	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int pExperience, int pMoney,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int pMapID,int pTIleX, int pTileY){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
@@ -76,6 +78,8 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.updateHPMana(currHPMP);
 		this.setInventory(LoadInventory(pItemIDs, pAmounts, isEquipped));
 		setAttack_Flag(FLAG_ATTACK_SPELL_FIREBALL);
+		this.setCurrentMap(pMapID);
+		this.setCoords(pTIleX, pTileY);
 		this.mEntityType = "Player";
 	}
 
@@ -243,6 +247,18 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mUnassignedPoints = mUnassignedPoints;
 	}
 
+	public int[] getCoords() {
+		return mCoords;
+	}
+
+	public void setCoords(int[] mPosition) {
+		this.mCoords = mPosition;
+	}
+
+	public void setCoords(int tileX, int tileY) {
+		this.mCoords = new int[]{tileX,tileY};
+	}
+	
 	public int getAttack_Flag() {
 		return Attack_Flag;
 	}

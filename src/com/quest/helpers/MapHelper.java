@@ -110,12 +110,7 @@ public class MapHelper implements IMeasureConstants {
 
 		// Update it's map
 		Game.getPlayerHelper().getOwnPlayer().setCurrentMap(Integer.parseInt(pName));
-		// TODO mandar por red actualizacion de cambio de mapa
-		if(Game.isServer()){
-			Game.getServer().sendMessagePlayerChangedMap(Game.getUserID(),Integer.parseInt(pName));
-		}else{
-			Game.getClient().sendPlayerChangedMap(Game.getUserID(), Integer.parseInt(pName));
-		}
+
 		
 		// Detach old Map Layers
 		if(this.mCurrentMap != null) {
@@ -219,9 +214,15 @@ public class MapHelper implements IMeasureConstants {
 													// TODO Auto-generated method stub
 													
 													// Load it and set new Player's position
+													int pX = (nextMapX == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn() : nextMapX;
+													int pY = (nextMapY == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow() : nextMapY;
+													if(Game.isServer()){
+														Game.getServer().sendMessagePlayerChangedMap(Game.getUserID(),nextMapNumber,pX,pY);
+													}else{
+														Game.getClient().sendPlayerChangedMap(Game.getUserID(), nextMapNumber,pX,pY);
+													}
 													MapHelper.this.loadMap(String.valueOf(nextMapNumber));
-													Game.getPlayerHelper().getOwnPlayer().setTileAt((nextMapX == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn() : nextMapX,
-															(nextMapY == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow() : nextMapY);
+													Game.getPlayerHelper().getOwnPlayer().setTileAt(pX,pY);
 
 												}
 

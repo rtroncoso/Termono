@@ -24,7 +24,7 @@ import com.quest.entities.Player;
 		private String mAttributes,currHPMP; 
 		private String mItemID, mAmounts,isEquipped;
 		private int mMoney,mExperience;
-				
+		private int tileX,tileY,mapID;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
@@ -47,13 +47,15 @@ import com.quest.entities.Player;
 			this.setExperience(pPlayer.getExperience());
 			this.setPlayerClass(pPlayer.getPlayerClass());
 			this.setHeadID(pPlayer.getHeadID());
-			//this.setTileX();
-			//this.setTileY();
+			this.setMapID(pPlayer.getCurrentMap());
+			this.setTileX(pPlayer.getTMXTileAt().getTileColumn());
+			this.setTileY(pPlayer.getTMXTileAt().getTileRow());
 			this.setAttributes(pPlayer.getAttributes());
 			this.setCurrHPMP(pPlayer.getCurrHPMP());
 			this.setItemID(pItemIDs);
 			this.setAmounts(pAmounts);
 			this.setIsEquipped(isEquipped);
+			
 		}
 
 		public String getUserID() {
@@ -167,9 +169,52 @@ import com.quest.entities.Player;
 		public void setHeadID(int mHeadID) {
 			this.mHeadID = mHeadID;
 		}
+		
+		/**
+		 * @return the tileX
+		 */
+		public int getTileX() {
+			return tileX;
+		}
+
+		/**
+		 * @param tileX the tileX to set
+		 */
+		public void setTileX(int tileX) {
+			this.tileX = tileX;
+		}
+
+		/**
+		 * @return the tileY
+		 */
+		public int getTileY() {
+			return tileY;
+		}
+
+		/**
+		 * @param tileY the tileY to set
+		 */
+		public void setTileY(int tileY) {
+			this.tileY = tileY;
+		}
+
+		/**
+		 * @return the mapID
+		 */
+		public int getMapID() {
+			return mapID;
+		}
+
+		/**
+		 * @param mapID the mapID to set
+		 */
+		public void setMapID(int mapID) {
+			this.mapID = mapID;
+		}
 		// ===========================================================
 		// Methods for/from SuperClass/Interfaces
 		// ===========================================================
+
 
 		@Override
 		public short getFlag() {
@@ -185,8 +230,9 @@ import com.quest.entities.Player;
 			this.mHeadID = pDataInputStream.readInt();
 			this.mMoney = pDataInputStream.readInt();
 			this.mExperience = pDataInputStream.readInt();
-	//		this.tileX = pDataInputStream.readInt();
-	//		this.tileY = pDataInputStream.readInt();
+			this.mapID = pDataInputStream.readInt();
+			this.tileX = pDataInputStream.readInt();
+			this.tileY = pDataInputStream.readInt();
 			this.mAttributes = pDataInputStream.readUTF();
 			this.currHPMP = pDataInputStream.readUTF();
 			this.mItemID = pDataInputStream.readUTF();
@@ -203,8 +249,9 @@ import com.quest.entities.Player;
 			pDataOutputStream.writeInt(this.mHeadID);
 			pDataOutputStream.writeInt(this.mMoney);
 			pDataOutputStream.writeInt(this.mExperience);
-		//	pDataOutputStream.writeInt(this.tileX);
-	//		pDataOutputStream.writeInt(this.tileY);
+			pDataOutputStream.writeInt(this.mapID);
+			pDataOutputStream.writeInt(this.tileX);
+			pDataOutputStream.writeInt(this.tileY);
 			pDataOutputStream.writeUTF(this.mAttributes);
 			pDataOutputStream.writeUTF(this.currHPMP);
 			pDataOutputStream.writeUTF(this.mItemID);

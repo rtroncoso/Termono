@@ -17,7 +17,7 @@ public class ServerMessageMapChanged extends QuestServerMessage implements Serve
 
 	private int mMapID;
 	private String mPlayerKey;
-	
+	private int tX,tY;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -44,6 +44,28 @@ public class ServerMessageMapChanged extends QuestServerMessage implements Serve
 	}
 
 	/**
+	 * @param tX, tY the position to set
+	 */
+	public void setPos(int tX,int tY) {
+		this.tX = tX;
+		this.tY = tY;
+	}
+	
+	/**
+	 * @return the tX
+	 */
+	public int getX() {
+		return tX;
+	}
+
+	/**
+	 * @return the tY
+	 */
+	public int getY() {
+		return tY;
+	}
+
+	/**
 	 * @return the mPlayerKey
 	 */
 	public String getPlayerKey() {
@@ -64,12 +86,16 @@ public class ServerMessageMapChanged extends QuestServerMessage implements Serve
 	protected void onReadTransmissionData(DataInputStream pDataInputStream) throws IOException {
 		this.mMapID = pDataInputStream.readInt();
 		this.mPlayerKey = pDataInputStream.readUTF();
+		this.tX = pDataInputStream.readInt();
+		this.tY = pDataInputStream.readInt();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
 		pDataOutputStream.writeInt(this.mMapID);
 		pDataOutputStream.writeUTF(this.mPlayerKey);
+		pDataOutputStream.writeInt(this.tX);
+		pDataOutputStream.writeInt(this.tY);
 	}
 
 	@Override

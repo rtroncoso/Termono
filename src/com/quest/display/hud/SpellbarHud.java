@@ -11,6 +11,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import com.quest.constants.GameFlags;
+import com.quest.entities.Player;
 import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
 
@@ -103,6 +104,13 @@ public class SpellbarHud extends HUD implements GameFlags{
 									//}
 									break;
 								case 4:
+									if(Game.isServer()){
+										for(int i = Game.getPlayerHelper().getEntities().size()-1;i>=0;i--){
+											Player tmpPlayer = Game.getPlayerHelper().getPlayerbyIndex(i);
+											Game.getDataHandler().setPlayerCurrentMap(tmpPlayer.getCurrentMap(), tmpPlayer.getPlayerID());
+											Game.getDataHandler().setPlayerPosition(tmpPlayer.getTMXTileAt(), tmpPlayer.getPlayerID());
+										}
+									}
 									//Game.getSceneManager().getGameScene().DeleteMobs(0);
 									break;
 								}
@@ -122,6 +130,9 @@ public class SpellbarHud extends HUD implements GameFlags{
 			mSpellIcons[i].getAttackIcon().setPosition(this.mSpells[i-1].getX()+6, this.mSpells[i-1].getY()+6);
 			}
 		
+			if(i==4){
+				this.mHud.registerTouchArea(mSpells[i]);
+			}
 		}
 		
 		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, Game.getInstance().getVertexBufferObjectManager()) {

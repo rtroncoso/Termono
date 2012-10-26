@@ -129,14 +129,14 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					Log.d("Quest!","Llego player");
 					final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) pServerMessage;
 					Log.d("Quest!","Llego player, userid: "+serverMessageSendPlayer.getUserID());
-					Game.getPlayerHelper().addPlayer(new Player(serverMessageSendPlayer.getUserID(), serverMessageSendPlayer.getPlayerID(), serverMessageSendPlayer.getPlayerClass(), serverMessageSendPlayer.getLevel(), serverMessageSendPlayer.getExperience(), serverMessageSendPlayer.getMoney(), serverMessageSendPlayer.getAttributes(), serverMessageSendPlayer.getCurrHPMP(), serverMessageSendPlayer.getHeadID(), serverMessageSendPlayer.getItemID(), serverMessageSendPlayer.getAmounts(), serverMessageSendPlayer.getIsEquipped()));
+					Game.getPlayerHelper().addPlayer(new Player(serverMessageSendPlayer.getUserID(), serverMessageSendPlayer.getPlayerID(), serverMessageSendPlayer.getPlayerClass(), serverMessageSendPlayer.getLevel(), serverMessageSendPlayer.getExperience(), serverMessageSendPlayer.getMoney(), serverMessageSendPlayer.getAttributes(), serverMessageSendPlayer.getCurrHPMP(), serverMessageSendPlayer.getHeadID(), serverMessageSendPlayer.getItemID(), serverMessageSendPlayer.getAmounts(), serverMessageSendPlayer.getIsEquipped(),serverMessageSendPlayer.getMapID(),serverMessageSendPlayer.getTileX(),serverMessageSendPlayer.getTileY()));
 				}
 			});
 
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED, ServerMessageMatchStarted.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					//Game.getTextHelper().FlushText("MatchScene");
+					Game.getTextHelper().FlushTexts("MatchScene");
 					Game.getSceneManager().setGameScene();
 				}
 			});
@@ -165,10 +165,17 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessageMapChanged serverMessageMapChanged = (ServerMessageMapChanged) pServerMessage;
-					if(!Game.getUserID().equals(serverMessageMapChanged.getPlayerKey()) && Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()).getCurrentMap()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
+					if(Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()).getCurrentMap()!=Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
 						Game.getSceneManager().getGameScene().detachChild(Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()));
 						Game.getSceneManager().getGameScene().unregisterTouchArea(Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()));//checkear si funciona ***
 						Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()).setCurrentMap(serverMessageMapChanged.getMapID());
+					}else{
+						if(!Game.getUserID().equals(serverMessageMapChanged.getPlayerKey())){//Si no es mi player
+							Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()).setTileAt(serverMessageMapChanged.getX(), serverMessageMapChanged.getY());
+							Game.getSceneManager().getGameScene().attachChild(Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()));
+							Game.getSceneManager().getGameScene().registerTouchArea(Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()));
+							Game.getPlayerHelper().getPlayer(serverMessageMapChanged.getPlayerKey()).setCurrentMap(serverMessageMapChanged.getMapID());
+						}
 					}
 				}
 			});
@@ -337,10 +344,11 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				QClient.this.mMessagePool.recycleMessage(clientMessageAreaAttack);	
 		}
 		
-		public void sendPlayerChangedMap(String pPlayerKey, int pMapID){
+		public void sendPlayerChangedMap(String pPlayerKey, int pMapID,int pX, int pY){
 			final ClientMessageChangeMap clientMessageChangeMap = (ClientMessageChangeMap) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_PLAYER_CHANGED_MAP);
 			clientMessageChangeMap.setPlayerKey(pPlayerKey);
 			clientMessageChangeMap.setMapID(pMapID);
+			clientMessageChangeMap.setPos(pX, pY);
 			try {
 				sendClientMessage(clientMessageChangeMap);				
 			} catch (Exception e) {

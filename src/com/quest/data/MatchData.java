@@ -13,6 +13,7 @@ public class MatchData {
 	private String mMatchName;
 	private int mMatchID;//La id que tiene el server del match
 	private String mPassword;
+	private boolean mStarted = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -61,6 +62,13 @@ public class MatchData {
 		this.mPassword = mPassword;
 	}
 
+	public boolean isStarted() {
+		return mStarted;
+	}
+
+	public void setStarted(boolean pStarted) {
+		this.mStarted = pStarted;
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================
