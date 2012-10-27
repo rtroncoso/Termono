@@ -1,5 +1,7 @@
 package com.quest.game;
 
+import java.util.Random;
+
 import org.andengine.engine.Engine;
 import org.andengine.engine.FixedStepEngine;
 import org.andengine.engine.options.EngineOptions;
@@ -50,7 +52,8 @@ public class Game extends SimpleBaseGameActivity {
 	private static ProfileData mProfileData;
 	private static boolean isServer = false;
 	private static TimerHelper mTimerHelper;
-	private static AttacksHelper mAttacksHelper;
+	private static AttacksHelper mAttacksHelper;	
+	private static Random rand;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -269,7 +272,12 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-
+	public static int getRandom(int min, int max)
+	{
+		rand = new Random();	
+		int RandomNum = rand.nextInt(max - min + 1) + min;
+		return RandomNum;
+	}
 
 
 

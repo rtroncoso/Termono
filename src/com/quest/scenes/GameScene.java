@@ -48,8 +48,6 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		private Entity mMapLayer;
 		private Rectangle hpbar;
 		protected ArrayList<Attack> mAttackLayer;
-		
-		private int tempInt=-1;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
@@ -79,7 +77,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			            	// Load the Map and Attach it
 			    			Game.getMapManager().loadMap(pMapName);
 			    			GameScene.this.attachChild(GameScene.this.mMapLayer);
-			    			
+			    			/*
 
 			    			if(Game.isServer()){
 				    			Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
@@ -100,7 +98,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 				    			}), "MobSpawner");
 			    			}
 
-
+*/
 			    			//***sacar
 			    			 hpbar = new Rectangle(190, 40, 290, 45, Game.getInstance().getVertexBufferObjectManager());
 			    			 hpbar.setColor(1,0,0);
@@ -182,7 +180,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 							for(int i = tmpMobsinArea.size()-1;i>=0;i--){
 								Game.getBattleHelper().startAttack(Game.getPlayerHelper().getOwnPlayer(), tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
 							}
-							Game.getServer().sendMessageDisplayAreaAttack(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16);
+							Game.getServer().sendMessageDisplayAreaAttack(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16,Game.getPlayerHelper().getOwnPlayer().getCurrentMap());
 							this.mAttackLayer.add(tmpAtt);
 						}
 					}else{
@@ -297,15 +295,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		}	
 		// ===========================================================
 		// Methods
-		// ===========================================================
-		
-		//sacar
-		private int getRandom(int min, int max)	{
-			Random rand = new Random();	
-			int RandomNum = rand.nextInt(max - min + 1) + min;
-			return RandomNum;
-		}
-		
+		// ===========================================================		
 		public void setHPbar(int width){
 			if(width<1){
 				this.hpbar.setVisible(false);
@@ -315,34 +305,29 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			}
 		}
 		
-		public void CreateMob(int MOB_FLAG,int tileX,int tileY,int map){
-			if(Game.isServer())Game.getServer().sendSpawnMobMessage(MOB_FLAG, tileX, tileY, map);
-			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
-			tmpMob.setTileAt(tileX,tileY);
+		public void CreateMob_Server(int MOB_FLAG,int tileX,int tileY,int pMap){//Server
+				Game.getServer().sendSpawnMobMessage(MOB_FLAG,Game.getMobHelper().getMobCount(),tileX, tileY, pMap);
+				Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG,pMap,tileX,tileY);
+				if(pMap == Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){//Solo lo agrega graficamente si esta en el mismo mapa
+					GameScene.this.attachChild(tmpMob);
+					GameScene.this.registerTouchArea(tmpMob.getBodySprite());
+				}
+		}
+		
+		public void CreateMob_Client(int MOB_FLAG,int pMobID,int tileX,int tileY){//Client new mob
+			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG,Game.getPlayerHelper().getOwnPlayer().getCurrentMap(),tileX,tileY,pMobID);
 			GameScene.this.attachChild(tmpMob);
 			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
-			tempInt+=1;
 		}
 
-		public void CreateMob(int MOB_FLAG,int i){
-			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG);
-			tmpMob.setTileAt(Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn()+i,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow());
+		public void CreateMob_Client(int MOB_FLAG,int pMobID,int tileX,int tileY,int currHp,int currMp,byte facing_direction){//Client existing mob
+			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG,Game.getPlayerHelper().getOwnPlayer().getCurrentMap(),tileX,tileY,pMobID);
+			tmpMob.setCurrHP(currHp);
+			tmpMob.setCurrMana(currMp);
+			tmpMob.setAnimationDirection(facing_direction, true);//*** fijarse si sirve para que apunte a donde debe
 			GameScene.this.attachChild(tmpMob);
 			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
-			tempInt+=1;
 		}
-		
-		public void DeleteMob(int pMobKey){
-			Game.getMobHelper().deleteMob(tempInt);
-			tempInt-=1;
-		}
-		
-		public void DeleteMobs(int pMobKey){
-			Game.getMobHelper().deleteMobs(tempInt);
-			tempInt-=1;
-		}
-
-		
 		// ===========================================================
 		// Inner and Anonymous Classes
 		// ===========================================================

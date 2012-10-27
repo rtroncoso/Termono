@@ -19,8 +19,7 @@ import com.quest.entities.Player;
 		private int mPlayerID;
 		private int mLevel;
 		private int mClass;
-		private int mHeadID;		
-	//	private int tileX,tileY;  *** Implementar cuando este
+		private int mHeadID;
 		private String mAttributes,currHPMP; 
 		private String mItemID, mAmounts,isEquipped;
 		private int mMoney,mExperience;
@@ -89,23 +88,7 @@ import com.quest.entities.Player;
 		public void setPlayerClass(int mClass) {
 			this.mClass = mClass;
 		}
-/*
-		public int getTileX() {
-			return tileX;
-		}
 
-		public void setTileX(int tileX) {
-			this.tileX = tileX;
-		}
-
-		public int getTileY() {
-			return tileY;
-		}
-
-		public void setTileY(int tileY) {
-			this.tileY = tileY;
-		}
-*/
 		public int[] getAttributes() {
 			return stringArraytoInt(mAttributes);
 		}

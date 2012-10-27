@@ -4,11 +4,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
-
 import com.quest.constants.ServerMessageFlags;
+import com.quest.entities.Mob;
 
-public class ServerMessageSpawnMob extends QuestServerMessage implements ServerMessageFlags {
+public class ServerMessageExistingMob extends QuestServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -20,17 +19,30 @@ public class ServerMessageSpawnMob extends QuestServerMessage implements ServerM
 	private int tileX,tileY;
 	private int Map;
 	private int MobID;
+	private int currHP,currMP;
+	private byte Facing_Direction;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	@Deprecated
-	public ServerMessageSpawnMob() {
+	public ServerMessageExistingMob() {
 	}
 	
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public void LoadMob(final Mob pMob){
+		this.setMOB_FLAG(pMob.getMobFlag());
+		this.setTileX(pMob.getTMXTileAt().getTileColumn());
+		this.setTileY(pMob.getTMXTileAt().getTileRow());
+		this.setMap(pMob.getCurrentMap());
+		this.setMobID(Integer.parseInt(pMob.getUserData().toString()));
+		this.setCurrHP(pMob.getCurrHP());
+		this.setCurrMP(pMob.getCurrMana());
+		this.setFacing_Direction(pMob.getFacingDirection());
+	}
+	
 	public int getMOB_FLAG() {
 		return MOB_FLAG;
 	}
@@ -63,6 +75,48 @@ public class ServerMessageSpawnMob extends QuestServerMessage implements ServerM
 		this.tileY = tileY;
 	}
 
+	/**
+	 * @return the currHP
+	 */
+	public int getCurrHP() {
+		return currHP;
+	}
+
+	/**
+	 * @param currHP the currHP to set
+	 */
+	public void setCurrHP(int currHP) {
+		this.currHP = currHP;
+	}
+
+	/**
+	 * @return the currMP
+	 */
+	public int getCurrMP() {
+		return currMP;
+	}
+
+	/**
+	 * @param currMP the currMP to set
+	 */
+	public void setCurrMP(int currMP) {
+		this.currMP = currMP;
+	}
+
+	/**
+	 * @return the facing_Direction
+	 */
+	public byte getFacing_Direction() {
+		return Facing_Direction;
+	}
+
+	/**
+	 * @param facing_Direction the facing_Direction to set
+	 */
+	public void setFacing_Direction(byte facing_Direction) {
+		Facing_Direction = facing_Direction;
+	}
+
 	public int getMap() {
 		return Map;
 	}
@@ -78,7 +132,7 @@ public class ServerMessageSpawnMob extends QuestServerMessage implements ServerM
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_SERVER_SPAWN_MOB;
+		return FLAG_MESSAGE_SERVER_EXISTING_MOB;
 	}
 
 	@Override
@@ -88,6 +142,9 @@ public class ServerMessageSpawnMob extends QuestServerMessage implements ServerM
 		this.tileX = pDataInputStream.readInt();
 		this.tileY = pDataInputStream.readInt();
 		this.Map = pDataInputStream.readInt();
+		this.currHP = pDataInputStream.readInt();
+		this.currMP = pDataInputStream.readInt();
+		this.Facing_Direction = pDataInputStream.readByte();
 	}
 
 	@Override
@@ -97,6 +154,9 @@ public class ServerMessageSpawnMob extends QuestServerMessage implements ServerM
 		pDataOutputStream.writeInt(this.tileX);
 		pDataOutputStream.writeInt(this.tileY);
 		pDataOutputStream.writeInt(this.Map);
+		pDataOutputStream.writeInt(this.currHP);
+		pDataOutputStream.writeInt(this.currMP);
+		pDataOutputStream.writeByte(this.Facing_Direction);
 	}
 
 	// ===========================================================

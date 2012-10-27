@@ -13,6 +13,7 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.util.debug.Debug;
 
+import com.quest.entities.Mob;
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.IAsyncCallback;
 import com.quest.triggers.MapChangeTrigger;
@@ -32,6 +33,8 @@ public class MapHelper implements IMeasureConstants {
 	private TMXTiledMap mCurrentMap;
 	private List<TMXTile> mCollideTiles;
 	private List<MapChangeTrigger> mTriggerTiles;
+	private List<TMXTile> mMobSpawnTiles;
+	private List<TMXTile> mMobWalkTiles;
 	private boolean isChangingMap;
 	
 	// ===========================================================
@@ -41,6 +44,8 @@ public class MapHelper implements IMeasureConstants {
 
 		this.mCollideTiles = new ArrayList<TMXTile>();
 		this.mTriggerTiles = new ArrayList<MapChangeTrigger>();
+		this.mMobSpawnTiles = new ArrayList<TMXTile>();
+		this.mMobWalkTiles = new ArrayList<TMXTile>();
 		
 		this.mTmxLoader = new TMXLoader(Game.getInstance().getAssets(), Game.getInstance().getEngine().getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, Game.getInstance().getVertexBufferObjectManager());
 	}
@@ -105,7 +110,7 @@ public class MapHelper implements IMeasureConstants {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public void loadMap(String pName) {
+	public void loadMap(final String pName) {
 
 
 		// Update it's map
@@ -165,6 +170,41 @@ public class MapHelper implements IMeasureConstants {
 				}
 			}
 			
+			if (group.getTMXObjectGroupProperties().containsTMXProperty("MobSpawn", "true")) {
+				
+				for (final TMXObject object : group.getTMXObjects()) {
+
+					int corner1X = object.getX() + TILE_SIZE / 2;
+					int corner1Y = object.getY() + TILE_SIZE / 2;
+					int corner2X = corner1X + object.getWidth() / TILE_SIZE;
+					int corner2Y = corner1Y + object.getHeight() / TILE_SIZE;
+
+					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){
+					
+					//Loop AmountToBeSpawned times
+					for(int i = 0;i<Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());i++ ){
+						
+						int SpawnX = Game.getRandom(corner1X, corner2X);
+						int SpawnY = Game.getRandom(corner1Y, corner2Y);
+						if(Game.isServer()){//Genero los mobs
+							Game.getSceneManager().getGameScene().CreateMob_Server(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), SpawnX, SpawnY, Integer.parseInt(pName));
+						}else{//Pido que se generen los mobs
+							Game.getClient().sendMobRequest(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), Integer.parseInt(pName), corner1X, corner1Y, corner2X, corner2Y, Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
+						}
+					}
+					
+					}else{
+						if(Game.isServer()){
+							ArrayList<Mob> mobsinmap = Game.getMobHelper().getMobsInMap(Game.getPlayerHelper().getOwnPlayer().getCurrentMap());
+							for(int i = mobsinmap.size()-1;i>=0;i--){
+								Game.getSceneManager().getGameScene().attachChild(mobsinmap.get(i));
+								Game.getSceneManager().getGameScene().registerTouchArea(mobsinmap.get(i).getBodySprite());
+							}
+						}
+					}
+				}
+			}
+			
 			if(group.getTMXObjectGroupProperties().containsTMXProperty("MapChangeTrigger", "true")) {
 
 				for (final TMXObject object : group.getTMXObjects()) {
@@ -208,7 +248,7 @@ public class MapHelper implements IMeasureConstants {
 								        public void run() {
 											 
 									        new AsyncTaskLoader().execute(new IAsyncCallback() {
-
+									        	
 												@Override
 												public void workToDo() {
 													// TODO Auto-generated method stub
@@ -216,11 +256,25 @@ public class MapHelper implements IMeasureConstants {
 													// Load it and set new Player's position
 													int pX = (nextMapX == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn() : nextMapX;
 													int pY = (nextMapY == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow() : nextMapY;
+													
 													if(Game.isServer()){
 														Game.getServer().sendMessagePlayerChangedMap(Game.getUserID(),nextMapNumber,pX,pY);
-													}else{
+														
+														if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){ //If server is alone in the map recycle mobs
+															Game.getMobHelper().deleteMobs(Game.getMobHelper().getMobsInMap(Integer.parseInt(pName)));
+														}else{ //If no alone dettach them
+															ArrayList<Mob> mobsinmap = Game.getMobHelper().getMobsInMap(Game.getPlayerHelper().getOwnPlayer().getCurrentMap());
+															for(int i = mobsinmap.size()-1;i>=0;i--){
+																Game.getSceneManager().getGameScene().detachChild(mobsinmap.get(i));
+																Game.getSceneManager().getGameScene().unregisterTouchArea(mobsinmap.get(i).getBodySprite());
+															}
+														}
+														
+													}else{//If client recycle mobs from past map
 														Game.getClient().sendPlayerChangedMap(Game.getUserID(), nextMapNumber,pX,pY);
+														Game.getMobHelper().deleteMobs(Game.getMobHelper().getMobsInMap(Integer.parseInt(pName)));
 													}
+													
 													MapHelper.this.loadMap(String.valueOf(nextMapNumber));
 													Game.getPlayerHelper().getOwnPlayer().setTileAt(pX,pY);
 

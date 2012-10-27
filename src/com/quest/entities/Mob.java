@@ -24,7 +24,6 @@ import com.quest.timers.Timer;
  * @author raccoon
  *
  */
-//public class Enemy extends Entity implements IOnScreenControlListener{
 public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	// ===========================================================
@@ -34,7 +33,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private Random rand;
 	private int mMobFlag;
 	private int[] mDroppedItems,mDropRates,mDropAmounts;
 	private boolean mGrabbed = false;
@@ -52,9 +50,9 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mEntityType = "Mob";
-	
 	}
-
+	
+	//si hago que los mobs se ataquen entre si acordarme de mandar la exp en el existing mob message
 
 	// ===========================================================
 	// Methods
@@ -77,7 +75,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		{	
 			boolean move = false;
 			byte movingDirection = DIRECTION_DEFAULT;
-			switch(this.getRandom(1, 5))
+			switch(Game.getRandom(1, 5))
 			{
 			case 1://Arriba
 				movingDirection = DIRECTION_NORTH;
@@ -113,14 +111,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 			}
 		}		
 	}
-	
-	public int getRandom(int min, int max)
-	{
-		rand = new Random();	
-		int RandomNum = rand.nextInt(max - min + 1) + min;
-		return RandomNum;
-	}
-	
+
 	public int[] getMobDrop(){
 		//HACER EL CALCULO DE QUE ITEM TIENE QUE DROPPEAR
 		return new int[]{0,0};
@@ -183,12 +174,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 			this.mAttackLayer.add(tmpAtt);	//Mostrar la animacion de ataque
 		}
 		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp
-		if(decreaseHP(pDamage)){
-			if(Game.isServer()){
-				int[] drop = this.getMobDrop();
-				Game.getBattleHelper().killMob(this,drop[0],drop[1], this.getExperience(), this.getMoney(),(Player) (pAttackingEntity));
-			}
-		}
 		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()),1+(float)((float)(pDamage)/(float)(mModHP)));
 		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
 

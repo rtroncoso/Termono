@@ -61,6 +61,16 @@ public class PlayerHelper {
 		Log.e("Quest!","PlayerHelper: IDSearch - No Player matches ID");
 		return null;
 	}
+	
+	public boolean isAloneInMap(Player pPlayer){
+		for(int i = mPlayers.size()-1;i>=0;i--){
+			if(!mPlayers.get(i).equals(pPlayer) && mPlayers.get(i).getCurrentMap()==pPlayer.getCurrentMap()){
+				return false;
+			}
+		}	
+		return true;
+	}
+	
 	/**
 	 * @return the mEntities
 	 */

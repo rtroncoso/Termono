@@ -18,6 +18,7 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 	private int mAttack_Flag;
 	private int mTileX;
 	private  int mTileY;
+	private int mMap;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -57,6 +58,14 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 		this.mTileX = mTileX;
 	}
 
+	public int getMap() {
+		return mMap;
+	}
+
+	public void setMap(int mMap) {
+		this.mMap = mMap;
+	}
+
 	/**
 	 * @return the mTileY
 	 */
@@ -79,6 +88,7 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 		this.mAttack_Flag = pDataInputStream.readInt();
 		this.mTileX = pDataInputStream.readInt();
 		this.mTileY = pDataInputStream.readInt();
+		this.mMap = pDataInputStream.readInt();
 	}
 
 
@@ -87,6 +97,7 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 		pDataOutputStream.writeInt(this.mAttack_Flag);
 		pDataOutputStream.writeInt(this.mTileX);
 		pDataOutputStream.writeInt(this.mTileY);
+		pDataOutputStream.writeInt(this.mMap);
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.quest.helpers;
 
-import android.os.DropBoxManager;
 import android.util.Log;
 
 import com.quest.constants.GameFlags;
@@ -47,12 +46,23 @@ public class BattleHelper implements GameFlags{
 		}
 		Game.getServer().sendFixedAttackData(MobUserData, pAttackID, damage, PlayerUserData, isMobAttacking);
 		
+		if(pAttackedEntity.decreaseHP(damage)){
+			if(Game.isServer()){
+				if(!isMobAttacking){
+					int[] drop = ((Mob)(pAttackedEntity)).getMobDrop();
+					Game.getBattleHelper().killMob(((Mob)(pAttackedEntity)),drop[0],drop[1], ((Mob)(pAttackedEntity)).getExperience(), ((Mob)(pAttackedEntity)).getMoney(),(Player) (pAttackingEntity));
+				}else{
+					//murio el player
+				}
+			}
+		}
+		if(pAttackingEntity.getCurrentMap()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap())
 		displayAttack(pAttackingEntity, pAttackID, damage, pAttackedEntity, isMobAttacking);
 	}
 	
 	
 	public void displayAttack(BaseEntity pAttackingEntity,int pAttackID,int pDamage, BaseEntity pAttackedEntity, boolean ismobAttacking){//display grafico del attack, llamado por mensaje
-		if(ismobAttacking)pAttackingEntity.onAttackAction(pAttackedEntity, pAttackID);
+		pAttackingEntity.onAttackAction(pAttackedEntity, pAttackID);
 		pAttackedEntity.onAttackedAction(pAttackingEntity, pDamage, pAttackID);
 	}
 	
