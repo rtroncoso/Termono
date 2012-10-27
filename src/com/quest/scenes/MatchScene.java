@@ -583,8 +583,8 @@ public class MatchScene extends Scene implements GameFlags {
 						if(mGrabbed) {
 							mGrabbed = false;
 							Game.getTextHelper().FlushTexts("MatchScene");
-							Game.getSceneManager().setGameScene();
 							Game.getServer().sendMatchStartedMessage();
+							Game.getSceneManager().setGameScene();							
 							Game.getMatchData().setStarted(true);
 							//Game.getSceneManager().setTestScene();
 						}

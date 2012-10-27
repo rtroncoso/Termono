@@ -50,8 +50,9 @@ public class MobHelper implements GameFlags{
 			return this.addNewMob(MOB_FLAG, pMapID, pTileX, pTileY, this.MobCount);
 		}
 		
-		public void deleteMob(int pMobID){
-			this.mMobPool.recycleMob(this.mMobs.get(pMobID));
+		public void deleteMob(Mob pMob){
+			this.mMobs.remove(pMob);
+			this.mMobPool.recycleMob(pMob);			
 		}
 		
 		public void deleteMobs(ArrayList<Mob> pMobs){

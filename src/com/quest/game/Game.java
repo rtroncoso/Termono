@@ -33,7 +33,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static boolean AVD_DEBUGGING = false;
+	private static boolean AVD_DEBUGGING = true;
 	// ===========================================================
 	// Fields
 	// ===========================================================

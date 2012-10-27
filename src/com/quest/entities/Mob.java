@@ -154,7 +154,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		super.onDeathAction(pKillerEntity);
 		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
 		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
-		Game.getMobHelper().deleteMob((Integer)(Mob.this.getUserData()));
+		Game.getMobHelper().deleteMob(this);
 		/*Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {

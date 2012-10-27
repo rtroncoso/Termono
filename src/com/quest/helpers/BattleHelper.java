@@ -62,7 +62,6 @@ public class BattleHelper implements GameFlags{
 	
 	
 	public void displayAttack(BaseEntity pAttackingEntity,int pAttackID,int pDamage, BaseEntity pAttackedEntity, boolean ismobAttacking){//display grafico del attack, llamado por mensaje
-		pAttackingEntity.onAttackAction(pAttackedEntity, pAttackID);
 		pAttackedEntity.onAttackedAction(pAttackingEntity, pDamage, pAttackID);
 	}
 	

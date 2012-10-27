@@ -75,30 +75,10 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			            	GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
 			            	GameScene.this.setOnSceneTouchListener(GameScene.this);
 			            	// Load the Map and Attach it
-			    			Game.getMapManager().loadMap(pMapName);
-			    			GameScene.this.attachChild(GameScene.this.mMapLayer);
-			    			/*
-
-			    			if(Game.isServer()){
-				    			Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
-				    				@Override
-				    				public void onTimePassed(TimerHandler pTimerHandler) {
-				    					// TODO Auto-generated method stub
-				    					if(Game.getMobHelper().getMobs().size()<5){
-				    						if(Game.getMobHelper().getMobs().size()%2==0){
-				    							Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn()+getRandom(-10, 10),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow()+getRandom(-10, 10),1);
-				    						}else{
-				    							Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BEE,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn()+getRandom(-10, 10),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow()+getRandom(-10, 10),1);
-				    						}
-				    					}else{
-				    						//Game.getMobHelper().deleteMobs(FLAG_MOB_BAT);
-				    						//Game.getMobHelper().deleteMobs(FLAG_MOB_BEE);
-				    					}
-				    				}
-				    			}), "MobSpawner");
-			    			}
-
-*/
+			            	GameScene.this.attachChild(GameScene.this.mMapLayer);
+			            	Game.getMapManager().loadMap(pMapName);
+			    			
+			    			
 			    			//***sacar
 			    			 hpbar = new Rectangle(190, 40, 290, 45, Game.getInstance().getVertexBufferObjectManager());
 			    			 hpbar.setColor(1,0,0);
@@ -165,12 +145,8 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 				TouchEvent pSceneTouchEvent) {
 			switch (pSceneTouchEvent.getAction()) {
 				case TouchEvent.ACTION_DOWN:
-					Log.d("Quest!","Action DOWN x: "+pSceneTouchEvent.getX()+" y: "+pSceneTouchEvent.getY());
-				
 					break;
-				
 				case TouchEvent.ACTION_UP:
-					Log.d("Quest!","Action UP x: "+pSceneTouchEvent.getX()+" y: "+pSceneTouchEvent.getY());
 					if(Game.isServer()){
 						if(Game.getDataHandler().getAttackType(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag())==2){
 							TMXTile tmpTile = Game.getMapManager().getTMXTileAt(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());

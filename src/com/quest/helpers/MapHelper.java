@@ -13,6 +13,8 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.util.debug.Debug;
 
+import android.util.Log;
+
 import com.quest.entities.Mob;
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.IAsyncCallback;
@@ -173,26 +175,23 @@ public class MapHelper implements IMeasureConstants {
 			if (group.getTMXObjectGroupProperties().containsTMXProperty("MobSpawn", "true")) {
 				
 				for (final TMXObject object : group.getTMXObjects()) {
-
-					int corner1X = object.getX() + TILE_SIZE / 2;
-					int corner1Y = object.getY() + TILE_SIZE / 2;
+					int corner1X = object.getX() / TILE_SIZE;
+					int corner1Y = object.getY() / TILE_SIZE;
 					int corner2X = corner1X + object.getWidth() / TILE_SIZE;
 					int corner2Y = corner1Y + object.getHeight() / TILE_SIZE;
 
 					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){
 					
-					//Loop AmountToBeSpawned times
-					for(int i = 0;i<Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());i++ ){
-						
 						int SpawnX = Game.getRandom(corner1X, corner2X);
 						int SpawnY = Game.getRandom(corner1Y, corner2Y);
 						if(Game.isServer()){//Genero los mobs
-							Game.getSceneManager().getGameScene().CreateMob_Server(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), SpawnX, SpawnY, Integer.parseInt(pName));
+							//Loop AmountToBeSpawned times
+							for(int i = 0;i<Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());i++ ){
+								Game.getSceneManager().getGameScene().CreateMob_Server(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), SpawnX, SpawnY, Integer.parseInt(pName));	
+							}
 						}else{//Pido que se generen los mobs
 							Game.getClient().sendMobRequest(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), Integer.parseInt(pName), corner1X, corner1Y, corner2X, corner2Y, Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
-						}
-					}
-					
+						}	
 					}else{
 						if(Game.isServer()){
 							ArrayList<Mob> mobsinmap = Game.getMobHelper().getMobsInMap(Game.getPlayerHelper().getOwnPlayer().getCurrentMap());
