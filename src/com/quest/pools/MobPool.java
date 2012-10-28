@@ -18,7 +18,7 @@ public class MobPool{
 	// Fields
 	// ===========================================================
 
-	private final MultiPool<Mob> mMobMultiPool = new MultiPool<Mob>();
+	private final QMultiPool<Mob> mMobMultiPool = new QMultiPool<Mob>();
 
 	// ===========================================================
 	// Constructors
@@ -67,35 +67,29 @@ public class MobPool{
 	}
 
 	
-	public Mob obtainMob(final int pMobID) {
-		return this.mMobMultiPool.obtainPoolItem(pMobID);
+	public Mob obtainMob(final int MOB_FLAG) {
+		return this.mMobMultiPool.obtainPoolItem(MOB_FLAG);
 	}
 
-/*
-	public M obtainMessage(final short pFlag, final DataInputStream pDataInputStream) throws IOException {
-		final M message = this.mMessageMultiPool.obtainPoolItem(pFlag);
-		if(message != null) { 
-			message.read(pDataInputStream);
-			return message;
-		} else {
-			throw new IllegalArgumentException("No message found for pFlag='" + pFlag + "'.");
-		}
-	}
-*/
-	
 	public void recycleMob(final Mob pMob) {
 		this.mMobMultiPool.recyclePoolItem(pMob.getMobFlag(), pMob);
 	}
 
 	public void recycleMobs(final List<Mob> pMobs) {
-		final MultiPool<Mob> mobMultiPool = this.mMobMultiPool;
+		final QMultiPool<Mob> mobMultiPool = this.mMobMultiPool;
 		for(int i = pMobs.size() - 1; i >= 0; i--) {
 			final Mob mob = pMobs.get(i);
 			mobMultiPool.recyclePoolItem(mob.getMobFlag(), mob);
 		}
 	}
-
 	
+	public int getTotalItemsAmount(int pPoolID){
+		return (this.mMobMultiPool.getAvailableItemsAmount(pPoolID) + this.mMobMultiPool.getUnrecycledItemsAmount(pPoolID));
+	}
+
+	public GenericPool<Mob> getPool(int pPoolID){
+		return this.mMobMultiPool.getPool(pPoolID);
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================

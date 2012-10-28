@@ -61,4 +61,8 @@ public class AttacksHelper implements GameFlags{
 		this.mAttackPool.recycleAttacks(pAttacksList);
 	}
 	
+	public void allocateAttack(int ATTACK_FLAG,int pAmountToAllocate){
+		this.mAttackPool.getPool(ATTACK_FLAG).batchAllocatePoolItems(pAmountToAllocate);
+	}
+	
 }

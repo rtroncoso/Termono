@@ -125,7 +125,9 @@ public class SceneHelper implements IMeasureConstants {
     public void setGameMenuScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
-    	this.mGameMenuScene = new GameMenuScene();
+    	if(this.mGameMenuScene == null) {
+        	this.mGameMenuScene = new GameMenuScene();
+    	}
     	this.mScene = this.mGameMenuScene;
     	Game.getInstance().getEngine().setScene(this.mScene);
     }

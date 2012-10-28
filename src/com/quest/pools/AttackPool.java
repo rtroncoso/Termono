@@ -18,7 +18,7 @@ public class AttackPool {
 	// Fields
 	// ===========================================================
 
-	private final MultiPool<Attack> mAttackMultiPool = new MultiPool<Attack>();
+	private final QMultiPool<Attack> mAttackMultiPool = new QMultiPool<Attack>();
 
 	// ===========================================================
 	// Constructors
@@ -68,22 +68,22 @@ public class AttackPool {
 	public Attack obtainAttack(final int ATTACK_FLAG) {
 		return this.mAttackMultiPool.obtainPoolItem(ATTACK_FLAG);
 	}
-
-
 	
 	public void recycleAttack(final Attack pAttack) {
 		this.mAttackMultiPool.recyclePoolItem(pAttack.getAttackFlag(), pAttack);
 	}
 
 	public void recycleAttacks(final List<Attack> pAttacks) {
-		final MultiPool<Attack> attackMultiPool = this.mAttackMultiPool;
+		final QMultiPool<Attack> attackMultiPool = this.mAttackMultiPool;
 		for(int i = pAttacks.size() - 1; i >= 0; i--) {
 			final Attack attack = pAttacks.get(i);
 			attackMultiPool.recyclePoolItem(attack.getAttackFlag(), attack);
 		}
 	}
 
-	
+	public GenericPool<Attack> getPool(int pPoolID){
+		return this.mAttackMultiPool.getPool(pPoolID);
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================

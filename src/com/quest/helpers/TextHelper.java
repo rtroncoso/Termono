@@ -124,6 +124,14 @@ public class TextHelper implements GameFlags{
 	public InputText NewInputText(float pX,float pY,final String title, final String message, TiledTextureRegion texture,int textOffsetX, int textOffsetY, boolean isPassword){
 		return new InputText(pX, pY, title, message, texture, this.mNormalFont, textOffsetX, textOffsetY, isPassword, Game.getInstance().getVertexBufferObjectManager(), Game.getInstance());
 	}
+	
+	
+	public void allocateDefaultTexts(){
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_FANCY).batchAllocatePoolItems(3);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_NORMAL).batchAllocatePoolItems(5);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_DAMAGE).batchAllocatePoolItems(5);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_HEALING).batchAllocatePoolItems(3);
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================

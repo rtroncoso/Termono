@@ -1,8 +1,8 @@
 package com.quest.helpers;
 
 import java.util.ArrayList;
-
-import android.util.Log;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import com.quest.constants.GameFlags;
 import com.quest.entities.Mob;
@@ -93,6 +93,16 @@ public class MobHelper implements GameFlags{
 			return tmpMobs;
 		}
 		
+		public void allocateDefaultMobs(ArrayList<Object[]> pMobsToAllocate)
+		{
+			for(int i = pMobsToAllocate.size()-1;i>=0;i--)
+			{
+				if((Integer)pMobsToAllocate.get(i)[1]>this.mMobPool.getTotalItemsAmount((Integer)pMobsToAllocate.get(i)[0]))
+				{//Si la cantidad a spawnear es mayor a la cantidad reciclada hago un allocate de la diferencia
+					this.mMobPool.getPool((Integer)pMobsToAllocate.get(i)[0]).batchAllocatePoolItems((Integer)pMobsToAllocate.get(i)[1]-this.mMobPool.getTotalItemsAmount((Integer)pMobsToAllocate.get(i)[0]));
+				}
+			}
+		}
 		
 		/**
 		 * @return the mMobs

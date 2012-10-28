@@ -90,7 +90,10 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="MobWalk" width="40" height="40" visible="0">
+ <objectgroup name="MobWalk" width="40" height="40">
+  <properties>
+   <property name="MobWalk" value="true"/>
+  </properties>
   <object name="MobWalk" x="352" y="160" width="416" height="320">
    <properties>
     <property name="MobWalk" value="true"/>
@@ -104,6 +107,11 @@
   <object name="MobBlock" x="416" y="224" width="96" height="128">
    <properties>
     <property name="MobWalk" value="false"/>
+   </properties>
+  </object>
+  <object x="992" y="640" width="32" height="352">
+   <properties>
+    <property name="MobWalk" value="true"/>
    </properties>
   </object>
  </objectgroup>

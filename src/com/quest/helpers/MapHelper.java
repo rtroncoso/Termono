@@ -173,6 +173,9 @@ public class MapHelper implements IMeasureConstants {
 			}
 			
 			if (group.getTMXObjectGroupProperties().containsTMXProperty("MobSpawn", "true")) {
+
+				ArrayList<Object[]> mMobsToAllocate;
+				mMobsToAllocate = new ArrayList<Object[]>();
 				
 				for (final TMXObject object : group.getTMXObjects()) {
 					int corner1X = object.getX() / TILE_SIZE;
@@ -201,9 +204,38 @@ public class MapHelper implements IMeasureConstants {
 							}
 						}
 					}
+					
+					for(int i = mMobsToAllocate.size()-1;i>=0;i--)
+					{
+						if((Integer)mMobsToAllocate.get(i)[0] == Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()))
+						{//Si la lista ya contiene el mob suma los amounts
+							mMobsToAllocate.get(i)[0] = (Integer)mMobsToAllocate.get(i)[0] + Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());;
+						}
+					}
+					mMobsToAllocate.add(new Object[]{Integer.parseInt(object.getTMXObjectProperties().get(1).getValue(),Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()))});
+				}
+				
+				Game.getMobHelper().allocateDefaultMobs(mMobsToAllocate);
+				
+			}
+			if(Game.isServer())
+			{//Habria que hacerlo cuando hayamos movido el mapa al servidor para que pueda verificar el movimiento de los mobs cliente
+				if (group.getTMXObjectGroupProperties().containsTMXProperty("MobWalk", "true")) {
+					
+					for (final TMXObject object : group.getTMXObjects()) {
+						int corner1X = object.getX() / TILE_SIZE;
+						int corner1Y = object.getY() / TILE_SIZE;
+						int corner2X = corner1X + object.getWidth() / TILE_SIZE;
+						int corner2Y = corner1Y + object.getHeight() / TILE_SIZE;
+						
+						/*
+						 * Separar en mobwalk true y false, o fijarse como hacer que los mobwalkfalse objects funcionen bien (se restarian de la lista mobwalk, pero a veces cargan antes...) 
+						 * 
+						 */
+						
+					}
 				}
 			}
-			
 			if(group.getTMXObjectGroupProperties().containsTMXProperty("MapChangeTrigger", "true")) {
 
 				for (final TMXObject object : group.getTMXObjects()) {

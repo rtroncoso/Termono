@@ -8,10 +8,11 @@ import org.andengine.util.adt.pool.GenericPool;
 import org.andengine.util.adt.pool.MultiPool;
 import org.andengine.util.debug.Debug;
 
+import com.quest.constants.GameFlags;
 import com.quest.entities.Mob;
 import com.quest.game.Game;
 
-public class TextPool {
+public class TextPool implements GameFlags{
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -20,7 +21,7 @@ public class TextPool {
 	// Fields
 	// ===========================================================
 
-	private final MultiPool<Text> mTextMultiPool = new MultiPool<Text>();
+	private final QMultiPool<Text> mTextMultiPool = new QMultiPool<Text>();
 
 	// ===========================================================
 	// Constructors
@@ -74,20 +75,21 @@ public class TextPool {
 		return this.mTextMultiPool.obtainPoolItem(TEXT_TYPE);
 	}
 
-	
 	public void recycleText(final Text pText) {
 		this.mTextMultiPool.recyclePoolItem(pText.getTag(),pText);
 	}
 
 	public void recycleTexts(final List<Text> pTexts) {
-		final MultiPool<Text> textMultiPool = this.mTextMultiPool;
+		final QMultiPool<Text> textMultiPool = this.mTextMultiPool;
 		for(int i = pTexts.size() - 1; i >= 0; i--) {
 			final Text tmpText = pTexts.get(i);
 			textMultiPool.recyclePoolItem(tmpText.getTag(), tmpText);
 		}
 	}
 
-	
+	public GenericPool<Text> getPool(int pPoolID){
+		return this.mTextMultiPool.getPool(pPoolID);
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================

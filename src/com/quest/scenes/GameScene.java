@@ -126,6 +126,14 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 
 			    	
 			    			GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
+			    			
+			    			//Allocate pools
+			    			Game.getTextHelper().allocateDefaultTexts();
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_BLAST, 3);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_FIREBALL, 3);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_THUNDER, 3);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
 			            }
 
 			            @Override
