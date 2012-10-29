@@ -75,7 +75,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		{	
 			boolean move = false;
 			byte movingDirection = DIRECTION_DEFAULT;
-			switch(Game.getRandom(1, 5))
+			switch(Game.getRandomInt(1, 5))
 			{
 			case 1://Arriba
 				movingDirection = DIRECTION_NORTH;

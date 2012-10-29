@@ -24,14 +24,11 @@ public class LoadingScene extends Scene implements GameFlags{
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private BitmapTextureAtlas mLoadingCircleTextureAtlas;
-	private ITiledTextureRegion mLoadingCircleTextureRegion;
-	private AnimatedSprite mLoadingCircle;
-	
 	private BitmapTextureAtlas mWalkingMageTextureAtlas;
 	private ITiledTextureRegion mWalkingMageTextureRegion;
 	private AnimatedSprite mWalkingMage;
 	private Text mLoadingText;
+	private Text mCurrentTaskText;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -39,33 +36,22 @@ public class LoadingScene extends Scene implements GameFlags{
 		mLoadingText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_FANCY, 0, 0, "LOADING", "LoadingScene");
 		mLoadingText.setScale(2f);
 		this.attachChild(mLoadingText);
-		// Load the loading ring
+
+
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/LoadingScene/");
-	//	this.mLoadingCircleTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024, 128, TextureOptions.BILINEAR);
-	//	this.mLoadingCircleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mLoadingCircleTextureAtlas, 
-	//	Game.getInstance().getApplicationContext(), "LoadingCircle.png", 0, 0, 8, 1);
 		this.mWalkingMageTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 128, 64, TextureOptions.BILINEAR);
 		this.mWalkingMageTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mWalkingMageTextureAtlas, 
 		Game.getInstance().getApplicationContext(), "WalkingMage.png", 0, 0, 4, 1);
 		
 		
-		// Load Texture into memory and on the screen
-	//	this.mLoadingCircleTextureAtlas.load();
 		this.mWalkingMageTextureAtlas.load();
 		
-		// Create the Sprite
-	/*	this.mLoadingCircle = new AnimatedSprite( -(this.mLoadingCircleTextureRegion.getWidth() / 16), -(this.mLoadingCircleTextureRegion.getHeight() / 2), 
-				this.mLoadingCircleTextureRegion, Game.getInstance().getEngine().getVertexBufferObjectManager());
-	*/	
 		this.mWalkingMage= new AnimatedSprite(Game.getSceneManager().getDisplay().getCameraWidth()+40,(-1*(this.mWalkingMageTextureRegion.getHeight() / 2)), 
 				this.mWalkingMageTextureRegion, Game.getInstance().getEngine().getVertexBufferObjectManager());
 		this.mWalkingMage.setCullingEnabled(true);
 		this.mWalkingMage.setScale(2);
-		// Attach the ring and animate!
-	//	this.attachChild(this.mLoadingCircle);
-	//	this.mLoadingCircle.animate(50);
-		
-		this.attachChild(this.mWalkingMage);	
+
+		this.attachChild(this.mWalkingMage);
 	}
 
 	
@@ -77,53 +63,15 @@ public class LoadingScene extends Scene implements GameFlags{
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	/**
-	 * @return the mLoadingCircleTextureAtlas
-	 */
-	public BitmapTextureAtlas getLoadingCircleTextureAtlas() {
-		return mLoadingCircleTextureAtlas;
+	public Text getCurrentTaskText() {
+		return mCurrentTaskText;
 	}
 
 
-	/**
-	 * @param mLoadingCircleTextureAtlas the mLoadingCircleTextureAtlas to set
-	 */
-	public void setLoadingCircleTextureAtlas(BitmapTextureAtlas mLoadingCircleTextureAtlas) {
-		this.mLoadingCircleTextureAtlas = mLoadingCircleTextureAtlas;
+	public void setCurrentTaskText(Text mCurrentTaskText) {
+		this.mCurrentTaskText = mCurrentTaskText;
 	}
 
-
-	/**
-	 * @return the mLoadingCircleTextureRegion
-	 */
-	public ITiledTextureRegion getLoadingCircleTextureRegion() {
-		return mLoadingCircleTextureRegion;
-	}
-
-
-	/**
-	 * @param mLoadingCircleTextureRegion the mLoadingCircleTextureRegion to set
-	 */
-	public void setLoadingCircleTextureRegion(
-			ITiledTextureRegion mLoadingCircleTextureRegion) {
-		this.mLoadingCircleTextureRegion = mLoadingCircleTextureRegion;
-	}
-
-
-	/**
-	 * @return the mLoadingCircle
-	 */
-	public AnimatedSprite getLoadingCircle() {
-		return mLoadingCircle;
-	}
-
-
-	/**
-	 * @param mLoadingCircle the mLoadingCircle to set
-	 */
-	public void setLoadingCircle(AnimatedSprite mLoadingCircle) {
-		this.mLoadingCircle = mLoadingCircle;
-	}
 
 	public void loadingAnimation(boolean pAnimate) {
 		if(pAnimate){
@@ -174,7 +122,10 @@ public class LoadingScene extends Scene implements GameFlags{
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	
+	public void changeCurrentTaskText(String pCurrentTask){
+		this.mCurrentTaskText.setText(pCurrentTask);
+		this.mCurrentTaskText.setX((Game.getSceneManager().getDisplay().getDisplayWidth()/2)-(mCurrentTaskText.getWidth()/2));
+	}
 
 	// ===========================================================
 	// Inner and Anonymous Classes

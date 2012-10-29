@@ -353,7 +353,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageMobRequest clientMessageMobRequest = (ClientMessageMobRequest) pClientMessage;
 				for(int i = 0;i<clientMessageMobRequest.getAmount();i++){
-					Game.getSceneManager().getGameScene().CreateMob_Server(clientMessageMobRequest.getMOB_FLAG(), Game.getRandom(clientMessageMobRequest.getCorner1X(), clientMessageMobRequest.getCorner2X()), Game.getRandom(clientMessageMobRequest.getCorner1Y(), clientMessageMobRequest.getCorner2Y()), clientMessageMobRequest.getMap());
+					Game.getSceneManager().getGameScene().CreateMob_Server(clientMessageMobRequest.getMOB_FLAG(), Game.getRandomInt(clientMessageMobRequest.getCorner1X(), clientMessageMobRequest.getCorner2X()), Game.getRandomInt(clientMessageMobRequest.getCorner1Y(), clientMessageMobRequest.getCorner2Y()), clientMessageMobRequest.getMap());
 				}
 			}
 		});

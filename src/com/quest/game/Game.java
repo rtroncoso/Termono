@@ -33,7 +33,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static boolean AVD_DEBUGGING = true;
+	private static boolean AVD_DEBUGGING = false;
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -272,13 +272,19 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public static int getRandom(int min, int max)
+	public static int getRandomInt(int min, int max)
 	{
 		rand = new Random();	
 		int RandomNum = rand.nextInt(max - min + 1) + min;
 		return RandomNum;
 	}
-
+	
+	public static float getRandomFloat()
+	{
+		rand = new Random();	
+		float RandomNum = rand.nextFloat();
+		return RandomNum;
+	}
 
 
 

@@ -5,6 +5,7 @@ import org.andengine.entity.scene.Scene;
 
 import android.util.Log;
 
+import com.quest.constants.GameFlags;
 import com.quest.display.Display;
 import com.quest.game.Game;
 import com.quest.scenes.GameMenuScene;
@@ -17,7 +18,7 @@ import com.quest.scenes.PauseMenuScene;
 import com.quest.scenes.TestScene;
 import com.quest.util.constants.IMeasureConstants;
 
-public class SceneHelper implements IMeasureConstants {
+public class SceneHelper implements IMeasureConstants, GameFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -144,7 +145,12 @@ public class SceneHelper implements IMeasureConstants {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	//No funciona el set camera center
     	this.mDisplay.setZoom(1.0f);
-		if(this.mLoadingScene == null) this.mLoadingScene = new LoadingScene();
+		if(this.mLoadingScene == null) {
+			this.mLoadingScene = new LoadingScene();
+			this.mLoadingScene.setCurrentTaskText(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 0, this.getDisplay().getDisplayHeight()-20, "", "LoadingScene;CurrentTask"));
+			this.mLoadingScene.attachChild(this.mLoadingScene.getCurrentTaskText());
+		}
+		this.mLoadingScene.changeCurrentTaskText("Loading!");
 		this.mLoadingScene.loadingAnimation(true);
 		this.mScene = this.mLoadingScene;
 		Game.getInstance().getEngine().setScene(this.mScene);

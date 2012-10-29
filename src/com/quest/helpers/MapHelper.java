@@ -18,6 +18,7 @@ import android.util.Log;
 import com.quest.entities.Mob;
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.IAsyncCallback;
+import com.quest.scenes.LoadingScene;
 import com.quest.triggers.MapChangeTrigger;
 import com.quest.triggers.Trigger;
 import com.quest.util.constants.IMeasureConstants;
@@ -35,8 +36,6 @@ public class MapHelper implements IMeasureConstants {
 	private TMXTiledMap mCurrentMap;
 	private List<TMXTile> mCollideTiles;
 	private List<MapChangeTrigger> mTriggerTiles;
-	private List<TMXTile> mMobSpawnTiles;
-	private List<TMXTile> mMobWalkTiles;
 	private boolean isChangingMap;
 	
 	// ===========================================================
@@ -46,8 +45,6 @@ public class MapHelper implements IMeasureConstants {
 
 		this.mCollideTiles = new ArrayList<TMXTile>();
 		this.mTriggerTiles = new ArrayList<MapChangeTrigger>();
-		this.mMobSpawnTiles = new ArrayList<TMXTile>();
-		this.mMobWalkTiles = new ArrayList<TMXTile>();
 		
 		this.mTmxLoader = new TMXLoader(Game.getInstance().getAssets(), Game.getInstance().getEngine().getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, Game.getInstance().getVertexBufferObjectManager());
 	}
@@ -185,8 +182,8 @@ public class MapHelper implements IMeasureConstants {
 
 					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){
 					
-						int SpawnX = Game.getRandom(corner1X, corner2X);
-						int SpawnY = Game.getRandom(corner1Y, corner2Y);
+						int SpawnX = Game.getRandomInt(corner1X, corner2X);
+						int SpawnY = Game.getRandomInt(corner1Y, corner2Y);
 						if(Game.isServer()){//Genero los mobs
 							//Loop AmountToBeSpawned times
 							for(int i = 0;i<Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());i++ ){
@@ -204,7 +201,7 @@ public class MapHelper implements IMeasureConstants {
 							}
 						}
 					}
-					
+					Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Mobs in pool");
 					for(int i = mMobsToAllocate.size()-1;i>=0;i--)
 					{
 						if((Integer)mMobsToAllocate.get(i)[0] == Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()))

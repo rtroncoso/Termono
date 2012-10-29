@@ -1,11 +1,8 @@
 package com.quest.scenes;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -16,21 +13,17 @@ import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 
-import android.util.Log;
-
 import com.quest.constants.GameFlags;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
 import com.quest.display.hud.StatsHud;
-import com.quest.entities.BaseEntity;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
 import com.quest.helpers.AsyncTaskLoader;
 import com.quest.helpers.interfaces.IAsyncCallback;
-import com.quest.timers.Timer;
 
 public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		// ===========================================================
@@ -128,12 +121,15 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
 			    			
 			    			//Allocate pools
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Texts in pool");
 			    			Game.getTextHelper().allocateDefaultTexts();
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Attacks in pool");
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_BLAST, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_FIREBALL, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_THUNDER, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Done!");
 			            }
 
 			            @Override
@@ -219,7 +215,6 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 						this.mAttackLayer.remove(mAttackToDraw);
 				}
 			}
-			
 			super.onManagedUpdate(pSecondsElapsed);
 		}
 		
