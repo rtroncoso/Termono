@@ -2,8 +2,11 @@ package com.quest.entities;
 
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
+import org.andengine.input.touch.TouchEvent;
 
 import android.util.Log;
 
@@ -11,6 +14,7 @@ import com.quest.constants.GameFlags;
 import com.quest.entities.objects.InventoryItem;
 import com.quest.game.Game;
 import com.quest.helpers.InventoryItemHelper;
+import com.quest.timers.Timer;
 
 
 public class Player extends BaseEntity implements IOnScreenControlListener, ITouchArea, GameFlags {
@@ -32,6 +36,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private int mUnassignedPoints;
 	private int Attack_Flag;
 	private int[] mCoords;
+	private boolean mGrabbed = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -94,7 +99,17 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		return pInventory;
 	}
 	
-
+	public void startRecoveryTimer(){
+			Game.getTimerHelper().addTimer(new Timer(0.2f, new ITimerCallback() 
+			{	
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) 
+				{
+					if(Player.this.getCurrHP()<Player.this.getModHP())Player.this.recoverHP();
+					if(Player.this.getCurrMana()<Player.this.getModMana())Player.this.recoverMP();
+				}
+			}), mUserID);		
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -160,10 +175,31 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "Eye'm the strongest!", "asd"),1.5f);
 		}
 		Game.getBattleHelper().startAttack(this, pAttackID, pAttackedEntity);
-		Log.d("Quest!", "Player: "+this.getUserData()+" exp: "+this.mExperience);
 	};
 	
 	
+	
+	@Override
+	public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+		switch(pSceneTouchEvent.getAction()) {
+		case TouchEvent.ACTION_DOWN:
+			mGrabbed = true;					
+			break;
+		case TouchEvent.ACTION_UP:
+			//if(mGrabbed) {
+				Log.d("Quest!", "player touched");
+				mGrabbed = false;
+				Player.this.decreaseHP(50);
+				Player.this.setCurrMana(10);
+				Player.this.addExperience(1);
+				Player.this.setLevel(Player.this.getLevel()+1);
+			//}
+			break;
+		}
+	
+		return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX,
+				pTouchAreaLocalY);
+	}
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
@@ -235,6 +271,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	public void addExperience(int mExperience) {
 		this.mExperience += mExperience;
 	} 
+	
+	public void recoverHP(){
+		this.currHP+=(float)(this.mEndurance/10);
+	}
+	
+	public void recoverMP(){
+		this.currMana+=(float)(this.mIntelligence/10);
+	}
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

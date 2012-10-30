@@ -23,7 +23,8 @@ public abstract class PolygonShape extends Shape implements IAreaShape {
 	// ===========================================================
 
 	public PolygonShape(final Vector<float[]> pVertices, final ShaderProgram pShaderProgram) {
-		super(pVertices.get(0)[0], pVertices.get(0)[1], pShaderProgram);
+	//	super(pVertices.get(0)[0], pVertices.get(0)[1], pShaderProgram);
+		super(0,0, pShaderProgram);
 		float widthmin = 0;
 		float widthmax = 0;
 		float heightmin = 0;
@@ -38,7 +39,6 @@ public abstract class PolygonShape extends Shape implements IAreaShape {
 		
 		this.mWidth = widthmax-widthmin;
 		this.mHeight = heightmax-heightmin;
-
 		this.resetRotationCenter();
 		this.resetScaleCenter();
 		this.resetSkewCenter();

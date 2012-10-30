@@ -30,6 +30,8 @@ public class AttacksHelper implements GameFlags{
 		this.mAttackPool.registerAttack(FLAG_ATTACK_MOB_DEATH);
 	}
 	
+	
+	
 	/**
 	 * @return the mAttacksList
 	 */
@@ -51,8 +53,12 @@ public class AttacksHelper implements GameFlags{
 		return attack;
 	}
 	
+	public Attack getAttack(int ATTACK_FLAG){
+		return (Attack) (AttacksHelper.this.mAttackPool.obtainAttack(ATTACK_FLAG));
+	}
+	
 	public void recycleAttack(Attack pAttack){
-		this.mAttacksList.remove(pAttack);
+		if(this.mAttacksList.contains(pAttack))this.mAttacksList.remove(pAttack);
 		this.mAttackPool.recycleAttack(pAttack);		
 	}
 	

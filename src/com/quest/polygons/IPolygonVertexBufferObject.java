@@ -12,6 +12,6 @@ public interface IPolygonVertexBufferObject  extends IVertexBufferObject {
 	// Methods
 	// ===========================================================
 
-	public void onUpdateColor(final Polygon pRectangle);
-	public void onUpdateVertices(final Polygon pRectangle);
+	public void onUpdateColor(final Polygon pPolygon);
+	public void onUpdateVertices(final Polygon pPolygon);
 }

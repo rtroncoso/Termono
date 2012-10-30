@@ -13,6 +13,7 @@ public interface GameFlags {
 	public static final int FLAG_TEXT_TYPE_DAMAGE = 2;
 	public static final int FLAG_TEXT_TYPE_HEALING = 3;
 	public static final int FLAG_TEXT_TYPE_FANCY = 4;
+	public static final int FLAG_TEXT_TYPE_BLUE = 5;
 	
 	
 	//Attacks

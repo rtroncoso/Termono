@@ -9,6 +9,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
+import android.util.Log;
+
 import com.quest.game.Game;
 import com.quest.util.constants.IMeasureConstants;
 
@@ -39,7 +41,6 @@ public class Attack extends Entity implements IMeasureConstants {
 		this.mCols = Game.getDataHandler().getAttackAnimationCols(mAttack_Flag);
 		this.mRows = Game.getDataHandler().getAttackAnimationRows(mAttack_Flag);
 		this.mEffect = Game.getDataHandler().getAttackEffect(mAttack_Flag);
-		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.mAttackTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024, 1024);
 		this.mAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mAttackTextureAtlas, Game.getInstance().getApplicationContext(), mAnimatedTexturePath, 0, 0, mCols, mRows);

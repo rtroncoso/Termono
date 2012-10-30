@@ -71,7 +71,17 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			            	GameScene.this.attachChild(GameScene.this.mMapLayer);
 			            	Game.getMapManager().loadMap(pMapName);
 			    			
-			    			
+			    			//Allocate pools
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Texts in pool");
+			    			Game.getTextHelper().allocateDefaultTexts();
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Attacks in pool");
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_BLAST, 3);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_FIREBALL, 3);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_THUNDER, 3);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Done!");
+			            	
 			    			//***sacar
 			    			 hpbar = new Rectangle(190, 40, 290, 45, Game.getInstance().getVertexBufferObjectManager());
 			    			 hpbar.setColor(1,0,0);
@@ -79,7 +89,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			 
 			    			
 			    			GameScene.this.mHud = new HUD();
-			    			GameScene.this.mStatsHud = new StatsHud();
+			    			GameScene.this.mStatsHud = new StatsHud(GameScene.this.mHud,Game.getPlayerHelper().getOwnPlayer());
 			    			GameScene.this.mSpellbarHud = new SpellbarHud(GameScene.this.mHud);
 			    			GameScene.this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getOwnPlayer());
 			    			GameScene.this.mMenuHud = new MenuHud(mHud);
@@ -93,15 +103,21 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    				if(Game.getPlayerHelper().getPlayerbyIndex(i).getCurrentMap() == Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
 			    					Player tmpPlayer = Game.getPlayerHelper().getPlayerbyIndex(i);
 			    					tmpPlayer.setTileAt(tmpPlayer.getCoords()[0], tmpPlayer.getCoords()[1]);
+			    					if(Game.isAVD_DEBUGGING()){
+			    						if(tmpPlayer.getUserID() == Game.getPlayerHelper().getOwnPlayer().getUserID() || Game.isServer())tmpPlayer.startRecoveryTimer();
+			    					}else{
+			    						if(tmpPlayer.getUserID() == Game.getUserID() || Game.isServer())tmpPlayer.startRecoveryTimer();
+			    					}
 			    					GameScene.this.attachChild(tmpPlayer);
+			    					GameScene.this.registerTouchArea(tmpPlayer.getBodySprite());
 			    				}
 			    			}
 			    			
 
 			    			
 			    			// HUD 
+			    			GameScene.this.mHud.attachChild(GameScene.this.mStatsHud.getStatsEntity());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpellBar());
-			    			GameScene.this.mHud.attachChild(GameScene.this.mStatsHud.getTermono());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mControlsHud.getDigitalOnScreenControl());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mMenuHud.getMenuSprite());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(1));
@@ -120,16 +136,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    	
 			    			GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
 			    			
-			    			//Allocate pools
-			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Texts in pool");
-			    			Game.getTextHelper().allocateDefaultTexts();
-			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Attacks in pool");
-			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_BLAST, 3);
-			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_FIREBALL, 3);
-			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_THUNDER, 3);
-			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
-			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
-			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Done!");
+
 			            }
 
 			            @Override
@@ -275,7 +282,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		// ===========================================================
 		// Methods
 		// ===========================================================		
-		public void setHPbar(int width){
+		public void setHPbar(float width){
 			if(width<1){
 				this.hpbar.setVisible(false);
 			}else{

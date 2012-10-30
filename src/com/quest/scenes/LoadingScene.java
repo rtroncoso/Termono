@@ -124,7 +124,7 @@ public class LoadingScene extends Scene implements GameFlags{
 	// ===========================================================
 	public void changeCurrentTaskText(String pCurrentTask){
 		this.mCurrentTaskText.setText(pCurrentTask);
-		this.mCurrentTaskText.setX((Game.getSceneManager().getDisplay().getDisplayWidth()/2)-(mCurrentTaskText.getWidth()/2));
+		this.mCurrentTaskText.setX(0-(mCurrentTaskText.getWidth()/2));
 	}
 
 	// ===========================================================

@@ -25,7 +25,7 @@ public class Timer {
 		// Constructors
 		// ===========================================================
 	
-		public Timer(int pTimePerTick, ITimerCallback iTimerCallback) {
+		public Timer(float pTimePerTick, ITimerCallback iTimerCallback) {
 			
 			Game.getInstance().getEngine().registerUpdateHandler(new TimerHandler(pTimePerTick, true, iTimerCallback));
 		}

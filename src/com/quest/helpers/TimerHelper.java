@@ -19,7 +19,7 @@ public class TimerHelper {
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	private HashMap<Timer, String> mTimersList;
+	private HashMap<String, Timer> mTimersList;
 
 	
 	// ===========================================================
@@ -27,7 +27,7 @@ public class TimerHelper {
 	// ===========================================================
 	public TimerHelper() {
 		
-		this.mTimersList = new HashMap<Timer, String>();
+		this.mTimersList = new HashMap<String, Timer>();
 	}
 	
 	// ===========================================================
@@ -41,14 +41,14 @@ public class TimerHelper {
 	/**
 	 * @return the mTimersList
 	 */
-	public HashMap<Timer, String> getTimersList() {
+	public HashMap<String, Timer> getTimersList() {
 		return mTimersList;
 	}
 
 	/**
 	 * @param mTimersList the mTimersList to set
 	 */
-	public void setTimersList(HashMap<Timer, String> mTimersList) {
+	public void setTimersList(HashMap<String, Timer> mTimersList) {
 		this.mTimersList = mTimersList;
 	}
 
@@ -58,7 +58,7 @@ public class TimerHelper {
 
 	
 	public void addTimer(Timer timer, String pKey) {
-		this.mTimersList.put(timer, pKey);
+		this.mTimersList.put(pKey, timer);
 	}
 	
 	public void deleteTimer(String pKey) {
@@ -70,11 +70,11 @@ public class TimerHelper {
 	}
 	
 	public Timer getTimer(String pKey) {
-		Iterator<Entry<Timer, String>> it = this.mTimersList.entrySet().iterator();
+		Iterator<Entry<String, Timer>> it = this.mTimersList.entrySet().iterator();
 		Log.e("Quest!", pKey);
 		while (it.hasNext()) {
 			Map.Entry e = it.next();
-			if(e.getKey() == pKey) return (Timer) e.getValue();
+			if(e.getKey().equals(pKey)) return (Timer) e.getValue();
 		}
 		Log.e("Quest!", "TimerHelper: Search - No Timer matches key");
 		return null;

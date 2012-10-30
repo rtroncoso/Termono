@@ -37,6 +37,7 @@ public class TextHelper implements GameFlags{
 	private StrokeFont mNormalFont;
 	private StrokeFont mDamageFont;
 	private StrokeFont mHealingFont;
+	private StrokeFont mBlueFont;
 	private Font mFancyFont;
 	// ===========================================================
 	// Constructors
@@ -46,18 +47,21 @@ public class TextHelper implements GameFlags{
 			final ITexture DamageFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 			final ITexture HealingFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 			final ITexture FancyFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
-			
+			final ITexture BlueFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 			
 			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), NormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.WHITE, 1, Color.BLACK);
 			this.mDamageFont = new StrokeFont(Game.getInstance().getFontManager(), DamageFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(157, 22, 22), 1, Color.rgb(196, 28, 28));
 			this.mHealingFont = new StrokeFont(Game.getInstance().getFontManager(), HealingFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(22, 157, 22), 1, Color.rgb(28, 196, 28));
+			this.mBlueFont = new StrokeFont(Game.getInstance().getFontManager(), BlueFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(43, 101, 236), 1, Color.rgb(53, 111, 246));
 			//this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(59, 39, 39));
 			this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(214, 192, 167));
 
+			
 			this.mNormalFont.load();
 			this.mDamageFont.load();
 			this.mHealingFont.load();
 			this.mFancyFont.load();
+			this.mBlueFont.load();
 			
 		this.mTextList = new ArrayList<Text>();
 		this.initTextPool();
@@ -67,6 +71,7 @@ public class TextHelper implements GameFlags{
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_NORMAL, this.mNormalFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_DAMAGE, this.mDamageFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_HEALING, this.mHealingFont);
+		this.mTextPool.registerText(FLAG_TEXT_TYPE_BLUE, this.mBlueFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_FANCY, this.mFancyFont);
 	}
 
@@ -130,6 +135,7 @@ public class TextHelper implements GameFlags{
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_FANCY).batchAllocatePoolItems(3);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_NORMAL).batchAllocatePoolItems(5);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_DAMAGE).batchAllocatePoolItems(5);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_BLUE).batchAllocatePoolItems(5);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_HEALING).batchAllocatePoolItems(3);
 	}
 	// ===========================================================

@@ -523,7 +523,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackID,FLAG_ATTACK_SPELL_FIREBALL);
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell1.png");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell1.png");
-                cv.put(fAttackEffect, "1;");
+                cv.put(fAttackEffect, "1;2");
                 cv.put(fAttackManaCost, 5);
                 cv.put(fAttackType, 1);
                 cv.put(fAttackAnimationRows, 1);
@@ -537,7 +537,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell2.png");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell2.png");
                 cv.put(fAttackType, 1);
-                cv.put(fAttackEffect, "1.5;");
+                cv.put(fAttackEffect, "1.5;2");
                 cv.put(fAttackManaCost, 10);
                 cv.put(fAttackAnimationRows, 1);
                 cv.put(fAttackAnimationCols, 5);
@@ -550,7 +550,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell3.png");
                 cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell3.png");
                 cv.put(fAttackType, 1);
-                cv.put(fAttackEffect, "2;");
+                cv.put(fAttackEffect, "2;2");
                 cv.put(fAttackManaCost, 15);
                 cv.put(fAttackAnimationRows, 3);
                 cv.put(fAttackAnimationCols, 5);
@@ -574,7 +574,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 
                 cv.put(fAttackID,FLAG_ATTACK_MOB_DEATH);
                 cv.put(fAttackIconTexture, "null");
-                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell3.png");
+                cv.put(fAttackAnimationTexture,"Attacks/Mob/Other/MobDeath.png");
                 cv.put(fAttackType, 0);
                 cv.put(fAttackEffect, "0;0");
                 cv.put(fAttackAnimationRows, 1);

@@ -126,13 +126,18 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		case TouchEvent.ACTION_UP:
 			if(mGrabbed) {
 				mGrabbed = false;
-				Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, Game.getPlayerHelper().getOwnPlayer().getAttack_Flag());
-				if(this.getAlpha()==1f){
-					Game.getMobHelper().clearMobsAlpha();
-					this.getBodySprite().setAlpha(0.70f);
+				Player tmpPlayer = Game.getPlayerHelper().getOwnPlayer();
+				Attack tmpAttack = Game.getAttacksHelper().getAttack(tmpPlayer.getAttack_Flag());
+				Log.d("Quest!", "At eff: "+tmpAttack.getEffect()[1]);
+				if(tmpAttack.getEffect()[1]!=3){//si no es un area attack
+					Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, Game.getPlayerHelper().getOwnPlayer().getAttack_Flag());
+					if(this.getAlpha()==1f){
+						Game.getMobHelper().clearMobsAlpha();
+						this.getBodySprite().setAlpha(0.70f);
+					}
+					Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
 				}
-				Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
-				
+				Game.getAttacksHelper().recycleAttack(tmpAttack);
 			}
 			break;
 		}
@@ -152,17 +157,22 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
-		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
 		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
-		Game.getMobHelper().deleteMob(this);
-		/*Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
-				@Override
+		//Game.getMobHelper().deleteMob(this);
+		Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
+			int i = 1;
+			@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					// TODO Auto-generated method stub
-					Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()));
-					Game.getMobHelper().deleteMob((Integer)(Mob.this.getUserData()));
+					if(i==1){
+						Mob.this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_MOB_DEATH));
+					}else if (i==0){
+						Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()));
+						Game.getMobHelper().deleteMob(Mob.this);
+					}
+					i--;
 				}
-			}), String.valueOf(this.getUserData()));*/
+			}), String.valueOf(this.getUserData()));
 		
 	}
 

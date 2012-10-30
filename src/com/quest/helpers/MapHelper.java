@@ -110,8 +110,9 @@ public class MapHelper implements IMeasureConstants {
 	// Methods
 	// ===========================================================
 	public void loadMap(final String pName) {
-
-
+		
+		Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Loading map");
+		
 		// Update it's map
 		Game.getPlayerHelper().getOwnPlayer().setCurrentMap(Integer.parseInt(pName));
 
@@ -209,7 +210,7 @@ public class MapHelper implements IMeasureConstants {
 							mMobsToAllocate.get(i)[0] = (Integer)mMobsToAllocate.get(i)[0] + Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());;
 						}
 					}
-					mMobsToAllocate.add(new Object[]{Integer.parseInt(object.getTMXObjectProperties().get(1).getValue(),Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()))});
+					mMobsToAllocate.add(new Object[]{Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()),Integer.parseInt(object.getTMXObjectProperties().get(0).getValue())});
 				}
 				
 				Game.getMobHelper().allocateDefaultMobs(mMobsToAllocate);

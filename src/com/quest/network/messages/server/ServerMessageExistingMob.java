@@ -38,8 +38,8 @@ public class ServerMessageExistingMob extends QuestServerMessage implements Serv
 		this.setTileY(pMob.getTMXTileAt().getTileRow());
 		this.setMap(pMob.getCurrentMap());
 		this.setMobID(Integer.parseInt(pMob.getUserData().toString()));
-		this.setCurrHP(pMob.getCurrHP());
-		this.setCurrMP(pMob.getCurrMana());
+		this.setCurrHP((int)pMob.getCurrHP());
+		this.setCurrMP((int)pMob.getCurrMana());
 		this.setFacing_Direction(pMob.getFacingDirection());
 	}
 	
@@ -83,10 +83,10 @@ public class ServerMessageExistingMob extends QuestServerMessage implements Serv
 	}
 
 	/**
-	 * @param currHP the currHP to set
+	 * @param f the currHP to set
 	 */
-	public void setCurrHP(int currHP) {
-		this.currHP = currHP;
+	public void setCurrHP(int f) {
+		this.currHP = f;
 	}
 
 	/**
@@ -97,10 +97,10 @@ public class ServerMessageExistingMob extends QuestServerMessage implements Serv
 	}
 
 	/**
-	 * @param currMP the currMP to set
+	 * @param f the currMP to set
 	 */
-	public void setCurrMP(int currMP) {
-		this.currMP = currMP;
+	public void setCurrMP(int f) {
+		this.currMP = f;
 	}
 
 	/**

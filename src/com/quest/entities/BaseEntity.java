@@ -60,7 +60,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	
 	//a ordenar
 	protected int mLevel;
-	protected int currHP,currMana;
+	protected float currHP,currMana;
 	protected int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana = 0;
 	protected int mEndurance,mIntelligence,mPower,mDefense;
 	protected int mMoney,mExperience;
@@ -415,19 +415,19 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mModMana = mModMana;
 	}
 
-	public int getCurrHP() {
+	public float getCurrHP() {
 		return currHP;
 	}
 
-	public void setCurrHP(int pcurrHP) {
+	public void setCurrHP(float pcurrHP) {
 		this.currHP = pcurrHP;			
 	}
 	
-	public int getCurrMana() {
+	public float getCurrMana() {
 		return currMana;
 	}
 
-	public void setCurrMana(int currMana) {
+	public void setCurrMana(float currMana) {
 		this.currMana = currMana;
 	}
 	
@@ -505,8 +505,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.setCurrMana(currHPMP[1]);
 	}
 	
-	public int[] getCurrHPMP(){
-		return new int[]{this.currHP,this.currMana};
+	public float[] getCurrHPMP(){
+		return new float[]{this.currHP,this.currMana};
 	}
 	
 	public void Heal(){

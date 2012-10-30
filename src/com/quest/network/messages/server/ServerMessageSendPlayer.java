@@ -50,7 +50,7 @@ import com.quest.entities.Player;
 			this.setTileX(pPlayer.getTMXTileAt().getTileColumn());
 			this.setTileY(pPlayer.getTMXTileAt().getTileRow());
 			this.setAttributes(pPlayer.getAttributes());
-			this.setCurrHPMP(pPlayer.getCurrHPMP());
+			this.setCurrHPMP(new int[]{(int)pPlayer.getCurrHP(),(int)pPlayer.getCurrMana()});
 			this.setItemID(pItemIDs);
 			this.setAmounts(pAmounts);
 			this.setIsEquipped(isEquipped);

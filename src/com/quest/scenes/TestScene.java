@@ -46,6 +46,13 @@ public class TestScene extends Scene implements GameFlags,IOnSceneTouchListener{
 	private int choice;
 	private Polygon mPoly;
 	private Vector<float[]> mVertices;
+	
+	private float vida = 1;
+	private float vidatotal = 100;
+	private float porcentaje = 90;
+	private float tamanio = 400;
+	private float pendiente = 0.70f;//calcularla bien
+	private float ratio = ((tamanio * porcentaje)/100);//esto es igual al tamaño que tiene que llegar para empezar a hacer la funcion lineal
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -73,8 +80,7 @@ public class TestScene extends Scene implements GameFlags,IOnSceneTouchListener{
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
-						//showUsernameInput();
-						mPoly.addVertice(new float[]{300,300});
+						showUsernameInput();
 						break;
 					}
 				}
@@ -110,17 +116,81 @@ public class TestScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		mVertices.add(new float[]{100,100});
 		mVertices.add(new float[]{300,100});
 		mVertices.add(new float[]{200,300});
-		mPoly = new Polygon(mVertices, Game.getInstance().getVertexBufferObjectManager(),VERTICES_AMOUNT);
+		mPoly = new Polygon(mVertices, Game.getInstance().getVertexBufferObjectManager(),VERTICES_AMOUNT,true);
+		
+		
+	/*	mVertices.add(new float[]{120,100}); //inicial
+		
+		
+		
+		mVertices.add(new float[]{0,100});// abajo izq
+		mVertices.add(new float[]{0,0});// arriba izq
+		
+		mVertices.add(new float[]{100,0});// arriba der
+		
+		mVertices.add(new float[]{120,48});// arriba lineal
+		
+		mPoly = new Polygon(mVertices, Game.getInstance().getVertexBufferObjectManager(),VERTICES_AMOUNT,false);*/
+		
 		this.attachChild(mPoly);
 		
 		this.mPoint1 = new Sprite(mVertices.get(0)[0]+mVertices.get(0)[0]-4.5f, mVertices.get(0)[1]+mVertices.get(0)[1]-4.5f, this.mPointT, Game.getInstance().getVertexBufferObjectManager());
-		mPoint1.setColor(0.1f, 0.9f, 0.1f);
+		mPoint1.setColor(1f, 0.1f, 0.1f);
 		this.attachChild(mPoint1);
-		this.mPoint2 = new Sprite(mVertices.get(1)[0]+mVertices.get(0)[0]-4.5f, mVertices.get(1)[1]+mVertices.get(0)[1]-4.5f, this.mPointT, Game.getInstance().getVertexBufferObjectManager());
+		this.mPoint2 = new Sprite(mVertices.get(1)[0]+mVertices.get(0)[0]-4.5f, mVertices.get(1)[1]+mVertices.get(0)[1]-4.5f, this.mPointT, Game.getInstance().getVertexBufferObjectManager()){
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;
+					mPoint2.setPosition(pSceneTouchEvent.getX()-(mPoint2.getWidth()/2), pSceneTouchEvent.getY()-(mPoint2.getHeight()/2));
+					break;
+				case TouchEvent.ACTION_MOVE:
+					mPoint2.setPosition(pSceneTouchEvent.getX()-(mPoint2.getWidth()/2), pSceneTouchEvent.getY()-(mPoint2.getHeight()/2));
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						mPoly.UpdateVertices(new float[]{pSceneTouchEvent.getX()-mPoly.getVertices().get(0)[0],pSceneTouchEvent.getY()-mPoly.getVertices().get(0)[1]},mPoly.getVertices().size()-2);
+						mPoint2.setPosition(mPoly.getVertices().get(mPoly.getVertices().size()-2)[0]+mPoly.getVertices().get(0)[0]-(mPoint2.getWidth()/2), mPoly.getVertices().get(mPoly.getVertices().size()-2)[1]+mPoly.getVertices().get(0)[1]-(mPoint2.getHeight()/2));
+						mVertices = mPoly.getVertices();
+						break;
+					}
+				}
+				return true;
+			}				
+		};
+		mPoint2.setColor(0.1f, 0.1f, 1f);
 		this.attachChild(mPoint2);
-		this.mPoint3 = new Sprite(mVertices.get(2)[0]+mVertices.get(0)[0]-4.5f, mVertices.get(2)[1]+mVertices.get(0)[1]-4.5f, this.mPointT, Game.getInstance().getVertexBufferObjectManager());
+		this.registerTouchArea(mPoint2);
+		this.mPoint3 = new Sprite(mVertices.get(2)[0]+mVertices.get(0)[0]-4.5f, mVertices.get(2)[1]+mVertices.get(0)[1]-4.5f, this.mPointT, Game.getInstance().getVertexBufferObjectManager()){
+			boolean mGrabbed = false;
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					mGrabbed = true;
+					mPoint3.setPosition(pSceneTouchEvent.getX()-(mPoint3.getWidth()/2), pSceneTouchEvent.getY()-(mPoint3.getHeight()/2));
+					break;
+				case TouchEvent.ACTION_MOVE:
+					mPoint3.setPosition(pSceneTouchEvent.getX()-(mPoint3.getWidth()/2), pSceneTouchEvent.getY()-(mPoint3.getHeight()/2));
+					break;
+				case TouchEvent.ACTION_UP:
+					if(mGrabbed) {
+						mGrabbed = false;
+						mPoly.UpdateVertices(new float[]{pSceneTouchEvent.getX()-mPoly.getVertices().get(0)[0],pSceneTouchEvent.getY()-mPoly.getVertices().get(0)[1]},mPoly.getVertices().size()-1);
+						mPoint3.setPosition(mPoly.getVertices().get(mPoly.getVertices().size()-1)[0]+mPoly.getVertices().get(0)[0]-(mPoint3.getWidth()/2), mPoly.getVertices().get(mPoly.getVertices().size()-1)[1]+mPoly.getVertices().get(0)[1]-(mPoint3.getHeight()/2));
+						mVertices = mPoly.getVertices();
+						break;
+					}
+				}
+				return true;
+			}				
+		};
+		mPoint3.setColor(0.1f, 1f, 0.1f);
 		this.attachChild(mPoint3);
-		
+		this.registerTouchArea(mPoint3);
 		
 		this.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 5, 5, "Touch the screen!", "vert"));
     	this.setTouchAreaBindingOnActionDownEnabled(true);
@@ -130,7 +200,15 @@ public class TestScene extends Scene implements GameFlags,IOnSceneTouchListener{
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
-	
+	public Vector<float[]> updatevida(float pvida){
+		mVertices.clear();
+		mVertices.add(new float[]{pvida,200}); //inicial
+		mVertices.add(new float[]{0,200});// abajo izq
+		mVertices.add(new float[]{0,100});// arriba izq
+		mVertices.add(new float[]{pvida-((pvida-ratio)*((int)(pvida/ratio))),0});// arriba der		
+		mVertices.add(new float[]{pvida,(pvida*(pendiente*((int)(pvida/ratio))))+100-(100*((int)(pvida/ratio)))});// arriba lineal		
+		return mVertices;
+	}
 
 	// ===========================================================
 	// Getter & Setter
@@ -156,7 +234,9 @@ public class TestScene extends Scene implements GameFlags,IOnSceneTouchListener{
 				alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {//*** que checkee que no deje en blanco
-						executeinst(Integer.parseInt(editText.getText().toString()));
+						//executeinst(Integer.parseInt(editText.getText().toString()));
+						vida = Integer.parseInt(editText.getText().toString());
+						mPoly.UpdateVertices(TestScene.this.updatevida(Integer.parseInt(editText.getText().toString())));
 					}
 				});
 				alert.setCancelable(false);
@@ -213,6 +293,7 @@ public class TestScene extends Scene implements GameFlags,IOnSceneTouchListener{
 	public void ans(String pText){
 		Game.getTextHelper().ChangeText(pText, "answertext", 0, this.mBackgroundSprite.getHeight()-50);
 	}
+	
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
@@ -231,8 +312,8 @@ public class TestScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			mPoly.addVertice(new float[]{pSceneTouchEvent.getX()-mVertices.get(0)[0],pSceneTouchEvent.getY()-mVertices.get(0)[1]});
 			mPoly.setColor(Game.getRandomFloat(), Game.getRandomFloat(), Game.getRandomFloat());
 			mPoint1.setPosition(mVertices.get(mVertices.size()-3)[0]+mVertices.get(0)[0]-(mPoint1.getWidth()/2), mVertices.get(mVertices.size()-3)[1]+mVertices.get(0)[1]-(mPoint1.getHeight()/2));
-			mPoint2.setPosition(mVertices.get(mVertices.size()-2)[0]+mVertices.get(0)[0]-(mPoint2.getWidth()/2), mVertices.get(mVertices.size()-2)[1]+mVertices.get(0)[1]-(mPoint1.getHeight()/2));
-			mPoint3.setPosition(mVertices.get(mVertices.size()-1)[0]+mVertices.get(0)[0]-(mPoint2.getWidth()/2), mVertices.get(mVertices.size()-1)[1]+mVertices.get(0)[1]-(mPoint1.getHeight()/2));
+			mPoint2.setPosition(mVertices.get(mVertices.size()-2)[0]+mVertices.get(0)[0]-(mPoint2.getWidth()/2), mVertices.get(mVertices.size()-2)[1]+mVertices.get(0)[1]-(mPoint2.getHeight()/2));
+			mPoint3.setPosition(mVertices.get(mVertices.size()-1)[0]+mVertices.get(0)[0]-(mPoint3.getWidth()/2), mVertices.get(mVertices.size()-1)[1]+mVertices.get(0)[1]-(mPoint3.getHeight()/2));
 			break;
 		}
 	return true;

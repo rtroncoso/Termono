@@ -57,7 +57,7 @@ public class QMultiPool<T>{
 		}
 		
 		public int getUnrecycledItemsAmount(int pPoolID){
-			return getPool(pPoolID).getAvailableItemCountMaximum();
+			return getPool(pPoolID).getUnrecycledItemCount();
 		}
 		
 		public int getAvailableItemsAmount(int pPoolID){
