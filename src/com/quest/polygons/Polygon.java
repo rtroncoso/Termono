@@ -135,8 +135,6 @@ public class Polygon extends PolygonShape {
 	
 	public void UpdateVertices(float[] vertice,int index){
 		this.mVertices.setElementAt(vertice,index);
-		//this.mVertices.remove(mVertices.size()-1);
-		//this.mVertices.add(vertice);
 		this.onUpdateVertices();
 		this.onUpdateColor();
 	}

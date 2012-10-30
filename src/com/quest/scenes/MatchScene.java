@@ -1104,7 +1104,7 @@ public class MatchScene extends Scene implements GameFlags {
 				this.mChoices[3] = 1;
 				this.mChoices[4] = 1;
 				this.mChoices[5] = 1;
-				this.mChoices[6] = 10;
+				this.mChoices[6] = 15;
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText1"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText2"));
@@ -1570,7 +1570,7 @@ public class MatchScene extends Scene implements GameFlags {
 						this.mChoices[3] = 1;
 						this.mChoices[4] = 1;
 						this.mChoices[5] = 1;
-						this.mChoices[6] = 10;
+						this.mChoices[6] = 15;
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText"));
 					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText1"));
 					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText2"));
