@@ -14,7 +14,7 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 	// ===========================================================
 	// Fields
 	// ===========================================================
-
+	private String mUserID;
 	private int mAttack_Flag;
 	private int mTileX;
 	private  int mTileY;
@@ -58,6 +58,14 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 		this.mTileX = mTileX;
 	}
 
+	public String getUserID() {
+		return mUserID;
+	}
+
+	public void setUserID(String mUserID) {
+		this.mUserID = mUserID;
+	}
+
 	public int getMap() {
 		return mMap;
 	}
@@ -85,6 +93,7 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 
 	@Override
 	protected void onReadTransmissionData(DataInputStream pDataInputStream) throws IOException {
+		this.mUserID = pDataInputStream.readUTF();
 		this.mAttack_Flag = pDataInputStream.readInt();
 		this.mTileX = pDataInputStream.readInt();
 		this.mTileY = pDataInputStream.readInt();
@@ -94,6 +103,7 @@ public class ServerMessageDisplayAreaAttack extends QuestServerMessage implement
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
+		pDataOutputStream.writeUTF(this.mUserID);
 		pDataOutputStream.writeInt(this.mAttack_Flag);
 		pDataOutputStream.writeInt(this.mTileX);
 		pDataOutputStream.writeInt(this.mTileY);

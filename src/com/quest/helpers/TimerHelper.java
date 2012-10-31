@@ -62,8 +62,10 @@ public class TimerHelper {
 	}
 	
 	public void deleteTimer(String pKey) {
-		if(this.getTimer(pKey) != null) {
+		final Timer tmpTimer = this.getTimer(pKey);
+		if(tmpTimer != null) {
 			this.mTimersList.remove(this.getTimer(pKey));
+			tmpTimer.unregisterTimer();
 		} else {
 			Log.d("Quest!", "TimerHelper: Erase - No Timer matches key");
 		}

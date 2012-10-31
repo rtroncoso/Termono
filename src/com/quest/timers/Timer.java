@@ -20,6 +20,7 @@ public class Timer {
 		// Fields
 		// ===========================================================
 		private ITimerCallback mTimerCallback;
+		private TimerHandler mTimerHandler;
 	
 		// ===========================================================
 		// Constructors
@@ -27,7 +28,8 @@ public class Timer {
 	
 		public Timer(float pTimePerTick, ITimerCallback iTimerCallback) {
 			
-			Game.getInstance().getEngine().registerUpdateHandler(new TimerHandler(pTimePerTick, true, iTimerCallback));
+			this.mTimerHandler = new TimerHandler(pTimePerTick, true, iTimerCallback);
+			Game.getInstance().getEngine().registerUpdateHandler(this.mTimerHandler);
 		}
 	
 	
@@ -58,6 +60,10 @@ public class Timer {
 		// Methods
 		// ===========================================================
 
+		public void unregisterTimer() {
+			Game.getInstance().getEngine().unregisterUpdateHandler(this.mTimerHandler);
+		}
+		
 		// ===========================================================
 		// Inner and Anonymous Classes
 		// ===========================================================

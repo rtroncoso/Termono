@@ -461,4 +461,8 @@ public class DataHandler {
 		}
 		return floatArray;
     }
+	
+	public int getAttackCost(int pAttack){
+        return this.mStaticDB.getAttackCost(pAttack);
+    }
 }

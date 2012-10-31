@@ -187,6 +187,7 @@ public class MapHelper implements IMeasureConstants {
 						int SpawnY = Game.getRandomInt(corner1Y, corner2Y);
 						if(Game.isServer()){//Genero los mobs
 							//Loop AmountToBeSpawned times
+							Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Loading Mobs");
 							for(int i = 0;i<Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());i++ ){
 								Game.getSceneManager().getGameScene().CreateMob_Server(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), SpawnX, SpawnY, Integer.parseInt(pName));	
 							}
@@ -202,9 +203,9 @@ public class MapHelper implements IMeasureConstants {
 							}
 						}
 					}
-					Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Mobs in pool");
 					for(int i = mMobsToAllocate.size()-1;i>=0;i--)
 					{
+						Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Mobs in pool");
 						if((Integer)mMobsToAllocate.get(i)[0] == Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()))
 						{//Si la lista ya contiene el mob suma los amounts
 							mMobsToAllocate.get(i)[0] = (Integer)mMobsToAllocate.get(i)[0] + Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());;

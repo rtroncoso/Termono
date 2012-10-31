@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.net.Socket;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.IMessage;
-import org.andengine.extension.multiplayer.protocol.adt.message.client.IClientMessage;
 import org.andengine.extension.multiplayer.protocol.adt.message.server.IServerMessage;
 import org.andengine.extension.multiplayer.protocol.client.IServerMessageHandler;
 import org.andengine.extension.multiplayer.protocol.client.connector.ServerConnector;
 import org.andengine.extension.multiplayer.protocol.client.connector.SocketConnectionServerConnector.ISocketConnectionServerConnectorListener;
-import org.andengine.extension.multiplayer.protocol.server.IClientMessageHandler;
-import org.andengine.extension.multiplayer.protocol.server.IClientMessageReader.ClientMessageReader;
-import org.andengine.extension.multiplayer.protocol.server.connector.ClientConnector;
 import org.andengine.extension.multiplayer.protocol.shared.SocketConnection;
 import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 
@@ -19,6 +15,7 @@ import android.util.Log;
 
 import com.quest.constants.ClientMessageFlags;
 import com.quest.constants.ServerMessageFlags;
+import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
@@ -203,10 +200,14 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					final ServerMessageFixedAttackData serverMessageFixedAttackData = (ServerMessageFixedAttackData) pServerMessage;
 					if(Game.getMobHelper().MobExists(serverMessageFixedAttackData.getMobID())){
 						if(serverMessageFixedAttackData.isMonsterAttacking()){
-							Game.getPlayerHelper().getPlayer(serverMessageFixedAttackData.getPlayerKey()).decreaseHP(serverMessageFixedAttackData.getDamage());
+							Player player = (Player)Game.getPlayerHelper().getPlayer(serverMessageFixedAttackData.getPlayerKey());
+							player.decreaseHP(serverMessageFixedAttackData.getDamage());
+							player.decreaseMP(Game.getAttacksHelper().getAttackManaCost(serverMessageFixedAttackData.getAttackID()));
 							Game.getBattleHelper().displayAttack(Game.getMobHelper().getMob(serverMessageFixedAttackData.getMobID()), serverMessageFixedAttackData.getAttackID(), serverMessageFixedAttackData.getDamage(), Game.getPlayerHelper().getPlayer(serverMessageFixedAttackData.getPlayerKey()),serverMessageFixedAttackData.isMonsterAttacking());
 						}else{
-							Game.getMobHelper().getMob(serverMessageFixedAttackData.getMobID()).decreaseHP(serverMessageFixedAttackData.getDamage());
+							Mob mob = (Mob) Game.getMobHelper().getMob(serverMessageFixedAttackData.getMobID());
+							mob.decreaseHP(serverMessageFixedAttackData.getDamage());
+							mob.decreaseMP(Game.getAttacksHelper().getAttackManaCost(serverMessageFixedAttackData.getAttackID()));
 							Game.getBattleHelper().displayAttack(Game.getPlayerHelper().getPlayer(serverMessageFixedAttackData.getPlayerKey()), serverMessageFixedAttackData.getAttackID(), serverMessageFixedAttackData.getDamage(), Game.getMobHelper().getMob(serverMessageFixedAttackData.getMobID()),serverMessageFixedAttackData.isMonsterAttacking());
 						}
 					}
@@ -250,6 +251,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					final ServerMessageDisplayAreaAttack serverMessageDisplayAreaAttack = (ServerMessageDisplayAreaAttack) pServerMessage;
 					if(serverMessageDisplayAreaAttack.getMap()==Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
 						Attack tmpAttack = Game.getAttacksHelper().addNewAttack(serverMessageDisplayAreaAttack.getAttack_Flag());
+						Game.getPlayerHelper().getPlayer(serverMessageDisplayAreaAttack.getUserID()).decreaseMP(tmpAttack.getManaCost());
 						tmpAttack.setAnimationAtCenter(serverMessageDisplayAreaAttack.getTileX(),serverMessageDisplayAreaAttack.getTileY());
 						Game.getSceneManager().getGameScene().getAttackLayer().add(tmpAttack);
 					}

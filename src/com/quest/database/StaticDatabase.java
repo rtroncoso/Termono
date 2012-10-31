@@ -577,6 +577,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackAnimationTexture,"Attacks/Mob/Other/MobDeath.png");
                 cv.put(fAttackType, 0);
                 cv.put(fAttackEffect, "0;0");
+                cv.put(fAttackManaCost, 0);
                 cv.put(fAttackAnimationRows, 1);
                 cv.put(fAttackAnimationCols, 5);
                 cv.put(fAttackFrameWidth, 960);
@@ -1013,4 +1014,14 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
          	return myAnswer;
          }
          
+         public int getAttackCost(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fAttackManaCost+" FROM "+ tAttacks+" WHERE "+ fAttackID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fAttackManaCost);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+         	myDB.close();
+         	return myAnswer;
+         }
 }

@@ -46,11 +46,7 @@ public class PlayerHelper {
 	}
 	
 	public Player getOwnPlayer(){
-		if(Game.isAVD_DEBUGGING()){
-			return (Player)(getPlayer(Game.getDataHandler().getUserID(1)));
-		}else{
 			return (Player)(getPlayer(Game.getUserID()));
-		}
 	}
 
 	public Player getPlayerbyPlayerID(int pPlayerID){

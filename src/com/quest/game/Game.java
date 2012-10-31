@@ -33,7 +33,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static boolean AVD_DEBUGGING = true;
+	private static boolean AVD_DEBUGGING = false;
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -81,7 +81,7 @@ public class Game extends SimpleBaseGameActivity {
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInf = wifiMan.getConnectionInfo();
 		Game.mUserID = wifiInf.getMacAddress();
-				
+			if(isAVD_DEBUGGING())Game.mUserID = "00:00:00:00:00:00";
 		
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, 
 				new RatioResolutionPolicy(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth(), 

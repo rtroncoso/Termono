@@ -37,6 +37,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private int Attack_Flag;
 	private int[] mCoords;
 	private boolean mGrabbed = false;
+	private int mCurrentTarget;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -174,6 +175,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			//checkear stack de entidades de player, agregar una animacion
 			popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "Eye'm the strongest!", "asd"),1.5f);
 		}
+		if(Game.getAttacksHelper().canAttack(Player.this, pAttackID))
 		Game.getBattleHelper().startAttack(this, pAttackID, pAttackedEntity);
 	};
 	
@@ -309,6 +311,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 	public void setAttack_Flag(int pAttack_Flag) {
 		this.Attack_Flag = pAttack_Flag;
+	}
+
+	public int getCurrentTarget() {
+		return mCurrentTarget;
+	}
+
+	public void setCurrentTarget(int mCurrentTarget) {
+		this.mCurrentTarget = mCurrentTarget;
 	}
 	
 

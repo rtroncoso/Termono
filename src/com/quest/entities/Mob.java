@@ -128,6 +128,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 				mGrabbed = false;
 				Player tmpPlayer = Game.getPlayerHelper().getOwnPlayer();
 				Attack tmpAttack = Game.getAttacksHelper().getAttack(tmpPlayer.getAttack_Flag());
+				tmpPlayer.setCurrentTarget((Integer)Mob.this.getUserData());
 				Log.d("Quest!", "At eff: "+tmpAttack.getEffect()[1]);
 				if(tmpAttack.getEffect()[1]!=3){//si no es un area attack
 					Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, Game.getPlayerHelper().getOwnPlayer().getAttack_Flag());
@@ -135,7 +136,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 						Game.getMobHelper().clearMobsAlpha();
 						this.getBodySprite().setAlpha(0.70f);
 					}
-					Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
+					Game.getSceneManager().getGameScene().changeMobHUD(Mob.this);
 				}
 				Game.getAttacksHelper().recycleAttack(tmpAttack);
 			}
@@ -158,7 +159,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
 		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
-		//Game.getMobHelper().deleteMob(this);
+		Game.getSceneManager().getGameScene().getOtherStatsHud().dettachHUD();
 		Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
 			int i = 1;
 			@Override
@@ -185,8 +186,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		}
 		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp
 		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()),1+(float)((float)(pDamage)/(float)(mModHP)));
-		Game.getSceneManager().getGameScene().setHPbar((this.getCurrHP()*100)/this.getModHP());
-
 	};
 	
 	@Override

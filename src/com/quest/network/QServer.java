@@ -363,7 +363,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageAttackMessage clientMessageAttackMessage = (ClientMessageAttackMessage) pClientMessage;
 				if(Game.getMobHelper().MobExists(clientMessageAttackMessage.getAttackedMobID())){//Si el mob existe/no lo mataron
-					Game.getBattleHelper().manageAttack(Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()), clientMessageAttackMessage.getAttackID(), Game.getMobHelper().getMob(clientMessageAttackMessage.getAttackedMobID()));
+					Game.getBattleHelper().startAttack(Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()), clientMessageAttackMessage.getAttackID(), Game.getMobHelper().getMob(clientMessageAttackMessage.getAttackedMobID()));
 				}
 			}
 		});
@@ -375,13 +375,14 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Attack tmpAtt = Game.getAttacksHelper().addNewAttack(clientMessageAreaAttack.getAttack_Flag());
 				TMXTile tmpTile = Game.getMapManager().getTMXTileAt(clientMessageAreaAttack.getTileX(), clientMessageAreaAttack.getTileY());
 				
-				sendMessageDisplayAreaAttack(clientMessageAreaAttack.getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16, clientMessageAreaAttack.getMap());
+				sendMessageDisplayAreaAttack(clientMessageAreaAttack.getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16, clientMessageAreaAttack.getMap(),connectedClientProfileData.getUserID());
 				
 				tmpAtt.setAnimationAtCenter(tmpTile.getTileX()+16,tmpTile.getTileY()+16);
 				
 				ArrayList<Mob> tmpMobsinArea = Game.getMobHelper().getMobsInArea(clientMessageAreaAttack.getTileX(), clientMessageAreaAttack.getTileY(), (int)(tmpAtt.getEffect()[1]));
+				Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()).decreaseMP(Game.getAttacksHelper().getAttackManaCost(clientMessageAreaAttack.getAttack_Flag()));
 				for(int i = tmpMobsinArea.size()-1;i>=0;i--){
-					Game.getBattleHelper().startAttack(Game.getPlayerHelper().getOwnPlayer(), tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
+					Game.getBattleHelper().manageAttack(Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()), tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
 				}
 				
 				if(clientMessageAreaAttack.getMap() == Game.getPlayerHelper().getOwnPlayer().getCurrentMap())
@@ -463,8 +464,9 @@ public void sendMessageMoveMob(int pMobKey, int pX, int pY){
 	sendBroadcast(serverMessageMoveMob);
 }
 
-public void sendMessageDisplayAreaAttack(int pAttack_Flag, int pX,int pY,int pMap){
+public void sendMessageDisplayAreaAttack(int pAttack_Flag, int pX,int pY,int pMap,String userID){
 	final ServerMessageDisplayAreaAttack serverMessageDisplayAreaAttack = (ServerMessageDisplayAreaAttack) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK);
+	serverMessageDisplayAreaAttack.setUserID(userID);
 	serverMessageDisplayAreaAttack.setAttack_Flag(pAttack_Flag);
 	serverMessageDisplayAreaAttack.setTileX(pX);
 	serverMessageDisplayAreaAttack.setTileY(pY);

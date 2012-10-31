@@ -6,6 +6,7 @@ import com.quest.constants.GameFlags;
 import com.quest.entities.BaseEntity;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
+import com.quest.entities.objects.Attack;
 import com.quest.entities.objects.InventoryItem;
 import com.quest.game.Game;
 
@@ -17,6 +18,9 @@ public class BattleHelper implements GameFlags{
 	
 	
 	public void startAttack(BaseEntity pAttackingEntity,int pAttackID, BaseEntity pAttackedEntity){
+		Attack tmpAttack = Game.getAttacksHelper().getAttack(pAttackID);
+		if(tmpAttack.getEffect()[1]!=3)pAttackingEntity.decreaseMP(tmpAttack.getManaCost());
+		Game.getAttacksHelper().recycleAttack(tmpAttack);
 		if(!Game.isServer()){
 			Game.getClient().sendAttackMessage((Integer)(pAttackedEntity.getUserData()), pAttackID);
 		}else{

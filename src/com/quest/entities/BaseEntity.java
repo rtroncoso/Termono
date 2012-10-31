@@ -550,6 +550,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return false;
 	}
 	
+	public boolean decreaseMP(int mana){
+		setCurrMana(currMana-mana);
+		if(currMana<1)return true;
+		return false;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
