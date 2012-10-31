@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="4 PACK bordes" tilewidth="32" tileheight="32">
+  <image source="gfx/TILES/Ivan/terreno/pasto/bordes.png" width="512" height="256"/>
+ </tileset>
+ <tileset firstgid="129" name="RPG_Maker_VX_RTP_Tileset_by_telles0808" tilewidth="32" tileheight="32">
+  <image source="gfx/TILES/tiled.png" width="1024" height="2016"/>
+ </tileset>
+ <layer name="Pasto" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztl1ty6zAMQ71Kewf2DuTt33ammHuKUk4ftqVE/OBAkeQXQYDKMk1TeYsdOL/F8hEbfq/4rVgPYsOY9z4zFsNovbZWC73z0TOVj4LYscY920cUy4fC8808+zr36Zl83yW4r+eKY153xOV3Y5u+cs+Icnl0v1qtec6YD/9O1rDXeAnmeJ3utwf3ZIgHvUfEGd/Fv1354juUE2I39DjiJtJVjQPmZEdojt/JXLm3FFzrezjHeX+muCKvEW8RB1E9UOtRnXwXnYcozzVuIk+t+YLz4HXAd1B9c7xNX9/V+4PCc0J+mTMf13zAOVAN8Vtn2xP5zk/RazvysSN9lelzbUZaiHLAb/J+wXuU6WuNR/n0nOzBWsRbVGfRvVwXypvX1l8x6q1RTUbv5+/hHHhtRhqK/Kh2/wjpWdFYzyHn1FBUZ5H3kAdywW/7rV+5Lz36bve5Rz7ofietH9X/b9+fOfZzLH2LnLs3+XieYh3TSyIvO8OvrsSjmj/Db5nXiC9yMdv1q10f5dt5P/KSs/zqWZE1zbOac0E9HOnD8+38OQ+RN46MtbWonztv5KxYvnUd+56v8foefKgHjDxfvsW80Ts9lxq7/0T88Hl+runBL1qja8Tr3892nHMuxY/z4Htr/wsTv9YsdRHVd+Rps4X2+3/0zdZ68Ife0Dlh/iIduXep/hmad+2kL33fr2p1TA4i75IeGNRSwT178IPe0flgbYuf2jnV+SGyD1FHrf2gdyQX8pQNQQ4UEX88Gy92TQ8+8CzI3PLsWculdEGvIg/iurXunxWdC88r/YjnXPeqPD+d51fyKfq+64LnWvYT9Zr0p7+j64M5jjjx3k5dUFuJf/erGXn2Wp9tXXy5fnrQ+zPjbHO1mvde4VwknoPrgzn1l0gX6U/nY8FYnCjvWvf+Tv0knovOxzx9rvtIF1GfTzwP2SvUJ6gj6kLj1rp+ZZzxuwRr1EdrPY+A0oNztWJfDzoeBaUJnoFnrEkbrXU8Gir34ka/Fa11PCKSC2qjBx2PgtLIEnBBzbTW70i4TZ91wPNvD7odAcmFesSKcWvdjoSzhbRCr+pBt6PgauGcyLN60PEIWCwiPnrQ8QjInEe6Sb+6F2s5p27Sr+5BacP1oTMW11rr+NXRtSF+FuMi/epa5Nh14Zh+dT2uU9w3qA8/d6VfXYfFuNiMiy3Yn351rV8xx6r9Gb/Tr+71K+ZY3kV9pF/dc55agrXV1iN/S786H6UB9x9ysdl16VfXofcOH0sb6Vf3+RV7B3tGzcvSr671K+eCnETXlem/Vlrr+9XQaz3qHX5d+tV1SG0o19TGo+ta6/tVcDYuOKYX1fxK+1vr+1WQ4bwo77V8p19d41O1vFIH6VftkNrYHuzL89V9PvY+3g/2pV/d62PpV8+F5KO1nkfAGblPv2qP3kfSr9r7kcbpV31g+lVfSE7Sr9pjOVhPv2p3zlqC+fSrNph+9RyYftWfXwl70PEoeORXXE9s71fvfLTW72h45Fc96Hc0TL96Dky/aofiIP2qDxQf6Vd9oMbpV32gxulXfSA9K/2qT0y/ao/iIv2qDxQ36Vd9oMbpV30gPasHvY6OJeCjB90mpl/1hPPUh14T//f19Ks+0PXxPtdaryNjMT62qQ/djozSCjXSWrejYo2P1rodFSM+tqkP3Y6K8/S5h+xTe92OiuJj/QhxsmJP+leb85WC+tg+YglirszX4qf7fxt3PeevvlRD6YL9Q3ztmPNYK/O1+On+38Zdz7m6Jv4B4U+j7Q==
+  </data>
+ </layer>
+ <layer name="Plantas" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt3FFuhCAQAND98P53cGOP0nu1m4bEmm2qUWQG3vvsh7AMCAzUxwOAkXxMrWsA8S0DjZPn92/9vPj3zhXa71XPGs8tz14r5Wz/fodX36tR7tVtV+p4tu+8m5PKs5dVGUuFfrpX9PdBrXGxVtrgjrKulK2+AAAAAOQi/xRTtrjMU/w8dO/m6fdZRI2zM45rcU4H0KNsa6Mjst6B6zkmAMBx8kLxiMmPkiOzfo2h5C/FIw6xGFfWfAT90ifJrJzNFubXGMQhljv2qO5H7LPccJ9kxHsSUdcyJRazvXhzcnUAsJ95M45tzoO2an6vimN6ikP2fEpPc4Z3bjzyKrH1NP7hnag5Z4AIvCOBs67c42XMrWSsc2F/Hk9PMYl4B/RIPeYGuaza5WTPl65jcneZAACMZ73fd5ba3tMdkHCMi5gy5yrhPy36t9zQ38zLMfR+FzPbXYZW3//aW2a29jzDt/HYar1/aV1+ZmXNUWstaE2z3/p/8Gq+Y42XY2q3lzESj9wP0MJI+0kAqOULElJW8Q==
+  </data>
+ </layer>
+ <layer name="Arboles" width="100" height="100" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJztm2GO3CAMhffPdvYm7f0v0d6kPUY72qVCCJv3bAMmmSdVVLOThNj+jHEyj29vbx///j0OGP+8v/3X73f8uO8HfO/H11j/P/NY++Kpn+/48e09r/weG3MZ4h4ZfzX+mMHHh2Db+nOJ2+d82lE6nzbujnsPH0ycSjaTRmZ+bazU/M7kg72nOk6852/F8tGzmSQ2F0r8WmLPGp+MkLmx54+wmWe+yPwtsYnGqVcjjizns6wfjE+Q9YA5LxJDtX+jbL9ClvqqxJpVGjfIeRk+mPyaQezabFlHmOsiYvgoc30es8s35drSaFUd1zv5R9YRiZ3VPin1q8az1ydZcrHGyYx6qr6uFu/1yNT66Hmzqs6hq/hA4n32uMonlriQaoMIPjzxPntkeLLypq0Hmh17x3ljKwMHu3nT4k+zY+84Dx9MD+kKo2STDHzciYsoPpC8buHjblyUUfIJ2guy9q9GsRAZd2zfW/q7tadsma9V7P58xEc0F2jPZ9R3lz6fwYl3T8rwMerHeOJvRs+4pzo3R/OBxpA2N4YPZA237C9W9ilmcRFxH0jvE82N1nhbwYFWs0TysWK/j/IR9cwsQrNyUQbOo/lg1gdPfyI6F12RDzZ+rPvaXXwga6xXkTZg52rt+7B8RPsu0idtTkBj+2Q+onNbJCetXVGf92xQfGDdT5zKxyhepHtln8Vpa6nUu/AI7ftYjtV6LlF8oM8hI9Y7pG92gmb1oZncFRETp9h7pGg+Hp1xZKtZfJwqJrchua/1yYuPPar729n5sO61T9JJfFj2Eif6sJe7svLB7iWs+8EsKj65Eh+sD7MJqf1ffOjzXJ0j23VnFR/sXns1HzN6olHXlWJy5d678LHKJzN6olHXzZKzV+es0bsYM3MWsufMUNNY+one60lxubs3sZuPHdq1jiDKwMdq7VpHEM3gY1RTZtiH99aRDM8SZvAxWjOz5Iaakyy5YcZ8tH2FVtuxXEXwtpuHVkiMsvfL8hE9nlyXIDHK5jQLH5FjpnhnhcQcu+bfkY+onIrEHMoH8g7LinGVT6Qc4omZKD68PojmZEXO8jzXkOYXxYc3R0VzEsmHlnusMXUnPrT4s/gien27Gx+RuWrG+4134yM6V53KR+n/RM7dwtFOPrwxE8VH0exaNzsf3pzK+nzkkwx8IHGDaicf7XtePZ/XOavea0bsBaN9F+kT5Fkr4zuEjzL/9rytz4r9a16kuc1gnRlX9k6Y3Iby0Tuv5rP6uFazWGfGlb3FHXyU77V8aHOMZp3lY+VzSPR+JbF8tJ8jPkE0o86X2M4sCx/156OchSqajzZeVucuq6Rc2+7vND4in7ujuQ3JfdEMr9BofXmq3lO0MZgx5uq17VQ+Rs/Ptdo3m67Ah1aLSLk98/31clfW+Kkl1SY9n/RqF9QnO9+FKz7JHD9F6H6l1wdhYk56H3CVsr1nJcnDB3N/PX+u5uQEefhg7NnWaIxfM7zvu0oWPix1VlujMXVBy+aVfWLhw9KH8PJxUm3n0Yl8XJmTHXywdYH2jOtqPvHUV1Y+WJt6r32SPPVVFj6uVHe1dpH2TVn5uFruQu8nGx+PzniF3IXaZTcfV3m+MdIJfPTm8uLDb89e395iwxcfn/Las31nwRPPpz7fGIldVz32bP0ZFc8nPd8YiYnzCHui7yFZz3u62F7QLHu+9Kmr7adO1x16pkU7n+Gjiqg/T5D2PmqUTyL83JtbdNxkiEvtfdQIn/T8bbnXtidU9+kibLciLqXr1udH3tf2zAf9TcDoGlKvNGLfVvc1kJ5+lGrbFzto84iYD/qbgNE1NJ966q6eDZh4lHKcFGP13+vrjuwjzYfNsehvAiL4aHlDRiQetfMiuUX6PnLd0Xyk80j2RPkY2RLx6cg2vXF0797jLSM7/97nUr5B+bDacLZtENuh80d97p2XlvsZPizx4+XDO+6IASSXedeP0b3/BV0hTmg=
+  </data>
+ </layer>
+ <objectgroup name="MapChangeTriggers" width="100" height="100">
+  <object x="3168" y="0" width="32" height="3200">
+   <properties>
+    <property name="NextMapNumber" value="7"/>
+    <property name="NextMapX" value="2"/>
+    <property name="NextMapY" value="0"/>
+   </properties>
+  </object>
+  <object x="3280" y="3168"/>
+  <object x="3240" y="3168"/>
+  <object x="3264" y="3208"/>
+  <object x="3264" y="3184"/>
+  <object x="3264" y="3104"/>
+ </objectgroup>
+ <objectgroup name="Collisions" width="100" height="100">
+  <properties>
+   <property name="collide" value="true"/>
+  </properties>
+  <object x="1120" y="320" width="288" height="64"/>
+  <object x="1152" y="288" width="224" height="32"/>
+  <object x="1024" y="384" width="768" height="192"/>
+  <object x="1312" y="576" width="96" height="32"/>
+  <object x="1280" y="576" width="32" height="64"/>
+  <object x="1312" y="608" width="96" height="32"/>
+  <object x="1472" y="0" width="416" height="288"/>
+  <object x="1824" y="288" width="128" height="32"/>
+  <object x="1856" y="320" width="64" height="32"/>
+  <object x="1888" y="160" width="32" height="32"/>
+  <object x="1888" y="192" width="64" height="96"/>
+  <object x="1888" y="0" width="576" height="96"/>
+  <object x="1888" y="96" width="576" height="32"/>
+  <object x="2208" y="128" width="448" height="64"/>
+  <object x="2240" y="192" width="416" height="32"/>
+  <object x="2400" y="224" width="256" height="32"/>
+  <object x="2432" y="256" width="192" height="32"/>
+  <object x="2464" y="0" width="160" height="128"/>
+  <object x="2624" y="0" width="576" height="96"/>
+  <object x="2752" y="96" width="448" height="64"/>
+  <object x="2784" y="160" width="416" height="32"/>
+  <object x="2912" y="192" width="288" height="128"/>
+  <object x="2976" y="320" width="224" height="64"/>
+  <object x="3008" y="384" width="192" height="32"/>
+  <object x="3040" y="416" width="160" height="96"/>
+  <object x="2912" y="512" width="288" height="192"/>
+  <object x="2592" y="384" width="256" height="192"/>
+  <object x="1408" y="352" width="352" height="32"/>
+  <object x="1408" y="576" width="384" height="32"/>
+  <object x="1536" y="608" width="64" height="32"/>
+  <object x="1792" y="416" width="608" height="544"/>
+  <object x="2400" y="448" width="32" height="608"/>
+  <object x="2432" y="544" width="32" height="128"/>
+  <object x="2432" y="800" width="32" height="32"/>
+  <object x="2432" y="832" width="64" height="320"/>
+  <object x="2400" y="1056" width="32" height="64"/>
+  <object x="2496" y="864" width="32" height="288"/>
+  <object x="2528" y="928" width="64" height="256"/>
+  <object x="2560" y="1184" width="64" height="32"/>
+  <object x="2592" y="960" width="32" height="224"/>
+  <object x="1792" y="960" width="608" height="64"/>
+  <object x="1824" y="1024" width="576" height="32"/>
+  <object x="1728" y="608" width="64" height="352"/>
+  <object x="1664" y="640" width="64" height="320"/>
+  <object x="1504" y="704" width="160" height="256"/>
+  <object x="1472" y="704" width="32" height="256"/>
+  <object x="1440" y="736" width="32" height="192"/>
+  <object x="1120" y="288" width="32" height="32"/>
+  <object x="1088" y="320" width="32" height="64"/>
+  <object x="1056" y="352" width="32" height="32"/>
+  <object x="736" y="352" width="320" height="32"/>
+  <object x="736" y="384" width="288" height="256"/>
+  <object x="1024" y="576" width="256" height="32"/>
+  <object x="704" y="384" width="32" height="416"/>
+  <object x="736" y="640" width="32" height="128"/>
+  <object x="768" y="640" width="32" height="96"/>
+  <object x="800" y="640" width="32" height="64"/>
+  <object x="832" y="640" width="160" height="32"/>
+  <object x="576" y="416" width="128" height="384"/>
+  <object x="544" y="416" width="32" height="512"/>
+  <object x="576" y="800" width="32" height="128"/>
+  <object x="608" y="800" width="32" height="96"/>
+  <object x="512" y="448" width="32" height="480"/>
+  <object x="480" y="480" width="32" height="480"/>
+  <object x="448" y="512" width="32" height="480"/>
+  <object x="416" y="576" width="32" height="416"/>
+  <object x="416" y="544" width="32" height="32"/>
+  <object x="384" y="576" width="32" height="416"/>
+  <object x="352" y="608" width="32" height="384"/>
+  <object x="320" y="704" width="32" height="256"/>
+  <object x="992" y="768" width="256" height="192"/>
+  <object x="0" y="0" width="1376" height="32"/>
+  <object x="1376" y="0" width="32" height="32"/>
+  <object x="0" y="32" width="1376" height="96"/>
+  <object x="0" y="128" width="1344" height="32"/>
+  <object x="800" y="160" width="32" height="32"/>
+  <object x="1088" y="160" width="32" height="32"/>
+  <object x="832" y="160" width="256" height="64"/>
+  <object x="0" y="160" width="352" height="32"/>
+  <object x="0" y="192" width="320" height="32"/>
+  <object x="0" y="224" width="160" height="32"/>
+  <object x="0" y="256" width="128" height="512"/>
+  <object x="128" y="288" width="64" height="384"/>
+  <object x="192" y="320" width="32" height="320"/>
+  <object x="0" y="768" width="128" height="96"/>
+  <object x="0" y="864" width="96" height="128"/>
+  <object x="96" y="928" width="96" height="384"/>
+  <object x="192" y="960" width="32" height="320"/>
+  <object x="0" y="992" width="96" height="640"/>
+  <object x="96" y="1312" width="32" height="192"/>
+  <object x="128" y="1312" width="32" height="32"/>
+  <object x="288" y="1536" width="128" height="448"/>
+  <object x="416" y="1888" width="32" height="64"/>
+  <object x="96" y="1568" width="192" height="416"/>
+  <object x="0" y="1632" width="96" height="544"/>
+  <object x="96" y="1984" width="32" height="160"/>
+  <object x="160" y="1984" width="256" height="128"/>
+  <object x="192" y="2112" width="352" height="32"/>
+  <object x="416" y="2016" width="160" height="96"/>
+  <object x="480" y="1952" width="64" height="64"/>
+  <object x="448" y="1952" width="32" height="64"/>
+  <object x="480" y="1920" width="64" height="32"/>
+  <object x="544" y="1952" width="32" height="64"/>
+  <object x="576" y="2048" width="32" height="64"/>
+  <object x="544" y="2112" width="32" height="32"/>
+  <object x="288" y="2144" width="224" height="96"/>
+  <object x="512" y="2144" width="32" height="32"/>
+  <object x="320" y="2240" width="192" height="480"/>
+  <object x="512" y="2240" width="32" height="64"/>
+  <object x="512" y="2336" width="64" height="384"/>
+  <object x="352" y="2720" width="192" height="64"/>
+  <object x="352" y="2784" width="160" height="32"/>
+  <object x="384" y="2816" width="128" height="32"/>
+  <object x="0" y="2176" width="96" height="64"/>
+  <object x="96" y="2208" width="96" height="32"/>
+  <object x="0" y="2240" width="128" height="544"/>
+  <object x="128" y="2240" width="96" height="320"/>
+  <object x="128" y="2560" width="64" height="32"/>
+  <object x="0" y="2784" width="96" height="224"/>
+  <object x="0" y="3008" width="320" height="192"/>
+  <object x="96" y="2848" width="32" height="32"/>
+  <object x="96" y="2880" width="64" height="128"/>
+  <object x="160" y="2944" width="64" height="64"/>
+  <object x="224" y="2976" width="96" height="32"/>
+  <object x="320" y="3072" width="1120" height="128"/>
+  <object x="736" y="3040" width="320" height="32"/>
+  <object x="704" y="3040" width="32" height="32"/>
+  <object x="736" y="3008" width="288" height="32"/>
+  <object x="768" y="2976" width="256" height="32"/>
+  <object x="800" y="2944" width="192" height="32"/>
+  <object x="1248" y="3040" width="224" height="32"/>
+  <object x="1216" y="3040" width="32" height="32"/>
+  <object x="1440" y="3072" width="672" height="96"/>
+  <object x="1440" y="3168" width="832" height="32"/>
+  <object x="1632" y="3040" width="544" height="32"/>
+  <object x="1600" y="3040" width="32" height="32"/>
+  <object x="1696" y="3008" width="480" height="32"/>
+  <object x="1728" y="2976" width="64" height="32"/>
+  <object x="1856" y="2912" width="256" height="96"/>
+  <object x="2112" y="2944" width="32" height="64"/>
+  <object x="2144" y="2976" width="32" height="32"/>
+  <object x="1888" y="2880" width="192" height="32"/>
+  <object x="2112" y="3072" width="320" height="96"/>
+  <object x="2272" y="3168" width="160" height="32"/>
+  <object x="2240" y="3040" width="192" height="32"/>
+  <object x="2432" y="3072" width="32" height="64"/>
+  <object x="2624" y="2944" width="256" height="256"/>
+  <object x="2656" y="2912" width="128" height="32"/>
+  <object x="2880" y="2976" width="96" height="224"/>
+  <object x="2976" y="3072" width="224" height="128"/>
+  <object x="832" y="2240" width="192" height="448"/>
+  <object x="864" y="2688" width="160" height="96"/>
+  <object x="896" y="2784" width="128" height="32"/>
+  <object x="1024" y="2304" width="64" height="384"/>
+  <object x="1024" y="2688" width="32" height="64"/>
+  <object x="1312" y="2336" width="128" height="320"/>
+  <object x="1440" y="2368" width="32" height="352"/>
+  <object x="1472" y="2400" width="32" height="352"/>
+  <object x="1504" y="2432" width="32" height="320"/>
+  <object x="1536" y="2496" width="32" height="256"/>
+  <object x="1536" y="2464" width="32" height="32"/>
+  <object x="1568" y="2528" width="64" height="256"/>
+  <object x="1600" y="2784" width="64" height="32"/>
+  <object x="1632" y="2560" width="32" height="224"/>
+  <object x="576" y="1920" width="832" height="64"/>
+  <object x="736" y="1984" width="672" height="32"/>
+  <object x="768" y="2016" width="672" height="32"/>
+  <object x="1056" y="2048" width="416" height="32"/>
+  <object x="1088" y="2080" width="416"/>
+  <object x="576" y="1664" width="896" height="192"/>
+  <object x="608" y="1632" width="864" height="32"/>
+  <object x="672" y="1440" width="384" height="192"/>
+  <object x="1056" y="1472" width="32" height="160"/>
+  <object x="1088" y="1504" width="448" height="128"/>
+  <object x="640" y="1856" width="832" height="64"/>
+  <object x="1088" y="2080" width="800" height="32"/>
+  <object x="1120" y="2112" width="768" height="32"/>
+  <object x="1536" y="1504" width="160" height="576"/>
+  <object x="1472" y="1632" width="64" height="448"/>
+  <object x="1408" y="1920" width="64" height="96"/>
+  <object x="1440" y="2016" width="32" height="32"/>
+  <object x="1696" y="1536" width="32" height="544"/>
+  <object x="1728" y="1632" width="32" height="128"/>
+  <object x="1728" y="1888" width="32" height="192"/>
+  <object x="1760" y="1920" width="32" height="160"/>
+  <object x="1792" y="1952" width="32" height="128"/>
+  <object x="1824" y="2016" width="64" height="64"/>
+  <object x="1888" y="2048" width="32" height="256"/>
+  <object x="1696" y="2144" width="192" height="64"/>
+  <object x="1728" y="2208" width="160" height="32"/>
+  <object x="1824" y="2240" width="64" height="32"/>
+  <object x="1856" y="2272" width="32" height="32"/>
+  <object x="576" y="1088" width="256" height="192"/>
+  <object x="992" y="1152" width="256" height="160"/>
+  <object x="992" y="1120" width="256" height="32"/>
+  <object x="1024" y="1312" width="256" height="32"/>
+  <object x="1248" y="1248" width="32" height="64"/>
+  <object x="1056" y="1344" width="192" height="32"/>
+  <object x="1952" y="1216" width="224" height="224"/>
+  <object x="1888" y="1248" width="32" height="64"/>
+  <object x="1920" y="1216" width="32" height="128"/>
+  <object x="2176" y="1248" width="32" height="224"/>
+  <object x="2208" y="1376" width="32" height="96"/>
+  <object x="2208" y="1344" width="32" height="32"/>
+  <object x="2240" y="1376" width="32" height="64"/>
+  <object x="1984" y="1440" width="192" height="32"/>
+  <object x="2016" y="1472" width="160" height="32"/>
+  <object x="2048" y="1504" width="64" height="32"/>
+  <object x="2656" y="1600" width="352" height="416"/>
+  <object x="3008" y="1632" width="32" height="384"/>
+  <object x="2688" y="2016" width="320" height="32"/>
+  <object x="2624" y="1600" width="32" height="352"/>
+  <object x="2368" y="1696" width="256" height="256"/>
+  <object x="2336" y="1696" width="32" height="256"/>
+  <object x="2304" y="1760" width="32" height="160"/>
+  <object x="2304" y="1728" width="32" height="32"/>
+  <object x="2528" y="1632" width="96" height="64"/>
+  <object x="3104" y="832" width="96" height="512"/>
+  <object x="3072" y="832" width="32" height="512"/>
+  <object x="2912" y="896" width="160" height="448"/>
+  <object x="2880" y="896" width="32" height="448"/>
+  <object x="2848" y="960" width="32" height="352"/>
+  <object x="2848" y="928" width="32" height="32"/>
+  <object name="BatSpawner" x="1952" y="128" width="256" height="288">
+   <properties>
+    <property name="MobAmount" value="2"/>
+    <property name="MobFlag" value="1"/>
+   </properties>
+  </object>
+  <object name="BatSpawner" x="1280" y="960" width="512" height="544">
+   <properties>
+    <property name="MobAmount" value="4"/>
+    <property name="MobFlag" value="1"/>
+   </properties>
+  </object>
+  <object x="224" y="224" width="96" height="1312"/>
+  <object name="BeeSpawner" x="608" y="2016" width="160" height="992">
+   <properties>
+    <property name="MobAmount" value="4"/>
+    <property name="MobFlag" value="2"/>
+   </properties>
+  </object>
+  <object name="BatSpawner" x="1088" y="2816" width="544" height="192">
+   <properties>
+    <property name="MobAmount" value="2"/>
+    <property name="MobFlag" value="1"/>
+   </properties>
+  </object>
+  <object x="1515" y="2961"/>
+  <object x="1472" y="2912"/>
+  <object x="1442" y="2906"/>
+  <object name="BatSpawner" x="1024" y="2144" width="672" height="160">
+   <properties>
+    <property name="MobAmount" value="2"/>
+    <property name="MobFlag" value="1"/>
+   </properties>
+  </object>
+  <object name="BatSpawner" x="2624" y="608" width="224" height="992">
+   <properties>
+    <property name="MobAmount" value="3"/>
+    <property name="MobFlag" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="MobSpawner" width="100" height="100">
+  <properties>
+   <property name="MobSpawn" value="true"/>
+  </properties>
+  <object name="BeeSpawner" x="1920" y="2048" width="1216" height="832">
+   <properties>
+    <property name="MobAmount" value="5"/>
+    <property name="MobFlag" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

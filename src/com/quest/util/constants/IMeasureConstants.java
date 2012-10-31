@@ -15,8 +15,8 @@ public interface IMeasureConstants {
 	 * Map
 	 */
 	public final int TILE_SIZE = 32;
-	public final int MAP_WIDTH = 40;
-	public final int MAP_HEIGHT = 40;
+	public final int MAP_WIDTH = 100;
+	public final int MAP_HEIGHT = 100;
 	
 	/**
 	 * Player

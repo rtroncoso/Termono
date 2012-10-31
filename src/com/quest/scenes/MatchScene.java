@@ -715,8 +715,8 @@ public class MatchScene extends Scene implements GameFlags {
 								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 								Game.getDataHandler().setPlayerExperience(playerid, 0);
 								Game.getDataHandler().setPlayerMoney(playerid, 0);
-								Game.getDataHandler().setPlayerCurrentMap(1, playerid);
-								Game.getDataHandler().setPlayerPosition(20, 20, playerid);
+								Game.getDataHandler().setPlayerCurrentMap(6, playerid);
+								Game.getDataHandler().setPlayerPosition(15, 8, playerid);
 								if(Game.isAVD_DEBUGGING()){//sacar despues
 									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 								}else{
@@ -1104,7 +1104,7 @@ public class MatchScene extends Scene implements GameFlags {
 				this.mChoices[3] = 1;
 				this.mChoices[4] = 1;
 				this.mChoices[5] = 1;
-				this.mChoices[6] = 10;
+				this.mChoices[6] = 15;
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText1"));
 		      this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText2"));
@@ -1570,7 +1570,7 @@ public class MatchScene extends Scene implements GameFlags {
 						this.mChoices[3] = 1;
 						this.mChoices[4] = 1;
 						this.mChoices[5] = 1;
-						this.mChoices[6] = 10;
+						this.mChoices[6] = 15;
 						this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText"));
 					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText1"));
 					    this.mLoadMatchEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL,100, 150, "", "MatchScene;StepText2"));
@@ -1652,8 +1652,8 @@ public class MatchScene extends Scene implements GameFlags {
 													Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 													Game.getDataHandler().setPlayerExperience(playerid, 0);
 													Game.getDataHandler().setPlayerMoney(playerid, 0);
-													Game.getDataHandler().setPlayerCurrentMap(1, playerid);
-													Game.getDataHandler().setPlayerPosition(20, 20, playerid);
+													Game.getDataHandler().setPlayerCurrentMap(6, playerid);
+													Game.getDataHandler().setPlayerPosition(15, 8, playerid);
 													if(Game.isAVD_DEBUGGING()){//sacar despues
 														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 													}else{
