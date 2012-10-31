@@ -189,8 +189,8 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			//if(mGrabbed) {
 				Log.d("Quest!", "player touched");
 				mGrabbed = false;
-				Player.this.decreaseHP(50);
-				Player.this.setCurrMana(10);
+				Player.this.decreaseHP(20);
+				Player.this.setCurrMana(Player.this.getCurrMana()-10);
 				Player.this.addExperience(1);
 				Player.this.setLevel(Player.this.getLevel()+1);
 			//}
@@ -273,11 +273,11 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	} 
 	
 	public void recoverHP(){
-		this.currHP+=(float)(this.mEndurance/10);
+		this.currHP+=(float)(this.mEndurance)/10;
 	}
 	
 	public void recoverMP(){
-		this.currMana+=(float)(this.mIntelligence/10);
+		this.currMana+=(float)(this.mIntelligence)/10;
 	}
 	// ===========================================================
 	// Inner and Anonymous Classes
