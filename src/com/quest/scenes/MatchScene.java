@@ -709,8 +709,8 @@ public class MatchScene extends Scene implements GameFlags {
 								Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 								Game.getDataHandler().setPlayerExperience(playerid, 0);
 								Game.getDataHandler().setPlayerMoney(playerid, 0);
-								Game.getDataHandler().setPlayerCurrentMap(1, playerid);
-								Game.getDataHandler().setPlayerPosition(20, 20, playerid);
+								Game.getDataHandler().setPlayerCurrentMap(6, playerid);
+								Game.getDataHandler().setPlayerPosition(15, 8, playerid);
 								if(Game.isAVD_DEBUGGING()){//sacar despues
 									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
 								}else{
@@ -1639,8 +1639,8 @@ public class MatchScene extends Scene implements GameFlags {
 													Game.getDataHandler().setPlayerCurrentHPMP(playerid, (mChoices[5]*10), (mChoices[3]*10));
 													Game.getDataHandler().setPlayerExperience(playerid, 0);
 													Game.getDataHandler().setPlayerMoney(playerid, 0);
-													Game.getDataHandler().setPlayerCurrentMap(1, playerid);
-													Game.getDataHandler().setPlayerPosition(20, 20, playerid);
+													Game.getDataHandler().setPlayerCurrentMap(6, playerid);
+													Game.getDataHandler().setPlayerPosition(15, 8, playerid);
 													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
 													SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
 												}else{
