@@ -1641,8 +1641,21 @@ public class MatchScene extends Scene implements GameFlags {
 													Game.getDataHandler().setPlayerMoney(playerid, 0);
 													Game.getDataHandler().setPlayerCurrentMap(6, playerid);
 													Game.getDataHandler().setPlayerPosition(15, 8, playerid);
+<<<<<<< HEAD
 													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
 													SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
+=======
+													if(Game.isAVD_DEBUGGING()){//sacar despues
+														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
+													}else{
+														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
+													}
+													if(Game.isAVD_DEBUGGING()){//sacar despues
+														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
+													}else{
+														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
+													}
+>>>>>>> branch 'master' of https://github.com/rtroncoso/Termono.git
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
