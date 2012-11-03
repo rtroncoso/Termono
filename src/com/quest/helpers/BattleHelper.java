@@ -71,7 +71,7 @@ public class BattleHelper implements GameFlags{
 	
 	
 	
-	public void killMob(Mob mob,int pdroppeditem,int pdroppedItemAmount,int pexperience, int pmoney,Player player){
+	public void killMob(Mob mob,int pdroppeditem,int pdroppedItemAmount,float pexperience, int pmoney,Player player){
 		if(Game.isServer()){
 			player.addExperience(pexperience);
 			player.addMoney(pmoney);

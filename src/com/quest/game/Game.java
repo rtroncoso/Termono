@@ -20,6 +20,7 @@ import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
 import com.quest.helpers.AttacksHelper;
 import com.quest.helpers.BattleHelper;
+import com.quest.helpers.LevelHelper;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.MobHelper;
 import com.quest.helpers.PlayerHelper;
@@ -33,7 +34,7 @@ public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static boolean AVD_DEBUGGING = false;
+	
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -54,6 +55,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static TimerHelper mTimerHelper;
 	private static AttacksHelper mAttacksHelper;	
 	private static Random rand;
+	private static LevelHelper mLevelHelper;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -77,11 +79,11 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mDataHandler = new DataHandler();
 		Game.mPlayerHelper = new PlayerHelper();
 		Game.mTimerHelper = new TimerHelper();
+		Game.mLevelHelper = new LevelHelper(35, 50, 1.0f/3.0f);
 		
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInf = wifiMan.getConnectionInfo();
 		Game.mUserID = wifiInf.getMacAddress();
-			if(isAVD_DEBUGGING())Game.mUserID = "00:00:00:00:00:00";
 		
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, 
 				new RatioResolutionPolicy(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth(), 
@@ -261,13 +263,18 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mAttacksHelper = mAttacksHelper;
 	}
 
+	public static LevelHelper getLevelHelper() {
+		return mLevelHelper;
+	}
+
+	public static void setLevelHelper(LevelHelper mLevelHelper) {
+		Game.mLevelHelper = mLevelHelper;
+	}
+
 	public static boolean isServer(){
 		return isServer;
 	}
 
-	public static boolean isAVD_DEBUGGING() {
-		return AVD_DEBUGGING;
-	}
 
 	// ===========================================================
 	// Methods

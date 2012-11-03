@@ -6,6 +6,7 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.TextureOptions;
@@ -33,12 +34,20 @@ public class StatsHud extends HUD implements GameFlags{
 	private float TIP_SIZE = TOTAL_SIZE - RECTANGLE_SIZE;
 	private float X1_OFFSET = 94;
 	private float X2_OFFSET = 40;
-	private float X3_OFFSET = TOTAL_SIZE - (X1_OFFSET * 2) + 50;
 	private float Y1_HP_OFFSET = 25;
 	private float Y2_HP_OFFSET = Y1_HP_OFFSET + RECTANGLE_HEIGHT;
 	private float Y1_MP_OFFSET = Y2_HP_OFFSET + 6;
 	private float Y2_MP_OFFSET = Y1_MP_OFFSET + RECTANGLE_HEIGHT;
 	private float SWORD_RATIO = (RECTANGLE_SIZE * 100) / TOTAL_SIZE;
+	
+	private float EXP_RECTANGLE_X1_OFFSET = 15;
+	private float EXP_RECTANGLE_X2_OFFSET = 70-EXP_RECTANGLE_X1_OFFSET;
+	private float EXP_RECTANGLE_X3_OFFSET = 263;
+	private float EXP_RECTANGLE_Y1_OFFSET = 35;
+	private float EXP_RECTANGLE_Y2_OFFSET = 44-EXP_RECTANGLE_Y1_OFFSET;
+	
+	private float NAME_X_OFFSET = 65;
+	private float NAME_Y_OFFSET = 55;
 	
 	private float Hip = (((TIP_SIZE)*(TIP_SIZE)) + ((RECTANGLE_HEIGHT)*(RECTANGLE_HEIGHT)));
 	private double Angle = Math.asin(((RECTANGLE_HEIGHT)/Math.sqrt(Hip)));
@@ -53,13 +62,15 @@ public class StatsHud extends HUD implements GameFlags{
 	private Sprite mSwordSprite;
 	private Polygon mHPpolygon;
 	private Polygon mMPpolygon;
+	private Rectangle mExpRectangle;
 	private Vector<float[]> mHPVertices;
 	private Vector<float[]> mMPVertices;
 	private Text mHPtext;
 	private Text mMPtext;
 	private Text mLeveltext;
+	private Text mNameText;
 	private Timer mRefreshTimer;
-	private int oldExp=-1;
+	private float oldExp=-1;
 	private float oldHP=-1;
 	private float oldMP=-1;
 	private Entity statsEntity;
@@ -91,18 +102,26 @@ public class StatsHud extends HUD implements GameFlags{
 		this.mTextureAtlas.load();
 		
 		this.mSwordSprite = new Sprite(0, 0, this.mSwordTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
-		float offtext = 0;
+		float offtext = 100;
+		float lvloffset = 0;
 		if(!mBaseEntity.getUserData().equals(Game.getUserID())){
 			Offset = mSwordSprite.getWidth() + X2_OFFSET;
 			Offset2 = Offset + TOTAL_SIZE - X1_OFFSET + 10;//*** revisar el ultimo 10
-			offtext = X2_OFFSET;
+			lvloffset = mSwordSprite.getWidth()-NAME_X_OFFSET;
+			offtext = lvloffset-NAME_X_OFFSET*1.5f;
+			mNameText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, Offset+mSwordSprite.getWidth()-NAME_X_OFFSET, mSwordSprite.getY()+NAME_Y_OFFSET, pEntity.getName(), "StatsHud;Name");
+			this.statsEntity.attachChild(mNameText);
 		}
 		this.mSwordSprite.setX(0+Offset);
 		
 		
-		this.mLeveltext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, mSwordSprite.getX()+5+Offset2+offtext, mSwordSprite.getY()+5, "L: ", "StatsHud;Level");
-		this.mHPtext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, mSwordSprite.getX()+100, mSwordSprite.getY()+5, "HP: ", "StatsHud;HP");
-		this.mMPtext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_BLUE, mSwordSprite.getX()+100, mSwordSprite.getY()+mSwordSprite.getHeight()-15, "MP: ", "StatsHud;MP");
+		this.mLeveltext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, mSwordSprite.getX()+5+lvloffset, mSwordSprite.getY()+5, "L: ", "StatsHud;Level");
+		this.mHPtext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, mSwordSprite.getX()+offtext, mSwordSprite.getY()+5, "HP: ", "StatsHud;HP");
+		this.mMPtext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_BLUE, mSwordSprite.getX()+offtext, mSwordSprite.getY()+mSwordSprite.getHeight()-15, "MP: ", "StatsHud;MP");
+		
+		this.mExpRectangle = new Rectangle(mSwordSprite.getX()+EXP_RECTANGLE_X1_OFFSET, EXP_RECTANGLE_Y1_OFFSET, EXP_RECTANGLE_X2_OFFSET, EXP_RECTANGLE_Y2_OFFSET, Game.getInstance().getVertexBufferObjectManager());
+		this.mExpRectangle.setColor(0, 0.8f, 0);
+		statsEntity.attachChild(mExpRectangle);
 		
 		statsEntity.attachChild(mSwordSprite);
 		statsEntity.attachChild(this.mLeveltext);
@@ -123,7 +142,7 @@ public class StatsHud extends HUD implements GameFlags{
 		this.mHPpolygon.setColor(1f, 0.1f, 0.1f);
 		this.statsEntity.attachChild(mHPpolygon);
 		
-		totMP = mBaseEntity.getModMana();
+		totMP = mBaseEntity.getModMana();if(totMP==0)mMPtext.setVisible(false);
 		currMP = mBaseEntity.getCurrMana();
 		mana_ratio = (totMP * SWORD_RATIO) / 100;
 		currMP_pos = (currMP / (float)(totMP)) * TOTAL_SIZE; 
@@ -142,6 +161,7 @@ public class StatsHud extends HUD implements GameFlags{
 			this.RegisterOwnPlayerRefreshTimer(mBaseEntity);
 		}else{
 			this.mSwordSprite.setFlippedHorizontal(true);
+			this.mExpRectangle.setX(mSwordSprite.getX()+EXP_RECTANGLE_X3_OFFSET);
 			this.RegisterOtherRefreshTimer(mBaseEntity);
 		}		
 			
@@ -166,13 +186,13 @@ public class StatsHud extends HUD implements GameFlags{
 	// Methods
 	// ===========================================================
 	private void updateOwnHUD(){
-			if(oldExp != mBaseEntity.getExperience()){ 
-				this.mLeveltext.setText("L: "+mBaseEntity.getLevel());
-				totHP = mBaseEntity.getModHP();//solo getteo la vida si hubo cambio de exp(level)
-				totMP = mBaseEntity.getModMana();
-				//update exp polygons
-			}
-
+		if(oldExp != mBaseEntity.getExperience()){ 
+			this.mLeveltext.setText("L: "+mBaseEntity.getLevel());
+			Log.d("Quest!","Rectangulin: Exp total: "+mBaseEntity.getExperience()+" Level: "+mBaseEntity.getLevel()+"\n"+"Exp del player a partir del lvl: "+Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())+" Exp to next lvl: "+Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel())+"\n Division: "+(Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())/ Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel()))+" La division por el tamaño("+EXP_RECTANGLE_X2_OFFSET+"): "+(((Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())/ Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel())) * EXP_RECTANGLE_X2_OFFSET)));
+			this.mExpRectangle.setWidth((Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())/ Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel())) * EXP_RECTANGLE_X2_OFFSET);
+		}
+		totHP = mBaseEntity.getModHP();
+		totMP = mBaseEntity.getModMana();
 		currHP = mBaseEntity.getCurrHP();
 		currMP = mBaseEntity.getCurrMana();
 		
@@ -208,14 +228,13 @@ public class StatsHud extends HUD implements GameFlags{
 	}
 	
 	private void updateOtherHUD(){
-			//set exp polygons estaticos
-
 		currHP = mBaseEntity.getCurrHP();
 		currMP = mBaseEntity.getCurrMana();
 		
 		if(oldHP != currHP || oldMP != currMP){
 			this.mHPtext.setText("HP: "+(int)currHP+"/"+(int)totHP);
 			this.mMPtext.setText("MP: "+(int)currMP+"/"+(int)totMP);
+			this.mLeveltext.setText("L: "+mBaseEntity.getLevel());
 			this.mHPpolygon.UpdateVertices(UpdateOtherHP(currHP, totHP));
 			this.mMPpolygon.UpdateVertices(UpdateOtherMP(currMP, totMP));
 		}
@@ -243,10 +262,13 @@ public class StatsHud extends HUD implements GameFlags{
 		mMPVertices.setElementAt(new float[]{X1_OFFSET+Offset2-currMP_pos,((((currMP_pos-RECTANGLE_SIZE)*(-Pend)))*((int)(currMP/mana_ratio)))+Y2_MP_OFFSET},4);// arriba lineal		
 		return mMPVertices;
 	}
+	
 	public void ChangeEntity(BaseEntity pNewEntity){
 		if(mBaseEntity!=null)Game.getTimerHelper().deleteTimer(mBaseEntity.getUserData()+"HUD");
 		this.mBaseEntity = pNewEntity;
-		
+
+		statsEntity.setVisible(true);
+		Log.d("Quest!", "Stats entity visible");
 		totHP = mBaseEntity.getModHP();
 		currHP = mBaseEntity.getCurrHP();
 		life_ratio = (totHP * SWORD_RATIO) / 100;
@@ -255,14 +277,29 @@ public class StatsHud extends HUD implements GameFlags{
 		currMP = mBaseEntity.getCurrMana();
 		mana_ratio = (totMP * SWORD_RATIO) / 100;
 		currMP_pos = (currMP / (float)(totMP)) * TOTAL_SIZE;
-		statsEntity.setVisible(true);
+		mNameText.setText(pNewEntity.getName());
+		if(totMP==0){
+			mMPtext.setVisible(false);
+		}else{
+			mMPtext.setVisible(true);
+		}
 		this.RegisterOtherRefreshTimer(mBaseEntity);
 	}
 	
-	public void dettachHUD(){
-		Game.getTimerHelper().deleteTimer(mBaseEntity.getUserData()+"HUD");
-		mBaseEntity = null;
-		statsEntity.setVisible(false);
+	public void dettachHUD(Integer pMobID){
+		if(mBaseEntity != null && (Integer)(mBaseEntity.getUserData())==pMobID){
+			Game.getTimerHelper().deleteTimer(mBaseEntity.getUserData()+"HUD");
+			mBaseEntity = null;
+			statsEntity.setVisible(false);
+		}
+	}
+
+	public void dettachHUD(String pUserID){
+		if(mBaseEntity != null && mBaseEntity.getUserData().toString().equals(pUserID)){
+			Game.getTimerHelper().deleteTimer(mBaseEntity.getUserData()+"HUD");
+			mBaseEntity = null;
+			statsEntity.setVisible(false);
+		}
 	}
 	
 	public void RegisterOwnPlayerRefreshTimer(final BaseEntity pEntity){
@@ -284,7 +321,7 @@ public class StatsHud extends HUD implements GameFlags{
 			public void onTimePassed(TimerHandler pTimerHandler) 
 			{
 				updateOtherHUD();
-				Log.d("Quest!", "Still here: "+pEntity.getUserData()+"HUD");
+			//	Log.d("Quest!", "Still here: "+pEntity.getUserData()+"HUD");
 			}
 		});
 		Game.getTimerHelper().addTimer(mRefreshTimer, pEntity.getUserData()+"HUD");

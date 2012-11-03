@@ -68,7 +68,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // Fields
 // ===========================================================
 	private final MessagePool<IMessage> mMessagePool = new MessagePool<IMessage>();
-	private PlayerHelper mPlayerList;
 	
 // ===========================================================
 // Constructors
@@ -76,7 +75,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	public QServer(final ISocketConnectionClientConnectorListener pSocketConnectionClientConnectorListener) {
 		super(SERVER_PORT, pSocketConnectionClientConnectorListener, new DefaultSocketServerListener<SocketConnectionClientConnector>());
 		Log.d("Quest!","Server started");
-		this.mPlayerList = new PlayerHelper();
 		this.initMessagePool();
 	}
 	
@@ -438,7 +436,7 @@ public void sendFixedAttackData(int pMobEntityUserData,int pAttackID,int pDamage
 	sendBroadcast(serverMessageFixedAttackData);
 }
 
-public void sendMobDiedMessage(int pMobEntityUserData,int pExperience,int pMoney,int pDroppedItem,int pDroppedAmount,String pPlayerKey){
+public void sendMobDiedMessage(int pMobEntityUserData,float pExperience,int pMoney,int pDroppedItem,int pDroppedAmount,String pPlayerKey){
 	final ServerMessageMobDied serverMessageMobDied = (ServerMessageMobDied) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MOB_DIED);
 	serverMessageMobDied.setMobEntityUserData(pMobEntityUserData);
 	serverMessageMobDied.setExperience(pExperience);

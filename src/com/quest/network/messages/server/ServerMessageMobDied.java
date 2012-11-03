@@ -18,7 +18,7 @@ public class ServerMessageMobDied extends QuestServerMessage implements ServerMe
 	// ===========================================================
 
 	private int mMobEntityUserData;
-	private int mExperience;
+	private float mExperience;
 	private int mMoney;
 	private int mDroppedItem;
 	private int mDroppedAmount;
@@ -42,11 +42,11 @@ public class ServerMessageMobDied extends QuestServerMessage implements ServerMe
 		this.mMobEntityUserData = mMobEntityUserData;
 	}
 
-	public int getExperience() {
+	public float getExperience() {
 		return mExperience;
 	}
 
-	public void setExperience(int mExperience) {
+	public void setExperience(float mExperience) {
 		this.mExperience = mExperience;
 	}
 
@@ -90,7 +90,7 @@ public class ServerMessageMobDied extends QuestServerMessage implements ServerMe
 	@Override
 	protected void onReadTransmissionData(DataInputStream pDataInputStream) throws IOException {
 		this.mMobEntityUserData = pDataInputStream.readInt();
-		this.mExperience = pDataInputStream.readInt();
+		this.mExperience = pDataInputStream.readFloat();
 		this.mMoney = pDataInputStream.readInt();
 		this.mDroppedItem = pDataInputStream.readInt();
 		this.mDroppedAmount = pDataInputStream.readInt();
@@ -100,7 +100,7 @@ public class ServerMessageMobDied extends QuestServerMessage implements ServerMe
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
 		pDataOutputStream.writeInt(this.mMobEntityUserData);
-		pDataOutputStream.writeInt(this.mExperience);
+		pDataOutputStream.writeFloat(this.mExperience);
 		pDataOutputStream.writeInt(this.mMoney);
 		pDataOutputStream.writeInt(this.mDroppedItem);
 		pDataOutputStream.writeInt(this.mDroppedAmount);

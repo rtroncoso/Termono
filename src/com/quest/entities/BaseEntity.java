@@ -63,7 +63,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected float currHP,currMana;
 	protected int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana = 0;
 	protected int mEndurance,mIntelligence,mPower,mDefense;
-	protected int mMoney,mExperience;
+	protected int mMoney;
+	protected String mName;
+	protected float mExperience;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -371,6 +373,20 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return mModEndurance;
 	}
 
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return mName;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		mName = name;
+	}
+
 	public void setModEndurance(int mModEndurance) {
 		this.mModEndurance = mModEndurance;
 	}
@@ -522,11 +538,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mMoney = mMoney;
 	}
 
-	public int getExperience() {
+	public float getExperience() {
 		return mExperience;
 	}
 
-	public void setExperience(int mExperience) {
+	public void setExperience(float mExperience) {
 		this.mExperience = mExperience;
 	}
 	

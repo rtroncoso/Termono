@@ -711,17 +711,8 @@ public class MatchScene extends Scene implements GameFlags {
 								Game.getDataHandler().setPlayerMoney(playerid, 0);
 								Game.getDataHandler().setPlayerCurrentMap(6, playerid);
 								Game.getDataHandler().setPlayerPosition(15, 8, playerid);
-								if(Game.isAVD_DEBUGGING()){//sacar despues
-									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
-								}else{
-									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
-								}
-								
-								if(Game.isAVD_DEBUGGING()){//sacar despues
-									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
-								}else{
-									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
-								}
+								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
+								SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
 							}
 						}
 						break;
@@ -1641,21 +1632,11 @@ public class MatchScene extends Scene implements GameFlags {
 													Game.getDataHandler().setPlayerMoney(playerid, 0);
 													Game.getDataHandler().setPlayerCurrentMap(6, playerid);
 													Game.getDataHandler().setPlayerPosition(15, 8, playerid);
-<<<<<<< HEAD
+
 													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
 													SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
-=======
-													if(Game.isAVD_DEBUGGING()){//sacar despues
-														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
-													}else{
-														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
-													}
-													if(Game.isAVD_DEBUGGING()){//sacar despues
-														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
-													}else{
-														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
-													}
->>>>>>> branch 'master' of https://github.com/rtroncoso/Termono.git
+													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
+													SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
@@ -2066,7 +2047,7 @@ public class MatchScene extends Scene implements GameFlags {
 						}
 						if(IPUtils.ipAddressToString(wifiIPv4Address).equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
 							conts=true;
-						}//comentado para el AVD, sacar coment para el celu ***
+						}
 						if(conts==false){
 							Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
 							if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)

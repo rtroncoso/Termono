@@ -70,7 +70,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	}
 	
 	
-	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int pExperience, int pMoney,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int pMapID,int pTIleX, int pTileY){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
+	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,float pExperience, int pMoney,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int pMapID,int pTIleX, int pTileY){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
@@ -171,10 +171,6 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		if(Game.isAVD_DEBUGGING()){
-			//checkear stack de entidades de player, agregar una animacion
-			popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "Eye'm the strongest!", "asd"),1.5f);
-		}
 		if(Game.getAttacksHelper().canAttack(Player.this, pAttackID))
 		Game.getBattleHelper().startAttack(this, pAttackID, pAttackedEntity);
 	};
@@ -202,6 +198,8 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX,
 				pTouchAreaLocalY);
 	}
+	
+
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
@@ -262,7 +260,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	}
 
 	
-	public int getExperience() {
+	public float getExperience() {
 		return mExperience;
 	}
 
@@ -270,8 +268,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mExperience = mExperience;
 	} 
 
-	public void addExperience(int mExperience) {
-		this.mExperience += mExperience;
+	public void addExperience(float pExperience) {
+		this.mExperience += pExperience;
+		this.mLevel = Game.getLevelHelper().getPlayerLevel(mExperience);
 	} 
 	
 	public void recoverHP(){

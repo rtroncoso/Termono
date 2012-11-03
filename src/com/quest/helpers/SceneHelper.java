@@ -147,7 +147,7 @@ public class SceneHelper implements IMeasureConstants, GameFlags {
     	this.mDisplay.setZoom(1.0f);
 		if(this.mLoadingScene == null) {
 			this.mLoadingScene = new LoadingScene();
-			this.mLoadingScene.setCurrentTaskText(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 0, (this.getDisplay().getCameraHeight()/2)-100, "", "LoadingScene;CurrentTask"));
+			this.mLoadingScene.setCurrentTaskText(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, -800, (this.getDisplay().getCameraHeight()/2)-100, "", "LoadingScene;CurrentTask"));
 			this.mLoadingScene.attachChild(this.mLoadingScene.getCurrentTaskText());
 		}
 		this.mLoadingScene.changeCurrentTaskText("Loading!");

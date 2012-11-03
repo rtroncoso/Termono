@@ -51,6 +51,7 @@ public class MobPool{
 						pMob.setPosition(-10, -10);
 						pMob.setVisible(false);
 						pMob.setAlpha(1f);
+						pMob.setDying(false);
 						pMob.setUserData(null);
 						pMob.setIgnoreUpdate(true);
 						pMob.detachSelf();

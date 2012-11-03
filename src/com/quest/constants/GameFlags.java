@@ -7,6 +7,8 @@ public interface GameFlags {
 	//Mobs
 	public static final int FLAG_MOB_BAT = 1;
 	public static final int FLAG_MOB_BEE = 2;
+	public static final int FLAG_MOB_CHICKEN = 3;
+	public static final int FLAG_MOB_FAIRY = 99;
 	
 	//Text Types
 	public static final int FLAG_TEXT_TYPE_NORMAL = 1;
@@ -29,4 +31,19 @@ public interface GameFlags {
 	
 	//Other animations
 	public static final int FLAG_ATTACK_MOB_DEATH = 20;
+	
+	//Queries
+	public static final int FLAG_QUERY_REGISTER_PLAYER_POSITION = 0;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static final String FLAG_BRIAN_FACEBOOK_PASSWORD = "briannn33";
 }

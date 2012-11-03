@@ -355,6 +355,14 @@ public class DataHandler {
 	
 	
 	//Mob
+	public String getMobName(int pMobFlag){
+        return this.mStaticDB.getMobName(pMobFlag);
+    }
+	
+	public int getMobLevel(int pMobFlag){
+        return this.mStaticDB.getMobLevel(pMobFlag);
+    }
+	
 	public String getMobIconTexture(int pMobFlag){
         return this.mStaticDB.getMobIconTexture(pMobFlag);
     }

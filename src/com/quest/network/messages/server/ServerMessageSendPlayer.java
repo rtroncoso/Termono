@@ -22,7 +22,8 @@ import com.quest.entities.Player;
 		private int mHeadID;
 		private String mAttributes,currHPMP; 
 		private String mItemID, mAmounts,isEquipped;
-		private int mMoney,mExperience;
+		private int mMoney;
+		private float mExperience;
 		private int tileX,tileY,mapID;
 		// ===========================================================
 		// Constructors
@@ -137,11 +138,11 @@ import com.quest.entities.Player;
 			this.mMoney = mMoney;
 		}
 
-		public int getExperience() {
+		public float getExperience() {
 			return mExperience;
 		}
 
-		public void setExperience(int mExperience) {
+		public void setExperience(float mExperience) {
 			this.mExperience = mExperience;
 		}
 
@@ -212,7 +213,7 @@ import com.quest.entities.Player;
 			this.mClass = pDataInputStream.readInt();
 			this.mHeadID = pDataInputStream.readInt();
 			this.mMoney = pDataInputStream.readInt();
-			this.mExperience = pDataInputStream.readInt();
+			this.mExperience = pDataInputStream.readFloat();
 			this.mapID = pDataInputStream.readInt();
 			this.tileX = pDataInputStream.readInt();
 			this.tileY = pDataInputStream.readInt();
@@ -231,7 +232,7 @@ import com.quest.entities.Player;
 			pDataOutputStream.writeInt(this.mClass);
 			pDataOutputStream.writeInt(this.mHeadID);
 			pDataOutputStream.writeInt(this.mMoney);
-			pDataOutputStream.writeInt(this.mExperience);
+			pDataOutputStream.writeFloat(this.mExperience);
 			pDataOutputStream.writeInt(this.mapID);
 			pDataOutputStream.writeInt(this.tileX);
 			pDataOutputStream.writeInt(this.tileY);

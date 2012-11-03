@@ -156,12 +156,12 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 								TMXTile tmpTile = Game.getMapManager().getTMXTileAt(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
 								Attack tmpAtt = Game.getAttacksHelper().addNewAttack(tmpPlayer.getAttack_Flag());
 								tmpAtt.setAnimationAtCenter(tmpTile.getTileX()+16,tmpTile.getTileY()+16);
+								this.mAttackLayer.add(tmpAtt);
 								ArrayList<Mob> tmpMobsinArea = Game.getMobHelper().getMobsInArea(tmpTile.getTileColumn(), tmpTile.getTileRow(), (int)(tmpAtt.getEffect()[1]));
 								for(int i = tmpMobsinArea.size()-1;i>=0;i--){
 									Game.getBattleHelper().startAttack(tmpPlayer, tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
 								}
 								Game.getServer().sendMessageDisplayAreaAttack(tmpPlayer.getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16,tmpPlayer.getCurrentMap(),Game.getUserID());
-								this.mAttackLayer.add(tmpAtt);
 							}
 						}
 					}else{
@@ -316,8 +316,8 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 				GameScene.this.mOtherStatsHud = new StatsHud(GameScene.this.mHud,pEntity);
 				GameScene.this.mHud.attachChild(GameScene.this.mOtherStatsHud.getStatsEntity());
 			}else{
-				if(mOtherStatsHud.getBaseEntity() != null)
-					if(!mOtherStatsHud.getBaseEntity().getUserData().equals(pEntity.getUserData()))
+			//	if(mOtherStatsHud.getBaseEntity() != null)
+					if(mOtherStatsHud.getBaseEntity() == null || !mOtherStatsHud.getBaseEntity().getUserData().equals(pEntity.getUserData()))
 							mOtherStatsHud.ChangeEntity(pEntity);
 			}
 		}
