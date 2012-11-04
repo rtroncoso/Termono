@@ -50,6 +50,7 @@ import com.quest.network.messages.server.ServerMessageMapChanged;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
+import com.quest.network.messages.server.ServerMessagePlayerLevelUP;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
@@ -94,7 +95,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_EXISTING_MOB, ServerMessageExistingMob.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOVE_MOB, ServerMessageMoveMob.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK, ServerMessageDisplayAreaAttack.class);
-		
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP, ServerMessagePlayerLevelUP.class);
 	}
 
 // ===========================================================
@@ -480,6 +481,11 @@ public void sendMessagePlayerChangedMap(String pPlayerKey, int pMapID, int pX, i
 	sendBroadcast(serverMessageMapChanged);
 }
 
+public void sendMessagePlayerLevelUP(String pPlayerKey, int pLevel, int pUnassignedPoints){
+	final ServerMessagePlayerLevelUP serverMessagePlayerLevelUP = (ServerMessagePlayerLevelUP) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP);
+	serverMessagePlayerLevelUP.set(pPlayerKey, pLevel, pUnassignedPoints);
+	sendBroadcast(serverMessagePlayerLevelUP);
+}
 // ===========================================================
 // Inner and Anonymous Classes
 // ===========================================================

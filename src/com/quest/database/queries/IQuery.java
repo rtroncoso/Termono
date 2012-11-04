@@ -12,6 +12,5 @@ public interface IQuery {
 
 		public short getFlag();
 		public void executeQuery();
-		public void clearQuery();
 	
 }

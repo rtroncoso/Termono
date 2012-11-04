@@ -8,6 +8,7 @@ import org.andengine.util.debug.Debug;
 import com.quest.constants.GameFlags;
 import com.quest.database.queries.IQuery;
 import com.quest.entities.Mob;
+import com.quest.entities.objects.Attack;
 
 public class QueryPool<M extends IQuery> implements GameFlags {
 
@@ -36,16 +37,11 @@ public class QueryPool<M extends IQuery> implements GameFlags {
 						return null;
 					}
 				}
-				
-				@Override
-				protected void onHandleRecycleItem(final M pQuery) {
-					pQuery.clearQuery();
-				}
 			}
 		);
 	}
 
-	public M obtainQuery(final short pFlag) {
+	public M obtainQuery(final int pFlag) {
 		return this.mQueryMultiPool.obtainPoolItem(pFlag);
 	}
 
@@ -68,7 +64,9 @@ public class QueryPool<M extends IQuery> implements GameFlags {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	
+	public GenericPool<M> getPool(int pPoolID){
+		return this.mQueryMultiPool.getPool(pPoolID);
+	}
 
 	// ===========================================================
 	// Methods

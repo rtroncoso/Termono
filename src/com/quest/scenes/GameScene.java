@@ -13,6 +13,7 @@ import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 
 import com.quest.constants.GameFlags;
+import com.quest.database.QueryQueuer;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
@@ -71,6 +72,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			            	GameScene.this.attachChild(GameScene.this.mMapLayer);
 			            	Game.getMapManager().loadMap(pMapName);
 			    			
+			            	
 			    			//Allocate pools
 			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Texts in pool");
 			    			Game.getTextHelper().allocateDefaultTexts();
@@ -80,9 +82,9 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_THUNDER, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
-			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Done!");
-			            				    			 
 			    			
+			            				    			 
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Loading HUD");
 			    			GameScene.this.mHud = new HUD();
 			    			GameScene.this.mStatsHud = new StatsHud(GameScene.this.mHud,Game.getPlayerHelper().getOwnPlayer());
 			    			GameScene.this.mSpellbarHud = new SpellbarHud(GameScene.this.mHud);
@@ -106,7 +108,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			
 
 			    			
-			    			// HUD 
+			    			// HUD
 			    			GameScene.this.mHud.attachChild(GameScene.this.mStatsHud.getStatsEntity());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpellBar());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mControlsHud.getDigitalOnScreenControl());
@@ -123,7 +125,16 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
 			    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getOwnPlayer());
 
-			    	
+			            	if(Game.isServer()){
+			            		Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Starting QueryQueuer");
+			            		Game.setQueryQueuer(new QueryQueuer());
+			            		Game.getQueryQueuer().allocateQueryinPool(FLAG_QUERY_REGISTER_PLAYER_POSITION, Game.getPlayerHelper().getEntities().size());
+			            		Game.getQueryQueuer().allocateQueryinPool(FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE, Game.getPlayerHelper().getEntities().size());
+			            		Game.getQueryQueuer().allocateQueryinPool(FLAG_QUERY_PLAYER_LEVEL_UP, 1);
+			            	}
+			    			
+			            	Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Done!");
+			            	
 			    			GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
 			    			
 

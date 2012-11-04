@@ -131,7 +131,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     			fPlayerLevel+" INTEGER , "+
     			fPlayerCurrentHP+" INTEGER , "+
     			fPlayerCurrentMana+" INTEGER , "+
-    			fPlayerExperience+" INTEGER , "+
+    			fPlayerExperience+" TEXT , "+
     			fPlayerPosition +" INTEGER , "+
     			fPlayerHeadID +" INTEGER , "+
     			fPlayerClass +" INTEGER)" 
@@ -538,17 +538,17 @@ public class UserDatabase extends SQLiteOpenHelper {
    		return myAnswer;
     }
     
-    public int getPlayerExperience(int pPlayerID){
-   	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerExperience+" from "+tPlayer+" where "+fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
-   	myCursor.moveToFirst();
-   	int index = myCursor.getColumnIndex(fPlayerExperience);
-		int myAnswer = myCursor.getInt(index);
+    public float getPlayerExperience(int pPlayerID){
+	   	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fPlayerExperience+" from "+tPlayer+" where "+fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+	   	myCursor.moveToFirst();
+	   	int index = myCursor.getColumnIndex(fPlayerExperience);
+		String myAnswer = myCursor.getString(index);
 		myCursor.close();
 		this.close();
-		return myAnswer;
+		return Float.parseFloat(myAnswer);
      }
     
-    public void setPlayerExperience(int pPlayerID, int pExperience){
+    public void setPlayerExperience(int pPlayerID, float pExperience){
     	ContentValues cv = new ContentValues();
     	cv.put(fPlayerExperience,pExperience);
         this.getWritableDatabase().update(tPlayer, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
@@ -628,6 +628,25 @@ public class UserDatabase extends SQLiteOpenHelper {
   	  this.close();
   	  return myAnswer;
      }
+    
+    public void setUnassignedPoints(int pUnassigned,int pPlayerID){
+    	ContentValues cv = new ContentValues();
+        cv.put(fAttributesUnassigned, pUnassigned);
+        this.getWritableDatabase().update(tAttributes, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
+        cv.clear();
+        this.close();
+      }
+    
+    public int getUnassignedPoints(int pPlayerID){
+        Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+tAttributes+".* from "+tPlayer+","+tAttributes+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tAttributes+"."+fPlayerID, new String[]{String.valueOf(pPlayerID)});
+   	  	myCursor.moveToFirst();
+   	  	int index = myCursor.getColumnIndex(fAttributesUnassigned);
+   	  	int myAnswer = myCursor.getInt(index);
+   	  	myCursor.close();
+   	  	this.close();
+   	  	return myAnswer;
+       }
+    
     
     //Inventory
     public int[] getInventoryItems(int pPlayerID){//All inventory Item IDs

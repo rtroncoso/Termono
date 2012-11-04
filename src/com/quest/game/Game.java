@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
+import com.quest.database.QueryQueuer;
 import com.quest.helpers.AttacksHelper;
 import com.quest.helpers.BattleHelper;
 import com.quest.helpers.LevelHelper;
@@ -56,6 +57,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static AttacksHelper mAttacksHelper;	
 	private static Random rand;
 	private static LevelHelper mLevelHelper;
+	private static QueryQueuer mQueryQueuer;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -181,6 +183,14 @@ public class Game extends SimpleBaseGameActivity {
 
 	public static void setDataHandler(DataHandler mDataHandler) {
 		Game.mDataHandler = mDataHandler;
+	}
+
+	public static QueryQueuer getQueryQueuer() {
+		return mQueryQueuer;
+	}
+
+	public static void setQueryQueuer(QueryQueuer mQueryQueuer) {
+		Game.mQueryQueuer = mQueryQueuer;
 	}
 
 	public static TextHelper getTextHelper() {

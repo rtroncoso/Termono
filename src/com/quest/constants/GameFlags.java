@@ -34,7 +34,8 @@ public interface GameFlags {
 	
 	//Queries
 	public static final int FLAG_QUERY_REGISTER_PLAYER_POSITION = 0;
-	
+	public static final int FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE = 1;
+	public static final int FLAG_QUERY_PLAYER_LEVEL_UP = 2;
 	
 	
 	

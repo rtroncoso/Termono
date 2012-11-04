@@ -59,7 +59,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setModifiers(this.getAttributes());
 		this.updateHPMana(Game.getDataHandler().getPlayerCurrentHPMP(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
-		this.mUserID = pUserID;//Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
+		this.mUserID = pUserID;
 		this.mExperience = Game.getDataHandler().getPlayerExperience(this.mPlayerID);
 		this.mMoney = Game.getDataHandler().getPlayerMoney(this.mPlayerID);
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
@@ -184,19 +184,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			mGrabbed = true;					
 			break;
 		case TouchEvent.ACTION_UP:
-			//if(mGrabbed) {
+			
 				Log.d("Quest!", "player touched");
 				mGrabbed = false;
-				Player.this.decreaseHP(20);
-				Player.this.setCurrMana(Player.this.getCurrMana()-10);
-				Player.this.addExperience(1);
-				Player.this.setLevel(Player.this.getLevel()+1);
-			//}
+
 			break;
 		}
 	
-		return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX,
-				pTouchAreaLocalY);
+		return true;
 	}
 	
 
@@ -270,7 +265,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 	public void addExperience(float pExperience) {
 		this.mExperience += pExperience;
+		int oldlvl = this.mLevel;
 		this.mLevel = Game.getLevelHelper().getPlayerLevel(mExperience);
+		if(mLevel != oldlvl && Game.isServer())levelUP_Server();
 	} 
 	
 	public void recoverHP(){
@@ -279,6 +276,19 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	
 	public void recoverMP(){
 		this.currMana+=(float)(this.mIntelligence)/10;
+	}
+	
+	public void levelUP_Server(){
+			this.setUnassignedPoints(getUnassignedPoints()+3);
+			Game.getServer().sendMessagePlayerLevelUP(this.getUserID(), this.mLevel, this.getUnassignedPoints());
+			this.popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "LEVEL UP!", "lvlup"), 1.5f);
+			Game.getQueryQueuer().addPlayerLevelUPQuery(this.mPlayerID, this.mLevel, this.mExperience);
+	}
+		
+	public void levelUP_Client(int pLevel, int pUnassignedPoints){
+		this.popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "LEVEL UP!", "lvlup"), 1.5f);
+		this.setLevel(pLevel);
+		this.setUnassignedPoints(pUnassignedPoints);
 	}
 	// ===========================================================
 	// Inner and Anonymous Classes

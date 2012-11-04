@@ -3,7 +3,7 @@ package com.quest.database.queries;
 import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 
-public class QueryRegisterPlayerPosition extends Query implements GameFlags{
+public class QueryRegisterPlayerExperience extends Query implements GameFlags{
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -13,14 +13,12 @@ public class QueryRegisterPlayerPosition extends Query implements GameFlags{
 	// Fields
 	// ===========================================================
 	private int mPlayerID;
-	private int mMapID;
-	private int tileColumn,tileRow;
-	
+	private float mExperience;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	@Deprecated
-	public QueryRegisterPlayerPosition() {
+	public QueryRegisterPlayerExperience() {
 
 	}
 	
@@ -29,24 +27,21 @@ public class QueryRegisterPlayerPosition extends Query implements GameFlags{
 	// ===========================================================
 	@Override
 	public short getFlag() {
-		return FLAG_QUERY_REGISTER_PLAYER_POSITION;
+		return FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE;
 	}
 
 	@Override
 	public void executeQuery() {
 		// TODO Auto-generated method stub
-		Game.getDataHandler().setPlayerCurrentMap(mMapID, mPlayerID);
-		Game.getDataHandler().setPlayerPosition(tileColumn, tileRow, mPlayerID);
+		Game.getDataHandler().setPlayerExperience(mPlayerID, mExperience);
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public void set(int pPlayerID,int pMapID,int tileColumn,int tileRow){
+	public void set(int pPlayerID,float pExperience){
 		this.setPlayerID(pPlayerID);
-		this.setMapID(pMapID);
-		this.setTileColumn(tileColumn);
-		this.setTileRow(tileRow);
+		this.setExperience(pExperience);
 	}
 	
 	/**
@@ -64,48 +59,18 @@ public class QueryRegisterPlayerPosition extends Query implements GameFlags{
 	}
 
 	/**
-	 * @return the mMapID
+	 * @return the mExperience
 	 */
-	public int getMapID() {
-		return mMapID;
+	public float getExperience() {
+		return mExperience;
 	}
 
 	/**
-	 * @param mMapID the mMapID to set
+	 * @param mExperience the mExperience to set
 	 */
-	public void setMapID(int pMapID) {
-		this.mMapID = pMapID;
+	public void setExperience(float pExperience) {
+		this.mExperience = pExperience;
 	}
-
-	/**
-	 * @return the tileColumn
-	 */
-	public int getTileColumn() {
-		return tileColumn;
-	}
-
-	/**
-	 * @param tileColumn the tileColumn to set
-	 */
-	public void setTileColumn(int tileColumn) {
-		this.tileColumn = tileColumn;
-	}
-
-	/**
-	 * @return the tileRow
-	 */
-	public int getTileRow() {
-		return tileRow;
-	}
-
-	/**
-	 * @param tileRow the tileRow to set
-	 */
-	public void setTileRow(int tileRow) {
-		this.tileRow = tileRow;
-	}
-
-
 	// ===========================================================
 	// Methods
 	// ===========================================================

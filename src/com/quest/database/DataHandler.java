@@ -191,11 +191,11 @@ public class DataHandler {
 		return this.mUserDB.getPlayerHPMP(pPlayerID);
 	}
 	
-	public int getPlayerExperience(int pPlayerID){
+	public float getPlayerExperience(int pPlayerID){
 		return this.mUserDB.getPlayerExperience(pPlayerID);
 	}
 	
-	public void setPlayerExperience(int pPlayerID, int pExperience){
+	public void setPlayerExperience(int pPlayerID, float pExperience){
 		this.mUserDB.setPlayerExperience(pPlayerID, pExperience);
 	}
 	
@@ -206,6 +206,14 @@ public class DataHandler {
 	
 	public void setPlayerAttributes(int[] pAttributes,int pPlayerID){
 		this.mUserDB.setAttributes(pAttributes[0], pAttributes[1], pAttributes[2], pAttributes[3],pAttributes[4], pPlayerID);
+	}
+	
+	public void setPlayerUnassignedPoints(int pUnassignedPoints,int pPlayerID){
+		this.mUserDB.setUnassignedPoints(pUnassignedPoints, pPlayerID);
+	}
+	
+	public int getUnassignedPoints(int pPlayerID){
+		return this.mUserDB.getUnassignedPoints(pPlayerID);
 	}
 	
 	public int[] getPlayerAttributes(int pPlayerID){

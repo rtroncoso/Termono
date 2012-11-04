@@ -3,7 +3,7 @@ package com.quest.database.queries;
 import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 
-public class QueryRegisterPlayerPosition extends Query implements GameFlags{
+public class QueryPlayerLevelUP extends Query implements GameFlags{
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -13,14 +13,14 @@ public class QueryRegisterPlayerPosition extends Query implements GameFlags{
 	// Fields
 	// ===========================================================
 	private int mPlayerID;
-	private int mMapID;
-	private int tileColumn,tileRow;
-	
+	private int mLevel;
+	private int mUnassignedPoints;
+	private float mExperience;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	@Deprecated
-	public QueryRegisterPlayerPosition() {
+	public QueryPlayerLevelUP() {
 
 	}
 	
@@ -29,24 +29,25 @@ public class QueryRegisterPlayerPosition extends Query implements GameFlags{
 	// ===========================================================
 	@Override
 	public short getFlag() {
-		return FLAG_QUERY_REGISTER_PLAYER_POSITION;
+		return FLAG_QUERY_PLAYER_LEVEL_UP;
 	}
 
 	@Override
 	public void executeQuery() {
 		// TODO Auto-generated method stub
-		Game.getDataHandler().setPlayerCurrentMap(mMapID, mPlayerID);
-		Game.getDataHandler().setPlayerPosition(tileColumn, tileRow, mPlayerID);
+		Game.getDataHandler().setPlayerLevel(mLevel,mPlayerID);
+		Game.getDataHandler().setPlayerExperience(mPlayerID, mExperience);
+		Game.getDataHandler().setPlayerUnassignedPoints(this.mUnassignedPoints, mPlayerID);
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public void set(int pPlayerID,int pMapID,int tileColumn,int tileRow){
+	public void set(int pPlayerID,int pLevel,int pUnassignedPoints,float pExperience){
 		this.setPlayerID(pPlayerID);
-		this.setMapID(pMapID);
-		this.setTileColumn(tileColumn);
-		this.setTileRow(tileRow);
+		this.setLevel(pLevel);
+		this.setUnassignedPoints(pUnassignedPoints);
+		this.setExperience(pExperience);
 	}
 	
 	/**
@@ -64,48 +65,40 @@ public class QueryRegisterPlayerPosition extends Query implements GameFlags{
 	}
 
 	/**
-	 * @return the mMapID
+	 * @return the mLevel
 	 */
-	public int getMapID() {
-		return mMapID;
+	public int getLevel() {
+		return mLevel;
 	}
 
 	/**
-	 * @param mMapID the mMapID to set
+	 * @param mLevel the mLevel to set
 	 */
-	public void setMapID(int pMapID) {
-		this.mMapID = pMapID;
+	public void setLevel(int pLevel) {
+		this.mLevel = pLevel;
+	}
+
+	public int getUnassignedPoints() {
+		return mUnassignedPoints;
+	}
+
+	public void setUnassignedPoints(int mUnassignedPoints) {
+		this.mUnassignedPoints = mUnassignedPoints;
 	}
 
 	/**
-	 * @return the tileColumn
+	 * @return the mExperience
 	 */
-	public int getTileColumn() {
-		return tileColumn;
+	public float getExperience() {
+		return mExperience;
 	}
 
 	/**
-	 * @param tileColumn the tileColumn to set
+	 * @param mExperience the mExperience to set
 	 */
-	public void setTileColumn(int tileColumn) {
-		this.tileColumn = tileColumn;
+	public void setExperience(float pExperience) {
+		this.mExperience = pExperience;
 	}
-
-	/**
-	 * @return the tileRow
-	 */
-	public int getTileRow() {
-		return tileRow;
-	}
-
-	/**
-	 * @param tileRow the tileRow to set
-	 */
-	public void setTileRow(int tileRow) {
-		this.tileRow = tileRow;
-	}
-
-
 	// ===========================================================
 	// Methods
 	// ===========================================================

@@ -40,6 +40,7 @@ import com.quest.network.messages.server.ServerMessageMapChanged;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
+import com.quest.network.messages.server.ServerMessagePlayerLevelUP;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
@@ -258,9 +259,20 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 			});
 			
+			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP, ServerMessagePlayerLevelUP.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessagePlayerLevelUP serverMessagePlayerLevelUP = (ServerMessagePlayerLevelUP) pServerMessage;
+					((Player)Game.getPlayerHelper().getPlayer(serverMessagePlayerLevelUP.getPlayerKey())).levelUP_Client(serverMessagePlayerLevelUP.getLevel(), serverMessagePlayerLevelUP.getUnassignedPoints());
+				}
+			});
+			
+			
 		this.initMessagePool();
 	}
 	
+
 	
 	// ===========================================================
 	// Getter & Setter
