@@ -1,14 +1,12 @@
-package com.quest.network.messages.client;
+package com.quest.network.messages.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
+import com.quest.constants.ServerMessageFlags;
 
-import com.quest.constants.ClientMessageFlags;
-
-public class ClientMessageSelectedPlayer extends QuestClientMessage implements ClientMessageFlags {
+public class ServerMessageSetPlayerAttributes extends QuestServerMessage implements ServerMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -18,13 +16,14 @@ public class ClientMessageSelectedPlayer extends QuestClientMessage implements C
 	// ===========================================================
 
 	private int mPlayerID;
-	
+	private String mAttributes;
+	private int mUnassigned;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	@Deprecated
-	public ClientMessageSelectedPlayer() {
+	public ServerMessageSetPlayerAttributes() {
 	}
 	// ===========================================================
 	// Getter & Setter
@@ -38,7 +37,21 @@ public class ClientMessageSelectedPlayer extends QuestClientMessage implements C
 		this.mPlayerID = mPlayerID;
 	}
 
+	public int[] getAttributes() {
+		return stringArraytoInt(mAttributes);
+	}
+
+	public void setAttributes(int[] mAttributes) {
+		this.mAttributes = intArraytoString(mAttributes);
+	}
 	
+	public int getUnassigned() {
+		return mUnassigned;
+	}
+
+	public void setUnassigned(int mUnassigned) {
+		this.mUnassigned = mUnassigned;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -46,17 +59,21 @@ public class ClientMessageSelectedPlayer extends QuestClientMessage implements C
 
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_CLIENT_SELECTED_PLAYER;
+		return FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES;
 	}
 
 	@Override
 	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
 		 this.mPlayerID = pDataInputStream.readInt();
+		 this.mAttributes = pDataInputStream.readUTF();
+		 this.mUnassigned = pDataInputStream.readInt();
 	}
 
 	@Override
 	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		pDataOutputStream.writeInt(this.mPlayerID);		
+		pDataOutputStream.writeInt(this.mPlayerID);	
+		pDataOutputStream.writeUTF(this.mAttributes);
+		pDataOutputStream.writeInt(this.mUnassigned);	
 	}
 
 	// ===========================================================

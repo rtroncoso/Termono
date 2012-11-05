@@ -14,11 +14,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
-import android.util.Log;
-
 import com.quest.constants.GameFlags;
 import com.quest.entities.BaseEntity;
-import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.polygons.Polygon;
 import com.quest.timers.Timer;
@@ -188,7 +185,6 @@ public class StatsHud extends HUD implements GameFlags{
 	private void updateOwnHUD(){
 		if(oldExp != mBaseEntity.getExperience()){ 
 			this.mLeveltext.setText("L: "+mBaseEntity.getLevel());
-			Log.d("Quest!","Rectangulin: Exp total: "+mBaseEntity.getExperience()+" Level: "+mBaseEntity.getLevel()+"\n"+"Exp del player a partir del lvl: "+Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())+" Exp to next lvl: "+Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel())+"\n Division: "+(Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())/ Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel()))+" La division por el tamaño("+EXP_RECTANGLE_X2_OFFSET+"): "+(((Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())/ Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel())) * EXP_RECTANGLE_X2_OFFSET)));
 			this.mExpRectangle.setWidth((Game.getLevelHelper().getPlayerExptoNextLevel(mBaseEntity.getExperience())/ Game.getLevelHelper().getExptoNextLevel(mBaseEntity.getLevel())) * EXP_RECTANGLE_X2_OFFSET);
 		}
 		totHP = mBaseEntity.getModHP();
@@ -268,7 +264,6 @@ public class StatsHud extends HUD implements GameFlags{
 		this.mBaseEntity = pNewEntity;
 
 		statsEntity.setVisible(true);
-		Log.d("Quest!", "Stats entity visible");
 		totHP = mBaseEntity.getModHP();
 		currHP = mBaseEntity.getCurrHP();
 		life_ratio = (totHP * SWORD_RATIO) / 100;
@@ -321,7 +316,6 @@ public class StatsHud extends HUD implements GameFlags{
 			public void onTimePassed(TimerHandler pTimerHandler) 
 			{
 				updateOtherHUD();
-			//	Log.d("Quest!", "Still here: "+pEntity.getUserData()+"HUD");
 			}
 		});
 		Game.getTimerHelper().addTimer(mRefreshTimer, pEntity.getUserData()+"HUD");

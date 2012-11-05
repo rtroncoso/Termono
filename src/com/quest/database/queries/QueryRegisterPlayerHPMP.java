@@ -1,67 +1,84 @@
-package com.quest.network.messages.client;
+package com.quest.database.queries;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.quest.constants.GameFlags;
+import com.quest.game.Game;
 
-import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
-
-import com.quest.constants.ClientMessageFlags;
-
-public class ClientMessageSelectedPlayer extends QuestClientMessage implements ClientMessageFlags {
+public class QueryRegisterPlayerHPMP extends Query implements GameFlags{
 	// ===========================================================
 	// Constants
 	// ===========================================================
-
+	
+	
 	// ===========================================================
 	// Fields
 	// ===========================================================
-
 	private int mPlayerID;
+	private int HP,MP;
 	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
 	@Deprecated
-	public ClientMessageSelectedPlayer() {
-	}
-	// ===========================================================
-	// Getter & Setter
-	// ===========================================================
+	public QueryRegisterPlayerHPMP() {
 
-	public int getPlayerID() {
-		return mPlayerID;
 	}
-
-	public void setPlayerID(int mPlayerID) {
-		this.mPlayerID = mPlayerID;
-	}
-
 	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
-
-
 	@Override
 	public short getFlag() {
-		return FLAG_MESSAGE_CLIENT_SELECTED_PLAYER;
+		return FLAG_QUERY_REGISTER_PLAYER_HPMP;
 	}
 
 	@Override
-	protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
-		 this.mPlayerID = pDataInputStream.readInt();
+	public void executeQuery() {
+		// TODO Auto-generated method stub
+		Game.getDataHandler().setPlayerCurrentHPMP(mPlayerID, HP, MP);
 	}
 
-	@Override
-	protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-		pDataOutputStream.writeInt(this.mPlayerID);		
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
+	public void set(int pPlayerID,int hp,int mp){
+		this.setPlayerID(pPlayerID);
+		this.setHP(hp);
+		this.setMP(mp);
+	}
+	
+	/**
+	 * @return the mPlayerID
+	 */
+	public int getPlayerID() {
+		return mPlayerID;
 	}
 
+	/**
+	 * @param mPlayerID the mPlayerID to set
+	 */
+	public void setPlayerID(int pPlayerID) {
+		this.mPlayerID = pPlayerID;
+	}
+
+	public int getHP() {
+		return HP;
+	}
+
+	public void setHP(int hp) {
+		this.HP = hp;
+	}
+
+	public int getMP() {
+		return MP;
+	}
+
+	public void setMP(int mp) {
+		this.MP = mp;
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================
+	
 
 	// ===========================================================
 	// Inner and Anonymous Classes

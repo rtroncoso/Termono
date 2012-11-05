@@ -282,7 +282,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			this.setUnassignedPoints(getUnassignedPoints()+3);
 			Game.getServer().sendMessagePlayerLevelUP(this.getUserID(), this.mLevel, this.getUnassignedPoints());
 			this.popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "LEVEL UP!", "lvlup"), 1.5f);
-			Game.getQueryQueuer().addPlayerLevelUPQuery(this.mPlayerID, this.mLevel, this.mExperience);
+			Game.getQueryQueuer().addPlayerLevelUPQuery(this.mPlayerID, this.mLevel,this.getUnassignedPoints(), this.mExperience);
 	}
 		
 	public void levelUP_Client(int pLevel, int pUnassignedPoints){

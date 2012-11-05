@@ -27,6 +27,7 @@ import com.quest.network.messages.client.ClientMessageMobRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
+import com.quest.network.messages.client.ClientMessageSetPlayerAttributes;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
@@ -42,6 +43,7 @@ import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
 import com.quest.network.messages.server.ServerMessagePlayerLevelUP;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
+import com.quest.network.messages.server.ServerMessageSetPlayerAttributes;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.objects.BooleanMessage;
@@ -70,6 +72,7 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_ATTACK_MESSAGE, ClientMessageAttackMessage.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE, ClientMessageAreaAttack.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_REQUEST_MOBS, ClientMessageMobRequest.class);
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SET_PLAYER_ATTRIBUTES, ClientMessageSetPlayerAttributes.class);
 			}
 	
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
@@ -268,6 +271,16 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 			});
 			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES, ServerMessageSetPlayerAttributes.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageSetPlayerAttributes serverMessageSetPlayerAttributes = (ServerMessageSetPlayerAttributes) pServerMessage;
+					Player player = Game.getPlayerHelper().getPlayerbyPlayerID(serverMessageSetPlayerAttributes.getPlayerID());
+					player.setAttributes(serverMessageSetPlayerAttributes.getAttributes());
+					player.setUnassignedPoints(serverMessageSetPlayerAttributes.getUnassigned());
+				}
+			});
+			
 			
 		this.initMessagePool();
 	}
@@ -344,6 +357,19 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			}
 			QClient.this.mMessagePool.recycleMessage(clientMessageSelectedPlayer);
 		}*/
+		
+		public void sendSetPlayerAttributesMessage(int pPlayerID, int[] pAttributes, int pUnassigned){			
+			final ClientMessageSetPlayerAttributes clientMessageSetPlayerAttributes = (ClientMessageSetPlayerAttributes) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_SET_PLAYER_ATTRIBUTES);
+			clientMessageSetPlayerAttributes.setPlayerID(pPlayerID);
+			clientMessageSetPlayerAttributes.setAttributes(pAttributes);
+			clientMessageSetPlayerAttributes.setUnassigned(pUnassigned);
+			try {
+				sendClientMessage(clientMessageSetPlayerAttributes);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessageSetPlayerAttributes);
+		}
 		
 		public void sendMovePlayerMessage(String pPlayerKey, int pX,int pY){			
 			final ClientMessageMovePlayer clientMessageMovePlayer = (ClientMessageMovePlayer) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_MOVE_PLAYER);

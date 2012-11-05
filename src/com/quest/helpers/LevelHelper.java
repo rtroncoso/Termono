@@ -2,8 +2,6 @@ package com.quest.helpers;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 public class LevelHelper {
 
 	// ===========================================================

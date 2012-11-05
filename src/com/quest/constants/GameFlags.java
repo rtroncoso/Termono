@@ -16,7 +16,8 @@ public interface GameFlags {
 	public static final int FLAG_TEXT_TYPE_HEALING = 3;
 	public static final int FLAG_TEXT_TYPE_FANCY = 4;
 	public static final int FLAG_TEXT_TYPE_BLUE = 5;
-	
+	public static final int FLAG_TEXT_TYPE_FANCY_DARK = 6;
+	public static final int FLAG_TEXT_TYPE_BLACK_KNIGHT = 7;
 	
 	//Attacks
 	public static final int FLAG_ATTACK_MOB_ATTACK_1 = 21;
@@ -36,7 +37,8 @@ public interface GameFlags {
 	public static final int FLAG_QUERY_REGISTER_PLAYER_POSITION = 0;
 	public static final int FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE = 1;
 	public static final int FLAG_QUERY_PLAYER_LEVEL_UP = 2;
-	
+	public static final int FLAG_QUERY_SET_PLAYER_ATTRIBUTES = 3;
+	public static final int FLAG_QUERY_REGISTER_PLAYER_HPMP = 4;
 	
 	
 	

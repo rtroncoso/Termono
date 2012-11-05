@@ -30,6 +30,8 @@ import com.quest.helpers.TextHelper;
 import com.quest.helpers.TimerHelper;
 import com.quest.network.QClient;
 import com.quest.network.QServer;
+import com.quest.objects.BooleanMessage;
+import com.quest.scenes.MatchScene;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
@@ -58,6 +60,7 @@ public class Game extends SimpleBaseGameActivity {
 	private static Random rand;
 	private static LevelHelper mLevelHelper;
 	private static QueryQueuer mQueryQueuer;
+	private static int pressCount = 0; 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -68,7 +71,67 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
+		//fijarse si es el home y guardar el estado de la partida 
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getMainMenuScene()){
+			this.finish();
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getMatchScene()){
+			new BooleanMessage("Quit", "What do you want to do?","Quit","Options", Game.getInstance()){
+				@Override
+				public void onOK() {
+					Game.this.finish();
+					super.onOK();
+				}
+				
+				@Override
+				public void onCancel() {
+					Game.getTextHelper().FlushTexts("MainMenuScene");
+					Game.getSceneManager().setOptionsScene();
+					super.onCancel();
+				}
+			};
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getOptionsScene()){
+			
+			new BooleanMessage("ASD", "FIJARME CUAL ERA LA SCENE ANTERIOR","Finish","Cancel", Game.getInstance()){
+				@Override
+				public void onOK() {
+					Game.this.finish();
+					super.onOK();
+				}
+				
+				@Override
+				public void onCancel() {
+					super.onCancel();
+				}
+			};
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getGameScene()){
+			if(pressCount > 0){
+				Game.this.finish();
+			}else{
+				new BooleanMessage("Quit", "What do you want to do?","Quit","Select Matches***", Game.getInstance()){
+					@Override
+					public void onOK() {
+						//hacer bien el finish
+						//mandar mensaje de desconexion
+						//lo mismo que abajo
+						Game.getQueryQueuer().executeQueries();//hacer un async asi hago el finish en el work complete
+						//fijarme si ya termino de guardar
+						super.onOK();
+					}
+					@Override
+					public void onCancel() {
+						//sacar la partida, guardar datos, clerear helper y server y eso (game.isserver tambien)
+						super.onCancel();
+					}
+				};	
+			}
+			pressCount++;
+		}
+		return;
 	}
 	
 	@Override

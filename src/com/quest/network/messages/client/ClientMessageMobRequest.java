@@ -10,7 +10,7 @@ import com.quest.constants.ClientMessageFlags;
 
 
 
-public class ClientMessageMobRequest extends ClientMessage implements ClientMessageFlags {
+public class ClientMessageMobRequest extends QuestClientMessage implements ClientMessageFlags {
 	
 	// ===========================================================
 	// Constants

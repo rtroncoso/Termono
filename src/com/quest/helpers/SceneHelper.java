@@ -35,12 +35,12 @@ public class SceneHelper implements IMeasureConstants, GameFlags {
 	private GameMenuScene mGameMenuScene;
 	private MatchScene mMatchScene;
 	private LoadingScene mLoadingScene;
-	
+	private MainMenuScene mMainMenuScene;
+	private OptionsScene mOptionsScene;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	public SceneHelper() {
-		
 		this.mDisplay = new Display(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth(),
 				Game.getInstance().getWindowManager().getDefaultDisplay().getHeight(), 1.7f);
     }
@@ -65,10 +65,15 @@ public class SceneHelper implements IMeasureConstants, GameFlags {
     public void setMainMenuScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
-    	this.mScene = new MainMenuScene();
+    	if(this.mMainMenuScene ==null)this.mMainMenuScene = new MainMenuScene();
+    	this.mScene = this.mMainMenuScene;
     	Game.getInstance().getEngine().setScene(this.mScene);
     }
-
+    
+    public MainMenuScene getMainMenuScene(){
+    	return mMainMenuScene;
+    }
+    
     public void setPauseMenuScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
@@ -79,8 +84,13 @@ public class SceneHelper implements IMeasureConstants, GameFlags {
     public void setOptionsScene() {
     	this.mDisplay.getCamera().setCenter(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth() / 2, Game.getInstance().getWindowManager().getDefaultDisplay().getHeight() / 2);
     	this.mDisplay.setZoom(1.0f);
-    	this.mScene = new OptionsScene();
+    	if(this.mOptionsScene ==null)this.mOptionsScene = new OptionsScene();
+    	this.mScene = this.mOptionsScene;
     	Game.getInstance().getEngine().setScene(this.mScene);
+    }
+    
+    public OptionsScene getOptionsScene(){
+    	return mOptionsScene;
     }
     
     public void setMatchScene() {

@@ -165,7 +165,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		super.onDeathAction(pKillerEntity);
 		dying = true;
 		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
-		Game.getSceneManager().getGameScene().getOtherStatsHud().dettachHUD((Integer)this.getUserData());
+		if(Game.getSceneManager().getGameScene().getOtherStatsHud() != null)Game.getSceneManager().getGameScene().getOtherStatsHud().dettachHUD((Integer)this.getUserData());
 		Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
 			int i = 1;
 			@Override
@@ -190,7 +190,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		if(tmpAtt.getAttackType()!=2){
 			this.mAttackLayer.add(tmpAtt);	//Mostrar la animacion de ataque
 		}
-		Log.d("Quest!", "Mob: "+this.getUserData()+" hp: "+this.currHP);//mostrar la barrita de hp
 		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()),1+(float)((float)(pDamage)/(float)(mModHP)));
 	};
 	

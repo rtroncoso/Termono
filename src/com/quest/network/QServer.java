@@ -36,6 +36,7 @@ import com.quest.network.messages.client.ClientMessageMobRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
+import com.quest.network.messages.client.ClientMessageSetPlayerAttributes;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.QuestServerMessage;
@@ -52,6 +53,7 @@ import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
 import com.quest.network.messages.server.ServerMessagePlayerLevelUP;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
+import com.quest.network.messages.server.ServerMessageSetPlayerAttributes;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.util.constants.IGameConstants;
@@ -96,6 +98,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOVE_MOB, ServerMessageMoveMob.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK, ServerMessageDisplayAreaAttack.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP, ServerMessagePlayerLevelUP.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES, ServerMessageSetPlayerAttributes.class);
 	}
 
 // ===========================================================
@@ -391,6 +394,15 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		});
 		
 		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_SET_PLAYER_ATTRIBUTES, ClientMessageSetPlayerAttributes.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessageSetPlayerAttributes clientMessageSetPlayerAttributes = (ClientMessageSetPlayerAttributes) pClientMessage;
+				Game.getQueryQueuer().addSetPlayerAttributesQuery(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
+				sendMessageSetPlayerAttributes(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
+			}
+		});
+		
 		return clientConnector;
 	}
 // ===========================================================
@@ -485,6 +497,14 @@ public void sendMessagePlayerLevelUP(String pPlayerKey, int pLevel, int pUnassig
 	final ServerMessagePlayerLevelUP serverMessagePlayerLevelUP = (ServerMessagePlayerLevelUP) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP);
 	serverMessagePlayerLevelUP.set(pPlayerKey, pLevel, pUnassignedPoints);
 	sendBroadcast(serverMessagePlayerLevelUP);
+}
+
+public void sendMessageSetPlayerAttributes(int pPlayerID, int[] pAttributes, int pUnassigned){
+	final ServerMessageSetPlayerAttributes serverMessageSetPlayerAttributes = (ServerMessageSetPlayerAttributes) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES);
+	serverMessageSetPlayerAttributes.setPlayerID(pPlayerID);
+	serverMessageSetPlayerAttributes.setAttributes(pAttributes);
+	serverMessageSetPlayerAttributes.setUnassigned(pUnassigned);
+	sendBroadcast(serverMessageSetPlayerAttributes);
 }
 // ===========================================================
 // Inner and Anonymous Classes

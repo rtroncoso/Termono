@@ -15,7 +15,7 @@ import com.quest.constants.ClientMessageFlags;
  * @author Nicolas Gramlich
  * @since 12:23:37 - 21.05.2011
  */
-public class ClientMessageConnectionRequest extends ClientMessage implements ClientMessageFlags {
+public class ClientMessageConnectionRequest extends QuestClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================

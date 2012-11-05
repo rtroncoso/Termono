@@ -32,6 +32,7 @@ public interface ServerMessageFlags {
 	
 	//Player
 	public static final short FLAG_MESSAGE_SERVER_PLAYER_LEVELUP = 150;
+	public static final short FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES = 151;
 	
 }
 

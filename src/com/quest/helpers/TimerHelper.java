@@ -73,7 +73,6 @@ public class TimerHelper {
 	
 	public Timer getTimer(String pKey) {
 		Iterator<Entry<String, Timer>> it = this.mTimersList.entrySet().iterator();
-		Log.e("Quest!", pKey);
 		while (it.hasNext()) {
 			Map.Entry e = it.next();
 			if(e.getKey().equals(pKey)) return (Timer) e.getValue();

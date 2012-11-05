@@ -283,6 +283,11 @@ public class MapHelper implements IMeasureConstants {
 												public void workToDo() {
 													// TODO Auto-generated method stub
 													
+													if(Game.isServer()){
+														Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Saving data.");
+														Game.getQueryQueuer().executeQueries();//*** Cambiar esto de lugar a donde corresponderia
+													}
+													
 													// Load it and set new Player's position
 													int pX = (nextMapX == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn() : nextMapX;
 													int pY = (nextMapY == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow() : nextMapY;

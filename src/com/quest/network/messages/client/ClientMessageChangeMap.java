@@ -8,7 +8,7 @@ import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMes
 
 import com.quest.constants.ClientMessageFlags;
 
-public class ClientMessageChangeMap extends ClientMessage implements ClientMessageFlags {
+public class ClientMessageChangeMap extends QuestClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
