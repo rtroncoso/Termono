@@ -60,7 +60,7 @@ public class MenuHud extends HUD{
 						case TouchEvent.ACTION_CANCEL://como mierda detecto el cancel!?
 							break;
 						case TouchEvent.ACTION_DOWN:
-						//	Toast.makeText(Game.getInstance().getApplicationContext(),"TEST", 10).show();
+							Game.getSceneManager().saveCurrentSceneState(true);
 							Game.getSceneManager().getGameScene().unloadHUD();														
 							Game.getSceneManager().getDisplay().getCamera().setChaseEntity(null);
 							Game.getSceneManager().setGameMenuScene();							

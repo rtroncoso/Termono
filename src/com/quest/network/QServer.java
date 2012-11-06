@@ -398,8 +398,10 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			@Override
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageSetPlayerAttributes clientMessageSetPlayerAttributes = (ClientMessageSetPlayerAttributes) pClientMessage;
-				Game.getQueryQueuer().addSetPlayerAttributesQuery(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
 				sendMessageSetPlayerAttributes(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
+				Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSetPlayerAttributes.getPlayerID()).setAttributes(clientMessageSetPlayerAttributes.getAttributes());
+				Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSetPlayerAttributes.getPlayerID()).setUnassignedPoints(clientMessageSetPlayerAttributes.getUnassigned());
+				Game.getQueryQueuer().addSetPlayerAttributesQuery(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
 			}
 		});
 		
@@ -408,7 +410,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // ===========================================================
 // Getter & Setter
 // ===========================================================
-	
+
 // ===========================================================
 // Methods
 // ===========================================================

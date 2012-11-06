@@ -107,6 +107,7 @@ public class QueryQueuer implements GameFlags{
 			QueryRegisterPlayerHPMP HPMP = (QueryRegisterPlayerHPMP) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_REGISTER_PLAYER_HPMP);
 			HPMP.set(player.getPlayerID(), (int)(player.getCurrHPMP()[0]),(int)(player.getCurrHPMP()[1]));
 			mQueue.add(HPMP);
+			
 		}
 		for(int i = 0;i < mQueue.size();i++){
 			mQueue.get(0).executeQuery();
@@ -125,9 +126,6 @@ public class QueryQueuer implements GameFlags{
 	
 	public void addSetPlayerAttributesQuery(int pPlayerID,int[] pAttributes,int pUnassigned){
 		QuerySetPlayerAttributes query = (QuerySetPlayerAttributes) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_SET_PLAYER_ATTRIBUTES);
-		Player player = Game.getPlayerHelper().getPlayerbyPlayerID(pPlayerID);
-		for(int i = 0;i<4;i++)
-			pAttributes[i]+=player.getAttributes()[i];
 		query.set(pPlayerID, pAttributes,pUnassigned);
 		mQueue.add(query);
 	}

@@ -259,6 +259,14 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		public void setOtherStatsHud(StatsHud pOtherStatsHud) {
 			this.mOtherStatsHud= pOtherStatsHud;
 		}
+		
+		public HUD getHUD(){
+			return this.mHud;
+		}
+		
+		public void setHUD(HUD pHUD){
+			this.mHud = pHUD;
+		}
 
 		/**
 		 * @return the mMapLayer
@@ -278,7 +286,10 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 
 		public void unloadHUD(){
 			Game.getSceneManager().getDisplay().getCamera().setHUD(null);
-			this.mHud.clearTouchAreas();			
+		}
+		
+		public void loadHUD(){
+			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
 		/**

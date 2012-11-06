@@ -18,6 +18,7 @@ import android.util.Log;
 
 import com.quest.constants.GameFlags;
 import com.quest.database.DataHandler;
+import com.quest.entities.Player;
 import com.quest.entities.objects.ItemIcon;
 import com.quest.entities.objects.SpellIcon;
 import com.quest.game.Game;
@@ -29,11 +30,13 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private String[] ATTRIBUTES_TEXT = new String[]{"Power","Intelligence","Defence","Endurance"};
+	
 	
 	// ===========================================================
 	// Fields
 	// ===========================================================
+	private int mCurrentTab = 0;//0 default, 1 Inv, 2 Equipment, 3 Skills, 4 Atts, 5 Other, 6 Settings
+	
 	private Entity mGameMenuEntity;
 	private BitmapTextureAtlas mSceneTextureAtlas;
 	private ITextureRegion mBackgroundTextureRegion;
@@ -167,6 +170,7 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	// Constructors
 	// ===========================================================
 	public GameMenuScene(){
+		this.mCurrentEntity = new Entity(0,0);
 		this.mGameMenuEntity = new Entity(0,0);
 		this.mEquipmentEntity = new Entity(0,0);
 		this.mSkillsEntity = new Entity(0,0);
@@ -367,7 +371,7 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 					case TouchEvent.ACTION_UP:	
 						if(this.mGrabbed) {
 							this.mGrabbed = false;	
-							GameMenuScene.this.mInventoryTabSprite.setAlpha(0.5f);
+							GameMenuScene.this.mSettingsSprite.setAlpha(0.5f);
 							GameMenuScene.this.clearTouchAreas();
 							UnloadEntity(mCurrentEntity);
 							mCurrentEntity = LoadSettingsEntity();
@@ -385,9 +389,6 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 		this.loadTabTouchAreas();
 		
 		this.mInventoryTabSprite.setAlpha(0.5f);
-		mCurrentEntity = LoadInventoryEntity();
-		GameMenuScene.this.attachChild(mCurrentEntity);
-		
 		//##############FIN DE LA ENTIDAD PRINCIPAL########################
 		
 		this.setTouchAreaBindingOnActionDownEnabled(true);
@@ -408,6 +409,7 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	
 	//#################INVENTORY ENTITY######################
 	public Entity LoadInventoryEntity(){
+		this.mCurrentTab = 1;
 			if(this.mInventoryEntity == null){
 				
 				this.mInventoryEntity = new Entity(0,0);
@@ -924,9 +926,9 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	
 	//#################ATTRIBUTES ENTITY######################
 	public Entity LoadAttributesEntity(){
+		this.mCurrentTab = 4;
 		pAttributes = new int[]{0,0,0,0};
 		pUnassigned = Game.getPlayerHelper().getOwnPlayer().getUnassignedPoints();
-		
 		if(this.mAttributesEntity == null){
 			this.mAttributesEntity = new Entity(0,0);
 			
@@ -967,7 +969,7 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 							}
 							break;
 						}
-					return true;
+					return false;
 					}					
 				};
 				mAttributesBoxSprite[i].setUserData(i);
@@ -987,16 +989,13 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 								if(pUnassigned>0){
 									int a = (Integer)(this.getUserData());
 									pAttributes[a]+=1;
-									mAttributesTexts[a].setText(ATTRIBUTES_TEXT[a]+"\n        "+(Game.getPlayerHelper().getOwnPlayer().getAttributes()[a]+pAttributes[a]));
+									mAttributesTexts[a].setText(ATTRIBUTES[a]+"\n        "+(Game.getPlayerHelper().getOwnPlayer().getAttributes()[a]+pAttributes[a]));
 									pUnassigned-=1;
+									mAttributesMinusSprite[a].setAlpha(1f);
 								}
+								
 								if(pUnassigned<1){
-									for(int i = 0;i<4;i++)
-										mAttributesPlusSprite[i].setAlpha(0.5f);
-								}
-								if(pUnassigned<Game.getPlayerHelper().getOwnPlayer().getUnassignedPoints()){
-									for(int i = 0;i<4;i++)
-										mAttributesMinusSprite[i].setAlpha(1f);
+									for(int i = 0;i<4;i++)mAttributesPlusSprite[i].setAlpha(0.5f);
 								}
 								
 								mAttributesUnassignedPointsText.setText("Unassigned points: "+pUnassigned);
@@ -1021,18 +1020,15 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 							if(this.mGrabbed) {
 								this.mGrabbed = false;	
 								int a = (Integer)(this.getUserData());
-								if(pAttributes[a]>1){
+								
+								if(pAttributes[a]>0){
 									pAttributes[a]-=1;
-									mAttributesTexts[a].setText(ATTRIBUTES_TEXT[a]+"\n        "+(Game.getPlayerHelper().getOwnPlayer().getAttributes()[a]+pAttributes[a]));
+									mAttributesTexts[a].setText(ATTRIBUTES[a]+"\n        "+(Game.getPlayerHelper().getOwnPlayer().getAttributes()[a]+pAttributes[a]));
 									pUnassigned+=1;
+									for(int i = 0;i<4;i++)mAttributesPlusSprite[i].setAlpha(1f);
 								}
-								if(pUnassigned>0){
-									for(int i = 0;i<4;i++)
-										mAttributesPlusSprite[i].setAlpha(1f);
-								}
-								if(pUnassigned>=Game.getPlayerHelper().getOwnPlayer().getUnassignedPoints()){
-									for(int i = 0;i<4;i++)
-										mAttributesMinusSprite[i].setAlpha(0.5f);
+								if(pAttributes[a]<1){
+									mAttributesMinusSprite[a].setAlpha(0.5f);
 								}
 								mAttributesUnassignedPointsText.setText("Unassigned points: "+pUnassigned);
 							}
@@ -1048,7 +1044,7 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 				this.mAttributesEntity.attachChild(mAttributesMinusSprite[i]);
 				
 				//cargar los otros textos
-				this.mAttributesTexts[i] = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_BLACK_KNIGHT, offset+10, mAttributesBoxSprite[i].getY()+5, ATTRIBUTES_TEXT[i]+"\n        "+Game.getPlayerHelper().getOwnPlayer().getAttributes()[i], "GameMenuScene;AttributesText"+i);
+				this.mAttributesTexts[i] = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_BLACK_KNIGHT, offset+10, mAttributesBoxSprite[i].getY()+5, ATTRIBUTES[i]+"\n        "+Game.getPlayerHelper().getOwnPlayer().getAttributes()[i], "GameMenuScene;AttributesText"+i);
 				this.mAttributesEntity.attachChild(mAttributesTexts[i]);
 				
 				offset+= (mAttributesBoxSprite[i].getWidth() + 20);				
@@ -1066,21 +1062,31 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 				switch(pSceneTouchEvent.getAction()) {
 					case TouchEvent.ACTION_DOWN:
 							this.mGrabbed = true;
+							this.setAlpha(0.5f);
 						break;
 					case TouchEvent.ACTION_UP:	
 						if(this.mGrabbed) {
 							this.mGrabbed = false;			
 							if(Game.isServer()){
+								for(int i = 0;i<4;i++)pAttributes[i]+=Game.getPlayerHelper().getOwnPlayer().getAttributes()[i];
+								Game.getPlayerHelper().getOwnPlayer().setAttributes(pAttributes);
+								Game.getPlayerHelper().getOwnPlayer().setUnassignedPoints(pUnassigned);
+								Game.getServer().sendMessageSetPlayerAttributes(Game.getPlayerHelper().getOwnPlayer().getPlayerID(), pAttributes, pUnassigned);
 								Game.getQueryQueuer().addSetPlayerAttributesQuery(Game.getPlayerHelper().getOwnPlayer().getPlayerID(), pAttributes, pUnassigned);
 								pAttributes = new int[]{0,0,0,0};
 							}else{
+								for(int i = 0;i<4;i++)pAttributes[i]+=Game.getPlayerHelper().getOwnPlayer().getAttributes()[i];
 								Game.getClient().sendSetPlayerAttributesMessage(Game.getPlayerHelper().getOwnPlayer().getPlayerID(), pAttributes, pUnassigned);
 								pAttributes = new int[]{0,0,0,0};
 							}
+							mAttributesUnassignedPointsText.setText("Unassigned points: "+pUnassigned);
+							if(pUnassigned<1)for(int i = 0;i<4;i++)mAttributesPlusSprite[i].setAlpha(0.5f);
+							for(int i = 0;i<4;i++)mAttributesMinusSprite[i].setAlpha(0.5f);
+							this.setAlpha(1f);
 						}
 						break;
 					}
-				return false;
+				return true;
 				}					
 			};				
 			this.mAttributesEntity.attachChild(mAttributesConfirmSprite);
@@ -1088,24 +1094,24 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 			this.mAttributesUnassignedPointsText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_BLACK_KNIGHT, (Game.getSceneManager().getDisplay().getCameraWidth()/3), this.mPlankSprite.getHeight()+10, "Unassigned points: ", "GameMenuScene;AttributesUnassignedPoints");
 			this.mAttributesEntity.attachChild(mAttributesUnassignedPointsText);
 		}
+		if(pUnassigned<1){
+			for(int i = 0;i<4;i++)mAttributesPlusSprite[i].setAlpha(0.5f);
+		}else{
+			for(int i = 0;i<4;i++)mAttributesPlusSprite[i].setAlpha(1f);
+		}
 		
 		for(int i = 0;i<4;i++){
 			mAttributesMinusSprite[i].setAlpha(0.5f);
 			//this.registerTouchArea(mAttributesBoxSprite[i]);
 			this.registerTouchArea(mAttributesPlusSprite[i]);
 			this.registerTouchArea(mAttributesMinusSprite[i]);
-			//this.registerTouchArea(mAttributesBoxSprite[i]);
+			this.registerTouchArea(mAttributesBoxSprite[i]);
 		}
 
 		this.registerTouchArea(this.mAttributesConfirmSprite);
-		if(pUnassigned<1)
-			for(int i = 0;i<4;i++)
-				mAttributesPlusSprite[i].setAlpha(0.5f);
-		
+
 		this.mAttributesUnassignedPointsText.setText("Unassigned points: "+pUnassigned);
-		
-		
-		
+				
 		return this.mAttributesEntity;
 	}
 	
@@ -1144,11 +1150,35 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	// Getter & Setter
 	// ===========================================================
 	
-
+	
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	
+	public void reloadCurrentTab(){
+		switch (mCurrentTab) {
+		case 1:
+			LoadInventoryEntity();
+			break;
+		case 2:
+			LoadEquipmentEntity();
+			break;
+		case 3:
+			LoadSkillsEntity();
+			break;
+		case 4:
+			LoadAttributesEntity();
+			break;
+		case 5:
+			LoadOtherEntity();
+			break;
+		case 6:
+			LoadSettingsEntity();
+			break;
+		default:
+			mCurrentEntity = LoadInventoryEntity();
+			this.attachChild(mCurrentEntity);
+		}
+	}
 
 	// ===========================================================
 	// Inner and Anonymous Classes

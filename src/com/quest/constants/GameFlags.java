@@ -46,7 +46,7 @@ public interface GameFlags {
 	
 	
 	
-	
-	
+	//Strings
+	public static final String[] ATTRIBUTES = new String[]{"Power","Intelligence","Defence","Endurance"};
 	public static final String FLAG_BRIAN_FACEBOOK_PASSWORD = "briannn33";
 }

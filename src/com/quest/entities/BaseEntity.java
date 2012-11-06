@@ -452,18 +452,21 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return new int[]{getPower(),getIntelligence(),getDefense(),getEndurance()};
 	}
 	
+	public void setAttributes(int[] pAttributes){
+		this.setAttributes(pAttributes[0], pAttributes[1], pAttributes[2], pAttributes[3]);
+	}
+	
 	public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance){
 		this.setPower(pPower);
 		this.setIntelligence(pIntelligence);
 		this.setDefense(pDefense);
 		this.setEndurance(pEndurance);
+		updateModHPMP();
 	}
 	
-	public void setAttributes(int[] pAttributes){
-		this.setPower(pAttributes[0]);
-		this.setIntelligence(pAttributes[1]);
-		this.setDefense(pAttributes[2]);
-		this.setEndurance(pAttributes[3]);
+	public void updateModHPMP(){
+		this.mModHP = ((this.getEndurance() + this.getModEndurance()) * 10);
+		this.mModMana = ((this.getIntelligence()+this.getModIntelligence())*10);
 	}
 	
 	public int getCurrentMap() {
@@ -487,8 +490,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.setModIntelligence(pIntelligence);
 		this.setModPower(pPower);
 		this.setModDefense(pDefense);
-		this.setModHP(pEndurance*10);
-		this.setModMana(pIntelligence*10);
+		updateModHPMP();
 	}
 	
 	public void addModifiers(int[] pModifiers){

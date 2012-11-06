@@ -112,6 +112,11 @@ public class TextHelper implements GameFlags{
 		tmpText.setY(Y);
 	}
 
+	public void ChangeText(String pText,String pTextKey){
+		Text tmpText = this.getText(pTextKey);
+		tmpText.setText(pText);
+	}
+	
 	public void ClearText(String pTextKey){
 		Text tmpText = this.getText(pTextKey);
 		tmpText.setText("");
@@ -141,8 +146,8 @@ public class TextHelper implements GameFlags{
 	
 	public void allocateDefaultTexts(){
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_FANCY).batchAllocatePoolItems(4);
-		this.mTextPool.getPool(FLAG_TEXT_TYPE_NORMAL).batchAllocatePoolItems(5);
-		this.mTextPool.getPool(FLAG_TEXT_TYPE_DAMAGE).batchAllocatePoolItems(5);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_NORMAL).batchAllocatePoolItems(10);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_DAMAGE).batchAllocatePoolItems(10);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_BLUE).batchAllocatePoolItems(5);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_HEALING).batchAllocatePoolItems(3);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_FANCY_DARK).batchAllocatePoolItems(1);

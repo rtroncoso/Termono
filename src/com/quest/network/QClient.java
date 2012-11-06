@@ -14,6 +14,7 @@ import org.andengine.extension.multiplayer.protocol.util.MessagePool;
 import android.util.Log;
 
 import com.quest.constants.ClientMessageFlags;
+import com.quest.constants.GameFlags;
 import com.quest.constants.ServerMessageFlags;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
@@ -49,7 +50,7 @@ import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.objects.BooleanMessage;
 import com.quest.util.constants.IMeasureConstants;
 
-public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags {
+public class QClient extends ServerConnector<SocketConnection> implements ClientMessageFlags, ServerMessageFlags, GameFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -278,6 +279,10 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 					Player player = Game.getPlayerHelper().getPlayerbyPlayerID(serverMessageSetPlayerAttributes.getPlayerID());
 					player.setAttributes(serverMessageSetPlayerAttributes.getAttributes());
 					player.setUnassignedPoints(serverMessageSetPlayerAttributes.getUnassigned());
+					if(player.getUserID().equals(Game.getUserID())){
+						Game.getTextHelper().ChangeText("Unassigned points: "+serverMessageSetPlayerAttributes.getUnassigned(), "GameMenuScene;AttributesUnassignedPoints");
+						for(int i = 0;i<4;i++)Game.getTextHelper().ChangeText(ATTRIBUTES[i]+"\n        "+Game.getPlayerHelper().getOwnPlayer().getAttributes()[i], "GameMenuScene;AttributesText"+i);
+					}
 				}
 			});
 			

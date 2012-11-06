@@ -31,6 +31,7 @@ import com.quest.helpers.TimerHelper;
 import com.quest.network.QClient;
 import com.quest.network.QServer;
 import com.quest.objects.BooleanMessage;
+import com.quest.scenes.GameScene;
 import com.quest.scenes.MatchScene;
 
 public class Game extends SimpleBaseGameActivity {
@@ -130,6 +131,10 @@ public class Game extends SimpleBaseGameActivity {
 				};	
 			}
 			pressCount++;
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getGameMenuScene()){
+			Game.getSceneManager().restoreSavedScene();
+			Game.getSceneManager().getDisplay().setZoom(1.6f);
+			Game.getSceneManager().getGameScene().loadHUD();
 		}
 		return;
 	}

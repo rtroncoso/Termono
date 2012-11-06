@@ -1635,8 +1635,6 @@ public class MatchScene extends Scene implements GameFlags {
 
 													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
 													SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
-													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
-													SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
