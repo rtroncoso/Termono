@@ -386,6 +386,9 @@ public class DataHandler {
 	public int getMobAnimationCols(int pMobFlag){
         return this.mStaticDB.getMobAnimationCols(pMobFlag);
     }
+	public int getMobExtraCols(int pMobFlag){
+        return this.mStaticDB.getMobExtraCols(pMobFlag);
+    }
 	
 	public int getMobFrameWidth(int pMobFlag){
         return this.mStaticDB.getMobFrameWidth(pMobFlag);

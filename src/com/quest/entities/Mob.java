@@ -52,6 +52,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.mDroppedItems = Game.getDataHandler().getMobDroppedItems(mMobFlag);
 		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
+		this.mBodyExtraCols = Game.getDataHandler().getMobExtraCols(mMobFlag);
 		this.mEntityType = "Mob";
 	}
 	

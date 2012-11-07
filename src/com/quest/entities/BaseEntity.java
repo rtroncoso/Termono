@@ -54,6 +54,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected float mSpeedFactor;
 	protected int mBodyColumns;
 	protected int mBodyRows;
+	protected int mBodyExtraCols;
 	protected int mCurrentMap;
 	protected byte mFacingDirection;
 	
@@ -76,13 +77,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mSpeedFactor = 1.0f;
 		this.mBodyColumns = pCols;
 		this.mBodyRows = pRows;
+		this.mBodyExtraCols = 0;
 		
 		// Set base path for Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
 		// Craete Texture Objects
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), pFrameWidth, pFrameHeight);
-		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBitmapTextureAtlas, Game.getInstance().getApplicationContext(), pTextureName, pFramePosX, pFramePosY, pCols, pRows);
+		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBitmapTextureAtlas, Game.getInstance().getApplicationContext(), pTextureName, pFramePosX, pFramePosY, this.mBodyColumns, this.mBodyRows);
 
 		// Load Texture into memory and on the screen
 		this.mBitmapTextureAtlas.load();
@@ -111,24 +113,24 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		if(restartAnimation && !this.mBodySprite.isAnimationRunning()) return this;
 
 		// Calculate frame durations
-		long[] frameDurations = new long[this.mBodyColumns];
-		for(int i = 0; i < this.mBodyColumns; i++) {
+		long[] frameDurations = new long[this.mBodyColumns - this.mBodyExtraCols];
+		for(int i = 0; i < this.mBodyColumns - this.mBodyExtraCols; i++) {
 			frameDurations[i] = 50;
 		}
 		
 		// Animate it
 		switch(pFacingDirection) {
 		case DIRECTION_SOUTH:
-			this.mBodySprite.animate(frameDurations, 0, (this.mBodyColumns - 1), false);
+			this.mBodySprite.animate(frameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
 			break;
 		case DIRECTION_NORTH:
-			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - 1, false);
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - (this.mBodyExtraCols) - 1, false);
 			break;	
 		case DIRECTION_EAST:
-			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - 1, false);
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - (this.mBodyExtraCols) - 1, false);
 			break;
 		case DIRECTION_WEST:
-			this.mBodySprite.animate(frameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - 1, false);
+			this.mBodySprite.animate(frameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - (this.mBodyExtraCols) - 1, false);
 			break;	
 		}
 		
@@ -199,7 +201,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		Game.getMapManager().registerCollisionTile(pTileTo);
 		
 		// Animate the Character
-		this.setAnimationDirection(this.getFacingDirectionToTile(pTileTo), false);
+		this.setAnimationDirection(this.getFacingDirectionToTile(pTileTo), true);
 
 		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pTileTo.getTileX(), pTileTo.getTileY());
 
@@ -242,6 +244,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return this;
 	}
 
+	public void cleanUp() {
+
+		Game.getMapManager().unregisterCollisionTile(this.mTMXTileAt);
+	}
+	
 	public void popOverHead(Text pText,float pScale){
 		final Text tmpText = pText;
 		tmpText.setScale(pScale);
@@ -651,7 +658,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	@Override
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
-		
+		this.cleanUp();
 	}
 
 	@Override

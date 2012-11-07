@@ -83,6 +83,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fMobAnimationTexture = "AnimationTexture";
         static final String fMobAnimationRows = "AnimationRows";
         static final String fMobAnimationCols = "AnimationCols";
+        static final String fMobExtraCols = "ExtraCols";
         static final String fMobFrameWidth = "FrameWidth";
         static final String fMobFrameHeight = "FrameHeight";
         static final String fMobType = "Type";//Aggressive - etc, no se
@@ -196,6 +197,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
 	            		fMobAnimationTexture+" TEXT ,"+
 	            		fMobAnimationRows+" INTEGER ,"+
 	            		fMobAnimationCols+" INTEGER ,"+
+	            		fMobExtraCols+" INTEGER ,"+
 	            		fMobFrameWidth+" INTEGER ,"+
 	            		fMobFrameHeight+" INTEGER ,"+
 	            		fMobType+" INTEGER ,"+
@@ -452,14 +454,15 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 
           		cv.put(fMobID, FLAG_MOB_BAT);
           		cv.put(fMobName, "Bat");
-          		cv.put(fMobIconTexture,"Mobs/Icons/Bat1.png");
-          		cv.put(fMobAnimationTexture,"Mobs/Animations/Bat1.png");
-          		cv.put(fMobAnimationCols,4);
-          		cv.put(fMobAnimationRows,4);
-          		cv.put(fMobFrameWidth,128);
-          		cv.put(fMobFrameHeight,256);
-          		cv.put(fMobType,1);
-          		cv.put(fMobDescription,"A common bat.");
+          		cv.put(fMobIconTexture, "Mobs/Icons/Bat1.png");
+          		cv.put(fMobAnimationTexture, "Mobs/Animations/Bat1.png");
+          		cv.put(fMobAnimationCols, 6);
+          		cv.put(fMobAnimationRows, 4);
+          		cv.put(fMobExtraCols, 2);
+          		cv.put(fMobFrameWidth, 256);
+          		cv.put(fMobFrameHeight, 256);
+          		cv.put(fMobType, 1);
+          		cv.put(fMobDescription, "A common bat.");
           		db.insert(tMob, null, cv); 
           		
           		cv.clear();
@@ -905,6 +908,17 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
     	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobAnimationCols+" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
          	myCursor.moveToFirst();
          	int index = myCursor.getColumnIndex(fMobAnimationCols);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+        	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getMobExtraCols(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobExtraCols+" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobExtraCols);
          	int myAnswer = myCursor.getInt(index);
          	myCursor.close();
         	myDB.close();
