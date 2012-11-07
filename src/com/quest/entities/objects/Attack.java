@@ -31,6 +31,8 @@ public class Attack extends Entity implements IMeasureConstants {
 	private int FrameHeight,FrameWidth;
 	private int mCols,mRows;
 	private float[] mEffect;
+	private int ManaCost;
+	
 	public Attack(int ATTACK_FLAG) {;
 		
 		this.mAttack_Flag = ATTACK_FLAG;
@@ -41,6 +43,7 @@ public class Attack extends Entity implements IMeasureConstants {
 		this.mCols = Game.getDataHandler().getAttackAnimationCols(mAttack_Flag);
 		this.mRows = Game.getDataHandler().getAttackAnimationRows(mAttack_Flag);
 		this.mEffect = Game.getDataHandler().getAttackEffect(mAttack_Flag);
+		this.ManaCost = Game.getDataHandler().getAttackCost(mAttack_Flag);
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.mAttackTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024, 1024);
 		this.mAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mAttackTextureAtlas, Game.getInstance().getApplicationContext(), mAnimatedTexturePath, 0, 0, mCols, mRows);
@@ -231,6 +234,12 @@ public class Attack extends Entity implements IMeasureConstants {
 	
 	public void setAnimationAtCenter(int X, int Y){
 		this.mAttackAnimation.setPosition(X - (this.mAttackTextureRegion.getWidth()/2), Y - (this.mAttackTextureRegion.getWidth() / 2));
+	}
+	public int getManaCost() {
+		return ManaCost;
+	}
+	public void setManaCost(int manaCost) {
+		ManaCost = manaCost;
 	}
 	
 	

@@ -36,6 +36,7 @@ import com.quest.network.messages.client.ClientMessageMobRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
+import com.quest.network.messages.client.ClientMessageSetPlayerAttributes;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.QuestServerMessage;
@@ -50,7 +51,9 @@ import com.quest.network.messages.server.ServerMessageMapChanged;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
+import com.quest.network.messages.server.ServerMessagePlayerLevelUP;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
+import com.quest.network.messages.server.ServerMessageSetPlayerAttributes;
 import com.quest.network.messages.server.ServerMessageSpawnMob;
 import com.quest.network.messages.server.ServerMessageUpdateEntityPosition;
 import com.quest.util.constants.IGameConstants;
@@ -68,7 +71,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 // Fields
 // ===========================================================
 	private final MessagePool<IMessage> mMessagePool = new MessagePool<IMessage>();
-	private PlayerHelper mPlayerList;
 	
 // ===========================================================
 // Constructors
@@ -76,7 +78,6 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 	public QServer(final ISocketConnectionClientConnectorListener pSocketConnectionClientConnectorListener) {
 		super(SERVER_PORT, pSocketConnectionClientConnectorListener, new DefaultSocketServerListener<SocketConnectionClientConnector>());
 		Log.d("Quest!","Server started");
-		this.mPlayerList = new PlayerHelper();
 		this.initMessagePool();
 	}
 	
@@ -96,7 +97,8 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_EXISTING_MOB, ServerMessageExistingMob.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOVE_MOB, ServerMessageMoveMob.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK, ServerMessageDisplayAreaAttack.class);
-		
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP, ServerMessagePlayerLevelUP.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES, ServerMessageSetPlayerAttributes.class);
 	}
 
 // ===========================================================
@@ -363,7 +365,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
 				final ClientMessageAttackMessage clientMessageAttackMessage = (ClientMessageAttackMessage) pClientMessage;
 				if(Game.getMobHelper().MobExists(clientMessageAttackMessage.getAttackedMobID())){//Si el mob existe/no lo mataron
-					Game.getBattleHelper().manageAttack(Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()), clientMessageAttackMessage.getAttackID(), Game.getMobHelper().getMob(clientMessageAttackMessage.getAttackedMobID()));
+					Game.getBattleHelper().startAttack(Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()), clientMessageAttackMessage.getAttackID(), Game.getMobHelper().getMob(clientMessageAttackMessage.getAttackedMobID()));
 				}
 			}
 		});
@@ -375,13 +377,14 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Attack tmpAtt = Game.getAttacksHelper().addNewAttack(clientMessageAreaAttack.getAttack_Flag());
 				TMXTile tmpTile = Game.getMapManager().getTMXTileAt(clientMessageAreaAttack.getTileX(), clientMessageAreaAttack.getTileY());
 				
-				sendMessageDisplayAreaAttack(clientMessageAreaAttack.getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16, clientMessageAreaAttack.getMap());
+				sendMessageDisplayAreaAttack(clientMessageAreaAttack.getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16, clientMessageAreaAttack.getMap(),connectedClientProfileData.getUserID());
 				
 				tmpAtt.setAnimationAtCenter(tmpTile.getTileX()+16,tmpTile.getTileY()+16);
 				
 				ArrayList<Mob> tmpMobsinArea = Game.getMobHelper().getMobsInArea(clientMessageAreaAttack.getTileX(), clientMessageAreaAttack.getTileY(), (int)(tmpAtt.getEffect()[1]));
+				Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()).decreaseMP(Game.getAttacksHelper().getAttackManaCost(clientMessageAreaAttack.getAttack_Flag()));
 				for(int i = tmpMobsinArea.size()-1;i>=0;i--){
-					Game.getBattleHelper().startAttack(Game.getPlayerHelper().getOwnPlayer(), tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
+					Game.getBattleHelper().manageAttack(Game.getPlayerHelper().getPlayer(connectedClientProfileData.getUserID()), tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
 				}
 				
 				if(clientMessageAreaAttack.getMap() == Game.getPlayerHelper().getOwnPlayer().getCurrentMap())
@@ -391,12 +394,23 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		});
 		
 		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_SET_PLAYER_ATTRIBUTES, ClientMessageSetPlayerAttributes.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessageSetPlayerAttributes clientMessageSetPlayerAttributes = (ClientMessageSetPlayerAttributes) pClientMessage;
+				sendMessageSetPlayerAttributes(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
+				Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSetPlayerAttributes.getPlayerID()).setAttributes(clientMessageSetPlayerAttributes.getAttributes());
+				Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSetPlayerAttributes.getPlayerID()).setUnassignedPoints(clientMessageSetPlayerAttributes.getUnassigned());
+				Game.getQueryQueuer().addSetPlayerAttributesQuery(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
+			}
+		});
+		
 		return clientConnector;
 	}
 // ===========================================================
 // Getter & Setter
 // ===========================================================
-	
+
 // ===========================================================
 // Methods
 // ===========================================================
@@ -437,7 +451,7 @@ public void sendFixedAttackData(int pMobEntityUserData,int pAttackID,int pDamage
 	sendBroadcast(serverMessageFixedAttackData);
 }
 
-public void sendMobDiedMessage(int pMobEntityUserData,int pExperience,int pMoney,int pDroppedItem,int pDroppedAmount,String pPlayerKey){
+public void sendMobDiedMessage(int pMobEntityUserData,float pExperience,int pMoney,int pDroppedItem,int pDroppedAmount,String pPlayerKey){
 	final ServerMessageMobDied serverMessageMobDied = (ServerMessageMobDied) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MOB_DIED);
 	serverMessageMobDied.setMobEntityUserData(pMobEntityUserData);
 	serverMessageMobDied.setExperience(pExperience);
@@ -463,8 +477,9 @@ public void sendMessageMoveMob(int pMobKey, int pX, int pY){
 	sendBroadcast(serverMessageMoveMob);
 }
 
-public void sendMessageDisplayAreaAttack(int pAttack_Flag, int pX,int pY,int pMap){
+public void sendMessageDisplayAreaAttack(int pAttack_Flag, int pX,int pY,int pMap,String userID){
 	final ServerMessageDisplayAreaAttack serverMessageDisplayAreaAttack = (ServerMessageDisplayAreaAttack) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK);
+	serverMessageDisplayAreaAttack.setUserID(userID);
 	serverMessageDisplayAreaAttack.setAttack_Flag(pAttack_Flag);
 	serverMessageDisplayAreaAttack.setTileX(pX);
 	serverMessageDisplayAreaAttack.setTileY(pY);
@@ -480,6 +495,19 @@ public void sendMessagePlayerChangedMap(String pPlayerKey, int pMapID, int pX, i
 	sendBroadcast(serverMessageMapChanged);
 }
 
+public void sendMessagePlayerLevelUP(String pPlayerKey, int pLevel, int pUnassignedPoints){
+	final ServerMessagePlayerLevelUP serverMessagePlayerLevelUP = (ServerMessagePlayerLevelUP) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP);
+	serverMessagePlayerLevelUP.set(pPlayerKey, pLevel, pUnassignedPoints);
+	sendBroadcast(serverMessagePlayerLevelUP);
+}
+
+public void sendMessageSetPlayerAttributes(int pPlayerID, int[] pAttributes, int pUnassigned){
+	final ServerMessageSetPlayerAttributes serverMessageSetPlayerAttributes = (ServerMessageSetPlayerAttributes) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES);
+	serverMessageSetPlayerAttributes.setPlayerID(pPlayerID);
+	serverMessageSetPlayerAttributes.setAttributes(pAttributes);
+	serverMessageSetPlayerAttributes.setUnassigned(pUnassigned);
+	sendBroadcast(serverMessageSetPlayerAttributes);
+}
 // ===========================================================
 // Inner and Anonymous Classes
 // ===========================================================

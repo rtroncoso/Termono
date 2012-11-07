@@ -182,13 +182,12 @@ public class MapHelper implements IMeasureConstants {
 					int corner2Y = corner1Y + object.getHeight() / TILE_SIZE;
 
 					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){
-					
-						int SpawnX = Game.getRandomInt(corner1X, corner2X);
-						int SpawnY = Game.getRandomInt(corner1Y, corner2Y);
+	
 						if(Game.isServer()){//Genero los mobs
 							//Loop AmountToBeSpawned times
+							Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Loading Mobs");
 							for(int i = 0;i<Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());i++ ){
-								Game.getSceneManager().getGameScene().CreateMob_Server(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), SpawnX, SpawnY, Integer.parseInt(pName));	
+								Game.getSceneManager().getGameScene().CreateMob_Server(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), Game.getRandomInt(corner1X, corner2X), Game.getRandomInt(corner1Y, corner2Y), Integer.parseInt(pName));	
 							}
 						}else{//Pido que se generen los mobs
 							Game.getClient().sendMobRequest(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), Integer.parseInt(pName), corner1X, corner1Y, corner2X, corner2Y, Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
@@ -203,14 +202,16 @@ public class MapHelper implements IMeasureConstants {
 						}
 					}
 					Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Mobs in pool");
+					boolean add = true;
 					for(int i = mMobsToAllocate.size()-1;i>=0;i--)
 					{
 						if((Integer)mMobsToAllocate.get(i)[0] == Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()))
 						{//Si la lista ya contiene el mob suma los amounts
-							mMobsToAllocate.get(i)[0] = (Integer)mMobsToAllocate.get(i)[0] + Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());;
+							add = false;
+							mMobsToAllocate.get(i)[1] = (Integer)mMobsToAllocate.get(i)[1] + Integer.parseInt(object.getTMXObjectProperties().get(0).getValue());;
 						}
 					}
-					mMobsToAllocate.add(new Object[]{Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()),Integer.parseInt(object.getTMXObjectProperties().get(0).getValue())});
+					if(add)mMobsToAllocate.add(new Object[]{Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()),Integer.parseInt(object.getTMXObjectProperties().get(0).getValue())});
 				}
 				
 				Game.getMobHelper().allocateDefaultMobs(mMobsToAllocate);
@@ -281,6 +282,11 @@ public class MapHelper implements IMeasureConstants {
 												@Override
 												public void workToDo() {
 													// TODO Auto-generated method stub
+													
+													if(Game.isServer()){
+														Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Saving data.");
+														Game.getQueryQueuer().executeQueries();//*** Cambiar esto de lugar a donde corresponderia
+													}
 													
 													// Load it and set new Player's position
 													int pX = (nextMapX == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn() : nextMapX;

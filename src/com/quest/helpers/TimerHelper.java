@@ -62,8 +62,10 @@ public class TimerHelper {
 	}
 	
 	public void deleteTimer(String pKey) {
-		if(this.getTimer(pKey) != null) {
-			this.mTimersList.remove(this.getTimer(pKey));
+		final Timer tmpTimer = this.getTimer(pKey);
+		if(tmpTimer != null) {
+			this.mTimersList.remove(pKey);
+			tmpTimer.unregisterTimer();
 		} else {
 			Log.d("Quest!", "TimerHelper: Erase - No Timer matches key");
 		}
@@ -71,7 +73,6 @@ public class TimerHelper {
 	
 	public Timer getTimer(String pKey) {
 		Iterator<Entry<String, Timer>> it = this.mTimersList.entrySet().iterator();
-		Log.e("Quest!", pKey);
 		while (it.hasNext()) {
 			Map.Entry e = it.next();
 			if(e.getKey().equals(pKey)) return (Timer) e.getValue();

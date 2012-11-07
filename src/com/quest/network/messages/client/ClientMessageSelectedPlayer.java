@@ -8,7 +8,7 @@ import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMes
 
 import com.quest.constants.ClientMessageFlags;
 
-public class ClientMessageSelectedPlayer extends ClientMessage implements ClientMessageFlags {
+public class ClientMessageSelectedPlayer extends QuestClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -25,10 +25,6 @@ public class ClientMessageSelectedPlayer extends ClientMessage implements Client
 
 	@Deprecated
 	public ClientMessageSelectedPlayer() {
-	}
-
-	public ClientMessageSelectedPlayer(final int pPlayerID){
-		this.mPlayerID = pPlayerID;
 	}
 	// ===========================================================
 	// Getter & Setter

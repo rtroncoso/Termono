@@ -28,6 +28,11 @@ public interface ServerMessageFlags {
 	
 	//Battle
 	public static final short FLAG_MESSAGE_SERVER_FIXED_ATTACK_DATA = 140;
-	public static final short FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK = 141;	
+	public static final short FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK = 141;
+	
+	//Player
+	public static final short FLAG_MESSAGE_SERVER_PLAYER_LEVELUP = 150;
+	public static final short FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES = 151;
+	
 }
 

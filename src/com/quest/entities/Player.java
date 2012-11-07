@@ -37,6 +37,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private int Attack_Flag;
 	private int[] mCoords;
 	private boolean mGrabbed = false;
+	private int mCurrentTarget;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -58,7 +59,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setModifiers(this.getAttributes());
 		this.updateHPMana(Game.getDataHandler().getPlayerCurrentHPMP(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
-		this.mUserID = pUserID;//Game.getDataHandler().getUserID(Game.getDataHandler().getPlayerProfileID(this.mPlayerID));
+		this.mUserID = pUserID;
 		this.mExperience = Game.getDataHandler().getPlayerExperience(this.mPlayerID);
 		this.mMoney = Game.getDataHandler().getPlayerMoney(this.mPlayerID);
 		this.setInventory(LoadInventory(Game.getDataHandler().getInventoryItems(this.mPlayerID),Game.getDataHandler().getInventoryAmounts(this.mPlayerID),Game.getDataHandler().getInventoryEquipStatus(this.mPlayerID)));
@@ -69,7 +70,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	}
 	
 	
-	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,int pExperience, int pMoney,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int pMapID,int pTIleX, int pTileY){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
+	public Player(String pUserID,int pPlayerID,int pClass,int pLevel,float pExperience, int pMoney,int[] pAttributes,int[] currHPMP,int pHeadID,int[] pItemIDs,int[] pAmounts,int[] isEquipped,int pMapID,int pTIleX, int pTileY){//Creacion de lado cliente, el inventory se lodea por separado(y solo al player propio) cuando llega el mensaje con los valores.
 		super(Game.getDataHandler().getClassAnimationTexture(pClass), Game.getDataHandler().getClassFrameWidth(pClass), Game.getDataHandler().getClassFrameHeight(pClass), 0, 0, Game.getDataHandler().getClassAnimationCols(pClass), Game.getDataHandler().getClassAnimationRows(pClass));
 		this.mPlayerID = pPlayerID;
 		this.mClass = pClass;
@@ -170,10 +171,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		if(Game.isAVD_DEBUGGING()){
-			//checkear stack de entidades de player, agregar una animacion
-			popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "Eye'm the strongest!", "asd"),1.5f);
-		}
+		if(Game.getAttacksHelper().canAttack(Player.this, pAttackID))
 		Game.getBattleHelper().startAttack(this, pAttackID, pAttackedEntity);
 	};
 	
@@ -186,20 +184,17 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			mGrabbed = true;					
 			break;
 		case TouchEvent.ACTION_UP:
-			//if(mGrabbed) {
+			
 				Log.d("Quest!", "player touched");
 				mGrabbed = false;
-				Player.this.decreaseHP(20);
-				Player.this.setCurrMana(Player.this.getCurrMana()-10);
-				Player.this.addExperience(1);
-				Player.this.setLevel(Player.this.getLevel()+1);
-			//}
+
 			break;
 		}
 	
-		return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX,
-				pTouchAreaLocalY);
+		return true;
 	}
+	
+
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
@@ -260,7 +255,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	}
 
 	
-	public int getExperience() {
+	public float getExperience() {
 		return mExperience;
 	}
 
@@ -268,8 +263,11 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mExperience = mExperience;
 	} 
 
-	public void addExperience(int mExperience) {
-		this.mExperience += mExperience;
+	public void addExperience(float pExperience) {
+		this.mExperience += pExperience;
+		int oldlvl = this.mLevel;
+		this.mLevel = Game.getLevelHelper().getPlayerLevel(mExperience);
+		if(mLevel != oldlvl && Game.isServer())levelUP_Server();
 	} 
 	
 	public void recoverHP(){
@@ -278,6 +276,19 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	
 	public void recoverMP(){
 		this.currMana+=(float)(this.mIntelligence)/10;
+	}
+	
+	public void levelUP_Server(){
+			this.setUnassignedPoints(getUnassignedPoints()+3);
+			Game.getServer().sendMessagePlayerLevelUP(this.getUserID(), this.mLevel, this.getUnassignedPoints());
+			this.popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "LEVEL UP!", "lvlup"), 1.5f);
+			Game.getQueryQueuer().addPlayerLevelUPQuery(this.mPlayerID, this.mLevel,this.getUnassignedPoints(), this.mExperience);
+	}
+		
+	public void levelUP_Client(int pLevel, int pUnassignedPoints){
+		this.popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "LEVEL UP!", "lvlup"), 1.5f);
+		this.setLevel(pLevel);
+		this.setUnassignedPoints(pUnassignedPoints);
 	}
 	// ===========================================================
 	// Inner and Anonymous Classes
@@ -309,6 +320,14 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 	public void setAttack_Flag(int pAttack_Flag) {
 		this.Attack_Flag = pAttack_Flag;
+	}
+
+	public int getCurrentTarget() {
+		return mCurrentTarget;
+	}
+
+	public void setCurrentTarget(int mCurrentTarget) {
+		this.mCurrentTarget = mCurrentTarget;
 	}
 	
 

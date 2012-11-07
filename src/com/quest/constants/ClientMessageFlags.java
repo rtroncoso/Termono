@@ -23,4 +23,7 @@ public interface ClientMessageFlags {
 	
 	//Other flags
 	public static final short FLAG_MESSAGE_CLIENT_REQUEST_MOBS= 230;
+	
+	//Player action flags
+	public static final short FLAG_MESSAGE_CLIENT_SET_PLAYER_ATTRIBUTES = 240;
 }

@@ -63,7 +63,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected float currHP,currMana;
 	protected int mModEndurance,mModIntelligence,mModPower,mModDefense,mModHP,mModMana = 0;
 	protected int mEndurance,mIntelligence,mPower,mDefense;
-	protected int mMoney,mExperience;
+	protected int mMoney;
+	protected String mName;
+	protected float mExperience;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -371,6 +373,20 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return mModEndurance;
 	}
 
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return mName;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		mName = name;
+	}
+
 	public void setModEndurance(int mModEndurance) {
 		this.mModEndurance = mModEndurance;
 	}
@@ -436,18 +452,21 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return new int[]{getPower(),getIntelligence(),getDefense(),getEndurance()};
 	}
 	
+	public void setAttributes(int[] pAttributes){
+		this.setAttributes(pAttributes[0], pAttributes[1], pAttributes[2], pAttributes[3]);
+	}
+	
 	public void setAttributes(int pPower,int pIntelligence,int pDefense,int pEndurance){
 		this.setPower(pPower);
 		this.setIntelligence(pIntelligence);
 		this.setDefense(pDefense);
 		this.setEndurance(pEndurance);
+		updateModHPMP();
 	}
 	
-	public void setAttributes(int[] pAttributes){
-		this.setPower(pAttributes[0]);
-		this.setIntelligence(pAttributes[1]);
-		this.setDefense(pAttributes[2]);
-		this.setEndurance(pAttributes[3]);
+	public void updateModHPMP(){
+		this.mModHP = ((this.getEndurance() + this.getModEndurance()) * 10);
+		this.mModMana = ((this.getIntelligence()+this.getModIntelligence())*10);
 	}
 	
 	public int getCurrentMap() {
@@ -471,8 +490,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.setModIntelligence(pIntelligence);
 		this.setModPower(pPower);
 		this.setModDefense(pDefense);
-		this.setModHP(pEndurance*10);
-		this.setModMana(pIntelligence*10);
+		updateModHPMP();
 	}
 	
 	public void addModifiers(int[] pModifiers){
@@ -522,11 +540,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mMoney = mMoney;
 	}
 
-	public int getExperience() {
+	public float getExperience() {
 		return mExperience;
 	}
 
-	public void setExperience(int mExperience) {
+	public void setExperience(float mExperience) {
 		this.mExperience = mExperience;
 	}
 	
@@ -550,6 +568,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		return false;
 	}
 	
+	public boolean decreaseMP(int mana){
+		setCurrMana(currMana-mana);
+		if(currMana<1)return true;
+		return false;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================

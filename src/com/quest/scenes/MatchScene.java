@@ -237,15 +237,9 @@ public class MatchScene extends Scene implements GameFlags {
 	}
 	
 	private void CheckIfFirstTime(){
-		if(!Game.isAVD_DEBUGGING()){
 			if(!Game.getDataHandler().CheckUsername(Game.getUserID())){
 				showUsernameInput();
 			}
-		}else{
-			if(!Game.getDataHandler().CheckUsername("00:00:00:00:00:00")){
-				showUsernameInput();
-			}
-		}
 	}
 	
 	//Matches entity
@@ -717,17 +711,8 @@ public class MatchScene extends Scene implements GameFlags {
 								Game.getDataHandler().setPlayerMoney(playerid, 0);
 								Game.getDataHandler().setPlayerCurrentMap(6, playerid);
 								Game.getDataHandler().setPlayerPosition(15, 8, playerid);
-								if(Game.isAVD_DEBUGGING()){//sacar despues
-									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
-								}else{
-									Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
-								}
-								
-								if(Game.isAVD_DEBUGGING()){//sacar despues
-									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
-								}else{
-									SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
-								}
+								Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
+								SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
 							}
 						}
 						break;
@@ -911,17 +896,13 @@ public class MatchScene extends Scene implements GameFlags {
 		                			  pIndex = i;   
 		                		  }
 		                	  }
-		                	 if(Game.isAVD_DEBUGGING()){
-		                		 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID),Game.getDataHandler().getUserID(1)));
-			            	 }else{
+
 			            		 Game.getPlayerHelper().addPlayer(new Player(mSelectedCharacterID, Game.getDataHandler().getPlayerClass(mSelectedCharacterID),Game.getUserID()));
-		            		 }
+
 		                	 MatchScene.this.clearTouchAreas();
-			            	 if(Game.isAVD_DEBUGGING()){
-			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), "00:00:00:00:00:00"));
-			            	 }else{
-			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), Game.getUserID()));
-		            		 }
+
+		            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(), Game.getUserID()));
+		            		 
 			              }
 		                }
 		              break;
@@ -1033,11 +1014,8 @@ public class MatchScene extends Scene implements GameFlags {
 		                  if(MatchScene.this.mSelectedCharacterID!=0){
 			            	  //Mandar mensaje de con el char elegido chara
 		                	  Game.getClient().sendSelectedPlayer(mSelectedCharacterID);
-				            	 if(Game.isAVD_DEBUGGING()){
-				            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(true,null,null));
-				            	 }else{
-				            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(true,null,null));
-			            		 }
+			            		 MatchScene.this.SwitchEntity(LoadLobbyEntity(true,null,null));
+			            		 
 			              }
 		                }
 		              break;
@@ -1654,32 +1632,18 @@ public class MatchScene extends Scene implements GameFlags {
 													Game.getDataHandler().setPlayerMoney(playerid, 0);
 													Game.getDataHandler().setPlayerCurrentMap(6, playerid);
 													Game.getDataHandler().setPlayerPosition(15, 8, playerid);
-													if(Game.isAVD_DEBUGGING()){//sacar despues
-														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getDataHandler().getUserID(1)));
-													}else{
-														Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
-													}
-													if(Game.isAVD_DEBUGGING()){//sacar despues
-														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),"00:00:00:00:00:00"));
-													}else{
-														SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
-													}
+
+													Game.getPlayerHelper().addPlayer(new Player(playerid, Game.getDataHandler().getPlayerClass(playerid),Game.getUserID()));
+													SwitchEntity(LoadLobbyEntity(false, Game.getMatchData().getMatchName(),Game.getUserID()));
 												}else{
 													//Creando chara en partida ajena
 													MatchScene.this.clearTouchAreas();
-													if(Game.isAVD_DEBUGGING()){//sacar despues
-														Game.getClient().sendPlayerCreate(mChoices,"11:11:11:11:11:11");//*** sacar profile data y match data
-													}else{
-														Game.getClient().sendPlayerCreate(mChoices,Game.getUserID());//*** sacar profile data y match data
-													}
+													Game.getClient().sendPlayerCreate(mChoices,Game.getUserID());//*** sacar profile data y match data
 													if(!Game.getDataHandler().checkifJoined(Game.getProfileData().getUserID(), Game.getMatchData().getMatchName())){
 													Game.getDataHandler().AddNewMatch(Game.getDataHandler().getProfileID(Game.getProfileData().getUserID()), Game.getMatchData().getMatchName(), Game.getMatchData().getPassword(),true);
 													}
-													if(Game.isAVD_DEBUGGING()){//sacar despues
-														SwitchEntity(LoadLobbyEntity(true, null,null));
-													}else{
-														SwitchEntity(LoadLobbyEntity(true, null,null));
-													}
+													SwitchEntity(LoadLobbyEntity(true, null,null));
+													
 												}
 											}
 										}
@@ -2037,11 +2001,8 @@ public class MatchScene extends Scene implements GameFlags {
 		initClient(pIP);
 		Game.setProfileData(new ProfileData(pUserID,Game.getDataHandler().getUsername(pUserID)));
 		Game.setMatchData(new MatchData(pMatchName,pPassword));//****Cambiar a client
-		if(Game.isAVD_DEBUGGING()){
-			Game.getClient().sendConnectionRequestMessage("11:11:11:11:11:11","Username2",pPassword,pMatchName);
-		}else{
 			Game.getClient().sendConnectionRequestMessage(Game.getUserID(),Game.getDataHandler().getUsername(Game.getUserID()),pPassword,pMatchName);
-		}
+
 		Game.getClient().sendPingMessage();
 
 	} 
@@ -2084,7 +2045,7 @@ public class MatchScene extends Scene implements GameFlags {
 						}
 						if(IPUtils.ipAddressToString(wifiIPv4Address).equals(ipAddressAsString)){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey) 
 							conts=true;
-						}//comentado para el AVD, sacar coment para el celu ***
+						}
 						if(conts==false){
 							Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
 							if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)

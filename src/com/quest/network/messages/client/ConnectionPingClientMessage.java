@@ -17,7 +17,7 @@ import android.util.Log;
  * @author Nicolas Gramlich
  * @since 12:23:37 - 21.05.2011
  */
-public class ConnectionPingClientMessage extends ClientMessage implements ClientMessageFlags {
+public class ConnectionPingClientMessage extends QuestClientMessage implements ClientMessageFlags {
 	// ===========================================================
 	// Constants
 	// ===========================================================

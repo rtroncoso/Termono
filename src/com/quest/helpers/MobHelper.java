@@ -21,6 +21,8 @@ public class MobHelper implements GameFlags{
 		private void initMobPool() {
 			this.mMobPool.registerMob(FLAG_MOB_BAT);
 			this.mMobPool.registerMob(FLAG_MOB_BEE);
+			this.mMobPool.registerMob(FLAG_MOB_FAIRY);
+			this.mMobPool.registerMob(FLAG_MOB_CHICKEN);
 		}
 		
 		public Mob getMob(int pMobID){

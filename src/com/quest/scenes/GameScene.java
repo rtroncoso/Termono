@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.Entity;
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
@@ -14,10 +13,12 @@ import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 
 import com.quest.constants.GameFlags;
+import com.quest.database.QueryQueuer;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
 import com.quest.display.hud.StatsHud;
+import com.quest.entities.BaseEntity;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.Attack;
@@ -38,8 +39,8 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		private ControlsHud mControlsHud;
 		private SpellbarHud mSpellbarHud;
 		private StatsHud mStatsHud;
+		private StatsHud mOtherStatsHud;
 		private Entity mMapLayer;
-		private Rectangle hpbar;
 		protected ArrayList<Attack> mAttackLayer;
 		// ===========================================================
 		// Constructors
@@ -71,6 +72,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			            	GameScene.this.attachChild(GameScene.this.mMapLayer);
 			            	Game.getMapManager().loadMap(pMapName);
 			    			
+			            	
 			    			//Allocate pools
 			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Texts in pool");
 			    			Game.getTextHelper().allocateDefaultTexts();
@@ -80,14 +82,9 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_THUNDER, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
-			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Done!");
-			            	
-			    			//***sacar
-			    			 hpbar = new Rectangle(190, 40, 290, 45, Game.getInstance().getVertexBufferObjectManager());
-			    			 hpbar.setColor(1,0,0);
-			    			 setHPbar(-1);
-			    			 
 			    			
+			            				    			 
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Loading HUD");
 			    			GameScene.this.mHud = new HUD();
 			    			GameScene.this.mStatsHud = new StatsHud(GameScene.this.mHud,Game.getPlayerHelper().getOwnPlayer());
 			    			GameScene.this.mSpellbarHud = new SpellbarHud(GameScene.this.mHud);
@@ -103,11 +100,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    				if(Game.getPlayerHelper().getPlayerbyIndex(i).getCurrentMap() == Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){
 			    					Player tmpPlayer = Game.getPlayerHelper().getPlayerbyIndex(i);
 			    					tmpPlayer.setTileAt(tmpPlayer.getCoords()[0], tmpPlayer.getCoords()[1]);
-			    					if(Game.isAVD_DEBUGGING()){
-			    						if(tmpPlayer.getUserID() == Game.getPlayerHelper().getOwnPlayer().getUserID() || Game.isServer())tmpPlayer.startRecoveryTimer();
-			    					}else{
-			    						if(tmpPlayer.getUserID() == Game.getUserID() || Game.isServer())tmpPlayer.startRecoveryTimer();
-			    					}
+		    						if(tmpPlayer.getUserID() == Game.getUserID() || Game.isServer())tmpPlayer.startRecoveryTimer();
 			    					GameScene.this.attachChild(tmpPlayer);
 			    					GameScene.this.registerTouchArea(tmpPlayer.getBodySprite());
 			    				}
@@ -115,7 +108,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			
 
 			    			
-			    			// HUD 
+			    			// HUD
 			    			GameScene.this.mHud.attachChild(GameScene.this.mStatsHud.getStatsEntity());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpellBar());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mControlsHud.getDigitalOnScreenControl());
@@ -128,12 +121,20 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(2));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(3));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(4));
-			    			GameScene.this.mHud.attachChild(hpbar);
 			    			
 			    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
 			    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getOwnPlayer());
 
-			    	
+			            	if(Game.isServer()){
+			            		Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Starting QueryQueuer");
+			            		Game.setQueryQueuer(new QueryQueuer());
+			            		Game.getQueryQueuer().allocateQueryinPool(FLAG_QUERY_REGISTER_PLAYER_POSITION, Game.getPlayerHelper().getEntities().size());
+			            		Game.getQueryQueuer().allocateQueryinPool(FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE, Game.getPlayerHelper().getEntities().size());
+			            		Game.getQueryQueuer().allocateQueryinPool(FLAG_QUERY_PLAYER_LEVEL_UP, 1);
+			            	}
+			    			
+			            	Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Done!");
+			            	
 			    			GameScene.this.setTouchAreaBindingOnActionDownEnabled(true);
 			    			
 
@@ -158,22 +159,29 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 				case TouchEvent.ACTION_DOWN:
 					break;
 				case TouchEvent.ACTION_UP:
+					Player tmpPlayer = Game.getPlayerHelper().getOwnPlayer();
 					if(Game.isServer()){
-						if(Game.getDataHandler().getAttackType(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag())==2){
-							TMXTile tmpTile = Game.getMapManager().getTMXTileAt(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
-							Attack tmpAtt = Game.getAttacksHelper().addNewAttack(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag());
-							tmpAtt.setAnimationAtCenter(tmpTile.getTileX()+16,tmpTile.getTileY()+16);
-							ArrayList<Mob> tmpMobsinArea = Game.getMobHelper().getMobsInArea(tmpTile.getTileColumn(), tmpTile.getTileRow(), (int)(tmpAtt.getEffect()[1]));
-							for(int i = tmpMobsinArea.size()-1;i>=0;i--){
-								Game.getBattleHelper().startAttack(Game.getPlayerHelper().getOwnPlayer(), tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
+						if(Game.getDataHandler().getAttackType(tmpPlayer.getAttack_Flag())==2){
+							if(Game.getAttacksHelper().canAttack(tmpPlayer, tmpPlayer.getAttack_Flag())){
+								tmpPlayer.decreaseMP(Game.getAttacksHelper().getAttackManaCost(tmpPlayer.getAttack_Flag()));
+								TMXTile tmpTile = Game.getMapManager().getTMXTileAt(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+								Attack tmpAtt = Game.getAttacksHelper().addNewAttack(tmpPlayer.getAttack_Flag());
+								tmpAtt.setAnimationAtCenter(tmpTile.getTileX()+16,tmpTile.getTileY()+16);
+								this.mAttackLayer.add(tmpAtt);
+								ArrayList<Mob> tmpMobsinArea = Game.getMobHelper().getMobsInArea(tmpTile.getTileColumn(), tmpTile.getTileRow(), (int)(tmpAtt.getEffect()[1]));
+								for(int i = tmpMobsinArea.size()-1;i>=0;i--){
+									Game.getBattleHelper().startAttack(tmpPlayer, tmpAtt.getAttackFlag(), tmpMobsinArea.get(i));	
+								}
+								Game.getServer().sendMessageDisplayAreaAttack(tmpPlayer.getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16,tmpPlayer.getCurrentMap(),Game.getUserID());
 							}
-							Game.getServer().sendMessageDisplayAreaAttack(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag(), tmpTile.getTileX()+16, tmpTile.getTileY()+16,Game.getPlayerHelper().getOwnPlayer().getCurrentMap());
-							this.mAttackLayer.add(tmpAtt);
 						}
 					}else{
-						if(Game.getDataHandler().getAttackType(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag())==2){
-							TMXTile tmpTile = Game.getMapManager().getTMXTileAt(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
-							Game.getClient().sendAreaAttackMessage(Game.getPlayerHelper().getOwnPlayer().getAttack_Flag(),tmpTile.getTileX()+16,tmpTile.getTileY()+16);
+						if(Game.getDataHandler().getAttackType(tmpPlayer.getAttack_Flag())==2){
+							if(Game.getAttacksHelper().canAttack(tmpPlayer, tmpPlayer.getAttack_Flag())){
+								tmpPlayer.decreaseMP(Game.getAttacksHelper().getAttackManaCost(tmpPlayer.getAttack_Flag()));
+								TMXTile tmpTile = Game.getMapManager().getTMXTileAt(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+								Game.getClient().sendAreaAttackMessage(tmpPlayer.getAttack_Flag(),tmpTile.getTileX()+16,tmpTile.getTileY()+16);
+							}
 						}	
 					}
 					break;
@@ -244,6 +252,22 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			this.mStatsHud = pStatsHud;
 		}
 
+		public StatsHud getOtherStatsHud() {
+			return mOtherStatsHud;
+		}
+
+		public void setOtherStatsHud(StatsHud pOtherStatsHud) {
+			this.mOtherStatsHud= pOtherStatsHud;
+		}
+		
+		public HUD getHUD(){
+			return this.mHud;
+		}
+		
+		public void setHUD(HUD pHUD){
+			this.mHud = pHUD;
+		}
+
 		/**
 		 * @return the mMapLayer
 		 */
@@ -262,7 +286,10 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 
 		public void unloadHUD(){
 			Game.getSceneManager().getDisplay().getCamera().setHUD(null);
-			this.mHud.clearTouchAreas();			
+		}
+		
+		public void loadHUD(){
+			Game.getSceneManager().getDisplay().getCamera().setHUD(this.mHud);
 		}
 		
 		/**
@@ -282,15 +309,6 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		// ===========================================================
 		// Methods
 		// ===========================================================		
-		public void setHPbar(float width){
-			if(width<1){
-				this.hpbar.setVisible(false);
-			}else{
-				this.hpbar.setVisible(true);
-				this.hpbar.setWidth(width*2);
-			}
-		}
-		
 		public void CreateMob_Server(int MOB_FLAG,int tileX,int tileY,int pMap){//Server
 				Game.getServer().sendSpawnMobMessage(MOB_FLAG,Game.getMobHelper().getMobCount(),tileX, tileY, pMap);
 				Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG,pMap,tileX,tileY);
@@ -313,6 +331,17 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			tmpMob.setAnimationDirection(facing_direction, true);//*** fijarse si sirve para que apunte a donde debe
 			GameScene.this.attachChild(tmpMob);
 			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
+		}
+		
+		public void changeMobHUD(BaseEntity pEntity){
+			if(this.mOtherStatsHud == null){
+				GameScene.this.mOtherStatsHud = new StatsHud(GameScene.this.mHud,pEntity);
+				GameScene.this.mHud.attachChild(GameScene.this.mOtherStatsHud.getStatsEntity());
+			}else{
+			//	if(mOtherStatsHud.getBaseEntity() != null)
+					if(mOtherStatsHud.getBaseEntity() == null || !mOtherStatsHud.getBaseEntity().getUserData().equals(pEntity.getUserData()))
+							mOtherStatsHud.ChangeEntity(pEntity);
+			}
 		}
 		// ===========================================================
 		// Inner and Anonymous Classes

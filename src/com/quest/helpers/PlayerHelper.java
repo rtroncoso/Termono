@@ -11,9 +11,9 @@ import com.quest.game.Game;
 public class PlayerHelper {
 	
 	private ArrayList<Player> mPlayers;
+	private Player OwnPlayer;
 	
 	public PlayerHelper() {
-
 		this.mPlayers = new ArrayList<Player>();
 	}
 	
@@ -46,11 +46,8 @@ public class PlayerHelper {
 	}
 	
 	public Player getOwnPlayer(){
-		if(Game.isAVD_DEBUGGING()){
-			return (Player)(getPlayer(Game.getDataHandler().getUserID(1)));
-		}else{
-			return (Player)(getPlayer(Game.getUserID()));
-		}
+			if(OwnPlayer == null)OwnPlayer = (Player)(getPlayer(Game.getUserID()));
+			return OwnPlayer;
 	}
 
 	public Player getPlayerbyPlayerID(int pPlayerID){

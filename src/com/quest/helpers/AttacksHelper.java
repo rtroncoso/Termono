@@ -2,12 +2,8 @@ package com.quest.helpers;
 
 import java.util.ArrayList;
 
-import org.andengine.entity.text.Text;
-
-import android.util.Log;
-
 import com.quest.constants.GameFlags;
-import com.quest.entities.Mob;
+import com.quest.entities.BaseEntity;
 import com.quest.entities.objects.Attack;
 import com.quest.pools.AttackPool;
 
@@ -69,6 +65,24 @@ public class AttacksHelper implements GameFlags{
 	
 	public void allocateAttack(int ATTACK_FLAG,int pAmountToAllocate){
 		this.mAttackPool.getPool(ATTACK_FLAG).batchAllocatePoolItems(pAmountToAllocate);
+	}
+	
+	public boolean canAttack(BaseEntity pEntity,int ATTACK_FLAG){
+		Attack tmpAttack = (Attack) (AttacksHelper.this.mAttackPool.obtainAttack(ATTACK_FLAG));
+		if(pEntity.getCurrMana()>=tmpAttack.getManaCost()){
+			recycleAttack(tmpAttack);
+			return true;
+		}else{
+			recycleAttack(tmpAttack);
+			return false;
+		}
+	}
+	
+	public int getAttackManaCost(int ATTACK_FLAG){
+		Attack tmpAttack = (Attack) (AttacksHelper.this.mAttackPool.obtainAttack(ATTACK_FLAG));
+		int answer = tmpAttack.getManaCost();
+		recycleAttack(tmpAttack);
+		return answer;
 	}
 	
 }
