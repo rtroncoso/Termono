@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import org.andengine.extension.tmx.TMXTile;
+
 import com.quest.constants.GameFlags;
 import com.quest.entities.Mob;
+import com.quest.game.Game;
 import com.quest.pools.MobPool;
 
 public class MobHelper implements GameFlags{		
@@ -43,7 +46,7 @@ public class MobHelper implements GameFlags{
 			mob.setUserData(pMobID);
 			mob.setCurrentMap(pMapID);
 			mob.setTileAt(pTileX, pTileY);
-			mob.startMoveTimer();
+			if(Game.isServer())mob.startMoveTimer();
 			this.MobCount+=1;//ID unico, total de mobs creados
 			return mob;
 		}
