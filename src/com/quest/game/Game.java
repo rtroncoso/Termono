@@ -18,8 +18,10 @@ import android.view.KeyEvent;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
 import com.quest.database.DataHandler;
+import com.quest.database.QueryQueuer;
 import com.quest.helpers.AttacksHelper;
 import com.quest.helpers.BattleHelper;
+import com.quest.helpers.LevelHelper;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.MobHelper;
 import com.quest.helpers.PlayerHelper;
@@ -28,12 +30,15 @@ import com.quest.helpers.TextHelper;
 import com.quest.helpers.TimerHelper;
 import com.quest.network.QClient;
 import com.quest.network.QServer;
+import com.quest.objects.BooleanMessage;
+import com.quest.scenes.GameScene;
+import com.quest.scenes.MatchScene;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	private static boolean AVD_DEBUGGING = true;
+	
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -54,6 +59,9 @@ public class Game extends SimpleBaseGameActivity {
 	private static TimerHelper mTimerHelper;
 	private static AttacksHelper mAttacksHelper;	
 	private static Random rand;
+	private static LevelHelper mLevelHelper;
+	private static QueryQueuer mQueryQueuer;
+	private static int pressCount = 0; 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -64,7 +72,71 @@ public class Game extends SimpleBaseGameActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
+		//fijarse si es el home y guardar el estado de la partida 
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getMainMenuScene()){
+			this.finish();
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getMatchScene()){
+			new BooleanMessage("Quit", "What do you want to do?","Quit","Options", Game.getInstance()){
+				@Override
+				public void onOK() {
+					Game.this.finish();
+					super.onOK();
+				}
+				
+				@Override
+				public void onCancel() {
+					Game.getTextHelper().FlushTexts("MainMenuScene");
+					Game.getSceneManager().setOptionsScene();
+					super.onCancel();
+				}
+			};
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getOptionsScene()){
+			
+			new BooleanMessage("ASD", "FIJARME CUAL ERA LA SCENE ANTERIOR","Finish","Cancel", Game.getInstance()){
+				@Override
+				public void onOK() {
+					Game.this.finish();
+					super.onOK();
+				}
+				
+				@Override
+				public void onCancel() {
+					super.onCancel();
+				}
+			};
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getGameScene()){
+			if(pressCount > 0){
+				Game.this.finish();
+			}else{
+				new BooleanMessage("Quit", "What do you want to do?","Quit","Select Matches***", Game.getInstance()){
+					@Override
+					public void onOK() {
+						//hacer bien el finish
+						//mandar mensaje de desconexion
+						//lo mismo que abajo
+						Game.getQueryQueuer().executeQueries();//hacer un async asi hago el finish en el work complete
+						//fijarme si ya termino de guardar
+						super.onOK();
+					}
+					@Override
+					public void onCancel() {
+						//sacar la partida, guardar datos, clerear helper y server y eso (game.isserver tambien)
+						super.onCancel();
+					}
+				};	
+			}
+			pressCount++;
+		}else if(Game.getSceneManager().getCurrScene() == Game.getSceneManager().getGameMenuScene()){
+			Game.getSceneManager().restoreSavedScene();
+			Game.getSceneManager().getDisplay().setZoom(1.6f);
+			Game.getSceneManager().getGameScene().loadHUD();
+		}
+		return;
 	}
 	
 	@Override
@@ -77,11 +149,11 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mDataHandler = new DataHandler();
 		Game.mPlayerHelper = new PlayerHelper();
 		Game.mTimerHelper = new TimerHelper();
+		Game.mLevelHelper = new LevelHelper(35, 50, 1.0f/3.0f);
 		
 		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInf = wifiMan.getConnectionInfo();
 		Game.mUserID = wifiInf.getMacAddress();
-				
 		
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, 
 				new RatioResolutionPolicy(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth(), 
@@ -181,6 +253,14 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mDataHandler = mDataHandler;
 	}
 
+	public static QueryQueuer getQueryQueuer() {
+		return mQueryQueuer;
+	}
+
+	public static void setQueryQueuer(QueryQueuer mQueryQueuer) {
+		Game.mQueryQueuer = mQueryQueuer;
+	}
+
 	public static TextHelper getTextHelper() {
 		return mTextHelper;
 	}
@@ -261,13 +341,18 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mAttacksHelper = mAttacksHelper;
 	}
 
+	public static LevelHelper getLevelHelper() {
+		return mLevelHelper;
+	}
+
+	public static void setLevelHelper(LevelHelper mLevelHelper) {
+		Game.mLevelHelper = mLevelHelper;
+	}
+
 	public static boolean isServer(){
 		return isServer;
 	}
 
-	public static boolean isAVD_DEBUGGING() {
-		return AVD_DEBUGGING;
-	}
 
 	// ===========================================================
 	// Methods
