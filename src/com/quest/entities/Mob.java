@@ -3,7 +3,7 @@
  */
 package com.quest.entities;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -159,7 +159,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.updateHPMana(Modifiers[3]*10, Modifiers[1]*10);
 		this.setLevel(Modifiers[4]);
 	};
-	
+
 	@Override
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub

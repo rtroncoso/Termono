@@ -1,5 +1,7 @@
 package com.quest.network.messages.client;
 
+import java.util.ArrayList;
+
 import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMessage;
 
 
@@ -46,6 +48,28 @@ import org.andengine.extension.multiplayer.protocol.adt.message.client.ClientMes
 				if(tmpArray[i].equals("*")==false)intArray[i] = Integer.parseInt(tmpArray[i]);
 			}
 			return intArray;
+		}
+		
+		public String arraylistoToString(ArrayList<int[]> lista){
+			String stringarray = "";
+			for(int i = 0;i<lista.size();i++){
+				stringarray+=(lista.get(i)[0]+","+lista.get(i)[1]+"/");
+			}
+			stringarray+="*";
+			return stringarray;
+		}
+		
+		public ArrayList<int[]> getCoordList(String stringarray){
+			String[] tmpArray;
+			tmpArray = stringarray.split("/");
+			ArrayList<int[]> lista = new ArrayList<int[]>();
+			for(int i = 0;i<tmpArray.length;i++){
+				if(tmpArray[i].equals("*")==false){
+					String[] tiles = tmpArray[i].split(",");
+					lista.add(new int[]{Integer.parseInt(tiles[0]),Integer.parseInt(tiles[1])});				
+				}
+			}
+			return lista;
 		}
 		
 		public void setMsgInstance(int pInstance){

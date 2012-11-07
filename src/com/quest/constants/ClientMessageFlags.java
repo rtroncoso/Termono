@@ -22,7 +22,8 @@ public interface ClientMessageFlags {
 	public static final short FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE = 221;
 	
 	//Other flags
-	public static final short FLAG_MESSAGE_CLIENT_REQUEST_MOBS= 230;
+	public static final short FLAG_MESSAGE_CLIENT_REQUEST_MOBS = 230;
+	public static final short FLAG_MESSAGE_CLIENT_SEND_COLLIDE_TILES = 231;
 	
 	//Player action flags
 	public static final short FLAG_MESSAGE_CLIENT_SET_PLAYER_ATTRIBUTES = 240;

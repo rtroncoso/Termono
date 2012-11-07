@@ -1,7 +1,14 @@
 package com.quest.helpers;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Currency;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
@@ -18,7 +25,7 @@ import android.util.Log;
 import com.quest.entities.Mob;
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.IAsyncCallback;
-import com.quest.scenes.LoadingScene;
+import com.quest.timers.Timer;
 import com.quest.triggers.MapChangeTrigger;
 import com.quest.triggers.Trigger;
 import com.quest.util.constants.IMeasureConstants;
@@ -28,7 +35,7 @@ public class MapHelper implements IMeasureConstants {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	
+	private int MAP_SIZE = 10;
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -37,7 +44,9 @@ public class MapHelper implements IMeasureConstants {
 	private List<TMXTile> mCollideTiles;
 	private List<MapChangeTrigger> mTriggerTiles;
 	private boolean isChangingMap;
-	
+	private ArrayList<ArrayList<int[]>> MapClientCollideTiles;
+	private HashMap<Integer, List<TMXTile>> MapCollideTiles;
+	private boolean firstime = true;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -45,7 +54,8 @@ public class MapHelper implements IMeasureConstants {
 
 		this.mCollideTiles = new ArrayList<TMXTile>();
 		this.mTriggerTiles = new ArrayList<MapChangeTrigger>();
-		
+		this.MapClientCollideTiles = new ArrayList<ArrayList<int[]>>();
+		this.MapCollideTiles = new HashMap<Integer, List<TMXTile>>();
 		this.mTmxLoader = new TMXLoader(Game.getInstance().getAssets(), Game.getInstance().getEngine().getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, Game.getInstance().getVertexBufferObjectManager());
 	}
 	
@@ -115,7 +125,6 @@ public class MapHelper implements IMeasureConstants {
 		
 		// Update it's map
 		Game.getPlayerHelper().getOwnPlayer().setCurrentMap(Integer.parseInt(pName));
-
 		
 		// Detach old Map Layers
 		if(this.mCurrentMap != null) {
@@ -147,6 +156,7 @@ public class MapHelper implements IMeasureConstants {
 			// Gets the object layer with these properties. Use if
 			// you have many object layers, Otherwise this can be
 			// removed
+			if(group.getTMXObjectGroupProperties().size()!=0)Log.e("Quest!",group.getTMXObjectGroupProperties().get(0).getName());
 			if (group.getTMXObjectGroupProperties().containsTMXProperty("Collide", "true")) {
 
 				for (final TMXObject object : group.getTMXObjects()) {
@@ -167,6 +177,24 @@ public class MapHelper implements IMeasureConstants {
 							this.mCollideTiles.add(tempTile);
 						}
 					}
+				} 
+				if(this.MapCollideTiles.get(Integer.parseInt(pName))==null){
+					MapCollideTiles.put(Integer.parseInt(pName), mCollideTiles);
+				}
+				if(!Game.isServer()){
+					if(MapClientCollideTiles.get(Integer.parseInt(pName))==null){
+						ArrayList<int[]> tmpList = new ArrayList<int[]>();
+						for(int i = mCollideTiles.size() - 1;i>=0;i--){
+							TMXTile tile = mCollideTiles.get(i);
+							tmpList.add(new int[]{tile.getTileColumn(),tile.getTileRow()});
+							Log.d("Logd", "X: "+tile.getTileColumn()+" Y: "+tile.getTileRow());
+						}
+						MapClientCollideTiles.add(Integer.parseInt(pName), tmpList);
+					}
+					
+					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){
+						Game.getClient().sendCollideTiles(Integer.parseInt(pName), MapClientCollideTiles.get(Integer.parseInt(pName)));
+					}
 				}
 			}
 			
@@ -181,8 +209,8 @@ public class MapHelper implements IMeasureConstants {
 					int corner2X = corner1X + object.getWidth() / TILE_SIZE;
 					int corner2Y = corner1Y + object.getHeight() / TILE_SIZE;
 
-					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){
-	
+					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer()) || firstime){
+						
 						if(Game.isServer()){//Genero los mobs
 							//Loop AmountToBeSpawned times
 							Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Loading Mobs");
@@ -190,7 +218,9 @@ public class MapHelper implements IMeasureConstants {
 								Game.getSceneManager().getGameScene().CreateMob_Server(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), Game.getRandomInt(corner1X, corner2X), Game.getRandomInt(corner1Y, corner2Y), Integer.parseInt(pName));	
 							}
 						}else{//Pido que se generen los mobs
+							if(!firstime)
 							Game.getClient().sendMobRequest(Integer.parseInt(object.getTMXObjectProperties().get(1).getValue()), Integer.parseInt(pName), corner1X, corner1Y, corner2X, corner2Y, Integer.parseInt(object.getTMXObjectProperties().get(0).getValue()));
+							firstime = false;
 						}	
 					}else{
 						if(Game.isServer()){
@@ -366,21 +396,35 @@ public class MapHelper implements IMeasureConstants {
 		return null;
 	}
 	
-	public boolean checkCollision(TMXTile tmxTileAt) {
-		if(this.mCollideTiles.contains(tmxTileAt))
+	public boolean checkCollision(int pMapID,TMXTile tmxTileAt) {
+		if(this.MapCollideTiles.get(pMapID).contains(tmxTileAt))
+		//if(this.mCollideTiles.contains(tmxTileAt))
 			return true;
 		else
 			return false;
 	}
 	
-	public boolean isLegalPosition(int pPositionX, int pPositionY) {
+	public void addCollides(int mapID, List<TMXTile> collides){
+		this.MapCollideTiles.put(mapID,collides);
+	}
+	
+	public List<TMXTile> getMapCollideTiles(int mapID){
+		Iterator<Entry<Integer, List<TMXTile>>> it = this.MapCollideTiles.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry e = it.next();
+			if(e.getKey().equals(mapID)) return (List<TMXTile>) e.getValue();
+		}
+		return null;
+	}
+	
+	public boolean isLegalPosition(int pMapID,int pPositionX, int pPositionY) {
 		
 		// Check for Map Bounds
 		if(pPositionX <= 0 || pPositionY <= 0 || pPositionX >= (MAP_WIDTH * TILE_SIZE) ||  pPositionY >= (MAP_HEIGHT * TILE_SIZE)) return false;
 
 		// Get the Tile
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(pPositionX, pPositionY);
-		if(this.checkCollision(tmxTileTo)) return false;
+		if(this.checkCollision(pMapID,tmxTileTo)) return false;
 		
 		return true; // Everything ok!
 	}

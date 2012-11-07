@@ -2,6 +2,7 @@ package com.quest.network;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.extension.multiplayer.protocol.adt.message.IMessage;
@@ -27,7 +28,6 @@ import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
-import com.quest.helpers.PlayerHelper;
 import com.quest.network.messages.client.ClientMessageAreaAttack;
 import com.quest.network.messages.client.ClientMessageAttackMessage;
 import com.quest.network.messages.client.ClientMessageChangeMap;
@@ -36,6 +36,7 @@ import com.quest.network.messages.client.ClientMessageMobRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
+import com.quest.network.messages.client.ClientMessageSendCollideTiles;
 import com.quest.network.messages.client.ClientMessageSetPlayerAttributes;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
@@ -402,6 +403,19 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSetPlayerAttributes.getPlayerID()).setAttributes(clientMessageSetPlayerAttributes.getAttributes());
 				Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSetPlayerAttributes.getPlayerID()).setUnassignedPoints(clientMessageSetPlayerAttributes.getUnassigned());
 				Game.getQueryQueuer().addSetPlayerAttributesQuery(clientMessageSetPlayerAttributes.getPlayerID(), clientMessageSetPlayerAttributes.getAttributes(), clientMessageSetPlayerAttributes.getUnassigned());
+			}
+		});
+		
+		clientConnector.registerClientMessage(FLAG_MESSAGE_CLIENT_SEND_COLLIDE_TILES, ClientMessageSendCollideTiles.class, new IClientMessageHandler<SocketConnection>() {
+			@Override
+			public void onHandleMessage(final ClientConnector<SocketConnection> pClientConnector, final IClientMessage pClientMessage) throws IOException {
+				final ClientMessageSendCollideTiles clientMessageSendCollideTiles = (ClientMessageSendCollideTiles) pClientMessage;
+				if(Game.getMapManager().getMapCollideTiles(clientMessageSendCollideTiles.getMapID())==null){
+					ArrayList<int[]> tileCords = clientMessageSendCollideTiles.getTileList();
+					ArrayList<TMXTile> tileList = new ArrayList<TMXTile>();
+					for(int i = 0;i<tileCords.size();i++)tileList.add(new TMXTile(0, tileCords.get(i)[0], tileCords.get(i)[1], IMeasureConstants.TILE_SIZE, IMeasureConstants.TILE_SIZE, null));
+					Game.getMapManager().addCollides(clientMessageSendCollideTiles.getMapID(),tileList);	
+				}
 			}
 		});
 		

@@ -2,6 +2,7 @@ package com.quest.network;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import org.andengine.extension.multiplayer.protocol.adt.message.IMessage;
 import org.andengine.extension.multiplayer.protocol.adt.message.server.IServerMessage;
@@ -28,6 +29,7 @@ import com.quest.network.messages.client.ClientMessageMobRequest;
 import com.quest.network.messages.client.ClientMessageMovePlayer;
 import com.quest.network.messages.client.ClientMessagePlayerCreate;
 import com.quest.network.messages.client.ClientMessageSelectedPlayer;
+import com.quest.network.messages.client.ClientMessageSendCollideTiles;
 import com.quest.network.messages.client.ClientMessageSetPlayerAttributes;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
@@ -74,7 +76,8 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_AREA_ATTACK_MESSAGE, ClientMessageAreaAttack.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_REQUEST_MOBS, ClientMessageMobRequest.class);
 			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SET_PLAYER_ATTRIBUTES, ClientMessageSetPlayerAttributes.class);
-			}
+			this.mMessagePool.registerMessage(FLAG_MESSAGE_CLIENT_SEND_COLLIDE_TILES, ClientMessageSendCollideTiles.class);
+		}
 	
 		public QClient(final String pServerIP, final ISocketConnectionServerConnectorListener pSocketConnectionServerConnectorListener) throws IOException {
 			super(new SocketConnection(new Socket(pServerIP, SERVER_PORT)), pSocketConnectionServerConnectorListener);
@@ -442,6 +445,18 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				// TODO: handle exception
 			}
 			QClient.this.mMessagePool.recycleMessage(clientMessageMobRequest);	
+		}
+		
+		public void sendCollideTiles(int pMapID,ArrayList<int[]> lista){
+			final ClientMessageSendCollideTiles clientMessageSendCollideTiles = (ClientMessageSendCollideTiles) QClient.this.mMessagePool.obtainMessage(FLAG_MESSAGE_CLIENT_SEND_COLLIDE_TILES);
+			clientMessageSendCollideTiles.setMapID(pMapID);
+			clientMessageSendCollideTiles.setTileList(lista);
+			try {
+				sendClientMessage(clientMessageSendCollideTiles);				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			QClient.this.mMessagePool.recycleMessage(clientMessageSendCollideTiles);	
 		}
 	// ===========================================================
 	// Inner and Anonymous Classes

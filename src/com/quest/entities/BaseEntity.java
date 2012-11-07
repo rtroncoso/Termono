@@ -176,7 +176,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		}
 		
 		// Is it a legal position?
-		if(!Game.getMapManager().isLegalPosition((int) moveToXTile, (int) moveToYTile)) return null;
+		if(!Game.getMapManager().isLegalPosition(mCurrentMap,(int) moveToXTile, (int) moveToYTile)) return null;
 
 		// Get the new Tile
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
