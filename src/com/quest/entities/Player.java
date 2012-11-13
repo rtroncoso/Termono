@@ -11,7 +11,7 @@ import org.andengine.input.touch.TouchEvent;
 import android.util.Log;
 
 import com.quest.constants.GameFlags;
-import com.quest.entities.objects.InventoryItem;
+import com.quest.entities.objects.Item;
 import com.quest.game.Game;
 import com.quest.helpers.InventoryItemHelper;
 import com.quest.timers.Timer;
@@ -23,7 +23,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// ===========================================================
 	// Constants
 	// ===========================================================
-	
+
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -56,7 +56,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		int[] tAttributes =Game.getDataHandler().getPlayerAttributes(this.mPlayerID); 
 		this.setAttributes(tAttributes);
 		this.setUnassignedPoints(tAttributes[4]);
-		this.setModifiers(this.getAttributes());
+		this.setModifiers(new int[]{0,0,0,0});
 		this.updateHPMana(Game.getDataHandler().getPlayerCurrentHPMP(this.mPlayerID));
 		this.setHeadID(Game.getDataHandler().getPlayerHeadID(this.mPlayerID));
 		this.mUserID = pUserID;
@@ -95,7 +95,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private InventoryItemHelper LoadInventory(int[] pItemIDs,int[] pAmounts,int[] isEquipped){
 		InventoryItemHelper pInventory = new InventoryItemHelper(mUserID);
 		for(int i = 0;i<pItemIDs.length;i++){
-			pInventory.addItem(new InventoryItem(pItemIDs[i], pAmounts[i], isEquipped[i]));
+			pInventory.addItem(new Item(pItemIDs[i], pAmounts[i], isEquipped[i]));
 		}
 		return pInventory;
 	}

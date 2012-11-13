@@ -112,7 +112,8 @@ public class StatsHud extends HUD implements GameFlags{
 		this.mSwordSprite.setX(0+Offset);
 		
 		
-		this.mLeveltext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, mSwordSprite.getX()+5+lvloffset, mSwordSprite.getY()+5, "L: ", "StatsHud;Level");
+		this.mLeveltext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_YELLOW, mSwordSprite.getX()+5+lvloffset, mSwordSprite.getY()+5, "L: ", "StatsHud;Level");
+		this.mLeveltext.setScale(2.5f);
 		this.mHPtext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, mSwordSprite.getX()+offtext, mSwordSprite.getY()+5, "HP: ", "StatsHud;HP");
 		this.mMPtext = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_BLUE, mSwordSprite.getX()+offtext, mSwordSprite.getY()+mSwordSprite.getHeight()-15, "MP: ", "StatsHud;MP");
 		

@@ -4,41 +4,47 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-import com.quest.entities.BaseEntity;
-import com.quest.entities.Mob;
-import com.quest.entities.Player;
-import com.quest.entities.objects.InventoryItem;
+import com.quest.constants.GameFlags;
+import com.quest.entities.objects.Item;
 import com.quest.game.Game;
+import com.quest.pools.ItemPool;
 
-public class InventoryItemHelper {
+public class InventoryItemHelper implements GameFlags{
 
-	private ArrayList<InventoryItem> mItems;
+	private ArrayList<Item> mItems;
 	private String mOwnerID;//ID del owner
-	private InventoryItem nullItem; 
+	private Item nullItem; 
+	private final ItemPool mItemPool = new ItemPool();
+	
 	
 	public InventoryItemHelper(String pOwnerID) {
-		this.mItems = new ArrayList<InventoryItem>();
+		this.mItems = new ArrayList<Item>();
 		this.mOwnerID = pOwnerID;
-		nullItem = new InventoryItem(0, 0, 0);
+		nullItem = new Item(0, 0, 0);
+		this.initItemPool();
 	}
 	
-	public void addItem(InventoryItem pInventoryItem){
+	private void initItemPool() {
+		this.mItemPool.registerItem(FLAG_ITEM_BIG_FLAMED_SWORD);
+	}
+	
+	public void addItem(Item pBaseItem){
 			boolean add = true;
-			if(pInventoryItem.isStackable()){
-				if(!getItembyID(pInventoryItem.getItemID()).equals(null)){
-					getItembyID(pInventoryItem.getItemID()).IncreaseAmount(pInventoryItem.getAmount());
+			if(pBaseItem.isStackable()){
+				if(!getItembyID(pBaseItem.getItemFlag()).equals(null)){
+					getItembyID(pBaseItem.getItemFlag()).IncreaseAmount(pBaseItem.getAmount());
 					add = false;
 				}
 			}
 			if(add){
 				if(mItems.contains(this.nullItem)){
-					this.mItems.set(mItems.indexOf(nullItem),pInventoryItem);
+					this.mItems.set(mItems.indexOf(nullItem),pBaseItem);
 				}else{
-					this.mItems.add(pInventoryItem);
+					this.mItems.add(pBaseItem);
 				}
-				pInventoryItem.setUserData(this.mItems.indexOf(pInventoryItem));
+				pBaseItem.setUserData(this.mItems.indexOf(pBaseItem));
 				
-				if(pInventoryItem.isEqquiped())Game.getPlayerHelper().getPlayer(this.mOwnerID).addModifiers(pInventoryItem.getItemModifiers());
+				if(pBaseItem.isEqquiped())Game.getPlayerHelper().getPlayer(this.mOwnerID).addModifiers(pBaseItem.getItemModifiers());
 			}		
 	}
 	
@@ -74,8 +80,8 @@ public class InventoryItemHelper {
 		return getItem(pItemKey).getAmount();
 	}
 	
-	private InventoryItem getItem(int pItemKey){
-		for(InventoryItem tmpItem : this.mItems){
+	public Item getItem(int pItemKey){
+		for(Item tmpItem : this.mItems){
 			if(tmpItem.getUserData()==String.valueOf(pItemKey))
 				return tmpItem;
 		}
@@ -83,43 +89,61 @@ public class InventoryItemHelper {
 		return null;
 	}
 	
-	private InventoryItem getItembyID(int pItemID){
-		for(InventoryItem tmpItem : this.mItems){
-			if(tmpItem.getItemID()==pItemID)
+	public Item getItembyID(int pItemID){
+		for(Item tmpItem : this.mItems){
+			if(tmpItem.getItemFlag()==pItemID)
 				return tmpItem;
 		}
 		Log.d("Quest!","InventoryItemHelper: Get - No item matches ID");
 		return null;
 	}
 	
+	public Item getItembyIndex(int index){
+		return this.mItems.get(index);
+	}	
+	
 	public void writeInventorytoDB(int pPlayerID){
+		for(int i = mItems.size()-1;i>=0;i--)
+			if(mItems.get(i)==nullItem)
+				mItems.remove(i);
+		
 		Game.getDataHandler().deleteInventory(pPlayerID);
 		int[] ItemIDs,Amounts,Equipped;
-		ItemIDs = Amounts = Equipped = new int[]{};
+		ItemIDs = new int[mItems.size()];
+		Amounts = new int[mItems.size()];
+		Equipped = new int[mItems.size()];
 		for(int i = 0;i<this.mItems.size();i++){
-			InventoryItem tmpItem = this.mItems.get(i);
-			if(!tmpItem.equals(nullItem)){
-				ItemIDs[i] = tmpItem.getItemID();
-				Amounts[i] = tmpItem.getAmount();
-				Equipped[i] = 0;
-				if(tmpItem.isEqquiped())Equipped[i] = 1;
-			}
+			Item tmpItem = this.mItems.get(i);
+			ItemIDs[i] = tmpItem.getItemFlag();
+			Log.d("Quest!", "itemflag: "+ItemIDs[i]);
+			Amounts[i] = tmpItem.getAmount();
+			Equipped[i] = 0;
+			if(tmpItem.isEqquiped())Equipped[i] = 1;
 		}
 		Game.getDataHandler().addInventoryItems(pPlayerID, ItemIDs, Amounts, Equipped);
 	}
 	
+	
+	public void allocateItems(){
+		for(int i = mItems.size()-1;i>=0;i--)
+			if(mItems.get(i)!=nullItem)
+			{
+				Log.d("Quest!", "flag: "+mItems.get(i).getItemFlag());
+				this.mItemPool.getPool(mItems.get(i).getItemFlag()).batchAllocatePoolItems(1);
+			}
+	}
 
 	/**
 	 * @return the mEntities
 	 */
-	public ArrayList<InventoryItem> getEntities() {
+	public ArrayList<Item> getEntities() {
 		return mItems;
 	}
 
 	/**
 	 * @param mEntities the mEntities to set
 	 */
-	public void setEntities(ArrayList<InventoryItem> pItems) {
+	public void setEntities(ArrayList<Item> pItems) {
 		this.mItems = pItems;
 	}
 

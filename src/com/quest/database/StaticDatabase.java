@@ -45,6 +45,11 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fItemBuyPrice = "BuyPrice";
         static final String fItemSellPrice = "SellPrice";
         static final String fItemClass = "ItemClassID";
+        static final String fItemAnimationRows = "AnimationRows";
+        static final String fItemAnimationCols = "AnimationCols";
+        static final String fItemFrameWidth = "FrameWidth";
+        static final String fItemFrameHeight = "FrameHeight";
+        static final String fItemExtraCols = "ExtraCols";
         //fItemModifierID
         //droprate etc
         
@@ -155,6 +160,11 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                         fItemAnimationTexture+" TEXT , "+
                         fItemType+" INTEGER , "+
                         fItemStackable+" INTEGER , "+
+                        fItemAnimationRows+" INTEGER ,"+
+                        fItemAnimationCols+" INTEGER ,"+
+                        fItemExtraCols+" INTEGER ,"+
+                        fItemFrameWidth+" INTEGER ,"+
+                        fItemFrameHeight+" INTEGER ,"+
                         fItemDescription+" TEXT , "+
                         fItemBuyPrice+" INTEGER , "+
                         fItemSellPrice+" INTEGER , "+
@@ -376,30 +386,35 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
 		                db.insert(tModifiers, null, cv);
 		                
 		                */
-		                		                
-                 cv.put(fItemID, 1);//-------Cypress Stick-----------
-          		 cv.put(fItemName, "Cypress Stick");
-          		 cv.put(fItemIconTexture, "Paladin/Swords/CypressStick.png");
-          		 cv.put(fItemAnimationTexture, "Paladin/Swords/CypressStick.png");
+ 		                		
+                 //ITEM
+                 cv.put(fItemID, FLAG_ITEM_BIG_FLAMED_SWORD);
+          		 cv.put(fItemName, "Big Flamed Sword");
+          		 cv.put(fItemAnimationTexture, "Items/Animations/Big Flamed Sword.png");
+          		 cv.put(fItemIconTexture, "Items/Icons/Big Flamed Sword.png");
           		 cv.put(fItemType, 5);
           		 cv.put(fItemStackable, 0);
-          		 cv.put(fItemDescription, "A reliable wooden stick");
+          		 cv.put(fItemExtraCols, 2);
+          		 cv.put(fItemAnimationRows, 4);
+          		 cv.put(fItemAnimationCols, 6);
+          		 cv.put(fItemFrameHeight, 256);
+          		 cv.put(fItemFrameWidth, 512);
+          		 cv.put(fItemDescription, "A big flamed sword, yay.");
           		 cv.put(fItemBuyPrice, 15);
           		 cv.put(fItemSellPrice, 8);
           		 cv.put(fItemClass,1);
-          		 db.insert(tItem, null, cv);
-          		 
-          		 cv.clear();
-          		 
-                 cv.put(fItemModifierID, 1);//-------Cypress Stick-----------
+          		 db.insert(tItem, null, cv);          		 
+          		 cv.clear();          		 
+                 cv.put(fItemModifierID, 1);
           		 cv.put(fItemModifierEndurance, 1);
           		 cv.put(fItemModifierIntelligence, 1);
           		 cv.put(fItemModifierPower, 4);
           		 cv.put(fItemModifierDefense, 1);
-          		 cv.put(fItemID, 1);
-          		 db.insert(tItemModifiers, null, cv);
-          		 
+          		 cv.put(fItemID, FLAG_ITEM_BIG_FLAMED_SWORD);
+          		 db.insert(tItemModifiers, null, cv);          		 
           		 cv.clear();                 
+          		 
+          		 
           		 
           		cv.put(fClassID, 1);
           		cv.put(fClassIconTexture,"Players/Icons/Paladin.png");
@@ -635,6 +650,19 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 db.insert(tAttacks, null, cv); 
                 cv.clear();
                 
+                cv.put(fAttackID,FLAG_ATTACK_SPELL_ICE_BASH);
+                cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell4.png");
+                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell5.png");
+                cv.put(fAttackType, 1);
+                cv.put(fAttackEffect, "2;2");
+                cv.put(fAttackManaCost, 15);
+                cv.put(fAttackAnimationRows, 1);
+                cv.put(fAttackAnimationCols, 4);
+                cv.put(fAttackFrameWidth, 512);
+                cv.put(fAttackFrameHeight, 256);
+                db.insert(tAttacks, null, cv); 
+                cv.clear();
+                
                 cv.put(fAttackID,FLAG_ATTACK_MOB_DEATH);
                 cv.put(fAttackIconTexture, "null");
                 cv.put(fAttackAnimationTexture,"Attacks/Mob/Other/MobDeath.png");
@@ -815,6 +843,62 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
              myCursor.close();
          	myDB.close();
              return myAnswer;
+         }
+         
+         
+         public int getItemAnimationRows(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fItemAnimationRows+" FROM "+ tItem+" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fItemAnimationRows);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+        	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getItemAnimationCols(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fItemAnimationCols+" FROM "+ tItem+" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fItemAnimationCols);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+        	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getItemExtraCols(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fItemExtraCols+" FROM "+ tItem+" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fItemExtraCols);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+        	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getItemFrameWidth(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fItemFrameWidth+" FROM "+ tItem+" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fItemFrameWidth);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+        	myDB.close();
+         	return myAnswer;
+         }
+         
+         public int getItemFrameHeight(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fItemFrameHeight+" FROM "+ tItem+" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fItemFrameHeight);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+        	myDB.close();
+         	return myAnswer;
          }
          
          public int[] getItemModifiers(int pItemID){

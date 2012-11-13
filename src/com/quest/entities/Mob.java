@@ -118,7 +118,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 
 	public int[] getMobDrop(){
 		//HACER EL CALCULO DE QUE ITEM TIENE QUE DROPPEAR
-		return new int[]{0,0};
+		return new int[]{FLAG_ITEM_BIG_FLAMED_SWORD,1};
 	}
 	
 	@Override

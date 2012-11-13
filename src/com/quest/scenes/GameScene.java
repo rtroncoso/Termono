@@ -81,7 +81,13 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_FIREBALL, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_THUNDER, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_BASH, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
+			    			
+			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Items in pool");
+			    			for(int i = Game.getPlayerHelper().getEntities().size()-1;i>=0;i--){
+			    				Game.getPlayerHelper().getPlayerbyIndex(i).getInventory().allocateItems();
+			    			}
 			    			
 			            				    			 
 			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Loading HUD");
@@ -113,14 +119,18 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpellBar());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mControlsHud.getDigitalOnScreenControl());
 			    			GameScene.this.mHud.attachChild(GameScene.this.mMenuHud.getMenuSprite());
+			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(0));
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(1));
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(2));
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(3));
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(4));
+			    			
+			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(0));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(1));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(2));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(3));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(4));
+			    			
 			    			
 			    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
 			    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getOwnPlayer());

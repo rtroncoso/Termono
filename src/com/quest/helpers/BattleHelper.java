@@ -7,7 +7,7 @@ import com.quest.entities.BaseEntity;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.Attack;
-import com.quest.entities.objects.InventoryItem;
+import com.quest.entities.objects.Item;
 import com.quest.game.Game;
 
 public class BattleHelper implements GameFlags{		
@@ -33,7 +33,7 @@ public class BattleHelper implements GameFlags{
 		int MobUserData;
 		String PlayerUserData;
 		int damage;
-		damage = (pAttackingEntity.getModPower()*4)-(pAttackedEntity.getModDefense()*3);
+		damage = ((pAttackingEntity.getModPower()+pAttackingEntity.getPower())*4)-((pAttackedEntity.getModDefense()+pAttackedEntity.getDefense())*3);
 		if(damage<1)damage=0;
 		damage+=pAttackingEntity.getModPower();
 		damage = damage*pAttackID;
@@ -76,7 +76,7 @@ public class BattleHelper implements GameFlags{
 			player.addExperience(pexperience);
 			player.addMoney(pmoney);
 			if(pdroppeditem != 0){
-				player.getInventory().addItem(new InventoryItem(pdroppeditem, pdroppedItemAmount, 0));
+				player.getInventory().addItem(new Item(pdroppeditem, pdroppedItemAmount, 0));
 			}
 			Game.getServer().sendMobDiedMessage((Integer)(mob.getUserData()), pexperience, pmoney, pdroppeditem, pdroppedItemAmount,player.getUserData().toString());
 		}else{
@@ -86,7 +86,7 @@ public class BattleHelper implements GameFlags{
 				player.addExperience(pexperience);
 				player.addMoney(pmoney);	
 				if(pdroppeditem != 0){
-					player.getInventory().addItem(new InventoryItem(pdroppeditem, pdroppedItemAmount, 0));
+					player.getInventory().addItem(new Item(pdroppeditem, pdroppedItemAmount, 0));
 				}
 			}		
 		}

@@ -125,14 +125,11 @@ public class SpellbarHud extends HUD implements GameFlags{
 			this.mSpells[i].setUserData(i);
 			this.mSpells[i].setScale(2.0f);
 			
-			if(i>0 && i<5){
-			mSpellIcons[i] = new Attack(i);
-			mSpellIcons[i].getAttackIcon().setPosition(this.mSpells[i-1].getX()+6, this.mSpells[i-1].getY()+6);
+			if(i<5){
+			mSpellIcons[i] = new Attack(i+1);
+			mSpellIcons[i].getAttackIcon().setPosition(this.mSpells[i].getX()+6, this.mSpells[i].getY()+6);
 			}
 		
-			if(i==4){
-				this.mHud.registerTouchArea(mSpells[i]);
-			}
 		}
 		
 		this.mSpellBatch = new DynamicSpriteBatch(this.mSpellTextureAtlas, CANT_SPELLS, Game.getInstance().getVertexBufferObjectManager()) {

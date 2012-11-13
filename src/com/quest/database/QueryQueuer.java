@@ -11,8 +11,10 @@ import com.quest.database.queries.Query;
 import com.quest.database.queries.QueryPlayerLevelUP;
 import com.quest.database.queries.QueryRegisterPlayerExperience;
 import com.quest.database.queries.QueryRegisterPlayerHPMP;
+import com.quest.database.queries.QueryRegisterPlayerMoney;
 import com.quest.database.queries.QueryRegisterPlayerPosition;
 import com.quest.database.queries.QuerySetPlayerAttributes;
+import com.quest.database.queries.QueryWritePlayerInventory;
 import com.quest.entities.Player;
 import com.quest.game.Game;
 import com.quest.pools.QueryPool;
@@ -43,10 +45,16 @@ public class QueryQueuer implements GameFlags{
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					if(step % 10 == 0 && !working){
 						for(int i = Game.getPlayerHelper().getEntities().size() - 1;i>=0;i--){
-							QueryRegisterPlayerExperience query = (QueryRegisterPlayerExperience) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE);
 							Player player = Game.getPlayerHelper().getPlayerbyIndex(i);
+							
+							QueryRegisterPlayerExperience query = (QueryRegisterPlayerExperience) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE);
 							query.set(player.getPlayerID(), player.getExperience());
 							mQueue.add(query);
+							
+							QueryRegisterPlayerMoney money = (QueryRegisterPlayerMoney) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_REGISTER_PLAYER_MONEY);
+							money.set(player.getPlayerID(), player.getMoney());
+							mQueue.add(money);
+							
 						}	
 					}else if(step % 5 == 0 && !working){
 						for(int i = Game.getPlayerHelper().getEntities().size() - 1;i>=0;i--){
@@ -70,9 +78,11 @@ public class QueryQueuer implements GameFlags{
 	private void initQueryPool(){
 		this.mQueryPool.registerQuery(FLAG_QUERY_REGISTER_PLAYER_POSITION, QueryRegisterPlayerPosition.class);
 		this.mQueryPool.registerQuery(FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE, QueryRegisterPlayerExperience.class);
+		this.mQueryPool.registerQuery(FLAG_QUERY_REGISTER_PLAYER_MONEY, QueryRegisterPlayerMoney.class);
 		this.mQueryPool.registerQuery(FLAG_QUERY_REGISTER_PLAYER_HPMP, QueryRegisterPlayerHPMP.class);
 		this.mQueryPool.registerQuery(FLAG_QUERY_PLAYER_LEVEL_UP, QueryPlayerLevelUP.class);
 		this.mQueryPool.registerQuery(FLAG_QUERY_SET_PLAYER_ATTRIBUTES, QuerySetPlayerAttributes.class);
+		this.mQueryPool.registerQuery(FLAG_QUERY_WRITE_PLAYER_INVENTORY, QueryWritePlayerInventory.class);
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -96,6 +106,12 @@ public class QueryQueuer implements GameFlags{
 		for(int i = Game.getPlayerHelper().getEntities().size() - 1;i>=0;i--){
 			Player player = Game.getPlayerHelper().getPlayerbyIndex(i);
 			
+			addWritePlayerInventoryQuery(player.getPlayerID());
+
+			QueryRegisterPlayerMoney money = (QueryRegisterPlayerMoney) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_REGISTER_PLAYER_MONEY);
+			money.set(player.getPlayerID(), player.getMoney());
+			mQueue.add(money);
+			
 			QueryRegisterPlayerExperience experience = (QueryRegisterPlayerExperience) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_REGISTER_PLAYER_EXPERIENCE);
 			experience.set(player.getPlayerID(), player.getExperience());
 			mQueue.add(experience);
@@ -107,7 +123,6 @@ public class QueryQueuer implements GameFlags{
 			QueryRegisterPlayerHPMP HPMP = (QueryRegisterPlayerHPMP) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_REGISTER_PLAYER_HPMP);
 			HPMP.set(player.getPlayerID(), (int)(player.getCurrHPMP()[0]),(int)(player.getCurrHPMP()[1]));
 			mQueue.add(HPMP);
-			
 		}
 		for(int i = 0;i < mQueue.size();i++){
 			mQueue.get(0).executeQuery();
@@ -128,6 +143,32 @@ public class QueryQueuer implements GameFlags{
 		QuerySetPlayerAttributes query = (QuerySetPlayerAttributes) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_SET_PLAYER_ATTRIBUTES);
 		query.set(pPlayerID, pAttributes,pUnassigned);
 		mQueue.add(query);
+	}
+	
+	public void addWritePlayerInventoryQuery(int pPlayerID){
+		working = true;
+		QueryWritePlayerInventory query = (QueryWritePlayerInventory) QueryQueuer.this.mQueryPool.obtainQuery(FLAG_QUERY_WRITE_PLAYER_INVENTORY);
+		query.setPlayerID(pPlayerID);
+		if(mQueue.size()>1){
+		int i = 1;
+		boolean found = false;
+		while(found == false && i<mQueue.size()){
+			if(mQueue.get(i).getFlag()==FLAG_QUERY_WRITE_PLAYER_INVENTORY){
+				if(((QueryWritePlayerInventory)(mQueue.get(i))).getPlayerID()==pPlayerID)
+					found = true;
+			}
+		}
+		
+		if(found){
+			mQueue.set(i, query);
+		}else{
+			mQueue.add(query);
+		}
+		
+		}else{
+			mQueue.add(query);
+		}
+		working = false;
 	}
 	// ===========================================================
 	// Inner and Anonymous Classes

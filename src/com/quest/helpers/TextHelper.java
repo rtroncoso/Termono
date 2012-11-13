@@ -38,6 +38,7 @@ public class TextHelper implements GameFlags{
 	private StrokeFont mDamageFont;
 	private StrokeFont mHealingFont;
 	private StrokeFont mBlueFont;
+	private StrokeFont mYellowFont;
 	private Font mFancyFont;
 	private Font mDarkFancyFont;
 	private Font mBlackKnightFont;
@@ -52,6 +53,8 @@ public class TextHelper implements GameFlags{
 			final ITexture DarkFancyFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 			final ITexture BlueFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 			final ITexture BlackKnightTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+			final ITexture YellowFontTexture = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+			
 			
 			this.mNormalFont = new StrokeFont(Game.getInstance().getFontManager(), NormalFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 24, true, Color.WHITE, 1, Color.BLACK);
 			this.mDamageFont = new StrokeFont(Game.getInstance().getFontManager(), DamageFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(157, 22, 22), 1, Color.rgb(196, 28, 28));
@@ -60,6 +63,8 @@ public class TextHelper implements GameFlags{
 			this.mDarkFancyFont = new Font(Game.getInstance().getFontManager(), DarkFancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(59, 39, 39));
 			this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(214, 192, 167));
 			this.mBlackKnightFont = new Font(Game.getInstance().getFontManager(), BlackKnightTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/BlackKnight.ttf"),24,true,Color.rgb(59, 39, 39));
+			this.mYellowFont = new StrokeFont(Game.getInstance().getFontManager(), YellowFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(184, 184, 0), 1, Color.rgb(107, 107, 0));
+			
 			
 			this.mNormalFont.load();
 			this.mDamageFont.load();
@@ -68,6 +73,7 @@ public class TextHelper implements GameFlags{
 			this.mBlueFont.load();
 			this.mDarkFancyFont.load();
 			this.mBlackKnightFont.load();
+			this.mYellowFont.load();
 			
 		this.mTextList = new ArrayList<Text>();
 		this.initTextPool();
@@ -78,6 +84,7 @@ public class TextHelper implements GameFlags{
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_DAMAGE, this.mDamageFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_HEALING, this.mHealingFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_BLUE, this.mBlueFont);
+		this.mTextPool.registerText(FLAG_TEXT_TYPE_YELLOW, this.mYellowFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_FANCY, this.mFancyFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_FANCY_DARK, this.mDarkFancyFont);
 		this.mTextPool.registerText(FLAG_TEXT_TYPE_BLACK_KNIGHT, this.mBlackKnightFont);
@@ -149,6 +156,7 @@ public class TextHelper implements GameFlags{
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_NORMAL).batchAllocatePoolItems(10);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_DAMAGE).batchAllocatePoolItems(10);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_BLUE).batchAllocatePoolItems(5);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_YELLOW).batchAllocatePoolItems(3);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_HEALING).batchAllocatePoolItems(3);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_FANCY_DARK).batchAllocatePoolItems(1);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_BLACK_KNIGHT).batchAllocatePoolItems(5);

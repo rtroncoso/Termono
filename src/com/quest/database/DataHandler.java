@@ -341,6 +341,27 @@ public class DataHandler {
 		return this.mStaticDB.getItemClass(pItemID);
     }
 	
+	
+	public int getItemAnimationRows(int pItemFlag){
+        return this.mStaticDB.getItemAnimationRows(pItemFlag);
+    }
+	
+	public int getItemAnimationCols(int pItemFlag){
+        return this.mStaticDB.getItemAnimationCols(pItemFlag);
+    }
+	public int getItemExtraCols(int pItemFlag){
+        return this.mStaticDB.getItemExtraCols(pItemFlag);
+    }
+	
+	public int getItemFrameWidth(int pItemFlag){
+        return this.mStaticDB.getItemFrameWidth(pItemFlag);
+    }
+	
+	public int getItemFrameHeight(int pItemFlag){
+        return this.mStaticDB.getItemFrameHeight(pItemFlag);
+    }
+	
+	
 	public int[] getItemModifiers(int pItemID){
 		return this.mStaticDB.getItemModifiers(pItemID);
 	}

@@ -650,12 +650,13 @@ public class UserDatabase extends SQLiteOpenHelper {
     
     //Inventory
     public int[] getInventoryItems(int pPlayerID){//All inventory Item IDs
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fInventoryItemKey+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fItemID+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
     	int index = myCursor.getColumnIndex(fItemID);
-        int myAnswer[] = new int[myCursor.getCount()];
+    	int myAnswer[] = new int[myCursor.getCount()];
         for(int i = 0; i < myCursor.getCount(); i++){
         	myCursor.moveToPosition(i);
         	myAnswer[i] = myCursor.getInt(index);
+        	Log.d("Quest!","id: "+myAnswer[i]+" i: "+i);
         }
     	 myCursor.close();
     	 return myAnswer;
@@ -727,6 +728,7 @@ public class UserDatabase extends SQLiteOpenHelper {
       ContentValues cv = new ContentValues();
       for(int i = 0;i<pItemID.length;i++){
     	cv.put(fInventoryID, invID);
+    	Log.d("Quest!","adding id: "+pItemID[i]+" i: "+i);
    	  	cv.put(fItemID,pItemID[i]);
    	  	cv.put(fInventoryItemAmount,pAmount[i]);
    	  	cv.put(fInventoryIsItemEquipped, pEqquiped[i]);

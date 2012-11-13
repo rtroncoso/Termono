@@ -1,5 +1,6 @@
 package com.quest.scenes;
 
+import java.security.acl.Owner;
 import java.util.ArrayList;
 
 import org.andengine.entity.Entity;
@@ -19,10 +20,12 @@ import android.util.Log;
 import com.quest.constants.GameFlags;
 import com.quest.database.DataHandler;
 import com.quest.entities.Player;
+import com.quest.entities.objects.Item;
 import com.quest.entities.objects.ItemIcon;
 import com.quest.entities.objects.SpellIcon;
 import com.quest.game.Game;
 import com.quest.helpers.EquipmentHelper;
+import com.quest.helpers.InventoryItemHelper;
 import com.quest.methods.Point;
 
 
@@ -65,6 +68,7 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	private Sprite mInventoryTossSprite;
 	private Sprite mInventoryMoneySprite;
 	private Sprite mInventoryDescriptionSprite;
+	private Text mInventoryMoneyText;
 	
 	private Entity mAttributesEntity;
 	private ITextureRegion mAttributesBoxTextureRegion;
@@ -84,6 +88,9 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	//HACER UN BOOLEAN PARA CURRENT TAB
 	
 	
+	private Entity mInventoryItemsEntity;
+	
+	
 	//Entidades
 	
 	
@@ -100,7 +107,7 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 	//Textures Atlas
 	
 	
-		private BitmapTextureAtlas mInventoryItemsTextureAtlas;
+	private BitmapTextureAtlas mInventoryItemsTextureAtlas;
 	private BitmapTextureAtlas mEquipmentTextureAtlas;
 		private BitmapTextureAtlas mEquipmentEquippedItemsTextureAtlas;
 		private BitmapTextureAtlas mEquipmentUnEquippedItemsTextureAtlas;
@@ -439,10 +446,34 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 				//Descripción
 				this.mInventoryDescriptionSprite = new Sprite(0, Game.getSceneManager().getDisplay().getDisplayHeight() - 75, this.mInventoryDescriptionTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};				
 				this.mInventoryEntity.attachChild(mInventoryDescriptionSprite);
+
+				this.mInventoryMoneyText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_YELLOW, this.mInventoryMoneySprite.getX()+this.mInventoryMoneySprite.getWidthScaled()+5, this.mInventoryMoneySprite.getY()+5, "", "GameMenuScene;Inventory;MoneyText");
+				this.mInventoryMoneyText.setScale(2.5f);
+				this.mInventoryEntity.attachChild(mInventoryMoneyText);
+			}
 			
-			}	
+			this.mInventoryMoneyText.setText(String.valueOf(Game.getPlayerHelper().getOwnPlayer().getMoney()));
+			
+			if(this.mInventoryItemsEntity!=null)this.mInventoryEntity.detachChild(this.mInventoryItemsEntity);
+			
+			this.mInventoryEntity.attachChild(this.loadInventoryItems());
+			
 		return this.mInventoryEntity;
 	}		
+	
+	public Entity loadInventoryItems(){
+		if(this.mInventoryItemsEntity == null)mInventoryItemsEntity = new Entity(20,this.mPlankSprite.getHeight()+20);
+		this.mInventoryItemsEntity.detachChildren();
+		InventoryItemHelper inventory = Game.getPlayerHelper().getOwnPlayer().getInventory();
+		for(int i = inventory.getEntities().size()-1;i>=0;i--){
+			Item item = inventory.getItembyIndex(i);
+			item.getItemIcon().setPosition((((int)(mInventoryItemsEntity.getChildCount()%((int)((Game.getSceneManager().getDisplay().getCameraWidth()-this.mInventoryUseSprite.getWidthScaled()-20)/(item.getItemIcon().getWidthScaled()+5)))))*(item.getItemIcon().getWidthScaled()+5)), (((int)(mInventoryItemsEntity.getChildCount()/((int)((Game.getSceneManager().getDisplay().getCameraWidth()-this.mInventoryUseSprite.getWidthScaled()-20)/(item.getItemIcon().getWidthScaled()+5)))))*(item.getItemIcon().getHeightScaled()+5)));
+			item.setmEntity(mInventoryItemsEntity);			
+			mInventoryItemsEntity.attachChild(item.getItemIcon());
+			this.registerTouchArea(item.getItemIcon());
+		}
+		return mInventoryItemsEntity;
+	}
 	
 	//#################EQUIPMENT ENTITY######################
 	public Entity LoadEquipmentEntity(){
