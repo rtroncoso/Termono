@@ -54,8 +54,7 @@ import com.quest.entities.Player;
 			this.setCurrHPMP(new int[]{(int)pPlayer.getCurrHP(),(int)pPlayer.getCurrMana()});
 			this.setItemID(pItemIDs);
 			this.setAmounts(pAmounts);
-			this.setIsEquipped(isEquipped);
-			
+			this.setIsEquipped(isEquipped);			
 		}
 
 		public String getUserID() {

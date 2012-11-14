@@ -36,7 +36,7 @@ public class BattleHelper implements GameFlags{
 		damage = ((pAttackingEntity.getModPower()+pAttackingEntity.getPower())*4)-((pAttackedEntity.getModDefense()+pAttackedEntity.getDefense())*3);
 		if(damage<1)damage=0;
 		damage+=pAttackingEntity.getModPower();
-		damage = damage*pAttackID;
+		damage = (int)(((float)(damage))*Game.getAttacksHelper().getAttack(pAttackID).getEffect()[0]);//pAttackID;
 	//	Multiplicar damage por el bonus del ataque y esou
 		
 		if(pAttackingEntity.getEntityType().equals("Mob")){
@@ -76,7 +76,8 @@ public class BattleHelper implements GameFlags{
 			player.addExperience(pexperience);
 			player.addMoney(pmoney);
 			if(pdroppeditem != 0){
-				player.getInventory().addItem(new Item(pdroppeditem, pdroppedItemAmount, 0));
+				player.popOverHead(Game.getItemHelper().getItem(pdroppeditem));
+				player.getInventory().addItem(new Item(pdroppeditem, pdroppedItemAmount),0);
 			}
 			Game.getServer().sendMobDiedMessage((Integer)(mob.getUserData()), pexperience, pmoney, pdroppeditem, pdroppedItemAmount,player.getUserData().toString());
 		}else{
@@ -86,7 +87,8 @@ public class BattleHelper implements GameFlags{
 				player.addExperience(pexperience);
 				player.addMoney(pmoney);	
 				if(pdroppeditem != 0){
-					player.getInventory().addItem(new Item(pdroppeditem, pdroppedItemAmount, 0));
+					player.popOverHead(Game.getItemHelper().getItem(pdroppeditem));
+					player.getInventory().addItem(new Item(pdroppeditem, pdroppedItemAmount),0);
 				}
 			}		
 		}

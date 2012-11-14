@@ -461,18 +461,44 @@ public class GameMenuScene extends Scene implements GameFlags{// implements IOnS
 		return this.mInventoryEntity;
 	}		
 	
+	
 	public Entity loadInventoryItems(){
 		if(this.mInventoryItemsEntity == null)mInventoryItemsEntity = new Entity(20,this.mPlankSprite.getHeight()+20);
 		this.mInventoryItemsEntity.detachChildren();
 		InventoryItemHelper inventory = Game.getPlayerHelper().getOwnPlayer().getInventory();
+		Sprite[] collisionSprites = new Sprite[]{this.mInventoryUseSprite,this.mInventoryTossSprite};
+		ArrayList<Item> mItems = new ArrayList<Item>();
 		for(int i = inventory.getEntities().size()-1;i>=0;i--){
 			Item item = inventory.getItembyIndex(i);
 			item.getItemIcon().setPosition((((int)(mInventoryItemsEntity.getChildCount()%((int)((Game.getSceneManager().getDisplay().getCameraWidth()-this.mInventoryUseSprite.getWidthScaled()-20)/(item.getItemIcon().getWidthScaled()+5)))))*(item.getItemIcon().getWidthScaled()+5)), (((int)(mInventoryItemsEntity.getChildCount()/((int)((Game.getSceneManager().getDisplay().getCameraWidth()-this.mInventoryUseSprite.getWidthScaled()-20)/(item.getItemIcon().getWidthScaled()+5)))))*(item.getItemIcon().getHeightScaled()+5)));
-			item.setmEntity(mInventoryItemsEntity);			
+			item.setmEntity(mInventoryItemsEntity);//sacar?
+			item.setCollisionSprites(collisionSprites);
 			mInventoryItemsEntity.attachChild(item.getItemIcon());
+			mItems.add(item);
 			this.registerTouchArea(item.getItemIcon());
 		}
 		return mInventoryItemsEntity;
+	}
+	
+	public void ActionOnCollide(Item pItem, Sprite pSprite, Entity pEntity){
+		
+		if(mInventoryItemsEntity!=null && pEntity == mInventoryItemsEntity){
+			if(pSprite == mInventoryUseSprite){
+				Log.d("Quest!", "Use sprite");
+				Game.getPlayerHelper().getOwnPlayer().getInventory().EquipItem(pItem);
+			}else if(pSprite == mInventoryTossSprite){
+				Log.d("Quest!", "Toss sprite");
+				pItem.getItemIcon().setPosition((((int)(mInventoryItemsEntity.getChildCount()%((int)((Game.getSceneManager().getDisplay().getCameraWidth()-this.mInventoryUseSprite.getWidthScaled()-20)/(pItem.getItemIcon().getWidthScaled()+5)))))*(pItem.getItemIcon().getWidthScaled()+5)), (((int)(mInventoryItemsEntity.getChildCount()/((int)((Game.getSceneManager().getDisplay().getCameraWidth()-this.mInventoryUseSprite.getWidthScaled()-20)/(pItem.getItemIcon().getWidthScaled()+5)))))*(pItem.getItemIcon().getHeightScaled()+5)));
+			}
+			
+		//}else if(mInventoryItemsEntity!=null && pEntity = mInventoryItemsEntity){ entidad de equipamiento
+			/*
+			 * 
+			 * funciones de equipamiento
+			 * 
+			 */
+		}
+		
 	}
 	
 	//#################EQUIPMENT ENTITY######################

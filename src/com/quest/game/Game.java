@@ -21,6 +21,7 @@ import com.quest.database.DataHandler;
 import com.quest.database.QueryQueuer;
 import com.quest.helpers.AttacksHelper;
 import com.quest.helpers.BattleHelper;
+import com.quest.helpers.ItemHelper;
 import com.quest.helpers.LevelHelper;
 import com.quest.helpers.MapHelper;
 import com.quest.helpers.MobHelper;
@@ -31,8 +32,6 @@ import com.quest.helpers.TimerHelper;
 import com.quest.network.QClient;
 import com.quest.network.QServer;
 import com.quest.objects.BooleanMessage;
-import com.quest.scenes.GameScene;
-import com.quest.scenes.MatchScene;
 
 public class Game extends SimpleBaseGameActivity {
 	// ===========================================================
@@ -57,7 +56,8 @@ public class Game extends SimpleBaseGameActivity {
 	private static ProfileData mProfileData;
 	private static boolean isServer = false;
 	private static TimerHelper mTimerHelper;
-	private static AttacksHelper mAttacksHelper;	
+	private static AttacksHelper mAttacksHelper;
+	private static ItemHelper mItemHelper;
 	private static Random rand;
 	private static LevelHelper mLevelHelper;
 	private static QueryQueuer mQueryQueuer;
@@ -341,6 +341,15 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mAttacksHelper = mAttacksHelper;
 	}
 
+	public static ItemHelper getItemHelper() {
+		return mItemHelper;
+	}
+
+	public static void setItemHelper(ItemHelper mItemHelper) {
+		Game.mItemHelper = mItemHelper;
+	}
+
+	
 	public static LevelHelper getLevelHelper() {
 		return mLevelHelper;
 	}

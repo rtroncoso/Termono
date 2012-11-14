@@ -263,7 +263,7 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 				final ServerMessageSendPlayer serverMessageSendPlayer = (ServerMessageSendPlayer) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_SEND_PLAYER);
 				serverMessageSendPlayer.LoadPlayer(Game.getPlayerHelper().getPlayerbyPlayerID(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryItems(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryAmounts(clientMessageSelectedPlayer.getPlayerID()), Game.getDataHandler().getInventoryEquipStatus(clientMessageSelectedPlayer.getPlayerID()));
 				sendBroadcast(serverMessageSendPlayer);
-				
+				Log.d("Quest!","Llego player");
 				if(Game.getMatchData().isStarted()){
 					final ServerMessageMatchStarted serverMessageMatchStarted = (ServerMessageMatchStarted) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED);
 					try {
@@ -434,6 +434,7 @@ public void sendBroadcast(QuestServerMessage pServerMessage){
 		//pServerMessage.setMsgHash(tmpHash); Funciones de doble envio/checkeo de mensaje
 		//pServerMessage.setMsgInstance(1);
 		this.sendBroadcastServerMessage(pServerMessage);
+		Log.d("Logd",pServerMessage.toString());
 		//wait(5);
 		//pServerMessage.setMsgInstance(2);
 		//this.sendBroadcastServerMessage(pServerMessage);
@@ -445,8 +446,10 @@ public void sendBroadcast(QuestServerMessage pServerMessage){
 }
 
 public void sendMatchStartedMessage(){
+	Log.d("Quest!","Entrando match started");
 	final ServerMessageMatchStarted serverMessageMatchStarted = (ServerMessageMatchStarted) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_MATCH_STARTED);
 	sendBroadcast(serverMessageMatchStarted);
+	Log.d("Quest!","mande el started");
 }
 
 public void sendUpdateEntityPositionMessage(String pPlayerKey, int pX, int pY){			

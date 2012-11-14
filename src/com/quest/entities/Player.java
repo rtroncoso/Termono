@@ -93,9 +93,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	// Methods
 	// ===========================================================
 	private InventoryItemHelper LoadInventory(int[] pItemIDs,int[] pAmounts,int[] isEquipped){
-		InventoryItemHelper pInventory = new InventoryItemHelper(mUserID);
+		InventoryItemHelper pInventory = new InventoryItemHelper(Player.this);
 		for(int i = 0;i<pItemIDs.length;i++){
-			pInventory.addItem(new Item(pItemIDs[i], pAmounts[i], isEquipped[i]));
+			pInventory.addItem(Game.getItemHelper().addNewItem(pItemIDs[i], pAmounts[i]), isEquipped[i]);
 		}
 		return pInventory;
 	}
@@ -250,8 +250,9 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.mMoney = mMoney;
 	}
 
-	public void addMoney(int mMoney) {
-		this.mMoney += mMoney;
+	public void addMoney(int pMoney) {
+		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_YELLOW, this.getBodySprite().getX(), this.getBodySprite().getY(),String.valueOf(pMoney), "Money;"+this.getUserData()+" "+System.currentTimeMillis()), 1f);
+		this.mMoney += pMoney;
 	}
 
 	
@@ -264,6 +265,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	} 
 
 	public void addExperience(float pExperience) {
+		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, this.getBodySprite().getX(), this.getBodySprite().getY(),String.valueOf(pExperience), "Exp;"+this.getUserData()+" "+System.currentTimeMillis()), 1f);
 		this.mExperience += pExperience;
 		int oldlvl = this.mLevel;
 		this.mLevel = Game.getLevelHelper().getPlayerLevel(mExperience);

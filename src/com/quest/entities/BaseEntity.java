@@ -26,6 +26,7 @@ import android.util.Log;
 
 import com.quest.entities.interfaces.IEntityCallbacks;
 import com.quest.entities.objects.Attack;
+import com.quest.entities.objects.Item;
 import com.quest.game.Game;
 import com.quest.helpers.interfaces.IBaseEntityActions;
 import com.quest.triggers.Trigger;
@@ -122,15 +123,19 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		switch(pFacingDirection) {
 		case DIRECTION_SOUTH:
 			this.mBodySprite.animate(frameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
+			AnimateItems(pFacingDirection, restartAnimation);
 			break;
 		case DIRECTION_NORTH:
 			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - (this.mBodyExtraCols) - 1, false);
+			AnimateItems(pFacingDirection, restartAnimation);
 			break;	
 		case DIRECTION_EAST:
 			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - (this.mBodyExtraCols) - 1, false);
+			AnimateItems(pFacingDirection, restartAnimation);
 			break;
 		case DIRECTION_WEST:
 			this.mBodySprite.animate(frameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - (this.mBodyExtraCols) - 1, false);
+			AnimateItems(pFacingDirection, restartAnimation);
 			break;	
 		}
 		
@@ -138,6 +143,49 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		
 		return this;
 	}
+
+	public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
+		
+		for(int a= mBodySprite.getChildCount()-1;a>=0;a--){
+		Item item = (Item)(mBodySprite.getChildByIndex(a));
+		// Check if not already animating
+			if(!restartAnimation && item.getItemAnimation().isAnimationRunning()){
+	
+				// Calculate frame durations
+				long[] frameDurations = new long[item.getCols() - item.getExtraCols()];
+				for(int i = 0; i < item.getCols() - item.getExtraCols(); i++) {
+					frameDurations[i] = 50;
+				}
+				
+				// Animate it
+				switch(pFacingDirection) {
+				case DIRECTION_SOUTH:
+					item.getItemAnimation().animate(frameDurations, 0, (item.getCols()) - (item.getExtraCols()) - 1, false);
+					break;
+				case DIRECTION_NORTH:
+					item.getItemAnimation().animate(frameDurations, (item.getCols() * 3), (item.getCols() * 4) - (item.getExtraCols()) - 1, false);
+					break;	
+				case DIRECTION_EAST:
+					item.getItemAnimation().animate(frameDurations, (item.getCols() * 2), (item.getCols() * 3) - (item.getExtraCols()) - 1, false);
+					break;
+				case DIRECTION_WEST:
+					item.getItemAnimation().animate(frameDurations, item.getCols(), (item.getCols() * 2) - (item.getExtraCols()) - 1, false);
+					break;	
+				}
+				
+			}
+		}
+	}
+	
+	
+	
+	/*
+ * 
+ * 			for(int i= mBodySprite.getChildCount()-1;i>=0;i--)
+				((Item)(mBodySprite.getChildByIndex(i))).getItemAnimation().animate(frameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
+	
+ */
+	
 	
 	public byte getFacingDirectionToTile(final TMXTile pTileTo) {
 		// RIGHT
@@ -268,6 +316,23 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		}));
 	}
 	
+	public void popOverHead(final Item item){
+		this.attachChild(item.getItemIcon());
+		item.getItemIcon().setScale(0.8f);
+		item.getItemIcon().registerEntityModifier(new MoveModifier(1f,BaseEntity.this.getBodySprite().getX(),BaseEntity.this.getBodySprite().getX()+5,BaseEntity.this.getBodySprite().getY(),BaseEntity.this.getBodySprite().getY()-5,new IEntityModifierListener() {		
+			@Override
+			public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
+				item.getItemIcon().registerEntityModifier(new AlphaModifier(1f,1f,0.2f));
+			}
+			
+			@Override
+			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+				// TODO Auto-generated method stub
+				BaseEntity.this.detachChild(item.getItemIcon());
+				Game.getItemHelper().recycleItem(item);
+			}
+		}));
+	}
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
@@ -664,7 +729,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID) {
 		// TODO Auto-generated method stub
-		
+		Log.e("Quest!","Atacado base entity");
 	}
 
 	@Override

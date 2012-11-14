@@ -715,6 +715,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     public void deleteInventory(int[] inventoryItemsKeys){
     	SQLiteDatabase myDB = this.getWritableDatabase();
     	for(int i = 0;i<inventoryItemsKeys.length;i++){
+    		Log.d("Quest!","delete :"+i);
     		myDB.delete(tInventoryItem, fInventoryItemKey+" =?", new String[]{String.valueOf(inventoryItemsKeys[i])});
     	}
     }
@@ -745,12 +746,14 @@ public class UserDatabase extends SQLiteOpenHelper {
    		int myAnswer = myCursor.getInt(index);
    		myCursor.close();
 		this.close();
+		Log.d("Quest!","Get money: "+myAnswer);
 		return myAnswer;
      }   
     
     public void setPlayerMoney(int pPlayerID, int pMoney){
     	ContentValues cv = new ContentValues();
     	cv.put(fInventoryMoney,pMoney);
+    	Log.d("Quest!","Set money: "+pMoney);
         this.getWritableDatabase().update(tInventory, cv, fPlayerID+" =?",new String[]{String.valueOf(pPlayerID)});
         cv.clear();
         this.close();

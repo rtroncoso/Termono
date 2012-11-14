@@ -13,6 +13,7 @@ import com.quest.constants.GameFlags;
 import com.quest.game.Game;
 import com.quest.helpers.AttacksHelper;
 import com.quest.helpers.BattleHelper;
+import com.quest.helpers.ItemHelper;
 import com.quest.helpers.MobHelper;
 import com.quest.helpers.TextHelper;
 
@@ -45,7 +46,7 @@ public class MainMenuScene extends Scene implements GameFlags{
 		Game.setMobHelper(new MobHelper());
 		Game.setBattleHelper(new BattleHelper());
 		Game.setAttacksHelper(new AttacksHelper());
-		
+		Game.setItemHelper(new ItemHelper());
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MainMenu/");
 		this.mMainMenuTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);		
