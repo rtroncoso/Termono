@@ -46,6 +46,7 @@ public interface GameFlags {
 	public static final int FLAG_QUERY_REGISTER_PLAYER_MONEY = 6;
 	
 	//Items
+	public static final int FLAG_ITEM_HEALTH_POTION = 10;
 	public static final int FLAG_ITEM_BIG_FLAMED_SWORD = 20;
 	
 	

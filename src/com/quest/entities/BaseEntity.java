@@ -144,7 +144,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		
 		return this;
 	}
-public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
+
+	public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
 		
 		for(int a= mBodySprite.getChildCount()-1;a>=0;a--){
 		Item item = (Item)(mBodySprite.getChildByIndex(a));
@@ -176,7 +177,16 @@ public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
 			}
 		}
 	}
-
+	
+	
+	
+	/*
+ * 
+ * 			for(int i= mBodySprite.getChildCount()-1;i>=0;i--)
+				((Item)(mBodySprite.getChildByIndex(i))).getItemAnimation().animate(frameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
+	
+ */
+	
 	
 	public byte getFacingDirectionToTile(final TMXTile pTileTo) {
 		// RIGHT
@@ -720,7 +730,7 @@ public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID) {
 		// TODO Auto-generated method stub
-		
+		Log.e("Quest!","Atacado base entity");
 	}
 
 	@Override

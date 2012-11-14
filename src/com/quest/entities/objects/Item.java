@@ -51,6 +51,8 @@ public class Item extends Entity implements GameFlags{
 	private int mCols,mRows,extraCols;
 	private Text mAmountText;
 	private Entity mEntity;
+	
+	private Sprite[] mCollisionSprites;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -67,7 +69,7 @@ public class Item extends Entity implements GameFlags{
 			this.mItemDescription = Game.getDataHandler().getItemDescription(this.mItemFlag);
 			this.mItemBuyPrice = Game.getDataHandler().getItemBuyPrice(this.mItemFlag);	
 			this.mItemSellPrice = Game.getDataHandler().getItemSellPrice(this.mItemFlag);
-			this.mModifiers = Game.getDataHandler().getItemModifiers(this.mItemFlag);
+			
 			this.mStackable = Game.getDataHandler().isItemStackable(this.mItemFlag);
 			
 			//grafico
@@ -79,6 +81,8 @@ public class Item extends Entity implements GameFlags{
 			this.mItemTextureAtlas.load();
 						
 			if(mItemType>0&&mItemType<3){
+				this.mModifiers = Game.getDataHandler().getItemModifiers(this.mItemFlag);
+				
 				this.mAnimatedTexturePath = Game.getDataHandler().getItemAnimationTexture(mItemFlag);
 				this.FrameHeight = Game.getDataHandler().getItemFrameHeight(mItemFlag);
 				this.FrameWidth = Game.getDataHandler().getItemFrameWidth(mItemFlag);
@@ -104,13 +108,31 @@ public class Item extends Entity implements GameFlags{
 					break;
 				case TouchEvent.ACTION_MOVE:
 					this.setPosition(pSceneTouchEvent.getX()-(mItemIcon.getWidthScaled()/2)-getmEntity().getX(), pSceneTouchEvent.getY()-(mItemIcon.getHeightScaled()/2)-getmEntity().getY());
-					//Log.d("Quest!", "touch: "+pTouchAreaLocalX+" with: "+(mItemIcon.getWidthScaled()/2)+" entity x: "+getmEntity().getX()+"\n total: "+(pTouchAreaLocalX-(mItemIcon.getWidthScaled()/2)-getmEntity().getX()));
-					Log.d("Quest!", "touch: "+pSceneTouchEvent.getX()+" y: "+pSceneTouchEvent.getY());
+					boolean collides =false;
+					int i = 0;
+					while(!collides && i<mCollisionSprites.length){
+						if(this.collidesWith(mCollisionSprites[i])){
+							mCollisionSprites[i].setAlpha(0.5f);
+							collides = true;
+						}else{
+							mCollisionSprites[i].setAlpha(1f);
+						}
+						i++;
+					}
 					break;
 				case TouchEvent.ACTION_UP:
 					if(mGrabbed) {
 						mGrabbed = false;
 						//Game.getPlayerHelper().getOwnPlayer().setItem_Flag(mItemFlag);
+						boolean collideS =false;
+						int a = 0;
+						while(!collideS && a<mCollisionSprites.length){
+							if(this.collidesWith(mCollisionSprites[a])){
+								Game.getSceneManager().getGameMenuScene().ActionOnCollide(Item.this, mCollisionSprites[a],Item.this.mEntity);
+								collideS = true;
+							}
+							a++;
+						}
 						this.setScale(2f);
 					}
 					break;
@@ -121,7 +143,7 @@ public class Item extends Entity implements GameFlags{
 			this.mItemIcon.setScale(2f);
 			this.mItemIcon.setCullingEnabled(true);
 			this.mAmountText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, this.mItemIcon.getWidthScaled()-4, -6, String.valueOf(this.mAmount), "Item;"+this.getUserData()+"_"+this.getItemName());
-			//this.mAmountText.setScale(0.6f);
+			this.mAmountText.setScale(0.6f);
 			this.mItemIcon.attachChild(mAmountText);
 			if(this.mAmount==1){
 				mAmountText.setVisible(false);
@@ -132,10 +154,9 @@ public class Item extends Entity implements GameFlags{
 	}
 
 
-	public Item(int pItemID,int pAmount,int pEquipped) {
+	public Item(int pItemID,int pAmount) {
 		this(pItemID);
-		this.mAmount = pAmount;
-		this.mEquipped = pEquipped;
+		this.setAmount(pAmount);
 	}
 
 	// ===========================================================
@@ -146,6 +167,10 @@ public class Item extends Entity implements GameFlags{
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public void setCollisionSprites(Sprite[] pSprites){
+		this.mCollisionSprites = pSprites;
+	}
+	
 	public Sprite getItemIcon(){
 		return this.mItemIcon;
 	}
@@ -198,6 +223,102 @@ public class Item extends Entity implements GameFlags{
 		return mModifiers[1];
 	}
 	
+	/**
+	 * @return the mItemAnimation
+	 */
+	public AnimatedSprite getItemAnimation() {
+		return mItemAnimation;
+	}
+
+
+	/**
+	 * @return the frameHeight
+	 */
+	public int getFrameHeight() {
+		return FrameHeight;
+	}
+
+
+	/**
+	 * @param frameHeight the frameHeight to set
+	 */
+	public void setFrameHeight(int frameHeight) {
+		FrameHeight = frameHeight;
+	}
+
+
+	/**
+	 * @return the frameWidth
+	 */
+	public int getFrameWidth() {
+		return FrameWidth;
+	}
+
+
+	/**
+	 * @param frameWidth the frameWidth to set
+	 */
+	public void setFrameWidth(int frameWidth) {
+		FrameWidth = frameWidth;
+	}
+
+
+	/**
+	 * @return the mCols
+	 */
+	public int getCols() {
+		return mCols;
+	}
+
+
+	/**
+	 * @param mCols the mCols to set
+	 */
+	public void setCols(int mCols) {
+		this.mCols = mCols;
+	}
+
+
+	/**
+	 * @return the mRows
+	 */
+	public int getRows() {
+		return mRows;
+	}
+
+
+	/**
+	 * @param mRows the mRows to set
+	 */
+	public void setRows(int mRows) {
+		this.mRows = mRows;
+	}
+
+
+	/**
+	 * @return the extraCols
+	 */
+	public int getExtraCols() {
+		return extraCols;
+	}
+
+
+	/**
+	 * @param extraCols the extraCols to set
+	 */
+	public void setExtraCols(int extraCols) {
+		this.extraCols = extraCols;
+	}
+
+
+	/**
+	 * @param mItemAnimation the mItemAnimation to set
+	 */
+	public void setItemAnimation(AnimatedSprite mItemAnimation) {
+		this.mItemAnimation = mItemAnimation;
+	}
+
+
 	public int getItemDefense() {
 		return mModifiers[2];
 	}
@@ -216,10 +337,12 @@ public class Item extends Entity implements GameFlags{
 
 	public void setAmount(int mAmount) {
 		this.mAmount = mAmount;
-		this.mAmountText.setText(String.valueOf(mAmount));
-		this.mAmountText.setVisible(false);
-		if(mAmount>1)
-			this.mAmountText.setVisible(true);	
+		if(this.mAmountText!=null){
+			this.mAmountText.setText(String.valueOf(mAmount));
+			this.mAmountText.setVisible(false);
+			if(mAmount>1)
+				this.mAmountText.setVisible(true);	
+		}
 	}
 
 	public void IncreaseAmount(){

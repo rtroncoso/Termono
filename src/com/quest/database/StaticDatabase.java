@@ -392,7 +392,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		 cv.put(fItemName, "Big Flamed Sword");
           		 cv.put(fItemAnimationTexture, "Items/Animations/Big Flamed Sword.png");
           		 cv.put(fItemIconTexture, "Items/Icons/Big Flamed Sword.png");
-          		 cv.put(fItemType, 5);
+          		 cv.put(fItemType, 1);
           		 cv.put(fItemStackable, 0);
           		 cv.put(fItemExtraCols, 2);
           		 cv.put(fItemAnimationRows, 4);
@@ -400,8 +400,8 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		 cv.put(fItemFrameHeight, 256);
           		 cv.put(fItemFrameWidth, 512);
           		 cv.put(fItemDescription, "A big flamed sword, yay.");
-          		 cv.put(fItemBuyPrice, 15);
-          		 cv.put(fItemSellPrice, 8);
+          		 cv.put(fItemBuyPrice, 200);
+          		 cv.put(fItemSellPrice, 140);
           		 cv.put(fItemClass,1);
           		 db.insert(tItem, null, cv);          		 
           		 cv.clear();          		 
@@ -415,6 +415,24 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		 cv.clear();                 
           		 
           		 
+                 //ITEM
+                 cv.put(fItemID, FLAG_ITEM_HEALTH_POTION);
+          		 cv.put(fItemName, "Health potion");
+          		// cv.put(fItemAnimationTexture, "null");//
+          		 cv.put(fItemIconTexture, "Items/Icons/Health Potion.png");
+          		 cv.put(fItemType, 0);
+          		 cv.put(fItemStackable, 1);
+          		 cv.put(fItemExtraCols, 0);//
+          		 cv.put(fItemAnimationRows, 0);//
+          		 cv.put(fItemAnimationCols, 0);//
+          		 cv.put(fItemFrameHeight, 0);//
+          		 cv.put(fItemFrameWidth, 0);//
+          		 cv.put(fItemDescription, "Basic health potion-");
+          		 cv.put(fItemBuyPrice, 15);
+          		 cv.put(fItemSellPrice, 11);
+          		 cv.put(fItemClass,0);
+          		 db.insert(tItem, null, cv);     
+          		 cv.clear();
           		 
           		cv.put(fClassID, 1);
           		cv.put(fClassIconTexture,"Players/Icons/Paladin.png");
@@ -656,7 +674,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackType, 1);
                 cv.put(fAttackEffect, "2;2");
                 cv.put(fAttackManaCost, 15);
-                cv.put(fAttackAnimationRows, 1);
+                cv.put(fAttackAnimationRows, 2);
                 cv.put(fAttackAnimationCols, 4);
                 cv.put(fAttackFrameWidth, 512);
                 cv.put(fAttackFrameHeight, 256);
