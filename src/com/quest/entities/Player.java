@@ -35,7 +35,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private InventoryItemHelper mInventory;
 	private int mUnassignedPoints;
 	private int Attack_Flag;
-	private int[] mCoords;
+	
 	private boolean mGrabbed = false;
 	private int mCurrentTarget;
 	// ===========================================================
@@ -302,18 +302,6 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 
 	public void setUnassignedPoints(int mUnassignedPoints) {
 		this.mUnassignedPoints = mUnassignedPoints;
-	}
-
-	public int[] getCoords() {
-		return mCoords;
-	}
-
-	public void setCoords(int[] mPosition) {
-		this.mCoords = mPosition;
-	}
-
-	public void setCoords(int tileX, int tileY) {
-		this.mCoords = new int[]{tileX,tileY};
 	}
 	
 	public int getAttack_Flag() {

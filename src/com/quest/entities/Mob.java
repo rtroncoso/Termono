@@ -3,8 +3,6 @@
  */
 package com.quest.entities;
 
-import java.util.ArrayList;
-
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.ITouchArea;
@@ -37,6 +35,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	private int[] mDroppedItems,mDropRates,mDropAmounts;
 	private boolean dying = false;
 	private boolean mGrabbed = false;
+	private boolean following = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -67,9 +66,80 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					// TODO Auto-generated method stub
-					Mob.this.doRandomPath();
+					if(!following){
+						Mob.this.doRandomPath();
+						for(int i = Game.getPlayerHelper().getEntities().size()-1;i>=0;i--)
+							if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt()!=null)
+								if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4))
+									if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4)){
+										Log.d("Quest!","Mob; player "+Game.getPlayerHelper().getPlayerbyIndex(i).getName()+" is near me");
+										startFollowTimer(Game.getPlayerHelper().getPlayerbyIndex(i));
+									}
+					}
 				}
 			}), String.valueOf(this.getUserData()));
+		}
+	}
+	
+	
+	
+	public void startFollowTimer(final Player player){
+		if(Game.isServer()){
+			following = true;
+			Game.getTimerHelper().addTimer(new Timer(0.2f, new ITimerCallback() {			
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) {
+					boolean attack = false;
+					byte movingDirection = DIRECTION_DEFAULT;
+					
+					if(player.getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && player.getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4) && player.getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && player.getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4)){
+						
+						if(player.getTMXTileAt().getTileColumn()<Mob.this.getTMXTileAt().getTileColumn()){
+							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()-1)){
+								attack = true;
+							}else{
+								movingDirection = DIRECTION_WEST;
+							}
+							
+						}else if(player.getTMXTileAt().getTileColumn()>Mob.this.getTMXTileAt().getTileColumn()){
+							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()+1)){
+								attack = true;
+							}else{
+								movingDirection = DIRECTION_EAST;
+							}
+							
+						}else if(player.getTMXTileAt().getTileColumn()==Mob.this.getTMXTileAt().getTileColumn()){
+							if(player.getTMXTileAt().getTileRow()<Mob.this.getTMXTileAt().getTileRow()){
+								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()-1)){
+									attack = true;
+								}else{
+									Log.d("Quest!","Player row: "+player.getTMXTileAt().getTileRow()+" Mob row: "+Mob.this.getTMXTileAt().getTileRow()+" es north tecnicamente");
+									movingDirection = DIRECTION_SOUTH;
+								}
+							}else if(player.getTMXTileAt().getTileRow()>Mob.this.getTMXTileAt().getTileRow()){
+								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()+1)){
+									attack = true;
+								}else{
+									Log.d("Quest!","Player row: "+player.getTMXTileAt().getTileRow()+" Mob row: "+Mob.this.getTMXTileAt().getTileRow()+" es south tecnicamente");
+									movingDirection = DIRECTION_NORTH;
+							}								
+						}
+					}
+						
+					if(!attack){
+						TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
+					//	Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+						Mob.this.moveToTile(tmpNewTile);
+					}else{
+						Log.d("Quest!","ATTACK");
+					}
+					
+					}else{
+						following = false;
+						Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()+";Follow"));
+					}
+				}
+			}), String.valueOf(this.getUserData()+";Follow"));
 		}
 	}
 	
@@ -169,7 +239,9 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
 		dying = true;
+		Mob.this.following=false;
 		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
+		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()+";Follow"));
 		if(Game.getSceneManager().getGameScene().getOtherStatsHud() != null)Game.getSceneManager().getGameScene().getOtherStatsHud().dettachHUD((Integer)this.getUserData());
 		Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
 			int i = 1;

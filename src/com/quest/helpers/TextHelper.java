@@ -63,7 +63,7 @@ public class TextHelper implements GameFlags{
 			this.mDarkFancyFont = new Font(Game.getInstance().getFontManager(), DarkFancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(59, 39, 39));
 			this.mFancyFont = new Font(Game.getInstance().getFontManager(), FancyFontTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/StoneCross.ttf"),24,true,Color.rgb(214, 192, 167));
 			this.mBlackKnightFont = new Font(Game.getInstance().getFontManager(), BlackKnightTexture, Typeface.createFromAsset(Game.getInstance().getAssets(), "fonts/BlackKnight.ttf"),24,true,Color.rgb(59, 39, 39));
-			this.mYellowFont = new StrokeFont(Game.getInstance().getFontManager(), YellowFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.rgb(184, 184, 0), 1, Color.rgb(107, 107, 0));
+			this.mYellowFont = new StrokeFont(Game.getInstance().getFontManager(), YellowFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 12, true, Color.YELLOW, 1, Color.BLACK);
 			
 			
 			this.mNormalFont.load();

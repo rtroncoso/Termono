@@ -434,7 +434,7 @@ public void sendBroadcast(QuestServerMessage pServerMessage){
 		//pServerMessage.setMsgHash(tmpHash); Funciones de doble envio/checkeo de mensaje
 		//pServerMessage.setMsgInstance(1);
 		this.sendBroadcastServerMessage(pServerMessage);
-		Log.d("Logd",pServerMessage.toString());
+		//Log.d("Logd",pServerMessage.toString());
 		//wait(5);
 		//pServerMessage.setMsgInstance(2);
 		//this.sendBroadcastServerMessage(pServerMessage);

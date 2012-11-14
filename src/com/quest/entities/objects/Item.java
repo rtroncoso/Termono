@@ -93,6 +93,7 @@ public class Item extends Entity implements GameFlags{
 				this.mItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mItemTextureAtlas, Game.getInstance().getApplicationContext(), mAnimatedTexturePath, 0, 24, mCols, mRows);
 				this.mItemAnimation = new AnimatedSprite(X_OFFSET, Y_OFFSET, this.mItemTextureRegion, Game.getInstance().getVertexBufferObjectManager());
 				this.mItemAnimation.setCullingEnabled(true);
+				this.attachChild(mItemAnimation);
 			}
 			
 			
@@ -126,10 +127,12 @@ public class Item extends Entity implements GameFlags{
 						//Game.getPlayerHelper().getOwnPlayer().setItem_Flag(mItemFlag);
 						boolean collideS =false;
 						int a = 0;
-						while(!collideS && a<mCollisionSprites.length){
-							if(this.collidesWith(mCollisionSprites[a])){
+						while(a<mCollisionSprites.length){
+							if(!collideS && this.collidesWith(mCollisionSprites[a])){
 								Game.getSceneManager().getGameMenuScene().ActionOnCollide(Item.this, mCollisionSprites[a],Item.this.mEntity);
 								collideS = true;
+							}else{
+								mCollisionSprites[a].setAlpha(1f);
 							}
 							a++;
 						}
@@ -142,7 +145,7 @@ public class Item extends Entity implements GameFlags{
 			};
 			this.mItemIcon.setScale(2f);
 			this.mItemIcon.setCullingEnabled(true);
-			this.mAmountText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, this.mItemIcon.getWidthScaled()-4, -6, String.valueOf(this.mAmount), "Item;"+this.getUserData()+"_"+this.getItemName());
+			this.mAmountText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, this.mItemIcon.getWidth()-4, -6, String.valueOf(this.mAmount), "Item;"+this.getUserData()+"_"+this.getItemName());
 			this.mAmountText.setScale(0.6f);
 			this.mItemIcon.attachChild(mAmountText);
 			if(this.mAmount==1){

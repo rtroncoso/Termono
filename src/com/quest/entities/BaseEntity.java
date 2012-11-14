@@ -58,7 +58,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected int mBodyExtraCols;
 	protected int mCurrentMap;
 	protected byte mFacingDirection;
-	
+	private int[] mCoords;
 	
 	//a ordenar
 	protected int mLevel;
@@ -147,8 +147,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 
 	public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
 		
-		for(int a= mBodySprite.getChildCount()-1;a>=0;a--){
-		Item item = (Item)(mBodySprite.getChildByIndex(a));
+		for(int a= this.mBodySprite.getChildCount()-1;a>=0;a--){
+		Item item = (Item)(this.mBodySprite.getChildByIndex(a));
 		// Check if not already animating
 			if(!restartAnimation && item.getItemAnimation().isAnimationRunning()){
 	
@@ -603,6 +603,18 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	public void Heal(){
 		setCurrHP(this.mModEndurance*10);
 		setCurrMana(this.mModIntelligence*10);
+	}
+	
+	public int[] getCoords() {
+		return mCoords;
+	}
+
+	public void setCoords(int[] mPosition) {
+		this.mCoords = mPosition;
+	}
+
+	public void setCoords(int tileX, int tileY) {
+		this.mCoords = new int[]{tileX,tileY};
 	}
 	
 	public int getMoney() {
