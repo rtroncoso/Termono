@@ -131,7 +131,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 					//	Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
 						Mob.this.moveToTile(tmpNewTile);
 					}else{
-						Log.d("Quest!","ATTACK");
+						Mob.this.onAttackAction(player, FLAG_ATTACK_SPELL_FIREBALL);
 					}
 					
 					}else{
@@ -272,6 +272,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
+		this.setAttackAnimation();
 		if(!Game.isServer()){
 			//muestro el mob atacando
 		}else{

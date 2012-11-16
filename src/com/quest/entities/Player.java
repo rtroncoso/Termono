@@ -4,6 +4,7 @@ import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl.IOnScreenControlListener;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.ITouchArea;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
@@ -38,6 +39,8 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	
 	private boolean mGrabbed = false;
 	private int mCurrentTarget;
+
+	private Entity mEquippedWeaponsLayer;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
