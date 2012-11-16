@@ -103,6 +103,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		};
 		this.attachChild(this.mBodySprite);
 		this.mBodySprite.setCullingEnabled(true);
+		
 		this.mAttackLayer = new ArrayList<Attack>();
 	}
 
@@ -143,6 +144,67 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mFacingDirection = pFacingDirection;
 		
 		return this;
+	}
+	
+	public void setAttackAnimation() {
+		
+		// Check if it has extra columns
+		if(this.mBodyExtraCols == 0) return;
+		
+		// Check if not already animating
+		if(this.mBodySprite.isAnimationRunning()) return;
+
+		// Calculate frame durations
+		long[] frameDurations = new long[this.mBodyExtraCols];
+		for(int i = 0; i < this.mBodyExtraCols; i++) {
+			frameDurations[i] = 50;
+		}
+		
+		IAnimationListener tmpAnimationListener = new IAnimationListener() {
+			
+			@Override
+			public void onAnimationStarted(AnimatedSprite pAnimatedSprite,
+					int pInitialLoopCount) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite,
+					int pRemainingLoopCount, int pInitialLoopCount) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite,
+					int pOldFrameIndex, int pNewFrameIndex) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+				// TODO Auto-generated method stub
+				BaseEntity.this.setAnimationDirection(BaseEntity.this.mFacingDirection, false);
+			}
+		};
+		
+		// Animate it
+		switch(this.mFacingDirection) {
+		case DIRECTION_SOUTH:
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns) - (this.mBodyExtraCols), (this.mBodyColumns) - 1, false, tmpAnimationListener);
+			break;
+		case DIRECTION_NORTH:
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 4) - (this.mBodyExtraCols), (this.mBodyColumns * 4) - 1, false, tmpAnimationListener);
+			break;	
+		case DIRECTION_EAST:
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 3) - (this.mBodyExtraCols), (this.mBodyColumns * 3) - 1, false, tmpAnimationListener);
+			break;
+		case DIRECTION_WEST:
+			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 2) - (this.mBodyExtraCols), (this.mBodyColumns * 2) - 1, false, tmpAnimationListener);
+			break;	
+		}
 	}
 
 	public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
