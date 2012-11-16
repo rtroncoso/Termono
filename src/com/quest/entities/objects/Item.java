@@ -1,5 +1,7 @@
 package com.quest.entities.objects;
 
+import java.util.ArrayList;
+
 import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
@@ -9,8 +11,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
-
-import android.util.Log;
 
 import com.quest.constants.GameFlags;
 import com.quest.game.Game;
@@ -51,7 +51,7 @@ public class Item extends Entity implements GameFlags{
 	private int mCols,mRows,extraCols;
 	private Text mAmountText;
 	private Entity mEntity;
-	
+	private ArrayList<Item> mList;
 	private Sprite[] mCollisionSprites;
 	// ===========================================================
 	// Constructors
@@ -102,29 +102,45 @@ public class Item extends Entity implements GameFlags{
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					int scene =0;
 				switch(pSceneTouchEvent.getAction()) {
-				case TouchEvent.ACTION_DOWN:
-						mGrabbed = true;
-						this.setScale(2.5f);
-					break;
-				case TouchEvent.ACTION_MOVE:
-					this.setPosition(pSceneTouchEvent.getX()-(mItemIcon.getWidthScaled()/2)-getmEntity().getX(), pSceneTouchEvent.getY()-(mItemIcon.getHeightScaled()/2)-getmEntity().getY());
-					boolean collides =false;
-					int i = 0;
-					while(!collides && i<mCollisionSprites.length){
-						if(this.collidesWith(mCollisionSprites[i])){
-							mCollisionSprites[i].setAlpha(0.5f);
-							collides = true;
-						}else{
-							mCollisionSprites[i].setAlpha(1f);
+					case TouchEvent.ACTION_DOWN:
+						//	mGrabbed = true;
+							
+						if(Game.getSceneManager().getGameMenuScene() != null && Game.getSceneManager().getCurrScene() == Game.getSceneManager().getGameMenuScene()){
+							if(Game.getSceneManager().getGameMenuScene().getCurrentItem()==null){
+								scene = 1;
+								Game.getSceneManager().getGameMenuScene().setCurrentItem(Item.this);
+								this.setScale(2.5f);
+							}
 						}
-						i++;
+						
+						break;
+					case TouchEvent.ACTION_MOVE:
+					/*	this.setPosition(pSceneTouchEvent.getX()-(mItemIcon.getWidthScaled()/2)-getEntity().getX(), pSceneTouchEvent.getY()-(mItemIcon.getHeightScaled()/2)-getEntity().getY());
+						boolean collides =false;
+						int i = 0;
+						while(!collides && i<mCollisionSprites.length){
+							if(this.collidesWith(mCollisionSprites[i])){
+								mCollisionSprites[i].setAlpha(0.5f);
+								collides = true;
+							}else{
+								mCollisionSprites[i].setAlpha(1f);
+							}
+							i++;
+						}*/
+						break;
+					case TouchEvent.ACTION_UP:
+						switch (scene) {
+						case 0:
+							break;
+						case 1:
+							//Game.getSceneManager().getGameMenuScene().setCurrentItem(null);
+							this.setScale(2f);
+							break;
 					}
-					break;
-				case TouchEvent.ACTION_UP:
-					if(mGrabbed) {
+				/*	if(mGrabbed) {
 						mGrabbed = false;
-						//Game.getPlayerHelper().getOwnPlayer().setItem_Flag(mItemFlag);
 						boolean collideS =false;
 						int a = 0;
 						while(a<mCollisionSprites.length){
@@ -136,11 +152,12 @@ public class Item extends Entity implements GameFlags{
 							}
 							a++;
 						}
-						this.setScale(2f);
+						
+					}*/
+						
+						break;
 					}
-					break;
-				}
-				return true;
+				return false;
 				}
 			};
 			this.mItemIcon.setScale(2f);
@@ -392,16 +409,30 @@ public class Item extends Entity implements GameFlags{
 	// ===========================================================
 
 
-	public Entity getmEntity() {
+	public Entity getEntity() {
 		return mEntity;
 	}
 
 
-	public void setmEntity(Entity mEntity) {
+	public void setEntity(Entity mEntity) {
 		this.mEntity = mEntity;
 	}
 
-	
+	/**
+	 * @return the mList
+	 */
+	public ArrayList<Item> getmList() {
+		return mList;
+	}
+
+
+	/**
+	 * @param mList the mList to set
+	 */
+	public void setmList(ArrayList<Item> mList) {
+		this.mList = mList;
+	}
+
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

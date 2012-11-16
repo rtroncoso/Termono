@@ -53,17 +53,21 @@ public class InventoryItemHelper implements GameFlags{
 		if(pEquipped==1)this.EquipItem(pBaseItem);
 	}
 	
-	public void decreaseItem(int pItemKey,int pAmount){//Le resta pAmount al amount que tiene el item, si el resultado es 0 borra el item. (si se quiere borrar de una usar .getItemAmount() como paramentro
-		if(!this.getItem(pItemKey).equals(null)) {
-			if(this.getItem(pItemKey).DecreaseAmount(pAmount))this.mItems.remove(this.getItem(pItemKey));
+	public void removeItem(Item pItem){
+		this.decreaseItem(pItem, pItem.getAmount());
+	}
+	
+	public void decreaseItem(Item pItem,int pAmount){//Le resta pAmount al amount que tiene el item, si el resultado es 0 borra el item. (si se quiere borrar de una usar .getItemAmount() como paramentro
+		if(pItem!=null) {
+			if(pItem.DecreaseAmount(pAmount))this.mItems.remove(pItem);
 		} else {
 			Log.d("Quest!","InventoryItemHelper: Decrease - No item matches key");
 		}
 	}
 
-	public void increaseItem(int pItemKey,int pAmount){//Es igual que llamarlo desde el item, pero uso esto para no confundirme con el decrease directo que daria errores de amount.
-		if(!this.getItem(pItemKey).equals(null)) {
-			this.getItem(pItemKey).IncreaseAmount(pAmount);
+	public void increaseItem(Item pItem,int pAmount){//Es igual que llamarlo desde el item, pero uso esto para no confundirme con el decrease directo que daria errores de amount.
+		if(pItem!=null) {
+			pItem.IncreaseAmount(pAmount);
 		} else {
 			Log.d("Quest!","InventoryItemHelper: Increase - No item matches key");
 		}
@@ -135,10 +139,6 @@ public class InventoryItemHelper implements GameFlags{
 		Game.getDataHandler().addInventoryItems(pPlayerID, ItemIDs, Amounts, Equipped);
 	}
 	
-	public void recycleTempItem(Item pItem){
-		
-	}
-
 	public void allocateItems(){
 		for(int i = mItems.size()-1;i>=0;i--)
 			if(mItems.get(i)!=nullItem)

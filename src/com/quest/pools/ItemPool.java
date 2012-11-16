@@ -49,7 +49,8 @@ public class ItemPool {
 						pItem.setCullingEnabled(true);
 						pItem.detachSelf();
 						pItem.setVisible(false);
-						pItem.setmEntity(null);
+						pItem.setEntity(null);
+						pItem.setmList(null);
 						pItem.setAmount(0);
 						pItem.getItemIcon().setScale(2.0f);
 						//unequip?

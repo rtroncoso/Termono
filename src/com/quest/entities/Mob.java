@@ -35,7 +35,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	private int[] mDroppedItems,mDropRates,mDropAmounts;
 	private boolean dying = false;
 	private boolean mGrabbed = false;
-	private boolean following = false;
+	private boolean following,pursuit = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -66,14 +66,14 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					// TODO Auto-generated method stub
-					if(!following){
+					if(!following && !pursuit){
 						Mob.this.doRandomPath();
 						for(int i = Game.getPlayerHelper().getEntities().size()-1;i>=0;i--)
 							if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt()!=null)
 								if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4))
 									if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4)){
 										Log.d("Quest!","Mob; player "+Game.getPlayerHelper().getPlayerbyIndex(i).getName()+" is near me");
-										startFollowTimer(Game.getPlayerHelper().getPlayerbyIndex(i));
+										startFollowTimer(Game.getPlayerHelper().getPlayerbyIndex(i),false);
 									}
 					}
 				}
@@ -83,16 +83,21 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	
 	
-	public void startFollowTimer(final Player player){
+	public void startFollowTimer(final Player player,boolean inpursuit){
 		if(Game.isServer()){
 			following = true;
+			pursuit = inpursuit;
+			
 			Game.getTimerHelper().addTimer(new Timer(0.2f, new ITimerCallback() {			
+				float countdown = 25;
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					boolean attack = false;
 					byte movingDirection = DIRECTION_DEFAULT;
 					
-					if(player.getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && player.getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4) && player.getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && player.getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4)){
+					if(player.getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && player.getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4) && player.getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && player.getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4) || pursuit){
+						countdown-=0.2f;
+						if(countdown<0.1f && pursuit)pursuit=false;
 						
 						if(player.getTMXTileAt().getTileColumn()<Mob.this.getTMXTileAt().getTileColumn()){
 							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()-1)){
@@ -128,10 +133,10 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 						
 					if(!attack){
 						TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
-					//	Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+						Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
 						Mob.this.moveToTile(tmpNewTile);
 					}else{
-						Log.d("Quest!","ATTACK");
+						Mob.this.onAttackAction(player, FLAG_ATTACK_SPELL_FIREBALL);
 					}
 					
 					}else{
@@ -268,10 +273,13 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 			this.mAttackLayer.add(tmpAtt);	//Mostrar la animacion de ataque
 		}
 		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()),1+(float)((float)(pDamage)/(float)(mModHP)));
+		if(!following && !pursuit)
+			this.startFollowTimer((Player)pAttackingEntity, true);
 	};
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
+		this.setAttackAnimation();
 		if(!Game.isServer()){
 			//muestro el mob atacando
 		}else{

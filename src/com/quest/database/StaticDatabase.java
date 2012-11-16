@@ -60,7 +60,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
 	    static final String fItemModifierIntelligence = "Intelligence";
 	    static final String fItemModifierPower = "Power";
 	    static final String fItemModifierDefense = "Defense";
-        
+	    static final String fItemModifierEffect = "Effect";
 	    
         //Attacks 
 	    static final String tAttacks = "Attacks";
@@ -177,6 +177,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                         fItemModifierIntelligence+" INTEGER , "+
                         fItemModifierDefense+" INTEGER , "+
                         fItemModifierEndurance+" INTEGER , "+
+                        fItemModifierEffect+" TEXT , "+
                         fItemID+" INTEGER)"
                         );
                 
