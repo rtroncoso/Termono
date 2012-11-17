@@ -157,7 +157,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		// Calculate frame durations
 		long[] frameDurations = new long[this.mBodyExtraCols];
 		for(int i = 0; i < this.mBodyExtraCols; i++) {
-			frameDurations[i] = 50;
+			frameDurations[i] = 200;
 		}
 		
 		IAnimationListener tmpAnimationListener = new IAnimationListener() {
