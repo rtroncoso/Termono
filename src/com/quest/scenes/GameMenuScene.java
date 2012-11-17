@@ -1268,6 +1268,7 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 						mCurrentItem.getItemIcon().setPosition(pSceneTouchEvent.getX()-(mCurrentItem.getItemIcon().getWidthScaled()/2)-mCurrentItem.getEntity().getX(), pSceneTouchEvent.getY()-(mCurrentItem.getItemIcon().getHeightScaled()/2)-mCurrentItem.getEntity().getY());
 					boolean collideS =false;
 					int a = 0;
+					Log.d("Quest!","Collision lenght: "+mCollisionSprites.length);
 					while(a<mCollisionSprites.length){
 						if(!collideS && mCurrentItem.getItemIcon().collidesWith(mCollisionSprites[a])){
 							Game.getSceneManager().getGameMenuScene().ActionOnCollide(mCurrentItem, mCollisionSprites[a],mCurrentItem.getEntity());

@@ -58,6 +58,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	protected int mBodyExtraCols;
 	protected int mCurrentMap;
 	protected byte mFacingDirection;
+	protected Entity mEquippedWeaponsLayer = new Entity();
 	private int[] mCoords;
 	
 	//a ordenar
@@ -116,33 +117,58 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		if(restartAnimation && !this.mBodySprite.isAnimationRunning()) return this;
 
 		// Calculate frame durations
-		long[] frameDurations = new long[this.mBodyColumns - this.mBodyExtraCols];
+		long[] bodyFrameDurations = new long[this.mBodyColumns - this.mBodyExtraCols];
 		for(int i = 0; i < this.mBodyColumns - this.mBodyExtraCols; i++) {
-			frameDurations[i] = 50;
+			bodyFrameDurations[i] = 100;
+		}
+		
+		for(int a = this.mEquippedWeaponsLayer.getChildCount() - 1; a >= 0; a--){
+		Item item = (Item)(this.mEquippedWeaponsLayer.getChildByIndex(a));
+			// Check if not already animating
+			if(!restartAnimation && item.getItemAnimation().isAnimationRunning()){
+	
+				// Calculate frame durations
+				long[] frameDurations = new long[item.getCols() - item.getExtraCols()];
+				for(int i = 0; i < item.getCols() - item.getExtraCols(); i++) {
+					frameDurations[i] = 50;
+				}
+				
+				// Animate it
+				switch(pFacingDirection) {
+				case DIRECTION_SOUTH:
+					item.getItemAnimation().animate(frameDurations, 0, (item.getCols()) - (item.getExtraCols()) - 1, false);
+					break;
+				case DIRECTION_NORTH:
+					item.getItemAnimation().animate(frameDurations, (item.getCols() * 3), (item.getCols() * 4) - (item.getExtraCols()) - 1, false);
+					break;	
+				case DIRECTION_EAST:
+					item.getItemAnimation().animate(frameDurations, (item.getCols() * 2), (item.getCols() * 3) - (item.getExtraCols()) - 1, false);
+					break;
+				case DIRECTION_WEST:
+					item.getItemAnimation().animate(frameDurations, item.getCols(), (item.getCols() * 2) - (item.getExtraCols()) - 1, false);
+					break;	
+				}
+				
+			}
 		}
 		
 		// Animate it
 		switch(pFacingDirection) {
 		case DIRECTION_SOUTH:
-			this.mBodySprite.animate(frameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
-			AnimateItems(pFacingDirection, restartAnimation);
+			this.mBodySprite.animate(bodyFrameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
 			break;
 		case DIRECTION_NORTH:
-			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - (this.mBodyExtraCols) - 1, false);
-			AnimateItems(pFacingDirection, restartAnimation);
+			this.mBodySprite.animate(bodyFrameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - (this.mBodyExtraCols) - 1, false);
 			break;	
 		case DIRECTION_EAST:
-			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - (this.mBodyExtraCols) - 1, false);
-			AnimateItems(pFacingDirection, restartAnimation);
+			this.mBodySprite.animate(bodyFrameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - (this.mBodyExtraCols) - 1, false);
 			break;
 		case DIRECTION_WEST:
-			this.mBodySprite.animate(frameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - (this.mBodyExtraCols) - 1, false);
-			AnimateItems(pFacingDirection, restartAnimation);
+			this.mBodySprite.animate(bodyFrameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - (this.mBodyExtraCols) - 1, false);
 			break;	
 		}
 		
 		this.mFacingDirection = pFacingDirection;
-		
 		return this;
 	}
 	
@@ -157,7 +183,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		// Calculate frame durations
 		long[] frameDurations = new long[this.mBodyExtraCols];
 		for(int i = 0; i < this.mBodyExtraCols; i++) {
-			frameDurations[i] = 50;
+			frameDurations[i] = 200;
 		}
 		
 		IAnimationListener tmpAnimationListener = new IAnimationListener() {
@@ -204,39 +230,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		case DIRECTION_WEST:
 			this.mBodySprite.animate(frameDurations, (this.mBodyColumns * 2) - (this.mBodyExtraCols), (this.mBodyColumns * 2) - 1, false, tmpAnimationListener);
 			break;	
-		}
-	}
-
-	public void AnimateItems(byte pFacingDirection, boolean restartAnimation) {
-		
-		for(int a= this.mBodySprite.getChildCount()-1;a>=0;a--){
-		Item item = (Item)(this.mBodySprite.getChildByIndex(a));
-		// Check if not already animating
-			if(!restartAnimation && item.getItemAnimation().isAnimationRunning()){
-	
-				// Calculate frame durations
-				long[] frameDurations = new long[item.getCols() - item.getExtraCols()];
-				for(int i = 0; i < item.getCols() - item.getExtraCols(); i++) {
-					frameDurations[i] = 50;
-				}
-				
-				// Animate it
-				switch(pFacingDirection) {
-				case DIRECTION_SOUTH:
-					item.getItemAnimation().animate(frameDurations, 0, (item.getCols()) - (item.getExtraCols()) - 1, false);
-					break;
-				case DIRECTION_NORTH:
-					item.getItemAnimation().animate(frameDurations, (item.getCols() * 3), (item.getCols() * 4) - (item.getExtraCols()) - 1, false);
-					break;	
-				case DIRECTION_EAST:
-					item.getItemAnimation().animate(frameDurations, (item.getCols() * 2), (item.getCols() * 3) - (item.getExtraCols()) - 1, false);
-					break;
-				case DIRECTION_WEST:
-					item.getItemAnimation().animate(frameDurations, item.getCols(), (item.getCols() * 2) - (item.getExtraCols()) - 1, false);
-					break;	
-				}
-				
-			}
 		}
 	}
 	
@@ -709,6 +702,20 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.mAttackLayer = mAttacksLayer;
 	}
 
+	/**
+	 * @return the mEquippedWeaponsLayer
+	 */
+	public Entity getEquippedWeaponsLayer() {
+		return mEquippedWeaponsLayer;
+	}
+
+	/**
+	 * @param mEquippedWeaponsLayer the mEquippedWeaponsLayer to set
+	 */
+	public void setEquippedWeaponsLayer(Entity mEquippedWeaponsLayer) {
+		this.mEquippedWeaponsLayer = mEquippedWeaponsLayer;
+	}
+
 	public boolean decreaseHP(int damage){
 		setCurrHP(currHP-damage);
 		if(currHP<1)return true;
@@ -804,7 +811,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID) {
 		// TODO Auto-generated method stub
-		Log.e("Quest!","Atacado base entity");
 	}
 
 	@Override

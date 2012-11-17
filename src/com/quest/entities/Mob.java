@@ -35,7 +35,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	private int[] mDroppedItems,mDropRates,mDropAmounts;
 	private boolean dying = false;
 	private boolean mGrabbed = false;
-	private boolean following,pursuit = false;
+	private boolean following,pursuit,cooling = false;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -133,10 +133,14 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 						
 					if(!attack){
 						TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
-						Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+						Log.d("Quest!","usrdt: "+((Integer)Mob.this.getUserData())+" tmp: "+tmpNewTile);
+						//Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
 						Mob.this.moveToTile(tmpNewTile);
 					}else{
-						Mob.this.onAttackAction(player, FLAG_ATTACK_SPELL_FIREBALL);
+						if(!cooling){
+							Game.getBattleHelper().startAttack(Mob.this, FLAG_ATTACK_SPELL_FIREBALL, player);
+							startCooldown(1.5f);
+						}
 					}
 					
 					}else{
@@ -146,6 +150,18 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 				}
 			}), String.valueOf(this.getUserData()+";Follow"));
 		}
+	}
+	
+	public void startCooldown(float time){
+		cooling = true;
+			Game.getTimerHelper().addTimer(new Timer(time, new ITimerCallback() {			
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) {
+					// TODO Auto-generated method stub
+					cooling = false;
+					Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData())+";Cooldown");
+				}
+			}), String.valueOf(this.getUserData())+";Cooldown");
 	}
 	
 	public void doRandomPath() 
@@ -281,9 +297,8 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
 		this.setAttackAnimation();
 		if(!Game.isServer()){
-			//muestro el mob atacando
+			
 		}else{
-			//muestro el mob atacando
 			//Mando mensaje de que el mob ataco (el mensaje llama este metodo del lado cliente)
 		}
 	};

@@ -80,7 +80,7 @@ public class Item extends Entity implements GameFlags{
 			this.mIconTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mItemTextureAtlas, Game.getInstance().getApplicationContext(), mIconTexturePath, 0, 0);
 			this.mItemTextureAtlas.load();
 						
-			if(mItemType>0&&mItemType<3){
+			if(mItemType>1){
 				this.mModifiers = Game.getDataHandler().getItemModifiers(this.mItemFlag);
 				
 				this.mAnimatedTexturePath = Game.getDataHandler().getItemAnimationTexture(mItemFlag);

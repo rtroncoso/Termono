@@ -116,11 +116,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
 	    static final String fMobDropRates = "DropRates";
 	    static final String fMobDropAmounts = "DropAmounts";
 	    //mobID
-	    
-	    //Mob Spawn
-	    static final String tMobSpawns = "MobSpawns";
-	    //mobID
-	    //NOSE
+	
         
         public StaticDatabase(Context context) {
 // THE VALUE OF 1 ON THE NEXT LINE REPRESENTS THE VERSION NUMBER OF THE DATABASE
@@ -393,7 +389,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		 cv.put(fItemName, "Big Flamed Sword");
           		 cv.put(fItemAnimationTexture, "Items/Animations/Big Flamed Sword.png");
           		 cv.put(fItemIconTexture, "Items/Icons/Big Flamed Sword.png");
-          		 cv.put(fItemType, 1);
+          		 cv.put(fItemType, 2);
           		 cv.put(fItemStackable, 0);
           		 cv.put(fItemExtraCols, 2);
           		 cv.put(fItemAnimationRows, 4);
