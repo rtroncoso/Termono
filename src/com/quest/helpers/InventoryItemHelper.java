@@ -76,14 +76,14 @@ public class InventoryItemHelper implements GameFlags{
 	public void EquipItem(Item item){		
 		item.Equip(true);
 		this.mOwner.addModifiers(item.getItemModifiers());//server
-		this.mOwner.getBodySprite().attachChild(item);
+		this.mOwner.getEquippedWeaponsLayer().attachChild(item);
 		this.getEquippedItems().add(item);
 	}
 	
 	public void UnequipItem(Item item){
 		item.Equip(false);
 		this.mOwner.substractModifiers(item.getItemModifiers());//server
-		this.mOwner.getBodySprite().detachChild(item);
+		this.mOwner.getEquippedWeaponsLayer().detachChild(item);
 		this.getEquippedItems().remove(item);
 	}
 	

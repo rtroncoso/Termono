@@ -40,7 +40,6 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private boolean mGrabbed = false;
 	private int mCurrentTarget;
 
-	private Entity mEquippedWeaponsLayer;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -101,6 +100,10 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 			pInventory.addItem(Game.getItemHelper().addNewItem(pItemIDs[i], pAmounts[i]), isEquipped[i]);
 		}
 		return pInventory;
+	}
+	
+	public void attachWeapon(int pItemID) {
+		
 	}
 	
 	public void startRecoveryTimer(){
