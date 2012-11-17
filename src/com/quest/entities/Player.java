@@ -36,7 +36,6 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	private InventoryItemHelper mInventory;
 	private int mUnassignedPoints;
 	private int Attack_Flag;
-	private Entity mEquippedWeaponsLayer;
 	
 	private boolean mGrabbed = false;
 	private int mCurrentTarget;
@@ -70,8 +69,6 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setCurrentMap(Game.getDataHandler().getPlayerCurrentMap(this.mPlayerID));
 		this.setCoords(Game.getDataHandler().getPlayerPosition(this.mPlayerID));
 		this.mEntityType = "Player";
-		
-		this.mEquippedWeaponsLayer = new Entity();
 	}
 	
 	
