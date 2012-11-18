@@ -36,6 +36,9 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	private boolean dying = false;
 	private boolean mGrabbed = false;
 	private boolean following,pursuit,cooling = false;
+	private int mViewRange,mAttackRange;
+	private int mATTACK_FLAG;
+	private int mMobType;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -50,8 +53,14 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.mExperience= Game.getDataHandler().getMobExperience(pMobFlag);
 		this.mDroppedItems = Game.getDataHandler().getMobDroppedItems(mMobFlag);
 		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
+		
+		mMobType = Game.getDataHandler().getMobType(mMobFlag);
+		
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mBodyExtraCols = Game.getDataHandler().getMobExtraCols(mMobFlag);
+		this.mViewRange = Game.getDataHandler().getMobViewRange(mMobFlag);
+		this.mAttackRange = Game.getDataHandler().getMobAttackRange(mMobFlag);
+		this.mATTACK_FLAG = Game.getDataHandler().getMobAttack(mMobFlag);
 		this.mEntityType = "Mob";
 	}
 	
@@ -62,7 +71,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	// ===========================================================
 	public void startMoveTimer(){
 		if(Game.isServer()){	
-			Game.getTimerHelper().addTimer(new Timer(3, new ITimerCallback() {			
+			Game.getTimerHelper().addTimer(new Timer(2.5f, new ITimerCallback() {			
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					// TODO Auto-generated method stub
@@ -72,7 +81,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 							if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt()!=null)
 								if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4))
 									if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4)){
-										Log.d("Quest!","Mob; player "+Game.getPlayerHelper().getPlayerbyIndex(i).getName()+" is near me");
+										Log.d("Quest!","Mob; player "+Game.getPlayerHelper().getPlayerbyIndex(i).getUserID()+" is near me");
 										startFollowTimer(Game.getPlayerHelper().getPlayerbyIndex(i),false);
 									}
 					}
@@ -95,19 +104,19 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 					boolean attack = false;
 					byte movingDirection = DIRECTION_DEFAULT;
 					
-					if(player.getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && player.getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4) && player.getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && player.getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4) || pursuit){
+					if(player.getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-mViewRange) && player.getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+mViewRange) && player.getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-mViewRange) && player.getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+mViewRange) || pursuit){
 						countdown-=0.2f;
 						if(countdown<0.1f && pursuit)pursuit=false;
 						
 						if(player.getTMXTileAt().getTileColumn()<Mob.this.getTMXTileAt().getTileColumn()){
-							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()-1)){
+							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()-mAttackRange)){
 								attack = true;
 							}else{
 								movingDirection = DIRECTION_WEST;
 							}
 							
 						}else if(player.getTMXTileAt().getTileColumn()>Mob.this.getTMXTileAt().getTileColumn()){
-							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()+1)){
+							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()+mAttackRange)){
 								attack = true;
 							}else{
 								movingDirection = DIRECTION_EAST;
@@ -115,33 +124,35 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 							
 						}else if(player.getTMXTileAt().getTileColumn()==Mob.this.getTMXTileAt().getTileColumn()){
 							if(player.getTMXTileAt().getTileRow()<Mob.this.getTMXTileAt().getTileRow()){
-								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()-1)){
+								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()-mAttackRange)){
 									attack = true;
 								}else{
-									Log.d("Quest!","Player row: "+player.getTMXTileAt().getTileRow()+" Mob row: "+Mob.this.getTMXTileAt().getTileRow()+" es north tecnicamente");
 									movingDirection = DIRECTION_SOUTH;
 								}
 							}else if(player.getTMXTileAt().getTileRow()>Mob.this.getTMXTileAt().getTileRow()){
-								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()+1)){
+								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()+mAttackRange)){
 									attack = true;
 								}else{
-									Log.d("Quest!","Player row: "+player.getTMXTileAt().getTileRow()+" Mob row: "+Mob.this.getTMXTileAt().getTileRow()+" es south tecnicamente");
 									movingDirection = DIRECTION_NORTH;
-							}								
+								}								
+							}
 						}
-					}
-						
-					if(!attack){
-						TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
-						Log.d("Quest!","usrdt: "+((Integer)Mob.this.getUserData())+" tmp: "+tmpNewTile);
-						//Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
-						Mob.this.moveToTile(tmpNewTile);
-					}else{
-						if(!cooling){
-							Game.getBattleHelper().startAttack(Mob.this, FLAG_ATTACK_SPELL_FIREBALL, player);
-							startCooldown(1.5f);
+							
+						if(!attack){
+							TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
+							if(tmpNewTile!=null){
+								Log.d("Quest!","usrdt: "+((Integer)Mob.this.getUserData())+" tmp: "+tmpNewTile+" \n x:"+tmpNewTile.getTileColumn()+" y: "+tmpNewTile.getTileRow()+" \n px: "+player.getTMXTileAt().getTileColumn()+" py: "+player.getTMXTileAt().getTileRow());
+								Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+							}else{
+								Log.e("Quest!","Tile es null");
+							}
+							Mob.this.moveToTile(tmpNewTile);
+						}else{
+							if(!cooling){
+								Mob.this.onAttackAction(player, mATTACK_FLAG);
+								startCooldown(1.5f);
+							}
 						}
-					}
 					
 					}else{
 						following = false;
@@ -289,24 +300,65 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 			this.mAttackLayer.add(tmpAtt);	//Mostrar la animacion de ataque
 		}
 		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()),1+(float)((float)(pDamage)/(float)(mModHP)));
-		if(!following && !pursuit)
+		if(!following && !pursuit){
 			this.startFollowTimer((Player)pAttackingEntity, true);
+			Log.d("Quest!","Attacked, following");
+		}
+			
 	};
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
-		this.setAttackAnimation();
-		if(!Game.isServer()){
-			
-		}else{
-			//Mando mensaje de que el mob ataco (el mensaje llama este metodo del lado cliente)
-		}
+		this.onDisplayAttackingAction();
+		Game.getBattleHelper().startAttack(Mob.this, ATTACK_FLAG, pAttackedEntity);
 	};
 	
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 	
+	/**
+	 * @return the following
+	 */
+	public boolean isFollowing() {
+		return following;
+	}
+
+	/**
+	 * @param following the following to set
+	 */
+	public void setFollowing(boolean following) {
+		this.following = following;
+	}
+
+	/**
+	 * @return the pursuit
+	 */
+	public boolean isPursuit() {
+		return pursuit;
+	}
+
+	/**
+	 * @param pursuit the pursuit to set
+	 */
+	public void setPursuit(boolean pursuit) {
+		this.pursuit = pursuit;
+	}
+
+	/**
+	 * @return the cooling
+	 */
+	public boolean isCooling() {
+		return cooling;
+	}
+
+	/**
+	 * @param cooling the cooling to set
+	 */
+	public void setCooling(boolean cooling) {
+		this.cooling = cooling;
+	}
+
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================

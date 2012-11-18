@@ -15,8 +15,9 @@ public interface IBaseEntityActions {
 	
 	public void onAttackedAction(BaseEntity pAttackingEntity,int pDamage,int pAttackID);
 	
-	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID);
+	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG);
 	
+	public void onDisplayAttackingAction();
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

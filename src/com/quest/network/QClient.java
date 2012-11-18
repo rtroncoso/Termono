@@ -33,6 +33,7 @@ import com.quest.network.messages.client.ClientMessageSendCollideTiles;
 import com.quest.network.messages.client.ClientMessageSetPlayerAttributes;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
+import com.quest.network.messages.server.ServerMessageAttackStarted;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
@@ -44,6 +45,7 @@ import com.quest.network.messages.server.ServerMessageMapChanged;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
+import com.quest.network.messages.server.ServerMessagePlayerDied;
 import com.quest.network.messages.server.ServerMessagePlayerLevelUP;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSetPlayerAttributes;
@@ -222,6 +224,22 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				}
 			});
 			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_ATTACK_STARTED, ServerMessageAttackStarted.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessageAttackStarted serverMessageAttackStarted = (ServerMessageAttackStarted) pServerMessage;
+					if(serverMessageAttackStarted.isMonsterAttacking()){
+						if(Game.getMobHelper().MobExists(serverMessageAttackStarted.getMobID())){
+							Game.getMobHelper().getMob(serverMessageAttackStarted.getMobID()).onDisplayAttackingAction();
+						}
+					}else{
+						if(!Game.getPlayerHelper().getOwnPlayer().getUserID().equals(serverMessageAttackStarted.getPlayerKey())){
+							Game.getPlayerHelper().getPlayer(serverMessageAttackStarted.getPlayerKey()).onDisplayAttackingAction();
+						}
+					}
+				}
+			});
+			
 			this.registerServerMessage(FLAG_MESSAGE_SERVER_MOB_DIED, ServerMessageMobDied.class, new IServerMessageHandler<SocketConnection>() {
 				@Override
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
@@ -272,6 +290,15 @@ public class QClient extends ServerConnector<SocketConnection> implements Client
 				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
 					final ServerMessagePlayerLevelUP serverMessagePlayerLevelUP = (ServerMessagePlayerLevelUP) pServerMessage;
 					((Player)Game.getPlayerHelper().getPlayer(serverMessagePlayerLevelUP.getPlayerKey())).levelUP_Client(serverMessagePlayerLevelUP.getLevel(), serverMessagePlayerLevelUP.getUnassignedPoints());
+				}
+			});
+			
+			this.registerServerMessage(FLAG_MESSAGE_SERVER_PLAYER_DIED, ServerMessagePlayerDied.class, new IServerMessageHandler<SocketConnection>() {
+				@Override
+				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+					final ServerMessagePlayerDied serverMessagePlayerDied = (ServerMessagePlayerDied) pServerMessage;
+					((Player)Game.getPlayerHelper().getPlayer(serverMessagePlayerDied.getPlayerKey())).setCoords(serverMessagePlayerDied.getX(), serverMessagePlayerDied.getY());
+					((Player)Game.getPlayerHelper().getPlayer(serverMessagePlayerDied.getPlayerKey())).onDeathAction(null);
 				}
 			});
 			
