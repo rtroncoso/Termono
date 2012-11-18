@@ -8,6 +8,7 @@ import org.andengine.util.debug.Debug;
 import android.util.Log;
 
 import com.quest.entities.Mob;
+import com.quest.game.Game;
 
 
 public class MobPool{
@@ -49,6 +50,7 @@ public class MobPool{
 					@Override
 					protected void onHandleRecycleItem(final Mob pMob) {
 						pMob.setPosition(-10, -10);
+						Game.getTimerHelper().deleteTimer(pMob.getUserData()+";Recovery");
 						pMob.setVisible(false);
 						pMob.setAlpha(1f);
 						pMob.setPursuit(false);
@@ -58,7 +60,6 @@ public class MobPool{
 						pMob.setUserData(null);
 						pMob.setIgnoreUpdate(true);
 						pMob.detachSelf();
-						//TODO fijarse como eliminarlo bien
 					}
 					
 					@Override
@@ -66,6 +67,7 @@ public class MobPool{
 						pMob.setVisible(true);
 						pMob.setIgnoreUpdate(false);
 						pMob.Heal();
+						pMob.startRecoveryTimer();
 					};
 				}
 		);

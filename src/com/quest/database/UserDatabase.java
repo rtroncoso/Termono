@@ -699,7 +699,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     }
     
     public int[] getInventoryItemKeys(int pPlayerID){//All inventory Item Keys
-    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fInventoryItemKey+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" =? and "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID, new String[]{String.valueOf(pPlayerID)});
+    	Cursor myCursor = this.getReadableDatabase().rawQuery("select "+tInventoryItem+"."+fInventoryItemKey+" from "+tPlayer+","+tInventory+","+tInventoryItem+" on "+tPlayer+"."+fPlayerID+" = "+tInventory+"."+fPlayerID+" and "+tInventory+"."+fInventoryID+" = "+tInventoryItem+"."+fInventoryID+" and "+tPlayer+"."+fPlayerID+" =?", new String[]{String.valueOf(pPlayerID)});
     	int index = myCursor.getColumnIndex(fInventoryItemKey);
         int myAnswer[] = new int[myCursor.getCount()];
         for(int i = 0; i < myCursor.getCount(); i++){
