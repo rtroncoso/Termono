@@ -111,7 +111,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public BaseEntity setAnimationDirection(byte pFacingDirection, boolean restartAnimation) {
+	public BaseEntity setAnimationDirection(byte pFacingDirection, boolean restartAnimation, boolean pLoop) {
 		
 		// Check if not already animating
 		if(restartAnimation && !this.mBodySprite.isAnimationRunning()) return this;
@@ -155,16 +155,16 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		// Animate it
 		switch(pFacingDirection) {
 		case DIRECTION_SOUTH:
-			this.mBodySprite.animate(bodyFrameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
+			this.mBodySprite.animate(bodyFrameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, pLoop);
 			break;
 		case DIRECTION_NORTH:
-			this.mBodySprite.animate(bodyFrameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - (this.mBodyExtraCols) - 1, false);
+			this.mBodySprite.animate(bodyFrameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - (this.mBodyExtraCols) - 1, pLoop);
 			break;	
 		case DIRECTION_EAST:
-			this.mBodySprite.animate(bodyFrameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - (this.mBodyExtraCols) - 1, false);
+			this.mBodySprite.animate(bodyFrameDurations, (this.mBodyColumns * 2), (this.mBodyColumns * 3) - (this.mBodyExtraCols) - 1, pLoop);
 			break;
 		case DIRECTION_WEST:
-			this.mBodySprite.animate(bodyFrameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - (this.mBodyExtraCols) - 1, false);
+			this.mBodySprite.animate(bodyFrameDurations, this.mBodyColumns, (this.mBodyColumns * 2) - (this.mBodyExtraCols) - 1, pLoop);
 			break;	
 		}
 		
@@ -212,7 +212,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 			@Override
 			public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
 				// TODO Auto-generated method stub
-				BaseEntity.this.setAnimationDirection(BaseEntity.this.mFacingDirection, false);
+				BaseEntity.this.setAnimationDirection(BaseEntity.this.mFacingDirection, false, false);
 			}
 		};
 		
@@ -232,15 +232,6 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 			break;	
 		}
 	}
-	
-	
-	
-	/*
- * 
- * 			for(int i= mBodySprite.getChildCount()-1;i>=0;i--)
-				((Item)(mBodySprite.getChildByIndex(i))).getItemAnimation().animate(frameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, false);
-	
- */
 	
 	
 	public byte getFacingDirectionToTile(final TMXTile pTileTo) {
@@ -286,7 +277,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 
 		// Animate the Character
-		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), false);
+		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), true, false);
 		
 		// Check Tiles
 		Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
@@ -305,7 +296,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		Game.getMapManager().registerCollisionTile(pTileTo);
 		
 		// Animate the Character
-		this.setAnimationDirection(this.getFacingDirectionToTile(pTileTo), true);
+		this.setAnimationDirection(this.getFacingDirectionToTile(pTileTo), true, false);
 
 		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pTileTo.getTileX(), pTileTo.getTileY());
 
