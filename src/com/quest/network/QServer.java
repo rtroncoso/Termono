@@ -21,9 +21,11 @@ import org.andengine.util.debug.Debug;
 import android.util.Log;
 
 import com.quest.constants.ClientMessageFlags;
+import com.quest.constants.GameFlags;
 import com.quest.constants.ServerMessageFlags;
 import com.quest.data.MatchData;
 import com.quest.data.ProfileData;
+import com.quest.entities.BaseEntity;
 import com.quest.entities.Mob;
 import com.quest.entities.Player;
 import com.quest.entities.objects.Attack;
@@ -41,6 +43,7 @@ import com.quest.network.messages.client.ClientMessageSetPlayerAttributes;
 import com.quest.network.messages.client.ConnectionPingClientMessage;
 import com.quest.network.messages.server.ConnectionPongServerMessage;
 import com.quest.network.messages.server.QuestServerMessage;
+import com.quest.network.messages.server.ServerMessageAttackStarted;
 import com.quest.network.messages.server.ServerMessageConnectionAcknowledge;
 import com.quest.network.messages.server.ServerMessageConnectionRefuse;
 import com.quest.network.messages.server.ServerMessageCreatePlayer;
@@ -52,6 +55,7 @@ import com.quest.network.messages.server.ServerMessageMapChanged;
 import com.quest.network.messages.server.ServerMessageMatchStarted;
 import com.quest.network.messages.server.ServerMessageMobDied;
 import com.quest.network.messages.server.ServerMessageMoveMob;
+import com.quest.network.messages.server.ServerMessagePlayerDied;
 import com.quest.network.messages.server.ServerMessagePlayerLevelUP;
 import com.quest.network.messages.server.ServerMessageSendPlayer;
 import com.quest.network.messages.server.ServerMessageSetPlayerAttributes;
@@ -61,7 +65,7 @@ import com.quest.util.constants.IGameConstants;
 import com.quest.util.constants.IMeasureConstants;
 
 
-public class QServer extends SocketServer<SocketConnectionClientConnector> implements IUpdateHandler, ClientMessageFlags, ServerMessageFlags, IGameConstants {
+public class QServer extends SocketServer<SocketConnectionClientConnector> implements IUpdateHandler, ClientMessageFlags, ServerMessageFlags, IGameConstants, GameFlags {
 	
 	
 // ===========================================================
@@ -100,6 +104,8 @@ public class QServer extends SocketServer<SocketConnectionClientConnector> imple
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_DISPLAY_AREA_ATTACK, ServerMessageDisplayAreaAttack.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_PLAYER_LEVELUP, ServerMessagePlayerLevelUP.class);
 		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_SET_PLAYER_ATTRIBUTES, ServerMessageSetPlayerAttributes.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_ATTACK_STARTED, ServerMessageAttackStarted.class);
+		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_PLAYER_DIED, ServerMessagePlayerDied.class);
 	}
 
 // ===========================================================
@@ -524,6 +530,28 @@ public void sendMessageSetPlayerAttributes(int pPlayerID, int[] pAttributes, int
 	serverMessageSetPlayerAttributes.setAttributes(pAttributes);
 	serverMessageSetPlayerAttributes.setUnassigned(pUnassigned);
 	sendBroadcast(serverMessageSetPlayerAttributes);
+}
+public void sendMessageAttackStarted(BaseEntity entity, int ATTACK_FLAG){
+	if(ATTACK_FLAG==FLAG_ATTACK_NORMAL){
+		boolean mob = false;
+		if(entity.getEntityType().equals("Mob"))
+			mob = true;
+		
+		final ServerMessageAttackStarted serverMessageAttackStarted = (ServerMessageAttackStarted) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_ATTACK_STARTED);
+		serverMessageAttackStarted.setMonsterAttacking(mob);
+		if(mob)
+			serverMessageAttackStarted.setMobEntityUserData((Integer)entity.getUserData());
+		else
+			serverMessageAttackStarted.setPlayerEntityUserData(entity.getUserData().toString());
+		
+		sendBroadcast(serverMessageAttackStarted);
+	}
+}
+public void sendMessagePlayerDied(Player player){
+	final ServerMessagePlayerDied serverMessagePlayerDied = (ServerMessagePlayerDied) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_PLAYER_DIED);
+	serverMessagePlayerDied.setPlayerKey(player.getUserID());
+	serverMessagePlayerDied.setCoords(player.getCoords());
+	sendBroadcast(serverMessagePlayerDied);
 }
 // ===========================================================
 // Inner and Anonymous Classes

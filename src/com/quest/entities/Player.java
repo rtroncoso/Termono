@@ -156,32 +156,32 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	public void onDeathAction(BaseEntity pKillerEntity) {
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
-		if(!Game.isServer()){
-			//Mostrar que murio el player
-		}else{
-			//Mostrar que murio el player
-		    //mandar mensaje de que murio y en donde aparece (el mensaje llama este metodo del lado cliente)
+		if(Game.isServer()){
+			Game.getServer().sendMessagePlayerDied(Player.this);
 		}
+		this.setTileAt(this.getCoords()[0], this.getCoords()[1]);
+		this.Heal();
+		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_PLAYER_DEATH));
 	}
 
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
-		if(decreaseHP(pDamage)){
-			if(Game.isServer()){
-				onDeathAction(pAttackingEntity);	
-			}
-		}
-		Log.d("Quest!", "Player: "+this.getUserData()+" hp: "+this.currHP);
 		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(pAttackID));
 	};
 	
 	@Override
-	public void onAttackAction(BaseEntity pAttackedEntity, int pAttackID) {
-		if(Game.getAttacksHelper().canAttack(Player.this, pAttackID))
-		Game.getBattleHelper().startAttack(this, pAttackID, pAttackedEntity);
+	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
+			if(Game.getAttacksHelper().canAttack(Player.this, ATTACK_FLAG)){
+				if(ATTACK_FLAG==0)this.onDisplayAttackingAction();
+				Game.getBattleHelper().startAttack(this, ATTACK_FLAG, pAttackedEntity);
+			}
 	};
 	
-	
+	@Override
+	public void onDisplayAttackingAction() {
+		//ANIMAR EL ITEM
+		//TODO ***
+	}
 	
 	@Override
 	public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -289,7 +289,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	public void levelUP_Server(){
 			this.setUnassignedPoints(getUnassignedPoints()+3);
 			Game.getServer().sendMessagePlayerLevelUP(this.getUserID(), this.mLevel, this.getUnassignedPoints());
-			this.popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_HEALING, 0, 0, "LEVEL UP!", "lvlup"), 1.5f);
+			this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_PLAYER_LEVEL_UP));
 			Game.getQueryQueuer().addPlayerLevelUPQuery(this.mPlayerID, this.mLevel,this.getUnassignedPoints(), this.mExperience);
 	}
 		

@@ -17,14 +17,15 @@ public class BattleHelper implements GameFlags{
 	}
 	
 	
-	public void startAttack(BaseEntity pAttackingEntity,int pAttackID, BaseEntity pAttackedEntity){
-		Attack tmpAttack = Game.getAttacksHelper().getAttack(pAttackID);
+	public void startAttack(BaseEntity pAttackingEntity,int ATTACK_FLAG, BaseEntity pAttackedEntity){
+		Attack tmpAttack = Game.getAttacksHelper().getAttack(ATTACK_FLAG);
 		if(tmpAttack.getEffect()[1]!=3)pAttackingEntity.decreaseMP(tmpAttack.getManaCost());
 		Game.getAttacksHelper().recycleAttack(tmpAttack);
 		if(!Game.isServer()){
-			Game.getClient().sendAttackMessage((Integer)(pAttackedEntity.getUserData()), pAttackID);
+			Game.getClient().sendAttackMessage((Integer)(pAttackedEntity.getUserData()), ATTACK_FLAG);
 		}else{
-			manageAttack(pAttackingEntity, pAttackID, pAttackedEntity);
+			Game.getServer().sendMessageAttackStarted(pAttackingEntity, ATTACK_FLAG);
+			manageAttack(pAttackingEntity, ATTACK_FLAG, pAttackedEntity);
 		}
 	}
 	
@@ -36,8 +37,8 @@ public class BattleHelper implements GameFlags{
 		damage = ((pAttackingEntity.getModPower()+pAttackingEntity.getPower())*4)-((pAttackedEntity.getModDefense()+pAttackedEntity.getDefense())*3);
 		if(damage<1)damage=0;
 		damage+=pAttackingEntity.getModPower();
-		damage = (int)(((float)(damage))*Game.getAttacksHelper().getAttack(pAttackID).getEffect()[0]);//pAttackID;
-	//	Multiplicar damage por el bonus del ataque y esou
+		damage = (int)(((float)(damage))*Game.getAttacksHelper().getAttack(pAttackID).getEffect()[0]*(1-(Game.getRandomFloat()/10)));
+		
 		
 		if(pAttackingEntity.getEntityType().equals("Mob")){
 			isMobAttacking = true;
@@ -54,9 +55,9 @@ public class BattleHelper implements GameFlags{
 			if(Game.isServer()){
 				if(!isMobAttacking){
 					int[] drop = ((Mob)(pAttackedEntity)).getMobDrop();
-					Game.getBattleHelper().killMob(((Mob)(pAttackedEntity)),drop[0],drop[1], ((Mob)(pAttackedEntity)).getExperience(), ((Mob)(pAttackedEntity)).getMoney(),(Player) (pAttackingEntity));
+					this.killMob(((Mob)(pAttackedEntity)),drop[0],drop[1], ((Mob)(pAttackedEntity)).getExperience(), ((Mob)(pAttackedEntity)).getMoney(),(Player) (pAttackingEntity));
 				}else{
-					//murio el player
+					this.killPlayer((Player)pAttackedEntity);
 				}
 			}
 		}
@@ -67,9 +68,7 @@ public class BattleHelper implements GameFlags{
 	
 	public void displayAttack(BaseEntity pAttackingEntity,int pAttackID,int pDamage, BaseEntity pAttackedEntity, boolean ismobAttacking){//display grafico del attack, llamado por mensaje
 		pAttackedEntity.onAttackedAction(pAttackingEntity, pDamage, pAttackID);
-		pAttackingEntity.onAttackAction(pAttackedEntity, FLAG_ATTACK_SPELL_ICE_BASH);
 	}
-	
 	
 	
 	public void killMob(Mob mob,int pdroppeditem,int pdroppedItemAmount,float pexperience, int pmoney,Player player){
@@ -96,5 +95,7 @@ public class BattleHelper implements GameFlags{
 		mob.onDeathAction(player);
 	}
 	
-	
+	public void killPlayer(Player player){
+		player.onDeathAction(null);
+	}
 }

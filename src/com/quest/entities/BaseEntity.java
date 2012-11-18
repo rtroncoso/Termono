@@ -826,6 +826,11 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	public void setFacingDirection(byte mFacingDirection) {
 		this.mFacingDirection = mFacingDirection;
 	}
+
+	@Override
+	public void onDisplayAttackingAction() {
+		this.setAttackAnimation();		
+	}
 	
 	// ===========================================================
 	// Inner and Anonymous Classes

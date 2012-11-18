@@ -90,7 +90,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 	    
 	    
     public UserDatabase(Context context) {
-            super(context, dbName, null, 4);
+            super(context, dbName, null, 1);
     }
 
     @Override
@@ -193,9 +193,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS "+tProfile);//*** sacar
-    		
-            onCreate(db);
+             onCreate(db);
     }
     
          

@@ -322,6 +322,8 @@ public class MapHelper implements IMeasureConstants {
 													int pX = (nextMapX == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn() : nextMapX;
 													int pY = (nextMapY == 0) ? Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow() : nextMapY;
 													
+													Game.getPlayerHelper().getOwnPlayer().setCoords(pX,pY);
+													
 													if(Game.isServer()){
 														Game.getServer().sendMessagePlayerChangedMap(Game.getUserID(),nextMapNumber,pX,pY);
 														

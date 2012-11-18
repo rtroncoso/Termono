@@ -22,6 +22,8 @@ public interface GameFlags {
 	
 	
 	//Attacks
+	public static final int FLAG_ATTACK_NORMAL = 20;
+	
 	public static final int FLAG_ATTACK_MOB_ATTACK_1 = 21;
 	public static final int FLAG_ATTACK_MOB_ATTACK_2 = 22;
 	public static final int FLAG_ATTACK_MOB_ATTACK_3 = 23;
@@ -34,7 +36,9 @@ public interface GameFlags {
 	public static final int FLAG_ATTACK_SPELL_ICE_BASH = 5;
 	
 	//Other animations
-	public static final int FLAG_ATTACK_MOB_DEATH = 20;
+	public static final int FLAG_ATTACK_MOB_DEATH = 30;
+	public static final int FLAG_ATTACK_PLAYER_DEATH = 31;
+	public static final int FLAG_ATTACK_PLAYER_LEVEL_UP = 32;
 	
 	//Queries
 	public static final int FLAG_QUERY_REGISTER_PLAYER_POSITION = 0;

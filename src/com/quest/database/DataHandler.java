@@ -395,7 +395,9 @@ public class DataHandler {
 	public String getMobIconTexture(int pMobFlag){
         return this.mStaticDB.getMobIconTexture(pMobFlag);
     }
-	
+	public int getMobType(int pMobFlag){
+        return this.mStaticDB.getMobType(pMobFlag);
+    }
 	public String getMobAnimationTexture(int pMobFlag){
         return this.mStaticDB.getMobAnimationTexture(pMobFlag);
     }
@@ -418,6 +420,18 @@ public class DataHandler {
 	public int getMobFrameHeight(int pMobFlag){
         return this.mStaticDB.getMobFrameHeight(pMobFlag);
     }
+	
+	public int getMobViewRange(int pMobFlag){
+		return this.mStaticDB.getMobViewRange(pMobFlag);
+	}
+	
+	public int getMobAttackRange(int pMobFlag){
+		return this.mStaticDB.getMobAttackRange(pMobFlag);
+	}
+	
+	public int getMobAttack(int pMobFlag){
+		return this.mStaticDB.getMobAttack(pMobFlag);
+	}
 	
 	//Mob attributes
 	public int[] getMobAttributes(int pMobFlag){

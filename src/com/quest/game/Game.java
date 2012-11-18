@@ -13,6 +13,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.quest.data.MatchData;
@@ -144,6 +145,10 @@ public class Game extends SimpleBaseGameActivity {
 		// TODO Auto-generated method stub
 		Game.setInstance(this);
 		
+		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInf = wifiMan.getConnectionInfo();
+		Game.mUserID = wifiInf.getMacAddress();
+		Log.d("Quest!",""+mUserID);
 		// Init Objects
 		Game.mSceneManager = new SceneHelper();
 		Game.mDataHandler = new DataHandler();
@@ -151,10 +156,7 @@ public class Game extends SimpleBaseGameActivity {
 		Game.mTimerHelper = new TimerHelper();
 		Game.mLevelHelper = new LevelHelper(35, 50, 1.0f/3.0f);
 		
-		WifiManager wifiMan = (WifiManager)Game.getInstance().getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInf = wifiMan.getConnectionInfo();
-		Game.mUserID = wifiInf.getMacAddress();
-		
+
 		final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, 
 				new RatioResolutionPolicy(Game.getInstance().getWindowManager().getDefaultDisplay().getWidth(), 
 						Game.getInstance().getWindowManager().getDefaultDisplay().getHeight()), 

@@ -67,14 +67,14 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fAttackID = "AttackID";
         static final String fAttackName = "Name";
         static final String fAttackManaCost = "ManaCost";
-        static final String fAttackEffect = "AttackEffect";
+        static final String fAttackEffect = "AttackEffect";	//0: animacion / 1: ataque normal o de item / 2: hechizo / 3: de area / 4:healing
         static final String fAttackIconTexture = "IconTexture";
         static final String fAttackAnimationTexture = "AnimationTexture";
         static final String fAttackAnimationRows = "AnimationRows";
         static final String fAttackAnimationCols = "AnimationCols";
         static final String fAttackFrameWidth = "FrameWidth";
         static final String fAttackFrameHeight = "FrameHeight";
-        static final String fAttackType = "Type";
+        static final String fAttackType = "Type";//0 sin icono, 1 con icono
         static final String fAttackDescription = "Description";
         static final String fAttackLevels = "Levels";
         static final String fAttackClass = "Class";
@@ -93,6 +93,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fMobFrameHeight = "FrameHeight";
         static final String fMobType = "Type";//Aggressive - etc, no se
         static final String fMobDescription = "Description";
+        static final String fMobViewRange = "ViewRange";
+        static final String fMobAttackRange = "AttackRange";
+        static final String fMobAttack = "Attack";
         //attributes
         //droptable
         //spawns
@@ -208,6 +211,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
 	            		fMobFrameWidth+" INTEGER ,"+
 	            		fMobFrameHeight+" INTEGER ,"+
 	            		fMobType+" INTEGER ,"+
+	            		fMobViewRange+" INTEGER ,"+
+	            		fMobAttackRange+" INTEGER ,"+
+	            		fMobAttack+" INTEGER ,"+
 	            		fMobDescription+" TEXT)"
 	                    );
 	            
@@ -491,6 +497,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.put(fMobExtraCols, 2);
           		cv.put(fMobFrameWidth, 256);
           		cv.put(fMobFrameHeight, 256);
+          		cv.put(fMobViewRange, 3);
+          		cv.put(fMobAttackRange, 1);
+          		cv.put(fMobAttack, FLAG_ATTACK_NORMAL);
           		cv.put(fMobType, 1);
           		cv.put(fMobDescription, "A common bat.");
           		db.insert(tMob, null, cv); 
@@ -525,6 +534,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.put(fMobAnimationRows,4);
           		cv.put(fMobFrameWidth,128);
           		cv.put(fMobFrameHeight,256);
+          		cv.put(fMobViewRange, 4);
+          		cv.put(fMobAttackRange, 1);
+          		cv.put(fMobAttack, FLAG_ATTACK_NORMAL);
           		cv.put(fMobType,1);
           		cv.put(fMobDescription,"A common bee.");
           		db.insert(tMob, null, cv); 
@@ -557,6 +569,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.put(fMobAnimationRows,4);
           		cv.put(fMobFrameWidth,128);
           		cv.put(fMobFrameHeight,128);
+          		cv.put(fMobViewRange, 5);
+          		cv.put(fMobAttackRange, 3);
+          		cv.put(fMobAttack, FLAG_ATTACK_SPELL_ICE_BASH);
           		cv.put(fMobType,2);
           		cv.put(fMobDescription,"The idiot.");
           		db.insert(tMob, null, cv); 
@@ -589,7 +604,10 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.put(fMobAnimationRows,4);
           		cv.put(fMobFrameWidth,128);
           		cv.put(fMobFrameHeight,256);
-          		cv.put(fMobType,1);
+          		cv.put(fMobViewRange, 3);
+          		cv.put(fMobAttackRange, 1);
+          		cv.put(fMobAttack, FLAG_ATTACK_NORMAL);
+          		cv.put(fMobType,2);
           		cv.put(fMobDescription,"A small cock.");
           		db.insert(tMob, null, cv); 
           		
@@ -612,6 +630,19 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		db.insert(tMobDroptable, null, cv); 
           		cv.clear();
           		
+          		
+          		cv.put(fAttackID,FLAG_ATTACK_NORMAL);
+                cv.put(fAttackIconTexture, "null");
+                cv.put(fAttackAnimationTexture,"Attacks/Other/Normal.png");
+                cv.put(fAttackEffect, "1;1");
+                cv.put(fAttackManaCost, 0);
+                cv.put(fAttackType, 0);
+                cv.put(fAttackAnimationRows, 1);
+                cv.put(fAttackAnimationCols, 3);
+                cv.put(fAttackFrameWidth, 128);
+                cv.put(fAttackFrameHeight, 64);
+                db.insert(tAttacks, null, cv); 
+                cv.clear();
           		
           		cv.put(fAttackID,FLAG_ATTACK_SPELL_FIREBALL);
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell1.png");
@@ -688,6 +719,32 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 cv.put(fAttackAnimationCols, 5);
                 cv.put(fAttackFrameWidth, 960);
                 cv.put(fAttackFrameHeight, 192);
+                db.insert(tAttacks, null, cv); 
+                cv.clear();
+                                
+                cv.put(fAttackID,FLAG_ATTACK_PLAYER_DEATH);
+                cv.put(fAttackIconTexture, "null");
+                cv.put(fAttackAnimationTexture,"Attacks/Other/PlayerDeath.png");
+                cv.put(fAttackType, 0);
+                cv.put(fAttackEffect, "0;0");
+                cv.put(fAttackManaCost, 0);
+                cv.put(fAttackAnimationRows, 2);
+                cv.put(fAttackAnimationCols, 5);
+                cv.put(fAttackFrameWidth, 960);
+                cv.put(fAttackFrameHeight, 512);
+                db.insert(tAttacks, null, cv); 
+                cv.clear();
+                
+                cv.put(fAttackID,FLAG_ATTACK_PLAYER_LEVEL_UP);
+                cv.put(fAttackIconTexture, "null");
+                cv.put(fAttackAnimationTexture,"Attacks/Other/PlayerLevelUP.png");
+                cv.put(fAttackType, 0);
+                cv.put(fAttackEffect, "0;0");
+                cv.put(fAttackManaCost, 0);
+                cv.put(fAttackAnimationRows, 2);
+                cv.put(fAttackAnimationCols, 5);
+                cv.put(fAttackFrameWidth, 960);
+                cv.put(fAttackFrameHeight, 512);
                 db.insert(tAttacks, null, cv); 
                 cv.clear();
                 
@@ -970,6 +1027,17 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
          	return myAnswer;
          }
          
+         public int getMobType(int pID){
+    	 	SQLiteDatabase myDB = this.getReadableDatabase();
+    	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobType +" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
+         	myCursor.moveToFirst();
+         	int index = myCursor.getColumnIndex(fMobType);
+         	int myAnswer = myCursor.getInt(index);
+         	myCursor.close();
+        	myDB.close();
+         	return myAnswer;
+         }
+         
          public String getMobIconTexture(int pID){
     	 	SQLiteDatabase myDB = this.getReadableDatabase();
     	 	Cursor myCursor = myDB.rawQuery("SELECT "+ fMobIconTexture +" FROM "+ tMob+" WHERE "+ fMobID +"=?",new String[]{String.valueOf(pID)});
@@ -1046,6 +1114,35 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
          	return myAnswer;
          }
          
+         public int getMobViewRange(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobViewRange+" from "+tMob+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobViewRange);
+			int myAnswer = myCursor.getInt(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
+         
+         public int getMobAttackRange(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobAttackRange+" from "+tMob+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobAttackRange);
+			int myAnswer = myCursor.getInt(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
+         
+         public int getMobAttack(int pID){
+        	Cursor myCursor = this.getReadableDatabase().rawQuery("Select "+fMobAttack+" from "+tMob+" where "+fMobID+" =?",new String[]{String.valueOf(pID)});
+        	myCursor.moveToFirst();
+        	int index = myCursor.getColumnIndex(fMobAttack);
+			int myAnswer = myCursor.getInt(index);
+			myCursor.close();
+			this.close();
+			return myAnswer;
+          }
          
          //Mob Attributes!
          public int[] getMobAttributes(int pID){
