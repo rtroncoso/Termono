@@ -54,7 +54,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.mDroppedItems = Game.getDataHandler().getMobDroppedItems(mMobFlag);
 		this.mDropRates = Game.getDataHandler().getMobDropRates(mMobFlag);
 		
-		mMobType = Game.getDataHandler().getMobType(mMobFlag);
+		setMobType(Game.getDataHandler().getMobType(mMobFlag));
 		
 		this.mDropAmounts = Game.getDataHandler().getMobDropAmounts(mMobFlag);
 		this.mBodyExtraCols = Game.getDataHandler().getMobExtraCols(mMobFlag);
@@ -287,6 +287,8 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		super.onDeathAction(pKillerEntity);
 		dying = true;
 		Mob.this.following=false;
+		pursuit = false;
+		cooling = true;
 		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
 		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()+";Follow"));
 		if(Game.getSceneManager().getGameScene().getOtherStatsHud() != null)Game.getSceneManager().getGameScene().getOtherStatsHud().dettachHUD((Integer)this.getUserData());
@@ -331,7 +333,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	};
 	
 	public void recoverMP(){
-		this.currMana+=(float)(this.mModIntelligence)/8;
+		this.currMana+=(float)(this.mModIntelligence)/10;
 	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -388,6 +390,14 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	public void setDying(boolean status){
 		this.dying = status;
+	}
+
+	public int getMobType() {
+		return mMobType;
+	}
+
+	public void setMobType(int mMobType) {
+		this.mMobType = mMobType;
 	}
 	
 	// ===========================================================

@@ -98,10 +98,6 @@ public class MatchScene extends Scene implements GameFlags {
 		private Sprite mRefreshSprite;
 		private Sprite mDirectConnectSprite;
 		private Sprite mOwnMatchesSprite;
-	private ITextureRegion mUpbarTextureRegion;
-	private ITextureRegion mLowbarTextureRegion;
-	private Sprite mUpbarSprite;
-	private Sprite mLowbarSprite;
 	
 	//Own Matches
 	private Entity mOwnMatchesEntity;
@@ -166,7 +162,7 @@ public class MatchScene extends Scene implements GameFlags {
 	private BitmapTextureAtlas mLobbyTextureAtlas;
 		private Sprite mKickSprite;
 		private Sprite mMessageSprite;
-
+	private ArrayList<Sprite> mLobbyPlayers;
 
 	
 	private SocketServerDiscoveryServer<MatchesDiscoveryData> mSocketServerDiscoveryServer;
@@ -185,31 +181,33 @@ public class MatchScene extends Scene implements GameFlags {
 		this.mLoadedOwnMatchesEntity = new Entity(125,61);
 		this.mCharactersEntity = new Entity((Game.getSceneManager().getDisplay().getCameraWidth()/2)-30,(Game.getSceneManager().getDisplay().getCameraHeight()/2));
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/MatchScene/Main/");
-		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 2036,2036, TextureOptions.BILINEAR);
+		this.mSceneTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
 		this.mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Background.png", 0, 0);
-		this.mUpperBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "upperbar.png", 0, 768);
-		this.mLowerBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lowerbar.png", 0, 880);
-		this.mNewGameTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "new.png", 0, 985);
-		this.mBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Back.png", 65, 985);
-		this.mOkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Ok.png", 130, 985);
-		this.mCancelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Cancel.png", 195, 985);
-		this.mDirectConnectTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "DC.png", 260, 985);
-		this.mRefreshTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "refresh.png", 325, 985);
-		this.mOwnMatchesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "OwnMatches.png", 390, 985);
-		this.mLockTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lock.png", 455, 985);
-		this.mPreviousTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Previous.png", 490, 985);
-		this.mNextTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Next.png", 565, 985);
-		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 640, 985);
-		this.mOrcTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Orc.png", 640, 1130);
-		this.mPaladinTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Paladin.png", 690, 1130);
-		this.mMageTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Mage.png", 725, 1130);
-		this.mArcherTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Archer.png", 760, 1130);
-		this.mUpbarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "upbar.png", 795, 1130);
-		this.mLowbarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lowbar.png", 795, 1185);
-		this.mAttributeBackgroundTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesBackground.png", 795, 1230);
-		this.mAttributeMinusTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesMinus.png", 965, 1230);
-		this.mAttributePlusTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesPlus.png", 1030, 1230);
-		this.mJoinedTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "joined.png", 1095, 1230);
+		this.mUpperBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "upperbar.png", 0, 480);
+		this.mLowerBarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lowerbar.png", 0, 569);
+		this.mAttributeBackgroundTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesBackground.png", 0, 660);
+		this.mMatchBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "partyback.png", 169, 660);
+		this.mPreviousTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Previous.png", 169, 816);
+		this.mNextTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Next.png", 232, 816);
+		this.mOkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Ok.png", 295, 816);
+		this.mBackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Back.png", 358, 816);
+		this.mCancelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Cancel.png", 421, 816);
+		this.mJoinedTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "joined.png", 484, 816);
+		this.mLockTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "lock.png", 532, 816);
+		
+		this.mOwnMatchesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "OwnMatches.png", 800, 0);
+		this.mDirectConnectTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "DC.png", 897, 0);
+		this.mRefreshTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "refresh.png", 800, 59);
+		this.mNewGameTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "new.png", 897, 59);
+		
+		this.mAttributeMinusTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesMinus.png", 800, 118);
+		this.mAttributePlusTextureRegion= BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "AttributesPlus.png", 864, 118);
+		
+		this.mOrcTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Orc.png", 0, 930);
+		this.mPaladinTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Paladin.png", 32, 930);
+		this.mMageTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Mage.png", 64, 930);
+		this.mArcherTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "Archer.png", 96, 930);
+		
 		this.mTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mSceneTextureAtlas, Game.getInstance().getApplicationContext(), "ButtonSprite.png", 0, 0, 1, 1);
 		this.mSceneTextureAtlas.load();	
 		
@@ -219,10 +217,24 @@ public class MatchScene extends Scene implements GameFlags {
 		this.mBackgroundSprite = new Sprite(0, 0, mBackgroundTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
 		this.attachChild(this.mBackgroundSprite);
 		
-		this.mUpperBarSprite = new Sprite(0, 0, mUpperBarTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {};
+		this.mUpperBarSprite = new Sprite(0, 0, mUpperBarTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				// TODO Auto-generated method stub
+			return true;
+			}
+		};
 		this.attachChild(this.mUpperBarSprite);
 		
-		this.mLowerBarSprite = new Sprite(0,this.mBackgroundSprite.getHeight()- 66,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {};
+		this.mLowerBarSprite = new Sprite(0,this.mBackgroundSprite.getHeight()- 91,mLowerBarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				// TODO Auto-generated method stub
+			return true;
+			}
+		};
 		this.attachChild(this.mLowerBarSprite);
 		
 		
@@ -270,7 +282,7 @@ public class MatchScene extends Scene implements GameFlags {
 			}
 		};
 		
-		this.mNewGameSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mNewGameSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-97,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -290,7 +302,7 @@ public class MatchScene extends Scene implements GameFlags {
 			}
 		};
 		
-		this.mRefreshSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-45, this.mRefreshTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
+		this.mRefreshSprite = new Sprite(16, this.mBackgroundSprite.getHeight()-10-59, this.mRefreshTextureRegion, Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -312,7 +324,7 @@ public class MatchScene extends Scene implements GameFlags {
 			}
 		};
 		
-		this.mDirectConnectSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,	this.mBackgroundSprite.getHeight()-45-10, this.mDirectConnectTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mDirectConnectSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-97,	this.mBackgroundSprite.getHeight()-59-10, this.mDirectConnectTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -333,34 +345,21 @@ public class MatchScene extends Scene implements GameFlags {
 				}
 		};
 		
-		this.mUpbarSprite = new Sprite(110,0,mUpbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				//nada, tengo que registrar para blockear el touch de los matches
-			return true;	
-			}		
-		};
-		
-		this.mLowbarSprite = new Sprite(115,this.mBackgroundSprite.getHeight()- 41,mLowbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				//nada, tengo que registrar para blockear el touch de los matches
-			return true;	
-			}
-		};
 		
 		this.registerTouchArea(mOwnMatchesSprite);
 		this.registerTouchArea(this.mNewGameSprite);
 		this.registerTouchArea(this.mRefreshSprite);
 		this.registerTouchArea(this.mDirectConnectSprite);
-		this.registerTouchArea(this.mLowbarSprite);
-		this.registerTouchArea(this.mUpbarSprite);
+		this.registerTouchArea(this.mLowerBarSprite);
+		this.registerTouchArea(this.mUpperBarSprite);
+		this.detachChild(mUpperBarSprite);
+		this.detachChild(mLowerBarSprite);
 		
-		this.mDiscoveredMatchEntity.setY(61);
+		this.mDiscoveredMatchEntity.setY(95);
 		this.mMatchesEntity.attachChild(this.mDiscoveredMatchEntity);
 		
-		this.mMatchesEntity.attachChild(this.mUpbarSprite);
-		this.mMatchesEntity.attachChild(this.mLowbarSprite);
+		this.attachChild(this.mUpperBarSprite);
+		this.attachChild(this.mLowerBarSprite);
 		this.mMatchesEntity.attachChild(this.mOwnMatchesSprite);
 		this.mMatchesEntity.attachChild(this.mNewGameSprite);
 		this.mMatchesEntity.attachChild(this.mRefreshSprite);
@@ -401,7 +400,7 @@ public class MatchScene extends Scene implements GameFlags {
 			}
 		};
 		
-		this.mNewGameSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+		this.mNewGameSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-97,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -483,35 +482,21 @@ public class MatchScene extends Scene implements GameFlags {
 				}
 		};
 
-		this.mUpbarSprite = new Sprite(110,0,mUpbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				//nada, tengo que registrar para blockear el touch de los matches
-			return true;	
-			}		
-		};
-		
-		this.mLowbarSprite = new Sprite(115,this.mBackgroundSprite.getHeight()- 41,mLowbarTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				//nada, tengo que registrar para blockear el touch de los matches
-			return true;	
-			}
-		};
-
 		
 		this.registerTouchArea(mBackSprite);
 		this.registerTouchArea(this.mNewGameSprite);
 		this.registerTouchArea(this.mCancelSprite);
 		this.registerTouchArea(this.mOkSprite);
-		this.registerTouchArea(this.mLowbarSprite);
-		this.registerTouchArea(this.mUpbarSprite);
+		this.registerTouchArea(this.mLowerBarSprite);
+		this.registerTouchArea(this.mUpperBarSprite);
+		this.detachChild(mUpperBarSprite);
+		this.detachChild(mLowerBarSprite);
 		
-		this.mLoadedOwnMatchesEntity.setY(61);
+		this.mLoadedOwnMatchesEntity.setY(95);
 		this.mOwnMatchesEntity.attachChild(LoadOwnMatches());
 		
-		this.mOwnMatchesEntity.attachChild(this.mUpbarSprite);
-		this.mOwnMatchesEntity.attachChild(this.mLowbarSprite);
+		this.attachChild(this.mUpperBarSprite);
+		this.attachChild(this.mLowerBarSprite);
 		this.mOwnMatchesEntity.attachChild(this.mBackSprite);
 		this.mOwnMatchesEntity.attachChild(this.mNewGameSprite);
 		this.mOwnMatchesEntity.attachChild(this.mCancelSprite);
@@ -523,7 +508,7 @@ public class MatchScene extends Scene implements GameFlags {
 	private Entity LoadOwnMatches(){
 		for(int i = 0;i<Game.getDataHandler().getMatchesAmount();i++){
 			int ID = Game.getDataHandler().getMatchID(i);
-			MatchScene.this.mOwnMatchesList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mOwnMatchesList.size()*163, MatchScene.this, null, MatchScene.this.mLoadedOwnMatchesEntity,false,Game.getDataHandler().getMatchName(ID),Game.getUserID(),Game.getDataHandler().hasPassword(ID),"MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));	
+			MatchScene.this.mOwnMatchesList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mOwnMatchesList.size()*185, MatchScene.this, null, MatchScene.this.mLoadedOwnMatchesEntity,false,Game.getDataHandler().getMatchName(ID),Game.getUserID(),Game.getDataHandler().hasPassword(ID),"MatchScene;"+String.valueOf(MatchScene.this.mOwnMatchesList.size())));	
 		}
 		return this.mLoadedOwnMatchesEntity;
 	}
@@ -532,6 +517,8 @@ public class MatchScene extends Scene implements GameFlags {
 	//Loby entity
 	public Entity LoadLobbyEntity(Boolean pJoining, final String pMatchName,final String pUserID){//pedir datos de partida
 		this.mLobbyEntity.detachChildren();
+		if(mLobbyPlayers == null)mLobbyPlayers = new ArrayList<Sprite>();
+		mLobbyPlayers.clear();
 		
 		this.mBackSprite = new Sprite(16,12,this.mBackTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 			boolean mGrabbed = false;
@@ -613,7 +600,7 @@ public class MatchScene extends Scene implements GameFlags {
 			this.mLobbyEntity.attachChild(this.mCancelSprite);
 			this.registerTouchArea(this.mCancelSprite);
 		
-			
+			addLobbyPlayer(Game.getPlayerHelper().getOwnPlayer().getPlayerClass(), Game.getDataHandler().getUsername(Game.getUserID()));
 			
 			//inicio el server
 			MatchScene.this.initServer();
@@ -633,8 +620,8 @@ public class MatchScene extends Scene implements GameFlags {
 			Log.d("Quest!","Server started, port: "+String.valueOf(MatchScene.this.mSocketServerDiscoveryServer.getDiscoveryPort()));
 		}
 		try {
-			this.mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 150, IPUtils.ipAddressToString(wifiIPv4Address), "MatchScene;OwnIP"));
-			this.mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 180, "userID: "+Game.getUserID(), "MatchScene;OwnIP"));
+			this.mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 100, "IP: "+IPUtils.ipAddressToString(wifiIPv4Address), "MatchScene;OwnIP"));
+			this.mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 130, "Username: "+Game.getDataHandler().getUsername(Game.getUserID()), "MatchScene;OwnIP"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -643,6 +630,26 @@ public class MatchScene extends Scene implements GameFlags {
 		return this.mLobbyEntity;
 	}
 	
+	public void addLobbyPlayer(int Class,String username){
+		ITextureRegion texture = null;
+		switch (Class) {
+		case 1:
+			texture = mPaladinTextureRegion;
+			break;
+		case 2:
+			texture = mMageTextureRegion;
+			break;
+		case 3:
+			texture = mOrcTextureRegion;
+			break;
+		case 4:
+			texture = mArcherTextureRegion;
+			break;
+		}
+		mLobbyPlayers.add(new Sprite(mLobbyPlayers.size()*64+80, Game.getSceneManager().getDisplay().getCameraHeight()/2-16, texture, Game.getInstance().getVertexBufferObjectManager()));
+		mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, mLobbyPlayers.size()*64+40-(username.length()/2), Game.getSceneManager().getDisplay().getCameraHeight()/2+24, username, "MatchScene;"+username+mLobbyPlayers.size()));
+		mLobbyEntity.attachChild(mLobbyPlayers.get(mLobbyPlayers.size()-1));
+	}
 	
 	//Action 1 = new match / 2 = Load Match / 3 = Join Match
 	public Entity LoadMatchEntity(final int pAction){
@@ -684,7 +691,7 @@ public class MatchScene extends Scene implements GameFlags {
 			this.mLoadMatchEntity.attachChild(this.mLoadMatchTopLeftSprite);
 			this.registerTouchArea(mLoadMatchTopLeftSprite);
 			
-			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-97,12,this.mOkTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -827,7 +834,7 @@ public class MatchScene extends Scene implements GameFlags {
 			this.registerTouchArea(mLoadMatchTopLeftSprite);
 			
 			//Create new character
-			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-97,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -948,7 +955,7 @@ public class MatchScene extends Scene implements GameFlags {
 			this.registerTouchArea(mLoadMatchTopLeftSprite);
 			
 			//Create new character
-			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-63,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
+			this.mLoadMatchTopRightSprite = new Sprite(this.mBackgroundSprite.getWidth()-12-97,12,this.mNewGameTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 				boolean mGrabbed = false;
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -1096,15 +1103,15 @@ public class MatchScene extends Scene implements GameFlags {
 		   		      this.mLoadMatchBottomLeftSprite.setVisible(false);		
 		   		      this.mLoadMatchBottomRightSprite.setVisible(true);
 		   		      if(nextstep){
-		   				this.mMatchNameInput = Game.getTextHelper().NewInputText(250, 100, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
+		   				this.mMatchNameInput = Game.getTextHelper().NewInputText(250, 180, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
 		   				this.mLoadMatchEntity.attachChild(mMatchNameInput);
-		   				this.mMatchPasswordInput = Game.getTextHelper().NewInputText(290, 150, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
+		   				this.mMatchPasswordInput = Game.getTextHelper().NewInputText(290, 240, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
 		   				this.mLoadMatchEntity.attachChild(mMatchPasswordInput);
 		   		      }
 		   		      	
 		   		      Game.getTextHelper().ChangeText("Follow the instructions to create a new match", "MatchScene;StepText", 100, 50);	
-		   		      Game.getTextHelper().ChangeText("Match name:", "MatchScene;StepText1",100, 100);
-		   		      Game.getTextHelper().ChangeText("Match password:", "MatchScene;StepText2",100, 150);
+		   		      Game.getTextHelper().ChangeText("Match name:", "MatchScene;StepText1",100, 180);
+		   		      Game.getTextHelper().ChangeText("Match password:", "MatchScene;StepText2",100, 240);
 		   		      this.registerTouchArea(mMatchNameInput);
 		   		      this.registerTouchArea(mMatchPasswordInput);
 		   				
@@ -2049,7 +2056,7 @@ public class MatchScene extends Scene implements GameFlags {
 						if(conts==false){
 							Game.getDataHandler().CheckAndAddProfile(pDiscoveryData.getUserID(),pDiscoveryData.getUsername());
 							if(MatchScene.this.mCurrentEntity == MatchScene.this.mMatchesEntity){//lo pongo separado porque con || no funcatring pUserID,boolean pHasPassword,float pTextX,float pTextY, String pKey)
-							MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*163, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
+							MatchScene.this.mMatchList.add(new MatchObject(MatchScene.this.mMatchBackgroundTextureRegion,0, MatchScene.this.mMatchList.size()*185, MatchScene.this, ipAddressAsString, MatchScene.this.mDiscoveredMatchEntity,true,pDiscoveryData.getMatchName(),pDiscoveryData.getUserID(),pDiscoveryData.hasPassword(),"MatchScene;"+String.valueOf(MatchScene.this.mMatchList.size())));
 							}
 						}
 					} catch (final UnknownHostException e) {
