@@ -105,6 +105,10 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		this.attachChild(this.mBodySprite);
 		this.mBodySprite.setCullingEnabled(true);
 		
+		// Attach the Weapons layer
+		this.mEquippedWeaponsLayer.setPosition(10, 30);
+		this.attachChild(this.mEquippedWeaponsLayer);
+		
 		this.mAttackLayer = new ArrayList<Attack>();
 	}
 
@@ -277,7 +281,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
 
 		// Animate the Character
-		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), true, false);
+		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), false, false);
 		
 		// Check Tiles
 		Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
@@ -296,7 +300,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		Game.getMapManager().registerCollisionTile(pTileTo);
 		
 		// Animate the Character
-		this.setAnimationDirection(this.getFacingDirectionToTile(pTileTo), true, false);
+		this.setAnimationDirection(this.getFacingDirectionToTile(pTileTo), false, false);
 
 		this.mPath = new Path(2).to(this.getX(), this.getY()).to(pTileTo.getTileX(), pTileTo.getTileY());
 
