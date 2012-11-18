@@ -338,7 +338,9 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG,Game.getPlayerHelper().getOwnPlayer().getCurrentMap(),tileX,tileY,pMobID);
 			tmpMob.setCurrHP(currHp);
 			tmpMob.setCurrMana(currMp);
-			tmpMob.setAnimationDirection(facing_direction, true);//*** fijarse si sirve para que apunte a donde debe
+			boolean loop = false;
+			if(tmpMob.getMobType()==1)loop=true;
+			tmpMob.setAnimationDirection(facing_direction, true, loop);//*** fijarse si sirve para que apunte a donde debe
 			GameScene.this.attachChild(tmpMob);
 			GameScene.this.registerTouchArea(tmpMob.getBodySprite());
 		}
