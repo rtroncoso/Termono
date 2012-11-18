@@ -135,7 +135,7 @@ public class MatchObject extends Entity implements GameFlags{
 		
 		//Icons
 		if(hasPassword())this.mMatchEntity.attachChild(new Sprite(500, 50, this.mMatchScene.getLockTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
-		if(mJoined)this.mMatchEntity.attachChild(new Sprite(450, 50, this.mMatchScene.getJoinedTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
+		if(mJoined)this.mMatchEntity.attachChild(new Sprite(450, 24, this.mMatchScene.getJoinedTexture(), Game.getInstance().getVertexBufferObjectManager()) {});
 			
 		
 		if(mJoining){
@@ -255,7 +255,7 @@ public class MatchObject extends Entity implements GameFlags{
 					tempTimer.setTimerSeconds(0.04f);
 					running = true;
 					if(speed>0){
-						if(mEntity.getY()>61){
+						if(mEntity.getY()>95){
 							endTimer();
 						}else{
 							speed-=0.5;
@@ -281,13 +281,13 @@ public class MatchObject extends Entity implements GameFlags{
 	}
 	
 	public void slideBack(){
-		if(mEntity.getY()>61){
-			mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), 61, EaseBackOut.getInstance()));
+		if(mEntity.getY()>95){
+			mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), 95, EaseBackOut.getInstance()));
 		}else if(mEntity.getY()<(((mEntity.getChildCount()-1)*mMatchSprite.getHeight())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getHeight()+50+mMatchSprite.getHeight())*-1){
-			if(mEntity.getChildCount()>2 && mEntity.getY()<61){
+			if(mEntity.getChildCount()>2 && mEntity.getY()<95){
 				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), (((mEntity.getChildCount()-1)*mMatchSprite.getHeight())+((mEntity.getChildCount()-1)*29)- Game.getSceneManager().getDisplay().getCamera().getHeight()+50+mMatchSprite.getHeight())*-1, EaseBackOut.getInstance()));
 			}else{
-				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), 61, EaseBackOut.getInstance()));
+				mEntity.registerEntityModifier(new MoveModifier(0.7f, mEntity.getX(), mEntity.getX(), mEntity.getY(), 95, EaseBackOut.getInstance()));
 			}
 		}
 	}
