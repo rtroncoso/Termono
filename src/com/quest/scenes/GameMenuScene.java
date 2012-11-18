@@ -75,9 +75,9 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 	private Sprite mInventoryTossSprite;
 	private Sprite mInventoryMoneySprite;
 	private Sprite mInventoryDescriptionSprite;
+	private Text mInventoryDescriptionText;
 	private Text mInventoryMoneyText;
 	private ArrayList<Item> mInventoryItemsList; 
-	
 	
 	
 	private Entity mAttributesEntity;
@@ -431,7 +431,6 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 			if(this.mInventoryEntity == null){
 				this.mInventoryItemsList = new ArrayList<Item>();
 				this.mInventoryEntity = new Entity(0,0);
-				this.mCollisionSprites= new Sprite[]{this.mInventoryUseSprite,this.mInventoryTossSprite};
 				
 				BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/Interfaces/InGameMenu/Inventory/");
 				this.mInventoryTextureAtlas = new BitmapTextureAtlas(Game.getInstance().getTextureManager(), 1024,1024, TextureOptions.BILINEAR);
@@ -460,9 +459,13 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 				this.mInventoryEntity.attachChild(mInventoryDescriptionSprite);
 
 				this.mInventoryMoneyText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_YELLOW, this.mInventoryMoneySprite.getX()+this.mInventoryMoneySprite.getWidthScaled()+5, this.mInventoryMoneySprite.getY()+5, "", "GameMenuScene;Inventory;MoneyText");
-				this.mInventoryMoneyText.setScale(2.5f);
+				this.mInventoryMoneyText.setScale(2f);
 				this.mInventoryEntity.attachChild(mInventoryMoneyText);
+				
+				this.mInventoryDescriptionText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, mInventoryDescriptionSprite.getX()+10, mInventoryDescriptionSprite.getY()+5, "", "GameMenuScene;Inventory;DescriptionText");
+				this.mInventoryEntity.attachChild(mInventoryDescriptionText);
 			}
+			this.mCollisionSprites= new Sprite[]{this.mInventoryUseSprite,this.mInventoryTossSprite};
 			
 			this.mInventoryMoneyText.setText(String.valueOf(Game.getPlayerHelper().getOwnPlayer().getMoney()));
 			
@@ -1252,33 +1255,52 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 		}
 	}
 
+	boolean grabbed = false;
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		switch (pSceneTouchEvent.getAction()) {
 				case TouchEvent.ACTION_DOWN:
 					Log.d("Quest!", "Item es "+this.getCurrentItem());
+					if(mCurrentItem!=null)
+						mInventoryDescriptionText.setText(mCurrentItem.getItemDescription());
+					grabbed = true;
 					break;
 				case TouchEvent.ACTION_MOVE:
 					Log.d("Quest!", "move es "+this.getCurrentItem());
-					if(mCurrentItem!=null)
+					if(mCurrentItem!=null && grabbed){
 						mCurrentItem.getItemIcon().setPosition(pSceneTouchEvent.getX()-(mCurrentItem.getItemIcon().getWidthScaled()/2)-mCurrentItem.getEntity().getX(), pSceneTouchEvent.getY()-(mCurrentItem.getItemIcon().getHeightScaled()/2)-mCurrentItem.getEntity().getY());
-					break;
-				case TouchEvent.ACTION_UP:		
-					if(mCurrentItem!=null)
-						mCurrentItem.getItemIcon().setPosition(pSceneTouchEvent.getX()-(mCurrentItem.getItemIcon().getWidthScaled()/2)-mCurrentItem.getEntity().getX(), pSceneTouchEvent.getY()-(mCurrentItem.getItemIcon().getHeightScaled()/2)-mCurrentItem.getEntity().getY());
-					boolean collideS =false;
-					int a = 0;
-					Log.d("Quest!","Collision lenght: "+mCollisionSprites.length);
-					while(a<mCollisionSprites.length){
-						if(!collideS && mCurrentItem.getItemIcon().collidesWith(mCollisionSprites[a])){
-							Game.getSceneManager().getGameMenuScene().ActionOnCollide(mCurrentItem, mCollisionSprites[a],mCurrentItem.getEntity());
-							collideS = true;
-						}else{
-							mCollisionSprites[a].setAlpha(1f);
+						boolean collides =false;
+						int i = 0;
+						while(i<mCollisionSprites.length){
+							if(mCurrentItem.getItemIcon().collidesWith(mCollisionSprites[i]) && !collides){
+								mCollisionSprites[i].setAlpha(0.5f);
+								collides = true;
+							}else{
+								mCollisionSprites[i].setAlpha(1f);
+							}
+							i++;
 						}
-						a++;
-					this.setCurrentItem(null);
 					}
+					break;
+				case TouchEvent.ACTION_UP:	
+					if(grabbed == true){
+						if(mCurrentItem!=null){
+							mCurrentItem.getItemIcon().setPosition(pSceneTouchEvent.getX()-(mCurrentItem.getItemIcon().getWidthScaled()/2)-mCurrentItem.getEntity().getX(), pSceneTouchEvent.getY()-(mCurrentItem.getItemIcon().getHeightScaled()/2)-mCurrentItem.getEntity().getY());
+							boolean collideS =false;
+							int a = 0;
+							Log.d("Quest!","Collision lenght: "+mCollisionSprites.length);
+							while(a<mCollisionSprites.length){
+								if(!collideS && mCurrentItem.getItemIcon().collidesWith(mCollisionSprites[a])){
+									Game.getSceneManager().getGameMenuScene().ActionOnCollide(mCurrentItem, mCollisionSprites[a],mCurrentItem.getEntity());
+									collideS = true;
+								}
+								mCollisionSprites[a].setAlpha(1f);
+								a++;
+							}
+							this.setCurrentItem(null);
+						}
+					}
+					grabbed = false;
 					break;
 		}
 		return false;

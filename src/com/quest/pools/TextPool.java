@@ -63,6 +63,7 @@ public class TextPool implements GameFlags{
 					@Override
 					protected void onHandleObtainItem(Text pText) {
 						pText.setVisible(true);
+						pText.setAlpha(1f);
 						pText.setTag(TEXT_TYPE_FLAG);
 						pText.setText("");
 					};
