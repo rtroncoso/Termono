@@ -9,46 +9,10 @@
 
 
  _ 
-(_) Hacer que los items y eso no se cree todo de cero en el ingamemenu
-
- _ 
-(_) Detectar el return key 
-
- _ 
-(_) Aplicar los atributos en los items
-
- _ 
-(_) Pasar los input message a una clase
-
- _ 
 (_) Modificar el discovery protocol para que muestre el ping
 
  _ 
 (_) Agregar el seteo de password nueva en el load de matches
-
- _ 
-(_) Hacer el async task para que en el main caigan los carteles
-
- _
-(_) Agregar culling a los sprites
-
- _
-(_) Separar server/client en inventoryhelper y player helper
-
- _
-(_) Poner la inicializacion del MobHelper donde corresponde 
-
- _
-(_) Ver como gestionar la carga de los mobs
-
- _
-(_) DESACTIVAR TIMERS DE MOBS
-
- _
-(_) Attack Ranges
-
- _
-(_)
 
  _
 (_)

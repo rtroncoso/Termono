@@ -167,6 +167,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	@Override
 	public void onAttackedAction(BaseEntity pAttackingEntity, int pDamage,int pAttackID){
 		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(pAttackID));
+		popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_DAMAGE, this.getBodySprite().getX(), this.getBodySprite().getY(), String.valueOf(pDamage), "Damage;"+this.getUserData()+" "+System.currentTimeMillis()),1+(float)((float)(pDamage)/(float)(mModHP)));
 	};
 	
 	@Override

@@ -61,6 +61,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.mViewRange = Game.getDataHandler().getMobViewRange(mMobFlag);
 		this.mAttackRange = Game.getDataHandler().getMobAttackRange(mMobFlag);
 		this.mATTACK_FLAG = Game.getDataHandler().getMobAttack(mMobFlag);
+		startRecoveryTimer();
 		this.mEntityType = "Mob";
 	}
 	
@@ -69,6 +70,19 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	// ===========================================================
 	// Methods
 	// ===========================================================
+	public void startRecoveryTimer(){
+		if(Game.isServer() && this.getModMana()>0){
+			Game.getTimerHelper().addTimer(new Timer(0.2f, new ITimerCallback() 
+			{	
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) 
+				{
+					if(Mob.this.getCurrMana()<Mob.this.getModMana())Mob.this.recoverMP();
+				}
+			}), Mob.this.getUserData()+";Recovery");		
+		}
+}
+	
 	public void startMoveTimer(){
 		if(Game.isServer()){	
 			Game.getTimerHelper().addTimer(new Timer(2.5f, new ITimerCallback() {			
@@ -99,6 +113,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 			
 			Game.getTimerHelper().addTimer(new Timer(0.2f, new ITimerCallback() {			
 				float countdown = 25;
+				boolean blocked = false;
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					boolean attack = false;
@@ -108,35 +123,34 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 						countdown-=0.2f;
 						if(countdown<0.1f && pursuit)pursuit=false;
 						
-						if(player.getTMXTileAt().getTileColumn()<Mob.this.getTMXTileAt().getTileColumn()){
-							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()-mAttackRange)){
+						if(player.getTMXTileAt().getTileColumn()<Mob.this.getTMXTileAt().getTileColumn() && !blocked){
+							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()>=(Mob.this.getTMXTileAt().getTileColumn()-mAttackRange)){
 								attack = true;
 							}else{
 								movingDirection = DIRECTION_WEST;
 							}
-							
-						}else if(player.getTMXTileAt().getTileColumn()>Mob.this.getTMXTileAt().getTileColumn()){
-							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()+mAttackRange)){
+						}else if(player.getTMXTileAt().getTileColumn()>Mob.this.getTMXTileAt().getTileColumn() && !blocked){
+							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()<=(Mob.this.getTMXTileAt().getTileColumn()+mAttackRange)){
 								attack = true;
 							}else{
 								movingDirection = DIRECTION_EAST;
 							}
-							
-						}else if(player.getTMXTileAt().getTileColumn()==Mob.this.getTMXTileAt().getTileColumn()){
+						}else if(player.getTMXTileAt().getTileColumn()==Mob.this.getTMXTileAt().getTileColumn() || blocked){
 							if(player.getTMXTileAt().getTileRow()<Mob.this.getTMXTileAt().getTileRow()){
-								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()-mAttackRange)){
+								if(player.getTMXTileAt().getTileRow()>=(Mob.this.getTMXTileAt().getTileRow()-mAttackRange) && !blocked){
 									attack = true;
 								}else{
 									movingDirection = DIRECTION_SOUTH;
 								}
 							}else if(player.getTMXTileAt().getTileRow()>Mob.this.getTMXTileAt().getTileRow()){
-								if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()+mAttackRange)){
+								if(player.getTMXTileAt().getTileRow()<=(Mob.this.getTMXTileAt().getTileRow()+mAttackRange) && !blocked){
 									attack = true;
 								}else{
 									movingDirection = DIRECTION_NORTH;
-								}								
+								}	
 							}
 						}
+						blocked = false;
 							
 						if(!attack){
 							TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
@@ -144,7 +158,8 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 								Log.d("Quest!","usrdt: "+((Integer)Mob.this.getUserData())+" tmp: "+tmpNewTile+" \n x:"+tmpNewTile.getTileColumn()+" y: "+tmpNewTile.getTileRow()+" \n px: "+player.getTMXTileAt().getTileColumn()+" py: "+player.getTMXTileAt().getTileRow());
 								Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
 							}else{
-								Log.e("Quest!","Tile es null");
+								Log.e("Quest!","Blocked: "+blocked);
+								blocked = true;
 							}
 							Mob.this.moveToTile(tmpNewTile);
 						}else{
@@ -156,7 +171,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 					
 					}else{
 						following = false;
-						Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()+";Follow"));
+						Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData())+";Follow");
 					}
 				}
 			}), String.valueOf(this.getUserData()+";Follow"));
@@ -309,10 +324,15 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
-		this.onDisplayAttackingAction();
-		Game.getBattleHelper().startAttack(Mob.this, ATTACK_FLAG, pAttackedEntity);
+		if(Game.getAttacksHelper().canAttack(Mob.this, ATTACK_FLAG)){
+			this.onDisplayAttackingAction();
+			Game.getBattleHelper().startAttack(Mob.this, ATTACK_FLAG, pAttackedEntity);
+		}
 	};
 	
+	public void recoverMP(){
+		this.currMana+=(float)(this.mModIntelligence)/8;
+	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
