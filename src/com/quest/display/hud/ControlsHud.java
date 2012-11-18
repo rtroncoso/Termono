@@ -45,7 +45,7 @@ public class ControlsHud extends HUD {
 		Game.getInstance().getTextureManager().loadTexture(this.mOnScreenControlTexture);
 
 		// Register ControlListener
-		this.mDigitalOnScreenControl = new DigitalOnScreenControl(0, Game.getInstance().getSceneManager().getDisplay().getCameraHeight() - this.mOnScreenControlBaseTextureRegion.getHeight(),
+		this.mDigitalOnScreenControl = new DigitalOnScreenControl(15, Game.getInstance().getSceneManager().getDisplay().getCameraHeight() - this.mOnScreenControlBaseTextureRegion.getHeight()-15,
 				Game.getInstance().getSceneManager().getDisplay().getCamera(),
 				this.mOnScreenControlBaseTextureRegion,
 				this.mOnScreenControlKnobTextureRegion, 0.01f,

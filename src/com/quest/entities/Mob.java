@@ -158,7 +158,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 								Log.d("Quest!","usrdt: "+((Integer)Mob.this.getUserData())+" tmp: "+tmpNewTile+" \n x:"+tmpNewTile.getTileColumn()+" y: "+tmpNewTile.getTileRow()+" \n px: "+player.getTMXTileAt().getTileColumn()+" py: "+player.getTMXTileAt().getTileRow());
 								Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
 							}else{
-								Log.e("Quest!","Blocked: "+blocked);
+							//	Log.e("Quest!","Blocked: "+blocked);
 								blocked = true;
 							}
 							Mob.this.moveToTile(tmpNewTile);

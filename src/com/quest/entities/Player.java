@@ -173,14 +173,15 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	@Override
 	public void onAttackAction(BaseEntity pAttackedEntity, int ATTACK_FLAG) {
 			if(Game.getAttacksHelper().canAttack(Player.this, ATTACK_FLAG)){
-				if(ATTACK_FLAG==0)this.onDisplayAttackingAction();
+				if(ATTACK_FLAG==FLAG_ATTACK_NORMAL)this.onDisplayAttackingAction();
 				Game.getBattleHelper().startAttack(this, ATTACK_FLAG, pAttackedEntity);
 			}
 	};
 	
 	@Override
 	public void onDisplayAttackingAction() {
-		//ANIMAR EL ITEM
+		//ANIMAR EL ITEM, sacar el popOverHead de abajo
+		Player.this.popOverHead(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, this.getBodySprite().getX(), this.getBodySprite().getY(), "ATAQUE", "Ataque;"+this.getUserData()+" "+System.currentTimeMillis()), 1f);
 		//TODO ***
 	}
 	

@@ -139,9 +139,9 @@ public class MatchObject extends Entity implements GameFlags{
 			
 		
 		if(mJoining){
-			this.mText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 100, 20, "Match name: "+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(this.mUserID), pKey);
+			this.mText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 20, "Match name: "+this.mMatchName+"  Creator: "+Game.getDataHandler().getUsername(this.mUserID), pKey);
 		}else{
-			this.mText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 100, 20, "Match name: "+this.mMatchName, pKey);
+			this.mText = Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, 150, 20, "Match name: "+this.mMatchName, pKey);
 		}
 		this.mMatchEntity.attachChild(this.mText);
 		

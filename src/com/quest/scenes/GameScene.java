@@ -14,6 +14,7 @@ import org.andengine.input.touch.TouchEvent;
 
 import com.quest.constants.GameFlags;
 import com.quest.database.QueryQueuer;
+import com.quest.display.hud.AttackHud;
 import com.quest.display.hud.ControlsHud;
 import com.quest.display.hud.MenuHud;
 import com.quest.display.hud.SpellbarHud;
@@ -40,6 +41,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		private SpellbarHud mSpellbarHud;
 		private StatsHud mStatsHud;
 		private StatsHud mOtherStatsHud;
+		private AttackHud mAttackHud;
 		private Entity mMapLayer;
 		protected ArrayList<Attack> mAttackLayer;
 		// ===========================================================
@@ -96,6 +98,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			GameScene.this.mSpellbarHud = new SpellbarHud(GameScene.this.mHud);
 			    			GameScene.this.mControlsHud = new ControlsHud((Player) Game.getPlayerHelper().getOwnPlayer());
 			    			GameScene.this.mMenuHud = new MenuHud(mHud);
+			    			GameScene.this.mAttackHud = new AttackHud();
 			    			
 			    			GameScene.this.mHud.setChildScene(GameScene.this.mControlsHud.getDigitalOnScreenControl());
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpellBar());
@@ -124,13 +127,14 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(2));
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(3));
 			    			GameScene.this.mHud.attachChild(GameScene.this.mSpellbarHud.getSpells(4));
+			    			GameScene.this.mHud.attachChild(GameScene.this.mAttackHud.getAttackSprite());
 			    			
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(0));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(1));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(2));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(3));
 			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mSpellbarHud.getSpells(4));
-			    			
+			    			GameScene.this.mHud.registerTouchArea(GameScene.this.mAttackHud.getAttackSprite());
 			    			
 			    			Game.getSceneManager().getDisplay().getCamera().setHUD(GameScene.this.mHud);
 			    			Game.getSceneManager().getDisplay().doFocusCamera(Game.getPlayerHelper().getOwnPlayer());

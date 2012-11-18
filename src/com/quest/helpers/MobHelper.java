@@ -10,8 +10,9 @@ import com.quest.constants.GameFlags;
 import com.quest.entities.Mob;
 import com.quest.game.Game;
 import com.quest.pools.MobPool;
+import com.quest.util.constants.IGameConstants;
 
-public class MobHelper implements GameFlags{		
+public class MobHelper implements GameFlags,IGameConstants{		
 		private ArrayList<Mob> mMobs;
 		private final MobPool mMobPool = new MobPool();
 		private int MobCount = 0;
@@ -82,6 +83,50 @@ public class MobHelper implements GameFlags{
 					}
 			}
 			return tmpMobs;
+		}
+		
+		public Mob getMobInDirection(byte pDirection,int col,int row,int MapID){
+			Mob rtnMob = null;
+			
+			boolean vertical = false;
+			if(pDirection == DIRECTION_NORTH || pDirection == DIRECTION_SOUTH) vertical = true;	
+			
+			int tileOff = 0;
+			switch (pDirection) {
+			case DIRECTION_SOUTH:
+				tileOff = 1;
+				break;
+			case DIRECTION_NORTH:
+				tileOff = -1;
+				break;	
+			case DIRECTION_EAST:
+				tileOff = 1;
+				break;
+			case DIRECTION_WEST:
+				tileOff = -1;
+				break;	
+			}
+			
+			boolean found = false;
+			int i = mMobs.size()-1;
+			while(!found && i>=0){
+				if(mMobs.get(i).getCurrentMap() == MapID){
+					if(vertical){
+						if(mMobs.get(i).getTMXTileAt().getTileRow()==(row+tileOff) && mMobs.get(i).getTMXTileAt().getTileColumn() == col){
+							rtnMob = mMobs.get(i);
+							found = true;
+						}
+					}else{
+						if(mMobs.get(i).getTMXTileAt().getTileColumn()==(col+tileOff) && mMobs.get(i).getTMXTileAt().getTileRow() == row){
+							rtnMob = mMobs.get(i);
+							found = true;
+						}
+					}
+				}
+				i--;
+			}
+			
+			return rtnMob;
 		}
 		
 		public ArrayList<Mob> getMobsInMap(int pMapID)
