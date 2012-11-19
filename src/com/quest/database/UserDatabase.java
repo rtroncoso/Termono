@@ -657,6 +657,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         	Log.d("Quest!","id: "+myAnswer[i]+" i: "+i);
         }
     	 myCursor.close();
+    	 this.close();
     	 return myAnswer;
     }
     
@@ -669,6 +670,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         	myAnswer[i] = myCursor.getInt(index);
         }
     	 myCursor.close();
+    	 this.close();
     	 return myAnswer;
     }
     
@@ -681,6 +683,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         	myAnswer[i] = myCursor.getInt(index);
         }
     	 myCursor.close();
+    	 this.close();
     	 return myAnswer;
     }
     
@@ -695,6 +698,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         	myAnswer[i] = myCursor.getInt(index);
         }
     	 myCursor.close();
+    	 this.close();
     	 return myAnswer;
     }
     
@@ -707,6 +711,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         	myAnswer[i] = myCursor.getInt(index);
         }
     	 myCursor.close();
+    	 this.close();
     	 return myAnswer;
     }
     
@@ -716,6 +721,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     		Log.d("Quest!","delete :"+i);
     		myDB.delete(tInventoryItem, fInventoryItemKey+" =?", new String[]{String.valueOf(inventoryItemsKeys[i])});
     	}
+   	 this.close();
     }
     
     public void addInventoryItems(int pPlayerID,int[] pItemID,int[] pAmount, int[] pEqquiped){
@@ -744,7 +750,6 @@ public class UserDatabase extends SQLiteOpenHelper {
    		int myAnswer = myCursor.getInt(index);
    		myCursor.close();
 		this.close();
-		Log.d("Quest!","Get money: "+myAnswer);
 		return myAnswer;
      }   
     
