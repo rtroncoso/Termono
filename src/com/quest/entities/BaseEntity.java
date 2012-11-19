@@ -274,14 +274,14 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 			break;
 		}
 		
+		// Animate the Character
+		this.setAnimationDirection(pDirection, false, false);
+		
 		// Is it a legal position?
 		if(!Game.getMapManager().isLegalPosition(mCurrentMap,(int) moveToXTile, (int) moveToYTile)) return null;
 
 		// Get the new Tile
 		final TMXTile tmxTileTo = Game.getMapManager().getTMXTileAt(moveToXTile, moveToYTile);
-
-		// Animate the Character
-		this.setAnimationDirection(this.getFacingDirectionToTile(tmxTileTo), false, false);
 		
 		// Check Tiles
 		Trigger tmpTrigger = Game.getMapManager().checkTrigger(tmxTileTo);
