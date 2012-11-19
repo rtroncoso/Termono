@@ -60,7 +60,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
 	    static final String fItemModifierIntelligence = "Intelligence";
 	    static final String fItemModifierPower = "Power";
 	    static final String fItemModifierDefense = "Defense";
-	    static final String fItemModifierEffect = "Effect";
+	    static final String fItemModifierEffect = "Effect";// "TIPO";"ATTRIBUTO";"CANTIDAD" - Ej: "0;0;30" - 0, healing - 0, HP - 30 a curar
 	    
         //Attacks 
 	    static final String tAttacks = "Attacks";
@@ -421,21 +421,20 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                  //ITEM
                  cv.put(fItemID, FLAG_ITEM_HEALTH_POTION);
           		 cv.put(fItemName, "Health potion");
-          		// cv.put(fItemAnimationTexture, "null");//
           		 cv.put(fItemIconTexture, "Items/Icons/Health Potion.png");
           		 cv.put(fItemType, 0);
           		 cv.put(fItemStackable, 1);
-          		 cv.put(fItemExtraCols, 0);//
-          		 cv.put(fItemAnimationRows, 0);//
-          		 cv.put(fItemAnimationCols, 0);//
-          		 cv.put(fItemFrameHeight, 0);//
-          		 cv.put(fItemFrameWidth, 0);//
-          		 cv.put(fItemDescription, "Basic health potion-");
+          		 cv.put(fItemDescription, "Basic health potion. (30 points)");
           		 cv.put(fItemBuyPrice, 15);
           		 cv.put(fItemSellPrice, 11);
           		 cv.put(fItemClass,0);
           		 db.insert(tItem, null, cv);     
           		 cv.clear();
+          		 cv.put(fItemModifierID, 2);
+         		 cv.put(fItemModifierEffect, "0;0;30");
+         		 cv.put(fItemID, FLAG_ITEM_HEALTH_POTION);
+         		 db.insert(tItemModifiers, null, cv);          		 
+         		 cv.clear();
           		 
           		cv.put(fClassID, 1);
           		cv.put(fClassIconTexture,"Players/Icons/Paladin.png");
@@ -1003,6 +1002,16 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
              return stackable;
          }
          
+         public String getItemEffect(int pID){
+        	 SQLiteDatabase myDB = this.getReadableDatabase();
+             Cursor myCursor = myDB.rawQuery("SELECT "+ fItemModifierEffect +" FROM "+ tItemModifiers +" WHERE "+ fItemID +"=?",new String[]{String.valueOf(pID)});
+             myCursor.moveToFirst();
+             int index = myCursor.getColumnIndex(fItemModifierEffect);
+             String myAnswer = myCursor.getString(index);
+             myCursor.close();
+         	 myDB.close();
+             return myAnswer;
+         }
          
          //Mob table
          public String getMobName(int pID){

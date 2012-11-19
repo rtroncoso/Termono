@@ -469,7 +469,26 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 				if(pSprite == mInventoryUseSprite){
 					Log.d("Quest!", "Use sprite");
 					//FIJARME SI ES EQUIPABLE O CONSUMIBLE AAAAAAAAAAAAAAAAAAAAA
-					Game.getPlayerHelper().getOwnPlayer().getInventory().EquipItem(pItem);
+					switch (pItem.getItemType()) {
+					case 0:
+						//consumible
+						if(Game.isServer()){
+							//mando msg
+							Game.getPlayerHelper().getOwnPlayer().getInventory().useConsumable(pItem);
+						}else{
+							//mando msg de que use un item
+							//me llega un msg de que use el item, ahi lo usa
+						}
+						break;
+					case 1:
+						//Quest item, lo devuelvo
+						placeIcon(pItem, pEntity);
+						break;
+					default:
+						//equipment
+						Game.getPlayerHelper().getOwnPlayer().getInventory().EquipItem(pItem);
+						break;
+					}
 					loadInventoryItems();
 				}else if(pSprite == mInventoryTossSprite){
 					Game.getPlayerHelper().getOwnPlayer().getInventory().removeItem(pItem);
@@ -480,7 +499,7 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 				}
 				
 			}else if(mEquipmentEntity!=null && pEntity == mEquipmentEquippedItemsEntity || pEntity == mEquipmentUnEquippedItemsEntity){
-				if(pItem.isEqquiped()){//Estaba equipado y colisiono
+				if(pItem.isEqquiped()){//Estaba equipado y colisiono, lo devuelvo
 					Sprite tmpSprite = null;
 					switch (pItem.getItemType()) {//2 = arma, 3 = armadura, 4 = Escudo, 5 = casco, 6 = extra
 					case 2:

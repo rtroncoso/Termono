@@ -366,6 +366,12 @@ public class DataHandler {
 		return this.mStaticDB.getItemModifiers(pItemID);
 	}
 	
+	public int[] getItemEffect(int pItemID){
+		String effect = this.mStaticDB.getItemEffect(pItemID);
+		String[] strarray = effect.split(";");
+		return new int[]{Integer.parseInt(strarray[0]),Integer.parseInt(strarray[1]),Integer.parseInt(strarray[2])}; 
+	}
+	
 	public int getItemModPower(int pItemID){
 		return this.mStaticDB.getItemModifiers(pItemID)[0];
 	}

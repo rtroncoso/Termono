@@ -559,7 +559,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 
 	public void setCurrHP(float pcurrHP) {
-		this.currHP = pcurrHP;			
+		if(pcurrHP>mModHP)
+			pcurrHP = mModHP;
+		this.currHP = pcurrHP;
 	}
 	
 	public float getCurrMana() {
@@ -567,6 +569,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 
 	public void setCurrMana(float currMana) {
+		if(currMana>mModMana)
+			currMana = mModMana;
 		this.currMana = currMana;
 	}
 	

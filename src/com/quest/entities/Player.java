@@ -282,11 +282,19 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 	} 
 	
 	public void recoverHP(){
-		this.currHP+=(float)(this.mEndurance)/10;
+		this.currHP+=(float)(this.mEndurance)/35;
 	}
 	
 	public void recoverMP(){
 		this.currMana+=(float)(this.mIntelligence)/10;
+	}
+	
+	public void healHP(int points){
+		this.setCurrHP(this.getCurrHP()+points);
+	}
+
+	public void healMP(int points){
+		this.setCurrMana(this.getCurrMana()+points);
 	}
 	
 	public void levelUP_Server(){

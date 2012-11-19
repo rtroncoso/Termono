@@ -42,7 +42,6 @@ public class Item extends Entity implements GameFlags{
 	private BitmapTextureAtlas mItemTextureAtlas;
 	private TiledTextureRegion mItemTextureRegion;
 	private AnimatedSprite mItemAnimation;
-	private int animationStatus = 0;
 	private Sprite mItemIcon;
 	private ITextureRegion mIconTextureRegion;
 	private String mAnimatedTexturePath;
@@ -51,6 +50,7 @@ public class Item extends Entity implements GameFlags{
 	private int mCols,mRows,extraCols;
 	private Text mAmountText;
 	private Entity mEntity;
+	private int[] mEffect;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -64,10 +64,11 @@ public class Item extends Entity implements GameFlags{
 			this.mItemName = Game.getDataHandler().getItemName(this.mItemFlag);
 			this.mItemClass = Game.getDataHandler().getItemClass(this.mItemFlag);
 			this.mItemType = Game.getDataHandler().getItemType(this.mItemFlag);
+			if(mItemType==1)
+				this.mEffect = Game.getDataHandler().getItemEffect(this.mItemFlag);
 			this.mItemDescription = Game.getDataHandler().getItemDescription(this.mItemFlag);
 			this.mItemBuyPrice = Game.getDataHandler().getItemBuyPrice(this.mItemFlag);	
 			this.mItemSellPrice = Game.getDataHandler().getItemSellPrice(this.mItemFlag);
-			
 			this.mStackable = Game.getDataHandler().isItemStackable(this.mItemFlag);
 			
 			//grafico
@@ -378,6 +379,16 @@ public class Item extends Entity implements GameFlags{
 
 	public void setEntity(Entity mEntity) {
 		this.mEntity = mEntity;
+	}
+
+
+	public int[] getEffect() {
+		return mEffect;
+	}
+
+
+	public void setEffect(int[] mEffect) {
+		this.mEffect = mEffect;
 	}
 
 	// ===========================================================
