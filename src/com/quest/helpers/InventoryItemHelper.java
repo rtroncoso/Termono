@@ -8,7 +8,6 @@ import com.quest.constants.GameFlags;
 import com.quest.entities.Player;
 import com.quest.entities.objects.Item;
 import com.quest.game.Game;
-import com.quest.pools.ItemPool;
 
 public class InventoryItemHelper implements GameFlags{
 
@@ -59,7 +58,10 @@ public class InventoryItemHelper implements GameFlags{
 	
 	public void decreaseItem(Item pItem,int pAmount){//Le resta pAmount al amount que tiene el item, si el resultado es 0 borra el item. (si se quiere borrar de una usar .getItemAmount() como paramentro
 		if(pItem!=null) {
-			if(pItem.DecreaseAmount(pAmount))this.mItems.remove(pItem);
+			if(pItem.DecreaseAmount(pAmount)){
+				this.mItems.remove(pItem);
+				Game.getItemHelper().recycleItem(pItem);
+			}
 		} else {
 			Log.d("Quest!","InventoryItemHelper: Decrease - No item matches key");
 		}
@@ -73,18 +75,49 @@ public class InventoryItemHelper implements GameFlags{
 		}
 	}
 	
-	public void EquipItem(Item item){		
+	public void EquipItem(Item item){
+		for(int i = mOwner.getEquippedWeaponsLayer().getChildCount()-1;i>=0;i--){
+			if(((Item)mOwner.getEquippedWeaponsLayer().getChildByIndex(i)).getItemType()== item.getItemType())
+				UnequipItem((Item)mOwner.getEquippedWeaponsLayer().getChildByIndex(i));
+		}
 		item.Equip(true);
-		this.mOwner.addModifiers(item.getItemModifiers());//server
 		this.mOwner.getEquippedWeaponsLayer().attachChild(item);
 		this.getEquippedItems().add(item);
+		if(Game.isServer()){
+			this.mOwner.addModifiers(item.getItemModifiers());
+			//mandar mensaje con el equipment
+		}
 	}
 	
 	public void UnequipItem(Item item){
 		item.Equip(false);
-		this.mOwner.substractModifiers(item.getItemModifiers());//server
 		this.mOwner.getEquippedWeaponsLayer().detachChild(item);
 		this.getEquippedItems().remove(item);
+		if(Game.isServer()){
+			this.mOwner.substractModifiers(item.getItemModifiers());//server
+			//mandar mensaje con el equipment
+		}
+	}
+	
+	public void useConsumable(Item item){
+			switch (item.getEffect()[0]) {
+			case 0://Recover
+				switch (item.getEffect()[1]) {
+				case 0://HP
+					mOwner.healHP(item.getEffect()[2]);
+					break;
+				case 1://MP
+					mOwner.healMP(item.getEffect()[2]);
+					break;
+				}
+				break;
+			case 1://Buff
+				
+				break;
+			default:
+				break;
+			}
+			this.decreaseItem(item, 1);
 	}
 	
 	public ArrayList<Item> getEquippedItems(){
