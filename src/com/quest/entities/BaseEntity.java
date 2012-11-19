@@ -45,7 +45,7 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	private TiledTextureRegion mTiledTextureRegion;
 	private PathModifier mPathModifier;
 	private Path mPath;
-	
+	protected boolean dying = false;
 	protected String mEntityType;
 	protected Attack tmpAttack;
 	protected AnimatedSprite mBodySprite;
@@ -559,7 +559,9 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 
 	public void setCurrHP(float pcurrHP) {
-		this.currHP = pcurrHP;			
+		if(pcurrHP>mModHP)
+			pcurrHP = mModHP;
+		this.currHP = pcurrHP;
 	}
 	
 	public float getCurrMana() {
@@ -567,6 +569,8 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	}
 
 	public void setCurrMana(float currMana) {
+		if(currMana>mModMana)
+			currMana = mModMana;
 		this.currMana = currMana;
 	}
 	
@@ -825,6 +829,17 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 	@Override
 	public void onDisplayAttackingAction() {
 		this.setAttackAnimation();		
+	}
+	
+	public void setDying(boolean status){
+		this.dying = status;
+	}
+
+	/**
+	 * @return the dying
+	 */
+	public boolean isDying() {
+		return dying;
 	}
 	
 	// ===========================================================
