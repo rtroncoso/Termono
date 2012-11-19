@@ -275,7 +275,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     	  Cursor myCursor = this.getReadableDatabase().rawQuery("SELECT * FROM "+ tProfile+","+tMatchProfile +" ON " + tMatchProfile+"."+fProfileID+" = "+tProfile+"."+fProfileID+" and "+tMatchProfile+"."+fMatchID+" =? and "+tProfile+"."+fProfileID+" =?",new String[]{String.valueOf(pMatchID),String.valueOf(pProfileID)});
 	  	  int count = myCursor.getCount();
 	  	  myCursor.close();
-	  	  this.close();
+	  	 
 	  	  if(count==0){//No existe el MatchProfile, lo agrego
   	    	ContentValues cv = new ContentValues();
             cv.put(fProfileID,pProfileID);
@@ -283,9 +283,9 @@ public class UserDatabase extends SQLiteOpenHelper {
             cv.put(fMatchProfileJoined,pJoined);
             this.getWritableDatabase().insert(tMatchProfile, null, cv);
             cv.clear();
-            this.close(); 
 	  	  }//Si ya existe no hace falta agregarlo
-	  	return pMatchID;
+	  	 this.close()
+	  	 ;return pMatchID;
     }
     
     public boolean checkifJoined(String pUserID,String pMatchName){

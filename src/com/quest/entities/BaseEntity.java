@@ -158,10 +158,10 @@ public class BaseEntity extends Entity implements IMeasureConstants, IGameConsta
 		
 		// Animate it
 		switch(pFacingDirection) {
-		case DIRECTION_SOUTH:
+		case DIRECTION_NORTH:
 			this.mBodySprite.animate(bodyFrameDurations, 0, (this.mBodyColumns) - (this.mBodyExtraCols) - 1, pLoop);
 			break;
-		case DIRECTION_NORTH:
+		case DIRECTION_SOUTH:
 			this.mBodySprite.animate(bodyFrameDurations, (this.mBodyColumns * 3), (this.mBodyColumns * 4) - (this.mBodyExtraCols) - 1, pLoop);
 			break;	
 		case DIRECTION_EAST:
