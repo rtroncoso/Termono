@@ -18,6 +18,8 @@ public class BattleHelper implements GameFlags{
 	
 	
 	public void startAttack(BaseEntity pAttackingEntity,int ATTACK_FLAG, BaseEntity pAttackedEntity){
+		if(pAttackedEntity.isDying() || pAttackingEntity.isDying())return;
+		
 		Attack tmpAttack = Game.getAttacksHelper().getAttack(ATTACK_FLAG);
 		if(tmpAttack.getEffect()[1]!=3)pAttackingEntity.decreaseMP(tmpAttack.getManaCost());
 		Game.getAttacksHelper().recycleAttack(tmpAttack);
@@ -53,6 +55,7 @@ public class BattleHelper implements GameFlags{
 		
 		if(pAttackedEntity.decreaseHP(damage)){
 			if(Game.isServer()){
+				pAttackedEntity.setDying(true);
 				if(!isMobAttacking){
 					int[] drop = ((Mob)(pAttackedEntity)).getMobDrop();
 					this.killMob(((Mob)(pAttackedEntity)),drop[0],drop[1], ((Mob)(pAttackedEntity)).getExperience(), ((Mob)(pAttackedEntity)).getMoney(),(Player) (pAttackingEntity));

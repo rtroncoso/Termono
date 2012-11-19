@@ -29,7 +29,7 @@ public class Item extends Entity implements GameFlags{
 	private int mItemFlag;
 	private String mItemName;
 	private int mItemClass;
-	private int mItemType;//0 - consumable, 1 weapon, 2 armor, 3 quest item
+	private int mItemType;//0 = consumible,1 = questitem, 2 = arma, 3 = armadura, 4 = Escudo, 5 = casco, 6 = extra
 	private String mItemDescription;
 	private int mItemBuyPrice;
 	private int mItemSellPrice;
@@ -51,8 +51,6 @@ public class Item extends Entity implements GameFlags{
 	private int mCols,mRows,extraCols;
 	private Text mAmountText;
 	private Entity mEntity;
-	private ArrayList<Item> mList;
-	private Sprite[] mCollisionSprites;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -105,7 +103,7 @@ public class Item extends Entity implements GameFlags{
 					int scene =0;
 				switch(pSceneTouchEvent.getAction()) {
 					case TouchEvent.ACTION_DOWN:
-						//	mGrabbed = true;
+						mGrabbed = true;
 							
 						if(Game.getSceneManager().getGameMenuScene() != null && Game.getSceneManager().getCurrScene() == Game.getSceneManager().getGameMenuScene()){
 							if(Game.getSceneManager().getGameMenuScene().getCurrentItem()==null){
@@ -117,44 +115,11 @@ public class Item extends Entity implements GameFlags{
 						
 						break;
 					case TouchEvent.ACTION_MOVE:
-					/*	this.setPosition(pSceneTouchEvent.getX()-(mItemIcon.getWidthScaled()/2)-getEntity().getX(), pSceneTouchEvent.getY()-(mItemIcon.getHeightScaled()/2)-getEntity().getY());
-						boolean collides =false;
-						int i = 0;
-						while(!collides && i<mCollisionSprites.length){
-							if(this.collidesWith(mCollisionSprites[i])){
-								mCollisionSprites[i].setAlpha(0.5f);
-								collides = true;
-							}else{
-								mCollisionSprites[i].setAlpha(1f);
-							}
-							i++;
-						}*/
+				
 						break;
 					case TouchEvent.ACTION_UP:
-						switch (scene) {
-						case 0:
-							break;
-						case 1:
-							//Game.getSceneManager().getGameMenuScene().setCurrentItem(null);
-							this.setScale(2f);
-							break;
-					}
-				/*	if(mGrabbed) {
-						mGrabbed = false;
-						boolean collideS =false;
-						int a = 0;
-						while(a<mCollisionSprites.length){
-							if(!collideS && this.collidesWith(mCollisionSprites[a])){
-								Game.getSceneManager().getGameMenuScene().ActionOnCollide(Item.this, mCollisionSprites[a],Item.this.mEntity);
-								collideS = true;
-							}else{
-								mCollisionSprites[a].setAlpha(1f);
-							}
-							a++;
-						}
-						
-					}*/
-						
+						if(mGrabbed)
+						this.setScale(2f);
 						break;
 					}
 				return false;
@@ -187,9 +152,6 @@ public class Item extends Entity implements GameFlags{
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	public void setCollisionSprites(Sprite[] pSprites){
-		this.mCollisionSprites = pSprites;
-	}
 	
 	public Sprite getItemIcon(){
 		return this.mItemIcon;
@@ -416,21 +378,6 @@ public class Item extends Entity implements GameFlags{
 
 	public void setEntity(Entity mEntity) {
 		this.mEntity = mEntity;
-	}
-
-	/**
-	 * @return the mList
-	 */
-	public ArrayList<Item> getmList() {
-		return mList;
-	}
-
-
-	/**
-	 * @param mList the mList to set
-	 */
-	public void setmList(ArrayList<Item> mList) {
-		this.mList = mList;
 	}
 
 	// ===========================================================

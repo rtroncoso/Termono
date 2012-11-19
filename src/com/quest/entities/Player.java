@@ -162,6 +162,7 @@ public class Player extends BaseEntity implements IOnScreenControlListener, ITou
 		this.setTileAt(this.getCoords()[0], this.getCoords()[1]);
 		this.Heal();
 		this.mAttackLayer.add(Game.getAttacksHelper().addNewAttack(FLAG_ATTACK_PLAYER_DEATH));
+		this.setDying(false);
 	}
 
 	@Override

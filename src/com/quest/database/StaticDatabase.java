@@ -39,7 +39,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fItemName = "Name";
         static final String fItemIconTexture = "IconTexture";
         static final String fItemAnimationTexture = "AnimationTexture";
-        static final String fItemType = "Type";
+        static final String fItemType = "Type";//0 = consumible,1 = questitem, 2 = arma, 3 = armadura, 4 = Escudo, 5 = casco, 6 = extra
         static final String fItemStackable = "Stackable";
         static final String fItemDescription = "Description";
         static final String fItemBuyPrice = "BuyPrice";
@@ -80,7 +80,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fAttackClass = "Class";
         
         
-        //Mobs   ***attack texture y eso
+        //Mobs  
         static final String tMob = "Mobs";
         static final String fMobID = "MobID";
         static final String fMobName = "Name";
@@ -91,7 +91,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
         static final String fMobExtraCols = "ExtraCols";
         static final String fMobFrameWidth = "FrameWidth";
         static final String fMobFrameHeight = "FrameHeight";
-        static final String fMobType = "Type";//Aggressive - etc, no se
+        static final String fMobType = "Type";//1 - volador
         static final String fMobDescription = "Description";
         static final String fMobViewRange = "ViewRange";
         static final String fMobAttackRange = "AttackRange";

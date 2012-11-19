@@ -33,7 +33,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	// ===========================================================
 	private int mMobFlag;
 	private int[] mDroppedItems,mDropRates,mDropAmounts;
-	private boolean dying = false;
 	private boolean mGrabbed = false;
 	private boolean following,pursuit,cooling = false;
 	private int mViewRange,mAttackRange;
@@ -255,7 +254,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 					Player tmpPlayer = Game.getPlayerHelper().getOwnPlayer();
 					Attack tmpAttack = Game.getAttacksHelper().getAttack(tmpPlayer.getAttack_Flag());
 					tmpPlayer.setCurrentTarget((Integer)Mob.this.getUserData());
-					Log.d("Quest!", "At eff: "+tmpAttack.getEffect()[1]);
 					if(tmpAttack.getEffect()[1]!=3){//si no es un area attack
 						Game.getSceneManager().getGameScene().changeMobHUD(Mob.this);
 						Game.getPlayerHelper().getOwnPlayer().onAttackAction(this, Game.getPlayerHelper().getOwnPlayer().getAttack_Flag());
@@ -386,10 +384,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	// ===========================================================
 	public int getMobFlag(){
 		return this.mMobFlag;
-	}
-	
-	public void setDying(boolean status){
-		this.dying = status;
 	}
 
 	public int getMobType() {

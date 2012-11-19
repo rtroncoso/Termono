@@ -50,7 +50,6 @@ public class ItemPool {
 						pItem.detachSelf();
 						pItem.setVisible(false);
 						pItem.setEntity(null);
-						pItem.setmList(null);
 						pItem.setAmount(0);
 						pItem.getItemIcon().setScale(2.0f);
 						//unequip?

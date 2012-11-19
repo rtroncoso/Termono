@@ -59,7 +59,10 @@ public class InventoryItemHelper implements GameFlags{
 	
 	public void decreaseItem(Item pItem,int pAmount){//Le resta pAmount al amount que tiene el item, si el resultado es 0 borra el item. (si se quiere borrar de una usar .getItemAmount() como paramentro
 		if(pItem!=null) {
-			if(pItem.DecreaseAmount(pAmount))this.mItems.remove(pItem);
+			if(pItem.DecreaseAmount(pAmount)){
+				this.mItems.remove(pItem);
+				Game.getItemHelper().recycleItem(pItem);
+			}
 		} else {
 			Log.d("Quest!","InventoryItemHelper: Decrease - No item matches key");
 		}

@@ -47,7 +47,7 @@ public class ItemHelper implements GameFlags{
 		this.mItemPool.recycleItem(pItem);		
 	}
 	
-	public void recycleAttackList(ArrayList<Item> pItemList){
+	public void recycleItemList(ArrayList<Item> pItemList){
 		this.mItems.removeAll(pItemList);
 		this.mItemPool.recycleItems(pItemList);
 	}
