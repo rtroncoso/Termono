@@ -889,7 +889,7 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 					}					
 				};
 				mAttributesBoxSprite[i].setUserData(i);
-				mAttributesBoxSprite[i].setScale(1.5f);
+				mAttributesBoxSprite[i].setScale(1.2f);
 				//Plus
 				mAttributesPlusSprite[i] = new Sprite(offset+(mAttributesBoxSprite[i].getWidthScaled()/2)-32, mAttributesBoxSprite[i].getY()+45,this.mAttributesPlusTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 					boolean mGrabbed = false;
@@ -922,7 +922,7 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 					}					
 				};
 				mAttributesPlusSprite[i].setUserData(i);
-				mAttributesPlusSprite[i].setScale(1.5f);
+				mAttributesPlusSprite[i].setScale(1.2f);
 				//Minus
 				mAttributesMinusSprite[i] = new Sprite(offset+(mAttributesBoxSprite[i].getWidthScaled()/2)-32, mAttributesPlusSprite[i].getY()+mAttributesPlusSprite[i].getHeightScaled()+20,this.mAttributesMinusTextureRegion,Game.getInstance().getVertexBufferObjectManager()) {
 					boolean mGrabbed = false;
@@ -954,7 +954,7 @@ public class GameMenuScene extends Scene implements GameFlags,IOnSceneTouchListe
 					}					
 				};
 				mAttributesMinusSprite[i].setUserData(i);
-				mAttributesMinusSprite[i].setScale(1.5f);
+				mAttributesMinusSprite[i].setScale(1.2f);
 				this.mAttributesEntity.attachChild(mAttributesBoxSprite[i]);
 				this.mAttributesEntity.attachChild(mAttributesPlusSprite[i]);
 				this.mAttributesEntity.attachChild(mAttributesMinusSprite[i]);

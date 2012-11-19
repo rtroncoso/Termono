@@ -153,11 +153,11 @@ public class TextHelper implements GameFlags{
 	
 	public void allocateDefaultTexts(){
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_FANCY).batchAllocatePoolItems(4);
-		this.mTextPool.getPool(FLAG_TEXT_TYPE_NORMAL).batchAllocatePoolItems(10);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_NORMAL).batchAllocatePoolItems(20);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_DAMAGE).batchAllocatePoolItems(10);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_BLUE).batchAllocatePoolItems(5);
-		this.mTextPool.getPool(FLAG_TEXT_TYPE_YELLOW).batchAllocatePoolItems(3);
-		this.mTextPool.getPool(FLAG_TEXT_TYPE_HEALING).batchAllocatePoolItems(3);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_YELLOW).batchAllocatePoolItems(5);
+		this.mTextPool.getPool(FLAG_TEXT_TYPE_HEALING).batchAllocatePoolItems(5);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_FANCY_DARK).batchAllocatePoolItems(1);
 		this.mTextPool.getPool(FLAG_TEXT_TYPE_BLACK_KNIGHT).batchAllocatePoolItems(5);
 	}

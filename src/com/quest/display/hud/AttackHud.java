@@ -69,6 +69,7 @@ public class AttackHud extends HUD implements GameFlags,IGameConstants{
 								//si me laggea el ataque grafico cambiar por esto
 								//mOwner.onAttackAction(tmpMob, FLAG_ATTACK_NORMAL);
 								//lo unico que cambia es que solo se va a animar si ataca a un mob
+								Game.getSceneManager().getGameScene().changeMobHUD(tmpMob);
 								Game.getBattleHelper().startAttack(mOwner, FLAG_ATTACK_NORMAL, tmpMob);
 								startCooldown(1);
 							}

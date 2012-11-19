@@ -64,7 +64,7 @@ public class Item extends Entity implements GameFlags{
 			this.mItemName = Game.getDataHandler().getItemName(this.mItemFlag);
 			this.mItemClass = Game.getDataHandler().getItemClass(this.mItemFlag);
 			this.mItemType = Game.getDataHandler().getItemType(this.mItemFlag);
-			if(mItemType==1)
+			if(mItemType==0)
 				this.mEffect = Game.getDataHandler().getItemEffect(this.mItemFlag);
 			this.mItemDescription = Game.getDataHandler().getItemDescription(this.mItemFlag);
 			this.mItemBuyPrice = Game.getDataHandler().getItemBuyPrice(this.mItemFlag);	

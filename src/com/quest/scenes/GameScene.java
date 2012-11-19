@@ -85,6 +85,12 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_RING, 5);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_SPELL_ICE_BASH, 3);
 			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_NORMAL, 4);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_MOB_DEATH, 2);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_PLAYER_DEATH, 1);
+			    			Game.getAttacksHelper().allocateAttack(FLAG_ATTACK_PLAYER_LEVEL_UP, 1);
+			    			
+			    			
 			    			
 			    			Game.getSceneManager().getLoadingScene().changeCurrentTaskText("Allocating Items in pool");
 			    			for(int i = Game.getPlayerHelper().getEntities().size()-1;i>=0;i--){

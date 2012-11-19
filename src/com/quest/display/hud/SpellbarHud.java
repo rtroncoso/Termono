@@ -62,59 +62,8 @@ public class SpellbarHud extends HUD implements GameFlags{
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					switch(pSceneTouchEvent.getAction()) {
 						case TouchEvent.ACTION_DOWN:
-							switch ((Integer)(this.getUserData())) {
-							case 0:
-								//Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(2.0f);
-								break;
-							case 1:
-								
-								break;
-							case 2:
-								
-								break;
-							case 3:
-								
-								break;
-							case 4:
-								
-								break;
-							}
-							this.setScale(2.5f);
-							this.mGrabbed = true;
 							break;
 						case TouchEvent.ACTION_UP:
-							if(this.mGrabbed == true){
-								this.setScale(2.0f);
-								this.mGrabbed= false;
-								switch ((Integer)(this.getUserData())) {
-								case 0:
-									//Game.getPlayerHelper().getOwnPlayer().setSpeedFactor(1.0f);
-									break;
-								case 1:
-									/*if(Game.isServer()){
-										Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow(),1);
-									}*/
-									break;
-								case 2:
-									//Game.getSceneManager().getGameScene().DeleteMob(0);//la key no se usa por ahora
-									break;
-								case 3:
-									//if(Game.isServer()){
-									//	Game.getSceneManager().getGameScene().CreateMob(FLAG_MOB_BAT,Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileColumn(),Game.getPlayerHelper().getOwnPlayer().getTMXTileAt().getTileRow(),1);
-									//}
-									break;
-								case 4:
-									if(Game.isServer()){
-										for(int i = Game.getPlayerHelper().getEntities().size()-1;i>=0;i--){
-											Player tmpPlayer = Game.getPlayerHelper().getPlayerbyIndex(i);
-											Game.getDataHandler().setPlayerCurrentMap(tmpPlayer.getCurrentMap(), tmpPlayer.getPlayerID());
-											Game.getDataHandler().setPlayerPosition(tmpPlayer.getTMXTileAt(), tmpPlayer.getPlayerID());
-										}
-									}
-									//Game.getSceneManager().getGameScene().DeleteMobs(0);
-									break;
-								}
-							}
 							break;
 					}
 					return true;

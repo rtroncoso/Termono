@@ -1137,13 +1137,13 @@ public class MatchScene extends Scene implements GameFlags {
 		   		      this.mLoadMatchBottomLeftSprite.setVisible(false);		
 		   		      this.mLoadMatchBottomRightSprite.setVisible(true);
 		   		      if(nextstep){
-		   				this.mMatchNameInput = Game.getTextHelper().NewInputText(250, 180, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 0, false);
+		   				this.mMatchNameInput = Game.getTextHelper().NewInputText(250, 145, "Match Name", "Choose a name for the match.", this.mTiledTextureRegion, 0, 30, false);
 		   				this.mLoadMatchEntity.attachChild(mMatchNameInput);
-		   				this.mMatchPasswordInput = Game.getTextHelper().NewInputText(290, 240, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 0, true);
+		   				this.mMatchPasswordInput = Game.getTextHelper().NewInputText(290, 205, "Match Password", "Choose a password for the match.", this.mTiledTextureRegion, 0, 30, true);
 		   				this.mLoadMatchEntity.attachChild(mMatchPasswordInput);
 		   		      }
 		   		      	
-		   		      Game.getTextHelper().ChangeText("Follow the instructions to create a new match", "MatchScene;StepText", 100, 50);	
+		   		      Game.getTextHelper().ChangeText("Follow the instructions to create a new match", "MatchScene;StepText", 100, 130);	
 		   		      Game.getTextHelper().ChangeText("Match name:", "MatchScene;StepText1",100, 180);
 		   		      Game.getTextHelper().ChangeText("Match password:", "MatchScene;StepText2",100, 240);
 		   		      this.registerTouchArea(mMatchNameInput);
@@ -1162,7 +1162,7 @@ public class MatchScene extends Scene implements GameFlags {
 		   	    		  this.mMatchPasswordInput.setVisible(false);	 		   					
 		   	    	  }
 		   	    	  
-		   	    	  Game.getTextHelper().ChangeText("Choose the map for the match", "MatchScene;StepText", 100, 50);
+		   	    	  Game.getTextHelper().ChangeText("Choose the map for the match", "MatchScene;StepText", 100, 130);
 		   	    	  Game.getTextHelper().ClearText("MatchScene;StepText1");
 		   	    	  Game.getTextHelper().ClearText("MatchScene;StepText2");
 		   	    	  this.mLoadMatchBottomRightSprite.setVisible(true);
@@ -1777,7 +1777,7 @@ public class MatchScene extends Scene implements GameFlags {
 						if(mChoices[4]==1)mAttributeMinusSprite3.setVisible(false);
 						if(mChoices[5]==1)mAttributeMinusSprite4.setVisible(false);
 						
-						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[6]), "MatchScene;StepText",150, 30);
+						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[6]), "MatchScene;StepText",150, 80);
 						Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[2]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
 						Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[3]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
 						Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[4]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);
@@ -1890,7 +1890,7 @@ public class MatchScene extends Scene implements GameFlags {
 						if(mChoices[4]==1)mAttributeMinusSprite3.setVisible(false);
 						if(mChoices[5]==1)mAttributeMinusSprite4.setVisible(false);
 						
-						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[6]), "MatchScene;StepText",150, 50);
+						Game.getTextHelper().ChangeText("Distribute your attribute points.\n               Points left: "+String.valueOf(mChoices[6]), "MatchScene;StepText",150, 80);
 						Game.getTextHelper().ChangeText("Power: "+String.valueOf(mChoices[2]), "MatchScene;StepText1",mAttributeBackgroundSprite1.getX()+30, mAttributeBackgroundSprite1.getY()-20);
 						Game.getTextHelper().ChangeText("Intelligence: "+String.valueOf(mChoices[3]), "MatchScene;StepText2",mAttributeBackgroundSprite2.getX()+10, mAttributeBackgroundSprite2.getY()-20);
 						Game.getTextHelper().ChangeText("Defense: "+String.valueOf(mChoices[4]), "MatchScene;StepText3",mAttributeBackgroundSprite3.getX()+30, mAttributeBackgroundSprite3.getY()-20);

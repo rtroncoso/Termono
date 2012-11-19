@@ -23,6 +23,8 @@ public class ItemHelper implements GameFlags{
 	private void initItemPool() {
 		this.mItemPool.registerItem(FLAG_ITEM_BIG_FLAMED_SWORD);
 		this.mItemPool.registerItem(FLAG_ITEM_HEALTH_POTION);
+		this.mItemPool.registerItem(FLAG_ITEM_LEATHER_HELM);
+		this.mItemPool.registerItem(FLAG_ITEM_IRON_HELM);
 	}
 	
 	

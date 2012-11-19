@@ -38,6 +38,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	private int mViewRange,mAttackRange;
 	private int mATTACK_FLAG;
 	private int mMobType;
+	private int timerkey;
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -60,7 +61,6 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		this.mViewRange = Game.getDataHandler().getMobViewRange(mMobFlag);
 		this.mAttackRange = Game.getDataHandler().getMobAttackRange(mMobFlag);
 		this.mATTACK_FLAG = Game.getDataHandler().getMobAttack(mMobFlag);
-		startRecoveryTimer();
 		this.mEntityType = "Mob";
 	}
 	
@@ -84,28 +84,30 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	
 	public void startMoveTimer(){
 		if(Game.isServer()){	
+			timerkey = (Integer) Mob.this.getUserData();
 			Game.getTimerHelper().addTimer(new Timer(2.5f, new ITimerCallback() {			
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
 					// TODO Auto-generated method stub
-					if(!following && !pursuit){
+					if(!following && !pursuit && !dying){
 						Mob.this.doRandomPath();
 						for(int i = Game.getPlayerHelper().getEntities().size()-1;i>=0;i--)
 							if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt()!=null)
-								if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+4))
-									if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-4) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+4)){
-										Log.d("Quest!","Mob; player "+Game.getPlayerHelper().getPlayerbyIndex(i).getUserID()+" is near me");
+								if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-mViewRange) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+mViewRange))
+									if(Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-mViewRange) && Game.getPlayerHelper().getPlayerbyIndex(i).getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+mViewRange)){
 										startFollowTimer(Game.getPlayerHelper().getPlayerbyIndex(i),false);
 									}
 					}
 				}
 			}), String.valueOf(this.getUserData()));
+			startRecoveryTimer();
 		}
 	}
 	
 	
 	
 	public void startFollowTimer(final Player player,boolean inpursuit){
+		if(following)return;
 		if(Game.isServer()){
 			following = true;
 			pursuit = inpursuit;
@@ -115,65 +117,68 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 				boolean blocked = false;
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
-					boolean attack = false;
-					byte movingDirection = DIRECTION_DEFAULT;
-					
-					if(player.getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-mViewRange) && player.getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+mViewRange) && player.getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-mViewRange) && player.getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+mViewRange) || pursuit){
-						countdown-=0.2f;
-						if(countdown<0.1f && pursuit)pursuit=false;
+					if(!dying){
+						boolean attack = false;
+						byte movingDirection = DIRECTION_DEFAULT;
 						
-						if(player.getTMXTileAt().getTileColumn()<Mob.this.getTMXTileAt().getTileColumn() && !blocked){
-							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()>=(Mob.this.getTMXTileAt().getTileColumn()-mAttackRange)){
-								attack = true;
-							}else{
-								movingDirection = DIRECTION_WEST;
-							}
-						}else if(player.getTMXTileAt().getTileColumn()>Mob.this.getTMXTileAt().getTileColumn() && !blocked){
-							if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()<=(Mob.this.getTMXTileAt().getTileColumn()+mAttackRange)){
-								attack = true;
-							}else{
-								movingDirection = DIRECTION_EAST;
-							}
-						}else if(player.getTMXTileAt().getTileColumn()==Mob.this.getTMXTileAt().getTileColumn() || blocked){
-							if(player.getTMXTileAt().getTileRow()<Mob.this.getTMXTileAt().getTileRow()){
-								if(player.getTMXTileAt().getTileRow()>=(Mob.this.getTMXTileAt().getTileRow()-mAttackRange) && !blocked){
-									attack = true;
-								}else{
-									movingDirection = DIRECTION_SOUTH;
-								}
-							}else if(player.getTMXTileAt().getTileRow()>Mob.this.getTMXTileAt().getTileRow()){
-								if(player.getTMXTileAt().getTileRow()<=(Mob.this.getTMXTileAt().getTileRow()+mAttackRange) && !blocked){
-									attack = true;
-								}else{
-									movingDirection = DIRECTION_NORTH;
-								}	
-							}
-						}
-						blocked = false;
+						if(player.getTMXTileAt().getTileColumn()>(Mob.this.getTMXTileAt().getTileColumn()-mViewRange) && player.getTMXTileAt().getTileColumn()<(Mob.this.getTMXTileAt().getTileColumn()+mViewRange) && player.getTMXTileAt().getTileRow()>(Mob.this.getTMXTileAt().getTileRow()-mViewRange) && player.getTMXTileAt().getTileRow()<(Mob.this.getTMXTileAt().getTileRow()+mViewRange) || pursuit){
+							countdown-=0.2f;
+							if(countdown<0.1f && pursuit)pursuit=false;
 							
-						if(!attack){
-							TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
-							if(tmpNewTile!=null){
-								Log.d("Quest!","usrdt: "+((Integer)Mob.this.getUserData())+" tmp: "+tmpNewTile+" \n x:"+tmpNewTile.getTileColumn()+" y: "+tmpNewTile.getTileRow()+" \n px: "+player.getTMXTileAt().getTileColumn()+" py: "+player.getTMXTileAt().getTileRow());
-								Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+							if(player.getTMXTileAt().getTileColumn()<Mob.this.getTMXTileAt().getTileColumn() && !blocked){
+								if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()>=(Mob.this.getTMXTileAt().getTileColumn()-mAttackRange)){
+									attack = true;
+								}else{
+									movingDirection = DIRECTION_WEST;
+								}
+							}else if(player.getTMXTileAt().getTileColumn()>Mob.this.getTMXTileAt().getTileColumn() && !blocked){
+								if(player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow() && player.getTMXTileAt().getTileColumn()<=(Mob.this.getTMXTileAt().getTileColumn()+mAttackRange)){
+									attack = true;
+								}else{
+									movingDirection = DIRECTION_EAST;
+								}
+							}else if(player.getTMXTileAt().getTileColumn()==Mob.this.getTMXTileAt().getTileColumn() || blocked){
+								if(player.getTMXTileAt().getTileRow()<Mob.this.getTMXTileAt().getTileRow()){
+									if(player.getTMXTileAt().getTileRow()>=(Mob.this.getTMXTileAt().getTileRow()-mAttackRange) && !blocked){
+										attack = true;
+									}else{
+										movingDirection = DIRECTION_SOUTH;
+									}
+								}else if(player.getTMXTileAt().getTileRow()>Mob.this.getTMXTileAt().getTileRow() || blocked){
+									if(player.getTMXTileAt().getTileRow()<=(Mob.this.getTMXTileAt().getTileRow()+mAttackRange) && !blocked){
+										attack = true;
+									}else{
+										movingDirection = DIRECTION_NORTH;
+									}	
+								}
+							}
+							blocked = false;
+								
+							if(!attack){
+								TMXTile tmpNewTile = Mob.this.moveInDirection(movingDirection);
+								if(tmpNewTile!=null){
+									Log.d("Quest!","usrdt: "+((Integer)Mob.this.getUserData())+" tmp: "+tmpNewTile+" \n x:"+tmpNewTile.getTileColumn()+" y: "+tmpNewTile.getTileRow()+" \n px: "+player.getTMXTileAt().getTileColumn()+" py: "+player.getTMXTileAt().getTileRow());
+									Game.getServer().sendMessageMoveMob((Integer)(Mob.this.getUserData()), tmpNewTile.getTileColumn(), tmpNewTile.getTileRow());
+								}else{
+									blocked = true;
+									if(isNextToPlayer(player, movingDirection))
+										blocked = false;
+								}
+								Mob.this.moveToTile(tmpNewTile);
 							}else{
-							//	Log.e("Quest!","Blocked: "+blocked);
-								blocked = true;
+								if(!cooling){
+									Mob.this.onAttackAction(player, mATTACK_FLAG);
+									startCooldown(1.5f);
+								}
 							}
-							Mob.this.moveToTile(tmpNewTile);
+						
 						}else{
-							if(!cooling){
-								Mob.this.onAttackAction(player, mATTACK_FLAG);
-								startCooldown(1.5f);
-							}
+							following = false;
+							Game.getTimerHelper().deleteTimer(String.valueOf(timerkey)+";Follow");
 						}
-					
-					}else{
-						following = false;
-						Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData())+";Follow");
 					}
 				}
-			}), String.valueOf(this.getUserData()+";Follow"));
+			}), String.valueOf(timerkey)+";Follow");
 		}
 	}
 	
@@ -187,6 +192,38 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 					Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData())+";Cooldown");
 				}
 			}), String.valueOf(this.getUserData())+";Cooldown");
+	}
+	
+	public boolean isNextToPlayer(Player player, byte pDirection){
+		boolean vertical = false;
+		if(pDirection == DIRECTION_NORTH || pDirection == DIRECTION_SOUTH) vertical = true;	
+		
+		int tileOff = 0;
+		switch (pDirection) {
+		case DIRECTION_SOUTH:
+			tileOff = -1;
+			break;
+		case DIRECTION_NORTH:
+			tileOff = 1;
+			break;	
+		case DIRECTION_EAST:
+			tileOff = 1;
+			break;
+		case DIRECTION_WEST:
+			tileOff = -1;
+			break;	
+		}
+		
+		if(vertical){
+			if(player.getTMXTileAt().getTileRow()==(Mob.this.getTMXTileAt().getTileRow()+tileOff) && player.getTMXTileAt().getTileColumn()==Mob.this.getTMXTileAt().getTileColumn()){
+				return true;
+			}
+		}else{
+			if(player.getTMXTileAt().getTileColumn()==(Mob.this.getTMXTileAt().getTileColumn()+tileOff) && player.getTMXTileAt().getTileRow()==Mob.this.getTMXTileAt().getTileRow()){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void doRandomPath() 
@@ -233,11 +270,18 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 	}
 
 	public int[] getMobDrop(){
-		//HACER EL CALCULO DE QUE ITEM TIENE QUE DROPPEAR
-		if(this.getMobFlag()==3){
-			return new int[]{FLAG_ITEM_HEALTH_POTION,2};
+		int rand = Game.getRandomInt(0, 100);
+		boolean dropped = false;
+		int i = this.mDroppedItems.length-1;
+		while(!dropped && i >= 0){
+			if(rand / (100-this.mDropRates[i])>0)
+				dropped = true;
+			i--;
+		}
+		if(dropped){
+			return new int[]{this.mDroppedItems[i+1],this.mDropAmounts[i+1]};
 		}else{
-			return new int[]{FLAG_ITEM_BIG_FLAMED_SWORD,1};
+			return new int[]{0, 0};
 		}
 	}
 	
@@ -284,11 +328,7 @@ public class Mob extends BaseEntity implements ITouchArea, GameFlags{
 		// TODO Auto-generated method stub
 		super.onDeathAction(pKillerEntity);
 		dying = true;
-		Mob.this.following=false;
-		pursuit = false;
-		cooling = true;
-		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));
-		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(Mob.this.getUserData()+";Follow"));
+		if(Game.isServer())Game.getTimerHelper().deleteTimer(String.valueOf(this.getUserData()));		
 		if(Game.getSceneManager().getGameScene().getOtherStatsHud() != null)Game.getSceneManager().getGameScene().getOtherStatsHud().dettachHUD((Integer)this.getUserData());
 		Game.getTimerHelper().addTimer(new Timer(1, new ITimerCallback() {			
 			int i = 1;

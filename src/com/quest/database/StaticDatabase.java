@@ -408,7 +408,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		 cv.put(fItemClass,1);
           		 db.insert(tItem, null, cv);          		 
           		 cv.clear();          		 
-                 cv.put(fItemModifierID, 1);
+                 cv.put(fItemModifierID, FLAG_ITEM_BIG_FLAMED_SWORD);
           		 cv.put(fItemModifierEndurance, 1);
           		 cv.put(fItemModifierIntelligence, 1);
           		 cv.put(fItemModifierPower, 4);
@@ -417,6 +417,58 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		 db.insert(tItemModifiers, null, cv);          		 
           		 cv.clear();                 
           		 
+          		 
+          		 cv.put(fItemID, FLAG_ITEM_LEATHER_HELM);
+          		 cv.put(fItemName, "Leather Helm");
+          		 cv.put(fItemAnimationTexture, "Items/Animations/Leather Helm.png");
+          		 cv.put(fItemIconTexture, "Items/Icons/Leather Helm.png");
+          		 cv.put(fItemType, 5);
+          		 cv.put(fItemStackable, 0);
+          		 cv.put(fItemExtraCols, 0);
+          		 cv.put(fItemAnimationRows, 4);
+          		 cv.put(fItemAnimationCols, 5);
+          		 cv.put(fItemFrameHeight, 128);
+          		 cv.put(fItemFrameWidth, 256);
+          		 cv.put(fItemDescription, "A leather helmet.");
+          		 cv.put(fItemBuyPrice, 30);
+          		 cv.put(fItemSellPrice, 25);
+          		 cv.put(fItemClass,1);
+          		 db.insert(tItem, null, cv);          		 
+          		 cv.clear();          		 
+                 cv.put(fItemModifierID, FLAG_ITEM_LEATHER_HELM);
+          		 cv.put(fItemModifierEndurance, 3);
+          		 cv.put(fItemModifierIntelligence, 0);
+          		 cv.put(fItemModifierPower, 0);
+          		 cv.put(fItemModifierDefense, 3);
+          		 cv.put(fItemID, FLAG_ITEM_LEATHER_HELM);
+          		 db.insert(tItemModifiers, null, cv);          		 
+          		 cv.clear();    
+          		 
+          		 cv.put(fItemID, FLAG_ITEM_IRON_HELM);
+          		 cv.put(fItemName, "Iron Helm");
+          		 cv.put(fItemAnimationTexture, "Items/Animations/Iron Helm.png");
+          		 cv.put(fItemIconTexture, "Items/Icons/Iron Helm.png");
+          		 cv.put(fItemType, 5);
+          		 cv.put(fItemStackable, 0);
+          		 cv.put(fItemExtraCols, 0);
+          		 cv.put(fItemAnimationRows, 4);
+          		 cv.put(fItemAnimationCols, 5);
+          		 cv.put(fItemFrameHeight, 128);
+          		 cv.put(fItemFrameWidth, 256);
+          		 cv.put(fItemDescription, "A sturdy iron helmet.");
+          		 cv.put(fItemBuyPrice, 68);
+          		 cv.put(fItemSellPrice, 60);
+          		 cv.put(fItemClass,1);
+          		 db.insert(tItem, null, cv);          		 
+          		 cv.clear();          		 
+                 cv.put(fItemModifierID, FLAG_ITEM_IRON_HELM);
+          		 cv.put(fItemModifierEndurance, 5);
+          		 cv.put(fItemModifierIntelligence, 0);
+          		 cv.put(fItemModifierPower, 0);
+          		 cv.put(fItemModifierDefense, 5);
+          		 cv.put(fItemID, FLAG_ITEM_IRON_HELM);
+          		 db.insert(tItemModifiers, null, cv);          		 
+          		 cv.clear(); 
           		 
                  //ITEM
                  cv.put(fItemID, FLAG_ITEM_HEALTH_POTION);
@@ -430,7 +482,7 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		 cv.put(fItemClass,0);
           		 db.insert(tItem, null, cv);     
           		 cv.clear();
-          		 cv.put(fItemModifierID, 2);
+          		 cv.put(fItemModifierID, FLAG_ITEM_HEALTH_POTION);
          		 cv.put(fItemModifierEffect, "0;0;30");
          		 cv.put(fItemID, FLAG_ITEM_HEALTH_POTION);
          		 db.insert(tItemModifiers, null, cv);          		 
@@ -515,9 +567,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.clear();
           		cv.put(fMobDropExperience,5);
           		cv.put(fMobDropMoney,1);
-          		cv.put(fMobDropItemIDs,"1,2,3,4,5");
-          		cv.put(fMobDropRates,"10,8,6,4,2");
-          		cv.put(fMobDropAmounts,"1,1,1,1,1");
+          		cv.put(fMobDropItemIDs,FLAG_ITEM_BIG_FLAMED_SWORD+";"+FLAG_ITEM_HEALTH_POTION+";"+FLAG_ITEM_IRON_HELM+";"+FLAG_ITEM_LEATHER_HELM);
+          		cv.put(fMobDropRates,"35;30;25;20");
+          		cv.put(fMobDropAmounts,"1;1;1;1");
           		cv.put(fMobID, FLAG_MOB_BAT);
           		db.insert(tMobDroptable, null, cv); 
           		
@@ -552,9 +604,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.clear();
           		cv.put(fMobDropExperience,20);
           		cv.put(fMobDropMoney,6);
-          		cv.put(fMobDropItemIDs,"1,2,3,4,5");
-          		cv.put(fMobDropRates,"12,10,8,6,4");
-          		cv.put(fMobDropAmounts,"1,1,1,1,1");
+          		cv.put(fMobDropItemIDs,FLAG_ITEM_BIG_FLAMED_SWORD+";"+FLAG_ITEM_HEALTH_POTION+";"+FLAG_ITEM_IRON_HELM+";"+FLAG_ITEM_LEATHER_HELM);
+          		cv.put(fMobDropRates,"35;30;25;20");
+          		cv.put(fMobDropAmounts,"2;1;2;2");
           		cv.put(fMobID, FLAG_MOB_BEE);
           		db.insert(tMobDroptable, null, cv); 
           		cv.clear();
@@ -587,9 +639,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.clear();
           		cv.put(fMobDropExperience,99);
           		cv.put(fMobDropMoney,99);
-          		cv.put(fMobDropItemIDs,"1,2,3,4,5");
-          		cv.put(fMobDropRates,"12,10,8,6,4");
-          		cv.put(fMobDropAmounts,"1,1,1,1,1");
+          		cv.put(fMobDropItemIDs,FLAG_ITEM_BIG_FLAMED_SWORD+";"+FLAG_ITEM_HEALTH_POTION+";"+FLAG_ITEM_IRON_HELM+";"+FLAG_ITEM_LEATHER_HELM);
+          		cv.put(fMobDropRates,"35;30;25;20");
+          		cv.put(fMobDropAmounts,"1;3;1;1");
           		cv.put(fMobID, FLAG_MOB_FAIRY);
           		db.insert(tMobDroptable, null, cv); 
           		cv.clear();
@@ -599,10 +651,11 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
          		cv.put(fMobName, "Chicken");
           		cv.put(fMobIconTexture,"Mobs/Icons/Chicken1.png");
           		cv.put(fMobAnimationTexture,"Mobs/Animations/Chicken1.png");
-          		cv.put(fMobAnimationCols,4);
+          		cv.put(fMobAnimationCols,6);
           		cv.put(fMobAnimationRows,4);
-          		cv.put(fMobFrameWidth,128);
-          		cv.put(fMobFrameHeight,256);
+          		cv.put(fMobExtraCols,2);
+          		cv.put(fMobFrameWidth,256);
+          		cv.put(fMobFrameHeight,128);
           		cv.put(fMobViewRange, 3);
           		cv.put(fMobAttackRange, 1);
           		cv.put(fMobAttack, FLAG_ATTACK_NORMAL);
@@ -622,9 +675,9 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
           		cv.clear();
           		cv.put(fMobDropExperience,13);
           		cv.put(fMobDropMoney,5);
-          		cv.put(fMobDropItemIDs,"1,2,3,4,5");
-          		cv.put(fMobDropRates,"12,10,8,6,4");
-          		cv.put(fMobDropAmounts,"1,1,1,1,1");
+          		cv.put(fMobDropItemIDs,FLAG_ITEM_BIG_FLAMED_SWORD+";"+FLAG_ITEM_HEALTH_POTION+";"+FLAG_ITEM_IRON_HELM+";"+FLAG_ITEM_LEATHER_HELM);
+          		cv.put(fMobDropRates,"35;30;25;20");
+          		cv.put(fMobDropAmounts,"1;2;1;1");
           		cv.put(fMobID, FLAG_MOB_CHICKEN);
           		db.insert(tMobDroptable, null, cv); 
           		cv.clear();
@@ -658,14 +711,14 @@ public class StaticDatabase extends SQLiteOpenHelper implements GameFlags{
                 
                 cv.put(fAttackID,FLAG_ATTACK_SPELL_BLAST);
                 cv.put(fAttackIconTexture, "Attacks/Spells/Icons/Spell2.png");
-                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell2.png");
+                cv.put(fAttackAnimationTexture,"Attacks/Spells/Animations/Spell6.png");
                 cv.put(fAttackType, 1);
                 cv.put(fAttackEffect, "1.5;2");
                 cv.put(fAttackManaCost, 10);
-                cv.put(fAttackAnimationRows, 1);
-                cv.put(fAttackAnimationCols, 5);
-                cv.put(fAttackFrameWidth, 960);
-                cv.put(fAttackFrameHeight, 192);
+                cv.put(fAttackAnimationRows, 2);
+                cv.put(fAttackAnimationCols, 4);
+                cv.put(fAttackFrameWidth, 512);
+                cv.put(fAttackFrameHeight, 256);
                 db.insert(tAttacks, null, cv); 
                 cv.clear();
                 

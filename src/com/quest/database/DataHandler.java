@@ -455,7 +455,7 @@ public class DataHandler {
 	
 	public int[] getMobDroppedItems(int pMobFlag){
 		String[] tmpArray;
-		tmpArray = this.mStaticDB.getMobDroppedItems(pMobFlag).split(",");
+		tmpArray = this.mStaticDB.getMobDroppedItems(pMobFlag).split(";");
 		int[] intArray = new int[tmpArray.length];
 		for(int i = 0;i<tmpArray.length;i++){
 			intArray[i] = Integer.parseInt(tmpArray[i]);
@@ -465,7 +465,7 @@ public class DataHandler {
 
 	public int[] getMobDropRates(int pMobFlag){
 		String[] tmpArray;
-		tmpArray = this.mStaticDB.getMobDropRates(pMobFlag).split(",");
+		tmpArray = this.mStaticDB.getMobDropRates(pMobFlag).split(";");
 		int[] intArray = new int[tmpArray.length];
 		for(int i = 0;i<tmpArray.length;i++){
 			intArray[i] = Integer.parseInt(tmpArray[i]);
@@ -475,7 +475,7 @@ public class DataHandler {
 	
 	public int[] getMobDropAmounts(int pMobFlag){
 		String[] tmpArray;
-		tmpArray = this.mStaticDB.getMobDropAmounts(pMobFlag).split(",");
+		tmpArray = this.mStaticDB.getMobDropAmounts(pMobFlag).split(";");
 		int[] intArray = new int[tmpArray.length];
 		for(int i = 0;i<tmpArray.length;i++){
 			intArray[i] = Integer.parseInt(tmpArray[i]);

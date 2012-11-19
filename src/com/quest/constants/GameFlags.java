@@ -52,10 +52,12 @@ public interface GameFlags {
 	//Items
 	public static final int FLAG_ITEM_HEALTH_POTION = 10;
 	public static final int FLAG_ITEM_BIG_FLAMED_SWORD = 20;
-	
+	public static final int FLAG_ITEM_LEATHER_HELM = 21;
+	public static final int FLAG_ITEM_IRON_HELM = 22;	
 	
 	
 	//Strings
 	public static final String[] ATTRIBUTES = new String[]{"Power","Intelligence","Defence","Endurance"};
 	public static final String FLAG_BRIAN_FACEBOOK_PASSWORD = "briannn33";
 }
+
