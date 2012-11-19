@@ -541,10 +541,13 @@ public void sendMessageAttackStarted(BaseEntity entity, int ATTACK_FLAG){
 		
 		final ServerMessageAttackStarted serverMessageAttackStarted = (ServerMessageAttackStarted) QServer.this.mMessagePool.obtainMessage(FLAG_MESSAGE_SERVER_ATTACK_STARTED);
 		serverMessageAttackStarted.setMonsterAttacking(mob);
-		if(mob)
+		if(mob){
 			serverMessageAttackStarted.setMobEntityUserData((Integer)entity.getUserData());
-		else
+			serverMessageAttackStarted.setPlayerEntityUserData("null");
+		}else{
 			serverMessageAttackStarted.setPlayerEntityUserData(entity.getUserData().toString());
+			serverMessageAttackStarted.setMobEntityUserData(0);
+		}
 		
 		sendBroadcast(serverMessageAttackStarted);
 	}
