@@ -680,9 +680,9 @@ public class MatchScene extends Scene implements GameFlags {
 			texture = mArcherTextureRegion;
 			break;
 		}
-		mLobbyPlayers.add(new Sprite(mLobbyPlayers.size()*64+80, Game.getSceneManager().getDisplay().getCameraHeight()/2-16, texture, Game.getInstance().getVertexBufferObjectManager()));
-		mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, mLobbyPlayers.size()*64+40-(username.length()/2)-10, Game.getSceneManager().getDisplay().getCameraHeight()/2+48, username, "MatchScene;"+username+mLobbyPlayers.size()));
-		mLobbyEntity.attachChild(mLobbyPlayers.get(mLobbyPlayers.size()-1));
+		//mLobbyPlayers.add(new Sprite(mLobbyPlayers.size()*64+80, Game.getSceneManager().getDisplay().getCameraHeight()/2-16, texture, Game.getInstance().getVertexBufferObjectManager()));
+		//mLobbyEntity.attachChild(Game.getTextHelper().addNewText(FLAG_TEXT_TYPE_NORMAL, mLobbyPlayers.size()*64+40-(username.length()/2)-10, Game.getSceneManager().getDisplay().getCameraHeight()/2+48, username, "MatchScene;"+username+mLobbyPlayers.size()));
+		//mLobbyEntity.attachChild(mLobbyPlayers.get(mLobbyPlayers.size()-1));
 	}
 	
 	//Action 1 = new match / 2 = Load Match / 3 = Join Match
@@ -1076,6 +1076,13 @@ public class MatchScene extends Scene implements GameFlags {
 		
 		
 		return this.mLoadMatchEntity;
+	}
+	
+	public void FixBars(){
+		mMatchesEntity.detachChild(mLowerBarSprite);
+		mMatchesEntity.detachChild(mUpperBarSprite);
+		MatchScene.this.attachChild(mLowerBarSprite);
+		MatchScene.this.attachChild(mUpperBarSprite);
 	}
 	
 	private Entity LoadOwnLocalCharacters(){

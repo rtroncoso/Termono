@@ -102,7 +102,7 @@ public class MainMenuScene extends Scene implements GameFlags{
 						if(mGrabbed) {
 							mGrabbed = false;
 							Game.getTextHelper().FlushTexts("MainMenuScene");
-							//Game.getSceneManager().setOptionsScene();
+							Game.getSceneManager().setOptionsScene();
 							//Game.getSceneManager().setTestScene();
 							break;
 						}

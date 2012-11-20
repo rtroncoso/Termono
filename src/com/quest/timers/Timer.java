@@ -64,10 +64,6 @@ public class Timer {
 			Game.getInstance().getEngine().unregisterUpdateHandler(this.mTimerHandler);
 		}
 		
-		public void deleteTimer(){
-			this.mTimerHandler = null;
-			this.mTimerCallback = null;
-		}
 		// ===========================================================
 		// Inner and Anonymous Classes
 		// ===========================================================

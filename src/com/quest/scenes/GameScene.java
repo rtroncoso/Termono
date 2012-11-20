@@ -3,6 +3,8 @@ package com.quest.scenes;
 import java.util.ArrayList;
 
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -26,6 +28,7 @@ import com.quest.entities.objects.Attack;
 import com.quest.game.Game;
 import com.quest.helpers.AsyncTaskLoader;
 import com.quest.helpers.interfaces.IAsyncCallback;
+import com.quest.timers.Timer;
 
 public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		// ===========================================================
@@ -44,6 +47,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		private AttackHud mAttackHud;
 		private Entity mMapLayer;
 		protected ArrayList<Attack> mAttackLayer;
+		private boolean done = false;
 		// ===========================================================
 		// Constructors
 		// ===========================================================
@@ -164,6 +168,7 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 			            public void onComplete() {
 			            	Game.getSceneManager().getLoadingScene().loadingAnimation(false);
 			            	Game.getSceneManager().setSpecificGameScene(GameScene.this);
+			            	GameScene.this.done = true;
 			            }
 			        });
 		        }
@@ -329,8 +334,23 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		// ===========================================================
 		// Methods
 		// ===========================================================		
-		public void CreateMob_Server(int MOB_FLAG,int tileX,int tileY,int pMap){//Server
-				Game.getServer().sendSpawnMobMessage(MOB_FLAG,Game.getMobHelper().getMobCount(),tileX, tileY, pMap);
+		public void CreateMob_Server(final int MOB_FLAG,final int tileX,final int tileY,final int pMap){//Server
+			
+			final double tiempo = System.currentTimeMillis();
+			Game.getTimerHelper().addTimer(new Timer(15f, new ITimerCallback() {
+				double time = tiempo;
+				int flag = MOB_FLAG;
+				int x = tileX;
+				int y = tileY;
+				int map = pMap;
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) {
+					// TODO Auto-generated method stub
+					Game.getServer().sendSpawnMobMessage(flag,Game.getMobHelper().getMobCount(),x, y, map);
+					Game.getTimerHelper().deleteTimer(String.valueOf(time));
+				}
+			})
+					, String.valueOf(tiempo));
 				Mob tmpMob = Game.getMobHelper().addNewMob(MOB_FLAG,pMap,tileX,tileY);
 				if(pMap == Game.getPlayerHelper().getOwnPlayer().getCurrentMap()){//Solo lo agrega graficamente si esta en el mismo mapa
 					GameScene.this.attachChild(tmpMob);
@@ -368,6 +388,16 @@ public class GameScene extends Scene implements GameFlags,IOnSceneTouchListener{
 		// ===========================================================
 		// Inner and Anonymous Classes
 		// ===========================================================
+
+
+		public boolean isDone() {
+			return done;
+		}
+
+
+		public void setDone(boolean done) {
+			this.done = done;
+		}
 
 		
 		

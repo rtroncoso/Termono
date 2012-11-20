@@ -44,7 +44,7 @@ public class MapHelper implements IMeasureConstants {
 	private List<TMXTile> mCollideTiles;
 	private List<MapChangeTrigger> mTriggerTiles;
 	private boolean isChangingMap;
-	private ArrayList<ArrayList<int[]>> MapClientCollideTiles;
+	private HashMap<Integer, ArrayList<int[]>> MapClientCollideTiles;
 	private HashMap<Integer, List<TMXTile>> MapCollideTiles;
 	private boolean firstime = true;
 	// ===========================================================
@@ -54,7 +54,7 @@ public class MapHelper implements IMeasureConstants {
 
 		this.mCollideTiles = new ArrayList<TMXTile>();
 		this.mTriggerTiles = new ArrayList<MapChangeTrigger>();
-		this.MapClientCollideTiles = new ArrayList<ArrayList<int[]>>();
+		this.MapClientCollideTiles = new HashMap<Integer, ArrayList<int[]>>();
 		this.MapCollideTiles = new HashMap<Integer, List<TMXTile>>();
 		this.mTmxLoader = new TMXLoader(Game.getInstance().getAssets(), Game.getInstance().getEngine().getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, Game.getInstance().getVertexBufferObjectManager());
 	}
@@ -189,7 +189,7 @@ public class MapHelper implements IMeasureConstants {
 							tmpList.add(new int[]{tile.getTileColumn(),tile.getTileRow()});
 							Log.d("Logd", "X: "+tile.getTileColumn()+" Y: "+tile.getTileRow());
 						}
-						MapClientCollideTiles.add(Integer.parseInt(pName), tmpList);
+						MapClientCollideTiles.put(Integer.parseInt(pName), tmpList);
 					}
 					
 					if(Game.getPlayerHelper().isAloneInMap(Game.getPlayerHelper().getOwnPlayer())){
